@@ -166,7 +166,7 @@ export default function Home() {
               <CarouselItem className="w-full h-full grid grid-cols-4 gap-5">
                 <div className="bg-pink-400 w-full h-full min-h-[300px] col-span-2 p-3 rounded-sm flex flex-row gap-5 overflow-hidden">
                   <Image
-                    src="/homepage/party.png"
+                    src="/homepage/party.webp"
                     width={500}
                     height={500}
                     alt="img"

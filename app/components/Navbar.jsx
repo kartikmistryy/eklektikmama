@@ -23,7 +23,7 @@ export default function Navbar() {
   ];
 
   return (
-    <nav className="bg-[#231f20] fixed w-full z-50">
+    <nav className="bg-transparent absolute w-full z-50">
       <div className="flex flex-row w-full h-full mx-auto px-4 lg:px-8">
         <div className="flex justify-between items-start lg:h-[135px] h-[70px] w-full">
           {/* Mobile Menu Button */}
