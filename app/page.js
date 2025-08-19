@@ -13,78 +13,99 @@ import Link from "next/link";
 export default function Home() {
   return (
     <div className="w-full h-full flex flex-col bg-[#231f20] lg:pt-[170px] pt-[70px] relative overflow-hidden">
-      <section className="w-full h-full flex flex-col items-center justify-start relative">
-        <main className="w-full h-full flex items-center justify-start lg:pt-[50px] md:pt-[120px] pt-[80px] relative px-5">
-          <div className="w-full h-full lg:max-w-[1000px] md:max-w-[600px] max-w-[380px] mx-auto relative overflow-visible">
-            {/* Statue Image */}
-            <div className="absolute md:-top-10 -top-14 -left-5 md:-left-20 w-[120px] lg:w-[150px] z-10">
-              <Image
-                src="/homepage/statue.png"
-                alt="Statue"
-                width={90}
-                height={150}
-                className="object-contain rotate-[-5deg] md:w-fit md:h-fit w-[60px] h-[70px]"
-              />
+      <section className="w-full h-full flex flex-col items-center justify-start relative overflow-y-hidden">
+        <div className="w-full h-full flex flex-col relative pb-[140px]">
+          <main className="w-full h-full flex items-center justify-start lg:pt-[50px] md:pt-[120px] pt-[80px] relative px-5">
+            <div className="w-full h-full lg:max-w-[1000px] md:max-w-[600px] max-w-[380px] mx-auto relative overflow-visible">
+              {/* Statue Image */}
+              <div className="absolute md:-top-16 -top-12 -left-5 md:-left-20 w-[120px] lg:w-[150px] z-10">
+                <Image
+                  src="/homepage/statue.webp"
+                  alt="Statue"
+                  width={90}
+                  height={150}
+                  className="object-contain rotate-[-5deg] md:w-fit md:h-fit w-[60px] h-[70px]"
+                />
+              </div>
+
+              {/* Heading */}
+              <h1 className="lg:text-[6.5rem] md:text-[4rem] text-4xl tracking-tight leading-[130%] font-anton font-bold uppercase text-white relative z-0">
+                Shaking Up Mamahood, <br />
+                <b className="lg:text-[10rem] md:text-[5rem] text-4xl">
+                  your way
+                </b>
+              </h1>
+
+              {/* Overlapping Images after text */}
+              <div className="md:absolute relative  lg:top-[110px] md:top-[70px] lg:left-[57%] md:left-[45%] lg:scale-100 md:scale-90 scale-70 flex space-x-[-40px] z-10 overflow-visible">
+                <Image
+                  src="/homepage/card1.webp"
+                  alt="Image 1"
+                  width={120}
+                  height={190}
+                  className="object-cover w-fit h-fit max-w-[130px] max-h-[190px] rounded-md rotate-[-9deg] shadow-lg z-[1]"
+                />
+                <Image
+                  src="/homepage/card2.webp"
+                  alt="Image 2"
+                  width={130}
+                  height={190}
+                  className="object-cover w-fit h-fit max-w-[130px] max-h-[190px] translate-y-6 rounded-md rotate-[0] shadow-lg overflow-visible z-[2]"
+                />
+                <Image
+                  src="/homepage/card3.webp"
+                  alt="Image 3"
+                  width={130}
+                  height={190}
+                  className="object-cover w-fit h-fit max-w-[130px] max-h-[190px] rounded-md rotate-[-6deg] translate-y-14 shadow-lg overflow-visible z-[1]"
+                />
+                <Image
+                  src="/homepage/card4.webp"
+                  alt="Image 4"
+                  width={130}
+                  height={190}
+                  className="object-cover w-fit h-fit max-w-[130px] max-h-[190px] rounded-md rotate-[9deg] shadow-lg overflow-visible"
+                />
+              </div>
             </div>
+          </main>
 
-            {/* Heading */}
-            <h1 className="lg:text-[6.5rem] md:text-[4rem] text-4xl tracking-tight leading-[130%] font-anton font-bold uppercase text-white relative z-0">
-              Shaking Up Mamahood, <br />
-              <b className="lg:text-[10rem] md:text-[5rem] text-4xl">
-                your way
-              </b>
-            </h1>
+          <p className="max-w-[600px] mx-auto font-quicksand lg:mt-10 md:mt-24 mt-5 px-4 text-center text-white lg:text-lg md:text-base text-sm">
+            Welcome to Eklektik Mama™, where motherhood meets rebellion. A home
+            for bold mums, BYOBaby™ events, unapologetic blogs, and gear you
+            didn’t know you needed.
+          </p>
 
-            {/* Overlapping Images after text */}
-            <div className="md:absolute relative  lg:top-[110px] md:top-[70px] lg:left-[57%] md:left-[45%] lg:scale-100 md:scale-90 scale-70 flex space-x-[-40px] z-10 overflow-visible">
-              <Image
-                src="/homepage/img1.png"
-                alt="Image 1"
-                width={120}
-                height={190}
-                className="object-cover w-fit h-fit max-w-[130px] max-h-[190px] rounded-md rotate-[-9deg] shadow-lg"
-              />
-              <Image
-                src="/homepage/img2.png"
-                alt="Image 2"
-                width={130}
-                height={190}
-                className="object-cover w-fit h-fit max-w-[130px] max-h-[190px] rounded-md rotate-[0] shadow-lg overflow-visible"
-              />
-              <Image
-                src="/homepage/img3.png"
-                alt="Image 3"
-                width={130}
-                height={190}
-                className="object-cover w-fit h-fit max-w-[130px] max-h-[190px] rounded-md rotate-[-6deg] translate-y-8 shadow-lg overflow-visible"
-              />
-              <Image
-                src="/homepage/img4.png"
-                alt="Image 4"
-                width={130}
-                height={190}
-                className="object-cover w-fit h-fit max-w-[130px] max-h-[190px] rounded-md rotate-[9deg] shadow-lg overflow-visible"
-              />
-            </div>
-          </div>
-        </main>
+          <Link
+            href="/"
+            className="w-[190px] h-[45px] text-base flex items-center justify-center uppercase mx-auto text-white rounded-[20px] my-6 border-2 border-[#bf378b] bg-transparent hover:bg-[#bf378b] transition-colors duration-500 ease-in-out md:scale-100 scale-75"
+          >
+            VIEW EVENTS
+          </Link>
+        </div>
 
-        <p className="max-w-[600px] mx-auto font-quicksand lg:mt-10 md:mt-24 mt-5 px-4 text-center text-white lg:text-lg md:text-base text-sm">
-          Welcome to Eklektik Mama™, where motherhood meets rebellion. A home
-          for bold mums, BYOBaby™ events, unapologetic blogs, and gear you
-          didn’t know you needed.
-        </p>
-
-        <Link
-          href="/"
-          className="w-[190px] h-[45px] text-base flex items-center justify-center uppercase mx-auto text-white rounded-[20px] my-6 border-2 border-[#bf378b] bg-transparent hover:bg-[#bf378b] transition-colors duration-500 ease-in-out md:scale-100 scale-75"
-        >
-          VIEW EVENTS
-        </Link>
+        <Image
+          src="/homepage/pinkpaper.webp"
+          height={400}
+          width={600}
+          className="w-fit absolute bottom-[-10px] left-[-100px] rotate-0 z-[1]"
+        />
+        <Image
+          src="/homepage/whitepaper.webp"
+          height={400}
+          width={600}
+          className="w-full absolute bottom-0 left-0 rotate-0 z-[2]"
+        />
+        <Image
+          src="/homepage/bluepaper.webp"
+          height={400}
+          width={600}
+          className="w-fit absolute bottom-[-180px] right-[-100px] rotate-0 z-[1]"
+        />
       </section>
 
       <section className="w-full h-full flex lg:flex-row flex-col-reverse items-center justify-start relative bg-white py-10 lg:gap-0 gap-10">
-        <div className="w-full h-full flex flex-col justify-start items-start md:basis-1/2 basis-full md:pl-14 px-5 text-[#093166]">
+        <div className="w-full h-full flex flex-col justify-start items-start md:basis-1/2 basis-full md:pl-14 md:pr-0 px-5 text-[#093166]">
           <p className="font-quicksand font-semibold uppercase text-base">
             About Us
           </p>
@@ -152,7 +173,7 @@ export default function Home() {
       </section>
 
       <section className="w-full h-full flex flex-col bg-white md:px-10 px-5">
-        <div className="w-full h-full flex flex-col text-[#093166] px-10">
+        <div className="w-full h-full flex flex-col text-[#093166] lg:px-10 px-5 pt-10">
           <p className="font-quicksand font-semibold uppercase text-base">
             Step right into
           </p>
@@ -160,11 +181,20 @@ export default function Home() {
             The Good <b className="font-anton tracking-normal">Stuff</b>
           </h2>
         </div>
-        <div className="w-full h-full lg:px-10 py-10">
-          <Carousel>
+        <div className="w-full h-full lg:px-10 py-10 hidden lg:block">
+          <Carousel
+            opts={{
+              align: "start",
+              slidesToScroll: 1, // scrolls 1 page at a time
+              loop: true,
+            }}
+          >
             <CarouselContent>
-              <CarouselItem className="w-full h-full grid grid-cols-4 gap-5">
-                <div className="bg-pink-400 w-full h-full min-h-[300px] col-span-2 p-3 rounded-sm flex flex-row gap-5 overflow-hidden">
+              <CarouselItem
+                id="1"
+                className="w-full h-full grid grid-cols-3 gap-5 basis-[75%]"
+              >
+                <div className="bg-pink-400 w-full h-full min-h-[400px] col-span-2 p-3 rounded-sm flex flex-row gap-5 overflow-hidden">
                   <Image
                     src="/homepage/party.webp"
                     width={500}
@@ -199,9 +229,9 @@ export default function Home() {
                     </span>
                   </span>
                 </div>
-                <div className="w-full h-full min-h-[300px] flex flex-col col-span-1 p-3 rounded-sm border-2 border-[#093166]">
+                <div className="w-full h-full min-h-[400px] flex flex-col col-span-1 p-3 rounded-sm border-2 border-[#093166]">
                   <Image
-                    src="/homepage/mum.png"
+                    src="/homepage/mum.webp"
                     width={500}
                     height={300}
                     alt="img"
@@ -226,10 +256,49 @@ export default function Home() {
                     </span>
                   </span>
                 </div>
-                <div className="bg-[#093166] w-full min-h-[300px] col-span-1 p-3 rounded-sm row-span-2 flex flex-col">  
+
+                <div className="w-full h-full flex flex-row col-span-3 min-h-[300px] p-3 rounded-sm gap-5 border-2 border-[#093166]">
+                  <Image
+                    src="/homepage/vibes.webp"
+                    width={500}
+                    height={500}
+                    alt="img"
+                    className="basis-1/2 rounded-md w-full h-full bg-cover max-h-[400px] max-w-[200px]"
+                  />
+                  <Image
+                    src="/homepage/board.webp"
+                    width={500}
+                    height={500}
+                    alt="img"
+                    className="basis-1/2 rounded-md w-full h-full bg-cover max-h-[400px] max-w-[400px]"
+                  />
+                  <span className="py-4 w-full h-full flex flex-col justify-start items-start relative basis-1/2">
+                    <h4 className="uppercase font-poppins font-bold text-4xl text-[#093166]">
+                      Unfiltered blogs
+                    </h4>
+                    <p className="text-base font-quicksand text-[#093166] font-medium">
+                      Our blog. Therapy-adjacent. Censorship-free.
+                    </p>
+                    <span className="w-full h-fit mt-auto flex flex-row items-center justify-between pr-2">
+                      <button className="text-sm bg-[#093166] text-white rounded-full font-medium font-poppins flex flex-row items-center justify-start gap-5 px-3 py-1.5 ">
+                        READ THE BLOG
+                        <BsArrowRight className="text-lg font-bold" />
+                      </button>
+                      <button className=" rounded-full p-1 text-2xl font-bold border-[1px] border-[#093166] text-[#093166]">
+                        <BsPlus />
+                      </button>
+                    </span>
+                  </span>
+                </div>
+              </CarouselItem>
+              <CarouselItem
+                id="2"
+                className="w-full grid grid-cols-1 gap-5 basis-[25%] self-stretch"
+              >
+                <div className="bg-[#093166] w-full min-h-[400px] p-3 rounded-sm flex flex-col">
                   {/* Image Section */}
                   <Image
-                    src="/homepage/bag.png"
+                    src="/homepage/bag.webp"
                     width={500}
                     height={300}
                     alt="img"
@@ -265,44 +334,125 @@ export default function Home() {
                     </span>
                   </span>
                 </div>
-
-                <div className="w-full h-full flex flex-row col-span-3 min-h-[300px] p-3 rounded-sm gap-5 border-2 border-[#093166]">
-                   <Image
-                    src="/homepage/vibes.png"
-                    width={500}
-                    height={500}
-                    alt="img"
-                    className="basis-1/2 rounded-md w-full h-full bg-cover max-h-[400px] max-w-[200px]"
-                  />
+              </CarouselItem>
+              <CarouselItem
+                id="3"
+                className="w-full self-stretch gap-5 basis-[75%]"
+              >
+                <div className="bg-pink-400 w-full h-full flex flex-col self-stretch col-span-2 p-3 rounded-sm gap-5 overflow-hidden">
                   <Image
-                    src="/homepage/board.png"
+                    src="/homepage/package.webp"
                     width={500}
                     height={500}
                     alt="img"
-                    className="basis-1/2 rounded-md w-full h-full bg-cover max-h-[400px] max-w-[400px]"
+                    className="basis-1/2 rounded-md w-full h-auto bg-cover max-h-[400px]"
                   />
-                  <span className="py-4 w-full h-full flex flex-col justify-start items-start relative basis-1/2">
-                    <h4 className="uppercase font-poppins font-bold text-4xl text-[#093166]">
-                      Unfiltered blogs
+                  <span className="py-4 w-full h-full flex flex-col justify-start items-start relative">
+                    <h4 className="uppercase font-poppins font-bold text-4xl text-white">
+                      EKLEKTIK MAMA LOVES
                     </h4>
-                    <p className="text-base font-quicksand text-[#093166] font-medium">
-                      Our blog. Therapy-adjacent. Censorship-free.
+                    <p className="text-base font-quicksand text-white font-medium">
+                      The ones that get the chaos, the coffee cravings, the
+                      identity crises, and the joy that comes with it all. These
+                      are the brands that show up, stand out, and actually give
+                      a damn. Think everyday magic, minus the pastel pandering.
+                      If they&apos;re on this list, it means they passed the
+                      vibe check - hard.
                     </p>
                     <span className="w-full h-fit mt-auto flex flex-row items-center justify-between pr-2">
-                      <button className="text-sm bg-[#093166] text-white rounded-full font-medium font-poppins flex flex-row items-center justify-start gap-5 px-3 py-1.5 ">
-                        READ THE BLOG
+                      <button className="text-sm bg-white rounded-full font-medium font-poppins flex flex-row items-center justify-start gap-5 px-3 py-1.5 ">
+                        explore our partners
                         <BsArrowRight className="text-lg font-bold" />
                       </button>
-                      <button className=" rounded-full p-1 text-2xl font-bold border-[1px] border-[#093166] text-[#093166]">
+                      <button className="bg-white rounded-full p-1 text-2xl font-bold">
                         <BsPlus />
                       </button>
                     </span>
                   </span>
                 </div>
               </CarouselItem>
-              <CarouselItem>.2.</CarouselItem>
-              <CarouselItem>.3.</CarouselItem>
             </CarouselContent>
+            <CarouselPrevious className="text-[#093166] border-2 border-[#093166]" />
+            <CarouselNext className="text-[#093166] border-2 border-[#093166]" />
+          </Carousel>
+        </div>
+
+        <div className="block lg:hidden px-10 py-10">
+          <Carousel
+            opts={{
+              align: "start",
+              slidesToScroll: 1,
+              loop: true,
+            }}
+            className="w-full"
+          >
+            <CarouselContent>
+              {/* Page 1 */}
+              <CarouselItem className="basis-full">
+                <div className="bg-pink-400 w-full min-h-[420px] p-3 rounded-sm flex flex-col">
+                  <div className="w-full h-[200px]">
+                    <Image
+                      src="/homepage/party.webp"
+                      width={500}
+                      height={300}
+                      alt="img"
+                      className="rounded-md w-full h-full object-cover"
+                    />
+                  </div>
+                  <h4 className="mt-3 uppercase font-poppins font-bold text-2xl text-white">
+                    Get Eklektik AF
+                  </h4>
+                  <p className="text-base font-quicksand text-white">
+                    Ready for early access, cheeky discounts, and WhatsApp chaos
+                    you’ll actually enjoy? Membership starts at AED 50/month.
+                  </p>
+                </div>
+              </CarouselItem>
+
+              {/* Page 2 */}
+              <CarouselItem className="basis-full">
+                <div className="bg-[#093166] w-full min-h-[420px] p-3 rounded-sm flex flex-col">
+                  <div className="w-full h-[200px]">
+                    <Image
+                      src="/homepage/bag.webp"
+                      width={500}
+                      height={300}
+                      alt="img"
+                      className="rounded-md w-full h-full object-cover"
+                    />
+                  </div>
+                  <h4 className="mt-3 uppercase font-poppins font-bold text-2xl text-white">
+                    Shop drops
+                  </h4>
+                  <p className="text-base font-quicksand text-white">
+                    Downloads for surviving the mess and thriving anyway.
+                  </p>
+                </div>
+              </CarouselItem>
+
+              {/* Page 3 */}
+              <CarouselItem className="basis-full">
+                <div className="bg-pink-400 w-full min-h-[420px] p-3 rounded-sm flex flex-col">
+                  <div className="w-full h-[200px]">
+                    <Image
+                      src="/homepage/package.webp"
+                      width={500}
+                      height={300}
+                      alt="img"
+                      className="rounded-md w-full h-full object-cover"
+                    />
+                  </div>
+                  <h4 className="mt-3 uppercase font-poppins font-bold text-2xl text-white">
+                    EKLEKTIK MAMA LOVES
+                  </h4>
+                  <p className="text-base font-quicksand text-white">
+                    Brands that get the chaos, cravings, and joy — minus the
+                    pastel pandering.
+                  </p>
+                </div>
+              </CarouselItem>
+            </CarouselContent>
+
             <CarouselPrevious className="text-[#093166] border-2 border-[#093166]" />
             <CarouselNext className="text-[#093166] border-2 border-[#093166]" />
           </Carousel>

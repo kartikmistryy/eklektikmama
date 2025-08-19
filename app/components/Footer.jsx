@@ -7,12 +7,13 @@ import {
   FaThreads,
   FaXTwitter,
 } from "react-icons/fa6";
+import Marquee from "./Marquee";
 
 export default function Footer() {
   return (
     <section className="w-full h-full flex flex-col">
-      <div className="flex lg:flex-row flex-col w-full h-full md:px-10 px-5">
-        <span className="w-full h-full text-[#093166] py-10 md:basis-1/2 basis-full">
+      <div className="flex lg:flex-row flex-col w-full h-full gap-10 md:pl-10 px-5">
+        <span className="w-full h-full text-[#093166] py-10 md:basis-[40%] basis-full">
           <p className="font-quicksand font-semibold uppercase text-base">
             #mamadrama
           </p>
@@ -41,75 +42,40 @@ export default function Footer() {
             </button>
           </span>
         </span>
-        <span className="w-full h-full flex flex-row items-end justify-center md:basis-1/2 basis-full lg:pt-14 md:flex-nowrap flex-wrap">
+        <span className="w-full h-full flex flex-row items-end justify-center md:basis-[60%] basis-full lg:pt-14 md:flex-nowrap flex-wrap overflow-hidden gap-2">
           <Image
-            width={100}
-            height={100}
-            src="/homepage/extra.png"
+            src="/footer/1.webp"
             alt="icons"
-            className="w-[250px] h-[130px]"
+            width={300}
+            height={130}
+            className="h-[130px] w-auto object-contain"
           />
           <Image
-            width={100}
-            height={100}
-            src="/homepage/extra.png"
+            src="/footer/2.webp"
             alt="icons"
-            className="w-[250px] h-[130px]"
+            width={300}
+            height={130}
+            className="h-[130px] w-auto object-contain"
           />
           <Image
-            width={100}
-            height={100}
+            src="/footer/3.gif"
             alt="icons"
-            src="/homepage/scribble.gif"
-            className="w-[250px] h-[200px]"
+            width={250}
+            height={200}
+            className="h-[200px] w-auto object-contain"
           />
           <Image
-            width={100}
-            height={100}
+            src="/footer/4.webp"
             alt="icons"
-            src="/homepage/extra.png"
-            className="w-[350px] h-[130px]"
+            width={300}
+            height={130}
+            className="h-[130px] w-auto object-contain"
           />
         </span>
       </div>
       <div className="w-full h-full flex flex-col mt-10">
-        <marquee
-          behavior="scroll"
-          direction="left"
-          scrollamount="6" // controls speed
-          className="bg-[#102A43] font-antonio py-2"
-        >
-          <div className="flex flex-row gap-5 items-center flex-shrink-0">
-            {[
-              "Eklektik Mama Love",
-              "UNFILTERED AF",
-              "WHAT'S ON",
-              "GET EKLEKTIC AF",
-              "SHOP DROP",
-               "Eklektik Mama Love",
-              "UNFILTERED AF",
-              "WHAT'S ON",
-              "GET EKLEKTIC AF",
-              "SHOP DROP",
-            ].map((text, i) => (
-              <span
-                key={i}
-                className="flex flex-row gap-4 items-center flex-shrink-0"
-              >
-                <Image
-                  src="/homepage/marqueeLogo.png"
-                  height={70}
-                  width={70}
-                  alt="Logo"
-                  className="flex-shrink-0"
-                />
-                <h4 className="text-white text-4xl uppercase whitespace-nowrap">
-                  {text}
-                </h4>
-              </span>
-            ))}
-          </div>
-        </marquee>
+        <Marquee/>
+
         <footer className="bg-[#d94e9b] text-white py-10 px-6 font-poppins">
           <div className="max-w-7xl mx-auto grid md:grid-cols-4 gap-5 items-start">
             {/* Logo + Social */}
