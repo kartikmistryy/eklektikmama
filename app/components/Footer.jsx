@@ -77,7 +77,7 @@ export default function Footer() {
         <Marquee/>
 
         <footer className="bg-[#d94e9b] text-white py-10 px-6 font-poppins">
-          <div className="max-w-7xl mx-auto grid md:grid-cols-4 gap-5 items-start">
+          <div className="mx-auto grid md:grid-cols-4 gap-5 items-start lg:px-10 px-5">
             {/* Logo + Social */}
             <div className="flex flex-col items-center md:items-start">
               <Image
