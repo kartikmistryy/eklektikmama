@@ -1,102 +1,76 @@
 "use client";
+
+import { ShoppingCart, Menu, X } from "lucide-react";
 import Image from "next/image";
-import Link from "next/link";
 import { useState } from "react";
-import { FiMenu, FiX, FiShoppingCart } from "react-icons/fi";
 
 export default function Navbar() {
-  const [menuOpen, setMenuOpen] = useState(false);
-
-  const leftLinks = [
-    { name: "Home", href: "/" },
-    { name: "About", href: "/about" },
-    { name: "What We Do", href: "/what-we-do" },
-    { name: "Events", href: "/events" },
-    { name: "Community", href: "/community" },
-  ];
-
-  const rightLinks = [
-    { name: "Perks", href: "/perks" },
-    { name: "Blog", href: "/blog" },
-    { name: "Resources", href: "/resources" },
-    { name: "Partner With Us", href: "/partner" },
-  ];
+  const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <nav className="bg-transparent absolute w-full z-50">
-      <div className="flex flex-row w-full h-full mx-auto px-4 lg:px-8">
-        <div className="flex justify-between items-start lg:h-[135px] h-[70px] w-full">
-          {/* Mobile Menu Button */}
-          <div className="flex h-full  items-center lg:hidden">
-            <button
-              onClick={() => setMenuOpen(!menuOpen)}
-              className="text-2xl p-2 text-white"
-            >
-              {menuOpen ? <FiX /> : <FiMenu />}
-            </button>
-          </div>
-
-          {/* Left Links (Desktop) */}
-          <div className="hidden lg:flex items-start py-10 h-full justify-start md:space-x-[3vw] w-full">
-            {leftLinks.map((link) => (
-              <a
-                key={link.name}
-                href={link.href}
-                className="text-white hover:underline hover:underline-offset-1  uppercase font-poppins font-regular transition-transform ease-in-out"
-              >
-                {link.name}
-              </a>
-            ))}
-          </div>
-
-          {/* Logo */}
-          <div className="flex-shrink-0 flex justify-start lg:pt-5">
-            <Link href="/" className="text-2xl font-bold tracking-wide lg:w-[110px] lg:h-[150px] w-[60px] h-[60px]">
-              <Image src="/desktopLogo.png" className="lg:block hidden w-fit h-fit" alt="Logo" width={100} height={100} />
-              <Image src="/mobileLogo.webp" className="lg:hidden block" alt="Logo" width={100} height={100} />
-            </Link>
-          </div>
-
-          {/* Right Links + Shop Icon (Desktop) */}
-          <div className="hidden lg:flex items-start h-full  py-10 justify-end md:space-x-[3vw] w-full">
-            {rightLinks.map((link) => (
-              <a
-                key={link.name}
-                href={link.href}
-                className="text-white hover:underline hover:underline-offset-1  uppercase font-poppins font-regular transition-transform ease-in-out"
-              >
-                {link.name}
-              </a>
-            ))}
-            <a href="/shop" className="text-gray-700 hover:text-gray-900 text-2xl">
-              <FiShoppingCart />
-            </a>
-          </div>
-
-          {/* Shop Icon (Mobile) */}
-          <div className="flex h-full items-center lg:hidden">
-            <a href="/shop" className="text-white hover:text-gray-900 text-2xl">
-              <FiShoppingCart />
-            </a>
-          </div>
-        </div>
+    <nav className="w-full flex items-center px-6 py-4 absolute top-0 left-0 z-50">
+      {/* Left container */}
+      <div className="flex-1 flex items-center gap-2">
+        {/* JOIN button */}
+        <button className="px-4 py-2 md:text-sm text-[8px] gradient-animate text-white font-semibold rounded-full border-2 border-pink-500">
+          JOIN EKLEKTIK AF
+        </button>
       </div>
 
-      {/* Mobile Menu */}
-      {menuOpen && (
-        <div className="lg:hidden bg-white shadow-md">
-          <div className="px-4 pt-4 pb-6 space-y-4">
-            {[...leftLinks, ...rightLinks].map((link) => (
-              <a
-                key={link.name}
-                href={link.href}
-                className="block text-gray-700 hover:text-gray-900 transition"
-                onClick={() => setMenuOpen(false)}
-              >
-                {link.name}
-              </a>
-            ))}
-          </div>
+      {/* Center container (desktop links) */}
+<div className="hidden md:flex items-center justify-center gap-12 text-white font-medium text-sm">
+  <a href="#">EVENTS</a>
+  <a href="#">UNFILTERED AF BLOG</a>
+
+  {/* Logo in center */}
+  <div className="flex-shrink-0">
+    <Image
+      src="/desktopLogo.png"
+      alt="Eklektik Mama"
+      width={80}
+      height={80}
+      className="h-16 w-auto"
+    />
+  </div>
+
+  <a href="#">WORK WITH US</a>
+  <a href="#">ABOUT</a>
+</div>
+
+      {/* Mobile Logo */}
+      <div className="md:hidden flex-1 flex justify-center">
+        <Image
+          src="/desktopLogo.png"
+          alt="Eklektik Mama"
+          width={60}
+          height={60}
+          className="h-12 w-auto"
+        />
+      </div>
+
+      {/* Right container */}
+      <div className="flex-1 flex justify-end items-center gap-4">
+        {/* Desktop Shopping Cart */}
+        <button className="hidden md:flex items-center justify-center">
+          <ShoppingCart className="w-6 h-6 text-white" />
+        </button>
+
+        {/* Mobile Hamburger */}
+        <button
+          className="md:hidden text-white"
+          onClick={() => setIsOpen(!isOpen)}
+        >
+          {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+        </button>
+      </div>
+
+      {/* Mobile Dropdown Menu */}
+      {isOpen && (
+        <div className="absolute top-full left-0 w-full bg-[#231F20] flex flex-col items-center gap-6 py-6 text-white font-medium text-base md:hidden z-50">
+          <a href="#">EVENTS</a>
+          <a href="#">UNFILTERED AF BLOG</a>
+          <a href="#">WORK WITH US</a>
+          <a href="#">ABOUT</a>
         </div>
       )}
     </nav>

@@ -70,34 +70,34 @@ const Page = () => {
             Think of it as our brag wall—but for stuff that matters.
           </p>
         </div>
-        <div className="w-full h-full flex flex-col justify-center  items-center md:basis-1/2 basis-full pr-0">
+        <div className="w-full h-full flex flex-col justify-center  items-center md:basis-1/2 basis-full pr-0 ">
           <span className="md:w-[350px] md:h-[450px] w-[250px] h-[300px] relative">
             <Image
-              src="/homepage/img2.png"
+              src="/highlights/photos/s1.png"
               height={500}
               width={400}
-              className="absolute top-0 md:-left-48 left-10 md:w-full md:h-full w-[250px] h-[300px] md:max-w-[350px] md:max-h-[450px]"
+              className="absolute top-26 md:-left-[200px] left-32 md:w-full md:h-full w-[200px] h-[250px] md:max-w-[260px] md:max-h-[340px]"
               alt="image"
             />
             <Image
-              src="/homepage/img3.png"
+              src="/highlights/photos/s2.png"
               height={500}
               width={400}
-              className="absolute top-0 md:left-[-150px] left-[-50px] md:w-full md:h-full w-[250px] h-[300px] md:max-w-[350px] md:max-h-[450px]"
+              className="absolute top-[70px] md:left-[0] left-[-50px] md:w-full md:h-full w-[200px] h-[250px] md:max-w-[260px] md:max-h-[340px]"
               alt="image"
             />
             <Image
-              src="/homepage/img2.png"
+              src="/highlights/photos/s3.png"
               height={500}
               width={400}
-              className="absolute top-0 md:left-0 left-10 md:w-full md:h-full w-[250px] h-[300px] md:max-w-[350px] md:max-h-[450px]"
+              className="absolute top-[50px] md:left-[160px] left-0 md:w-full md:h-full w-[200px] h-[250px] md:max-w-[260px] md:max-h-[340px]"
               alt="image"
             />
             <Image
-              src="/homepage/branding.png"
+              src="/highlights/sun.png"
               height={500}
               width={400}
-              className="absolute md:top-[30%] top-[30%] md:right-[-30%] right-[-35%] md:w-[200px] md:h-[200px] w-[120px] h-[120px]"
+              className="absolute md:top-[0%] top-[30%] md:right-[-40%] right-[-35%] md:w-[100px] md:h-[100px] w-[80px] h-[80px]"
               alt="image"
             />
           </span>
@@ -137,54 +137,10 @@ const Page = () => {
           </span>
         </div>
 
-        <div className="w-full h-full flex md:flex-row flex-col flex-wrap gap-4 lg:px-10 px-5 py-5">
-          <div className="w-full md:max-w-[350px] md:min-w-[350px] flex-1 min-h-[400px] flex flex-col p-3 rounded-sm border-2 border-[#093166]">
+        <div className="w-full h-full flex md:flex-row flex-col flex-wrap gap-4 justify-start lg:px-10 px-5 py-5">
+          <div className="w-full md:max-w-[330px] md:min-w-[330px] flex-1 min-h-[400px] flex flex-col p-3 rounded-sm border-2 border-[#093166]">
             <Image
-              src="/homepage/mum.webp"
-              width={500}
-              height={300}
-              alt="img"
-              className="rounded-md w-full h-[170px] bg-cover max-h-[200px]"
-            />
-            <span className="py-4 w-full h-full flex flex-col justify-start items-start relative">
-              <h4 className="uppercase font-poppins font-bold text-4xl text-[#093166]">
-                EVENT NAME
-              </h4>
-              {/* <p className="text-base font-quicksand text-[#093166] font-semibold">
-                                BYOBaby™ Events: Breakfasts, cinema mornings, and IRL
-                                convos. View this month’s line-up or miss out.
-                              </p> */}
-              <button className="text-sm text-white rounded-full font-medium font-poppins flex flex-row items-center bg-[#093166] justify-start gap-5 px-3 py-1.5 mt-auto ml-auto">
-                VIEW ALL
-                <BsArrowRight className="text-lg font-bold" />
-              </button>
-            </span>
-          </div>
-          <div className="w-full md:max-w-[350px] md:min-w-[350px] flex-1 min-h-[400px] flex flex-col p-3 rounded-sm border-2 border-[#093166]">
-            <Image
-              src="/homepage/mum.webp"
-              width={500}
-              height={300}
-              alt="img"
-              className="rounded-md w-full h-[170px] bg-cover max-h-[200px]"
-            />
-            <span className="py-4 w-full h-full flex flex-col justify-start items-start relative">
-              <h4 className="uppercase font-poppins font-bold text-4xl text-[#093166]">
-                EVENT NAME
-              </h4>
-              {/* <p className="text-base font-quicksand text-[#093166] font-semibold">
-                                BYOBaby™ Events: Breakfasts, cinema mornings, and IRL
-                                convos. View this month’s line-up or miss out.
-                              </p> */}
-              <button className="text-sm text-white rounded-full font-medium font-poppins flex flex-row items-center bg-[#093166] justify-start gap-5 px-3 py-1.5 mt-auto ml-auto">
-                VIEW ALL
-                <BsArrowRight className="text-lg font-bold" />
-              </button>
-            </span>
-          </div>
-          <div className="w-full md:max-w-[350px] md:min-w-[350px] flex-1 min-h-[400px] flex flex-col p-3 rounded-sm border-2 border-[#093166]">
-            <Image
-              src="/homepage/mum.webp"
+              src="/highlights/photos/2.png"
               width={500}
               height={300}
               alt="img"
@@ -205,9 +161,119 @@ const Page = () => {
             </span>
           </div>
 
-          <div className="w-full md:max-w-[350px] md:min-w-[350px] flex-1 min-h-[400px] flex flex-col p-3 rounded-sm border-2 border-[#093166]">
+          <div className="w-full md:max-w-[330px] md:min-w-[330px] flex-1 min-h-[400px] flex flex-col p-3 rounded-sm border-2 border-[#093166]">
             <Image
-              src="/homepage/mum.webp"
+              src="/highlights/photos/3.png"
+              width={500}
+              height={300}
+              alt="img"
+              className="rounded-md w-full h-[170px] bg-cover max-h-[200px]"
+            />
+            <span className="py-4 w-full h-full flex flex-col justify-start items-start relative">
+              <h4 className="uppercase font-poppins font-bold text-4xl text-[#093166]">
+                EVENT NAME
+              </h4>
+              {/* <p className="text-base font-quicksand text-[#093166] font-semibold">
+                                BYOBaby™ Events: Breakfasts, cinema mornings, and IRL
+                                convos. View this month’s line-up or miss out.
+                              </p> */}
+              <button className="text-sm text-white rounded-full font-medium font-poppins flex flex-row items-center bg-[#093166] justify-start gap-5 px-3 py-1.5 mt-auto ml-auto">
+                VIEW ALL
+                <BsArrowRight className="text-lg font-bold" />
+              </button>
+            </span>
+          </div>
+          <div className="w-full md:max-w-[330px] md:min-w-[330px] flex-1 min-h-[400px] flex flex-col p-3 rounded-sm border-2 border-[#093166]">
+            <Image
+              src="/highlights/photos/4.png"
+              width={500}
+              height={300}
+              alt="img"
+              className="rounded-md w-full h-[170px] bg-cover max-h-[200px]"
+            />
+            <span className="py-4 w-full h-full flex flex-col justify-start items-start relative">
+              <h4 className="uppercase font-poppins font-bold text-4xl text-[#093166]">
+                EVENT NAME
+              </h4>
+              {/* <p className="text-base font-quicksand text-[#093166] font-semibold">
+                                BYOBaby™ Events: Breakfasts, cinema mornings, and IRL
+                                convos. View this month’s line-up or miss out.
+                              </p> */}
+              <button className="text-sm text-white rounded-full font-medium font-poppins flex flex-row items-center bg-[#093166] justify-start gap-5 px-3 py-1.5 mt-auto ml-auto">
+                VIEW ALL
+                <BsArrowRight className="text-lg font-bold" />
+              </button>
+            </span>
+          </div>
+          <div className="w-full md:max-w-[330px] md:min-w-[330px] flex-1 min-h-[400px] flex flex-col p-3 rounded-sm border-2 border-[#093166]">
+            <Image
+              src="/highlights/photos/5.png"
+              width={500}
+              height={300}
+              alt="img"
+              className="rounded-md w-full h-[170px] bg-cover max-h-[200px]"
+            />
+            <span className="py-4 w-full h-full flex flex-col justify-start items-start relative">
+              <h4 className="uppercase font-poppins font-bold text-4xl text-[#093166]">
+                EVENT NAME
+              </h4>
+              {/* <p className="text-base font-quicksand text-[#093166] font-semibold">
+                                BYOBaby™ Events: Breakfasts, cinema mornings, and IRL
+                                convos. View this month’s line-up or miss out.
+                              </p> */}
+              <button className="text-sm text-white rounded-full font-medium font-poppins flex flex-row items-center bg-[#093166] justify-start gap-5 px-3 py-1.5 mt-auto ml-auto">
+                VIEW ALL
+                <BsArrowRight className="text-lg font-bold" />
+              </button>
+            </span>
+          </div>
+          <div className="w-full md:max-w-[330px] md:min-w-[330px] flex-1 min-h-[400px] flex flex-col p-3 rounded-sm border-2 border-[#093166]">
+            <Image
+              src="/highlights/photos/6.png"
+              width={500}
+              height={300}
+              alt="img"
+              className="rounded-md w-full h-[170px] bg-cover max-h-[200px]"
+            />
+            <span className="py-4 w-full h-full flex flex-col justify-start items-start relative">
+              <h4 className="uppercase font-poppins font-bold text-4xl text-[#093166]">
+                EVENT NAME
+              </h4>
+              {/* <p className="text-base font-quicksand text-[#093166] font-semibold">
+                                BYOBaby™ Events: Breakfasts, cinema mornings, and IRL
+                                convos. View this month’s line-up or miss out.
+                              </p> */}
+              <button className="text-sm text-white rounded-full font-medium font-poppins flex flex-row items-center bg-[#093166] justify-start gap-5 px-3 py-1.5 mt-auto ml-auto">
+                VIEW ALL
+                <BsArrowRight className="text-lg font-bold" />
+              </button>
+            </span>
+          </div>
+          <div className="w-full md:max-w-[330px] md:min-w-[330px] flex-1 min-h-[400px] flex flex-col p-3 rounded-sm border-2 border-[#093166]">
+            <Image
+              src="/highlights/photos/7.png"
+              width={500}
+              height={300}
+              alt="img"
+              className="rounded-md w-full h-[170px] bg-cover max-h-[200px]"
+            />
+            <span className="py-4 w-full h-full flex flex-col justify-start items-start relative">
+              <h4 className="uppercase font-poppins font-bold text-4xl text-[#093166]">
+                EVENT NAME
+              </h4>
+              {/* <p className="text-base font-quicksand text-[#093166] font-semibold">
+                                BYOBaby™ Events: Breakfasts, cinema mornings, and IRL
+                                convos. View this month’s line-up or miss out.
+                              </p> */}
+              <button className="text-sm text-white rounded-full font-medium font-poppins flex flex-row items-center bg-[#093166] justify-start gap-5 px-3 py-1.5 mt-auto ml-auto">
+                VIEW ALL
+                <BsArrowRight className="text-lg font-bold" />
+              </button>
+            </span>
+          </div>
+          <div className="w-full md:max-w-[330px] md:min-w-[330px] flex-1 min-h-[400px] flex flex-col p-3 rounded-sm border-2 border-[#093166]">
+            <Image
+              src="/highlights/photos/8.png"
               width={500}
               height={300}
               alt="img"
@@ -228,9 +294,9 @@ const Page = () => {
             </span>
           </div>
 
-          <div className="w-full md:max-w-[350px] md:min-w-[350px] flex-1 min-h-[400px] flex flex-col p-3 rounded-sm border-2 border-[#093166]">
+          <div className="w-full md:max-w-[330px] md:min-w-[330px] flex-1 min-h-[400px] flex flex-col p-3 rounded-sm border-2 border-[#093166]">
             <Image
-              src="/homepage/mum.webp"
+              src="/highlights/photos/9.png"
               width={500}
               height={300}
               alt="img"
@@ -250,50 +316,8 @@ const Page = () => {
               </button>
             </span>
           </div>
-          <div className="w-full md:max-w-[350px] md:min-w-[350px] flex-1 min-h-[400px] flex flex-col p-3 rounded-sm border-2 border-[#093166]">
-            <Image
-              src="/homepage/mum.webp"
-              width={500}
-              height={300}
-              alt="img"
-              className="rounded-md w-full h-[170px] bg-cover max-h-[200px]"
-            />
-            <span className="py-4 w-full h-full flex flex-col justify-start items-start relative">
-              <h4 className="uppercase font-poppins font-bold text-4xl text-[#093166]">
-                EVENT NAME
-              </h4>
-              {/* <p className="text-base font-quicksand text-[#093166] font-semibold">
-                                BYOBaby™ Events: Breakfasts, cinema mornings, and IRL
-                                convos. View this month’s line-up or miss out.
-                              </p> */}
-              <button className="text-sm text-white rounded-full font-medium font-poppins flex flex-row items-center bg-[#093166] justify-start gap-5 px-3 py-1.5 mt-auto ml-auto">
-                VIEW ALL
-                <BsArrowRight className="text-lg font-bold" />
-              </button>
-            </span>
-          </div>
-          <div className="w-full md:max-w-[350px] md:min-w-[350px] flex-1 min-h-[400px] flex flex-col p-3 rounded-sm border-2 border-[#093166]">
-            <Image
-              src="/homepage/mum.webp"
-              width={500}
-              height={300}
-              alt="img"
-              className="rounded-md w-full h-[170px] bg-cover max-h-[200px]"
-            />
-            <span className="py-4 w-full h-full flex flex-col justify-start items-start relative">
-              <h4 className="uppercase font-poppins font-bold text-4xl text-[#093166]">
-                EVENT NAME
-              </h4>
-              {/* <p className="text-base font-quicksand text-[#093166] font-semibold">
-                                BYOBaby™ Events: Breakfasts, cinema mornings, and IRL
-                                convos. View this month’s line-up or miss out.
-                              </p> */}
-              <button className="text-sm text-white rounded-full font-medium font-poppins flex flex-row items-center bg-[#093166] justify-start gap-5 px-3 py-1.5 mt-auto ml-auto">
-                VIEW ALL
-                <BsArrowRight className="text-lg font-bold" />
-              </button>
-            </span>
-          </div>
+
+          
         </div>
       </section>
 

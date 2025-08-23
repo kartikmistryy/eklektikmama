@@ -5,7 +5,7 @@ import { BsArrowRight } from "react-icons/bs";
 const Page = () => {
   return (
     <div className="w-full h-full flex flex-col">
-      <section className="w-full flex min-h-[90vh] h-full flex-col items-center justify-end  bg-[url('/homepage/bar.webp')] bg-cover bg-center pt-20">
+      <section className="w-full flex min-h-[90vh] h-full flex-col items-center justify-end  bg-[url('/perks/header.webp')] bg-cover bg-center pt-20">
         <div className="w-full h-full grow min-h-full flex flex-col items-center justify-center">
           <h1 className="w-fit md:text-[90px] text-[40px] font-bold uppercase text-[#f6f6f6] leading-[130%] text-center font-anton">
             Eklektik Mama <br />
@@ -73,7 +73,7 @@ const Page = () => {
             PARTNER WITH US <BsArrowRight className="ml-2 text-2xl" />
           </Link>
         </div>
-        <div className="w-full self-stretch flex flex-col justify-center  items-center md:basis-1/2 basis-full pr-0 bg-[url('/homepage/bar.webp')] bg-cover bg-center min-h-full"></div>
+        <div className="w-full self-stretch flex flex-col justify-center  items-center md:basis-1/2 basis-full pr-0 bg-[url('/perks/subheader.webp')] bg-cover bg-center min-h-full"></div>
       </section>
 
       <section className="w-full h-full flex flex-col items-start justify-start relative bg-white  lg:gap-0 gap-10">
@@ -83,11 +83,21 @@ const Page = () => {
             Partners
           </b>
         </h2>
-        <div className="w-full h-full lg:gap-10 gap-5 bg-[#d756a1] lg:p-10 p-7">
+        <div className="w-full h-full lg:gap-10 gap-5 bg-[#d756a1] lg:p-10 p-7 rounded-[50px]">
           <div className="w-full h-full grid lg:grid-cols-4 md:grid-cols-3 grid-cols-1 max-w-[1400px] mx-auto gap-10">
             <div className="w-full h-full flex flex-col items-center justify-center lg:basis-1/4 md:basis-1/3 basis-full gap-5">
-              <h1>TIDM</h1>
-              <h3 className="lg:text-lg text-base font-quicksand text-white text-center">Toys and activities to keep kids happy while you unwind.</h3>
+              <span className="w-full h-[120px] flex justify-center items-center">
+                <Image
+                src="/perks/logos/1.webp"
+                width={300}
+                height={300}
+                className="w-fit h-fit  max-w-[180px]"
+              />
+              </span>
+
+              <h3 className="lg:text-lg text-base font-quicksand text-white text-center">
+                Toys and activities to keep kids happy while you unwind.
+              </h3>
               <Link
                 href="/"
                 className="w-fit h-[40px] px-3 text-sm flex items-center justify-center uppercase text-white hover:text-[#093166] rounded-[20px] my-6 border-2 border-[#fff] bg-[#d756a1] hover:bg-[#fff] transition-colors duration-500 ease-in-out md:scale-100 scale-75 col-[]"
@@ -97,8 +107,17 @@ const Page = () => {
             </div>
 
             <div className="w-full h-full flex flex-col items-center justify-center lg:basis-1/4 md:basis-1/3 basis-full gap-5">
-              <h1>TIDM</h1>
-              <h3 className="lg:text-lg text-base font-quicksand text-white text-center">ECOMA nappies: biodegradable, vegan, planet-friendly.</h3>
+              <span className="w-full h-[120px] flex justify-center items-center">
+                <Image
+                src="/perks/logos/2.webp"
+                width={300}
+                height={300}
+                className="w-fit h-fit  max-w-[180px]"
+              />
+              </span>
+              <h3 className="lg:text-lg text-base font-quicksand text-white text-center">
+                ECOMA nappies: biodegradable, vegan, planet-friendly.
+              </h3>
               <Link
                 href="/"
                 className="w-fit h-[40px] px-3 text-sm flex items-center justify-center uppercase text-white hover:text-[#093166] rounded-[20px] my-6 border-2 border-[#fff] bg-[#d756a1] hover:bg-[#fff] transition-colors duration-500 ease-in-out md:scale-100 scale-75 col-[]"
@@ -108,8 +127,17 @@ const Page = () => {
             </div>
 
             <div className="w-full h-full flex flex-col items-center justify-center lg:basis-1/4 md:basis-1/3 basis-full gap-5">
-              <h1>TIDM</h1>
-              <h3 className="lg:text-lg text-base font-quicksand text-white text-center">Safety on Board: UAE’s first child car seat specialist.</h3>
+              <span className="w-full h-[120px] flex justify-center items-center">
+                <Image
+                src="/perks/logos/3.webp"
+                width={300}
+                height={300}
+                className="w-fit h-fit  max-w-[180px]"
+              />
+              </span>
+              <h3 className="lg:text-lg text-base font-quicksand text-white text-center">
+                Safety on Board: UAE’s first child car seat specialist.
+              </h3>
               <Link
                 href="/"
                 className="w-fit h-[40px] px-3 text-sm flex items-center justify-center uppercase text-white hover:text-[#093166] rounded-[20px] my-6 border-2 border-[#fff] bg-[#d756a1] hover:bg-[#fff] transition-colors duration-500 ease-in-out md:scale-100 scale-75 col-[]"
@@ -119,8 +147,17 @@ const Page = () => {
             </div>
 
             <div className="w-full h-full flex flex-col items-center justify-center lg:basis-1/4 md:basis-1/3 basis-full gap-5">
-              <h1>TIDM</h1>
-              <h3 className="lg:text-lg text-base font-quicksand text-white text-center">Wolves Zone MMA: training for strength and confidence.</h3>
+              <span className="w-full h-[120px] flex justify-center items-center">
+                <Image
+                src="/perks/logos/4.webp"
+                width={300}
+                height={300}
+                className="w-fit h-fit  max-w-[140px]"
+              />
+              </span>
+              <h3 className="lg:text-lg text-base font-quicksand text-white text-center">
+                Wolves Zone MMA: training for strength and confidence.
+              </h3>
               <Link
                 href="/"
                 className="w-fit h-[40px] px-3 text-sm flex items-center justify-center uppercase text-white hover:text-[#093166] rounded-[20px] my-6 border-2 border-[#fff] bg-[#d756a1] hover:bg-[#fff] transition-colors duration-500 ease-in-out md:scale-100 scale-75 col-[]"
@@ -132,8 +169,18 @@ const Page = () => {
             <div className="w-full h-full lg:flex hidden flex-col items-center justify-center lg:basis-1/4 md:basis-1/3 basis-full gap-5 "></div>
 
             <div className="w-full h-full flex flex-col items-center justify-center lg:basis-1/4 md:basis-1/3 basis-full gap-5">
-              <h1>TIDM</h1>
-              <h3 className="lg:text-lg text-base font-quicksand text-white text-center">Sitters: professional childcare so you can enjoy our events worry-free.</h3>
+              <span className="w-full h-[120px] flex justify-center items-center">
+                <Image
+                src="/perks/logos/5.webp"
+                width={300}
+                height={300}
+                className="w-fit h-fit  max-w-[140px]"
+              />
+              </span>
+              <h3 className="lg:text-lg text-base font-quicksand text-white text-center">
+                Sitters: professional childcare so you can enjoy our events
+                worry-free.
+              </h3>
               <Link
                 href="/"
                 className="w-fit h-[40px] px-3 text-sm flex items-center justify-center uppercase text-white hover:text-[#093166] rounded-[20px] my-6 border-2 border-[#fff] bg-[#d756a1] hover:bg-[#fff] transition-colors duration-500 ease-in-out md:scale-100 scale-75 col-[]"
@@ -143,8 +190,17 @@ const Page = () => {
             </div>
 
             <div className="w-full h-full flex flex-col items-center justify-center lg:basis-1/4 md:basis-1/3 basis-full gap-5">
-              <h1>TIDM</h1>
-              <h3 className="lg:text-lg text-base font-quicksand text-white text-center">Cozy kids’ book corner for storytime while you connect.</h3>
+              <span className="w-full h-[120px] flex justify-center items-center">
+                <Image
+                src="/perks/logos/6.webp"
+                width={300}
+                height={300}
+                className="w-fit h-fit max-w-[140px]"
+              />
+              </span>
+              <h3 className="lg:text-lg text-base font-quicksand text-white text-center">
+                Cozy kids’ book corner for storytime while you connect.
+              </h3>
               <Link
                 href="/"
                 className="w-fit h-[40px] px-3 text-sm flex items-center justify-center uppercase text-white hover:text-[#093166] rounded-[20px] my-6 border-2 border-[#fff] bg-[#d756a1] hover:bg-[#fff] transition-colors duration-500 ease-in-out md:scale-100 scale-75 col-[]"

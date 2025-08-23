@@ -76,12 +76,12 @@ export default function Footer() {
       <div className="w-full h-full flex flex-col mt-10">
         <Marquee/>
 
-        <footer className="bg-[#d94e9b] text-white py-10 px-6 font-poppins">
+        <footer className="bg-[#d94e9b] text-white pt-10 pb-5 px-6 font-poppins">
           <div className="mx-auto grid md:grid-cols-4 gap-5 items-start lg:px-10 px-5">
             {/* Logo + Social */}
             <div className="flex flex-col items-center md:items-start">
               <Image
-                src="/homepage/footerBranding.png" // replace with your actual logo path
+                src="/footer/logo.webp" // replace with your actual logo path
                 alt="Eklektik Mama"
                 width={160}
                 height={160}
@@ -111,12 +111,6 @@ export default function Footer() {
                   className="bg-white text-[#102A43] px-3 py-1 rounded-full text-sm font-semibold shadow hover:scale-105 transition"
                 >
                   <FaInstagram className="inline mr-1" /> Instagram
-                </a>
-                <a
-                  href="#"
-                  className="bg-white text-[#102A43] px-3 py-1 rounded-full text-sm font-semibold shadow hover:scale-105 transition"
-                >
-                  <FaXTwitter className="inline mr-1" /> X
                 </a>
               </div>
             </div>
@@ -199,12 +193,12 @@ export default function Footer() {
           </div>
 
           {/* Bottom Note */}
-          <div className=" text-center text-sm opacity-80 font-quicksand">
-            © {new Date().getFullYear()} Eklektik Mama™. All rights, rants, and
-            rebellion reserved. <br />
-            <span className="flex flex-row gap-2 justify-center">
+          <div className=" text-center text-xs opacity-80 font-quicksand pt-10">
+            © {new Date().getFullYear()} Eklektik Mama™️ and BYOBaby™️ are trademarks of Eklektik Mama Event Management L.L.C. – S.P.C. <br />
+All rights reserved under UAE law.<br />
+            {/* <span className="flex flex-row gap-2 justify-center">
               <a href="#">Privacy Policy</a>|<a href="#">Terms & Conditions</a>
-            </span>
+            </span> */}
           </div>
         </footer>
       </div>
