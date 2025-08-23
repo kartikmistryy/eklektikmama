@@ -222,7 +222,7 @@ const Page = () => {
               </a>
             </span>
             <h4 className="md:text-lg text-sm font-poppins uppercase">
-              The Love We Give: A Mother's Day Reflection
+              The Love We Give: A Mother&apos;s Day Reflection
             </h4>
           </div>
 
@@ -251,7 +251,7 @@ const Page = () => {
               </a>
             </span>
             <h4 className="md:text-lg text-sm font-poppins uppercase">
-              Things We Swore We'd Never Do as Mums... and Now We Do
+              Things We Swore We&apos;d Never Do as Mums... and Now We Do
             </h4>
           </div>
 
