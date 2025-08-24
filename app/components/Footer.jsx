@@ -6,8 +6,10 @@ import {
   FaFacebook,
   FaThreads,
   FaXTwitter,
+  FaLinkedin,
 } from "react-icons/fa6";
 import Marquee from "./Marquee";
+import Link from "next/link";
 
 export default function Footer() {
   return (
@@ -17,7 +19,7 @@ export default function Footer() {
           <p className="font-quicksand font-semibold uppercase text-base">
             #mamadrama
           </p>
-          <h2 className="md:text-[80px] text-5xl uppercase font-antonio font-normal tracking-tighter leading-[100%]">
+          <h2 className="md:text-[80px] text-4xl uppercase font-antonio font-normal tracking-tighter leading-[100%]">
             Unfiltered.
             <b className="font-anton tracking-normal font-semibold">
               Unhinged.
@@ -25,7 +27,7 @@ export default function Footer() {
             <br />
             <b className="font-bold">In Your Inbox.</b>
           </h2>
-          <p className="md:max-w-[60%] w-full font-quicksand mt-5 text-left lg:text-lg md:text-base text-sm">
+          <p className="md:max-w-[60%] w-full font-quicksand mt-5 text-left lg:text-lg md:text-sm text-sm">
             Welcome to <b className="font-semibold">Eklektik Mama™</b>, where
             motherhood meets rebellion. A home for bold mums,{" "}
             <b className="font-semibold">BYOBaby™</b> events, unapologetic
@@ -48,14 +50,14 @@ export default function Footer() {
             alt="icons"
             width={300}
             height={130}
-            className="h-[130px] w-auto object-contain"
+            className="h-[100px] w-auto object-contain"
           />
           <Image
             src="/footer/2.webp"
             alt="icons"
             width={300}
             height={130}
-            className="h-[130px] w-auto object-contain"
+            className="h-[100px] w-auto object-contain"
           />
           <Image
             src="/footer/3.gif"
@@ -69,7 +71,7 @@ export default function Footer() {
             alt="icons"
             width={300}
             height={130}
-            className="h-[130px] w-auto object-contain"
+            className="h-[100px] w-auto object-contain"
           />
         </span>
       </div>
@@ -77,7 +79,7 @@ export default function Footer() {
         <Marquee/>
 
         <footer className="bg-[#d94e9b] text-white pt-10 pb-5 px-6 font-poppins">
-          <div className="mx-auto grid md:grid-cols-4 gap-5 items-start lg:px-10 px-5">
+          <div className="mx-auto grid md:grid-cols-4 gap-5 items-start">
             {/* Logo + Social */}
             <div className="flex flex-col items-center md:items-start">
               <Image
@@ -88,30 +90,30 @@ export default function Footer() {
                 className="mb-6"
               />
               <div className="flex flex-wrap gap-3 justify-center md:justify-start">
-                <a
-                  href="#"
+                <Link
+                  href="https://www.tiktok.com/@eklektikmama?_t=8pqLsaRIulk&_r=1"
                   className="bg-white text-[#102A43] px-3 py-1 rounded-full text-sm font-semibold shadow hover:scale-105 transition"
                 >
                   <FaTiktok className="inline mr-1" /> TikTok
-                </a>
-                <a
-                  href="#"
+                </Link>
+                <Link 
+                  href="https://www.facebook.com/people/Eklektik-Mama/61560699879306/"
                   className="bg-white text-[#102A43] px-3 py-1 rounded-full text-sm font-semibold shadow hover:scale-105 transition"
                 >
                   <FaFacebook className="inline mr-1" /> Facebook
-                </a>
-                <a
-                  href="#"
+                </Link>
+                <Link
+                  href="https://www.linkedin.com/company/eklektik-mama/"
                   className="bg-white text-[#102A43] px-3 py-1 rounded-full text-sm font-semibold shadow hover:scale-105 transition"
                 >
-                  <FaThreads className="inline mr-1" /> Threads
-                </a>
-                <a
-                  href="#"
+                  <FaLinkedin className="inline mr-1" /> Linkedin
+                </Link>
+                <Link
+                  href="https://www.instagram.com/eklektikmama"
                   className="bg-white text-[#102A43] px-3 py-1 rounded-full text-sm font-semibold shadow hover:scale-105 transition"
                 >
                   <FaInstagram className="inline mr-1" /> Instagram
-                </a>
+                </Link>
               </div>
             </div>
 

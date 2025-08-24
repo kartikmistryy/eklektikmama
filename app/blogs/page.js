@@ -1,53 +1,18 @@
 import Image from "next/image";
 import Link from "next/link";
 import { BsArrowRight } from "react-icons/bs";
+import Marquee from "../components/Marquee";
 
 const Page = () => {
   return (
     <div className="w-full h-full flex flex-col">
-      <section className="w-full flex min-h-[90vh] h-full flex-col items-center justify-end  bg-[url('/perks/header.webp')] bg-cover bg-center pt-20">
+      <section className="w-full flex min-h-[90vh] h-full flex-col items-center justify-end  bg-[url('/blogs/header.webp')] bg-cover bg-center pt-20">
         <div className="w-full h-full grow min-h-full flex flex-col items-center justify-center">
           <h1 className="w-fit md:text-[90px] text-[40px] font-bold uppercase text-[#f6f6f6] leading-[130%] text-center font-anton">
             Unfiltered AF
           </h1>
         </div>
-        <marquee
-          behavior="scroll"
-          direction="left"
-          scrollamount="6" // controls speed
-          className="bg-[#102A43] font-antonio py-2"
-        >
-          <div className="flex flex-row gap-5 items-center flex-shrink-0">
-            {[
-              "Eklektik Mama Love",
-              "UNFILTERED AF",
-              "WHAT'S ON",
-              "GET EKLEKTIC AF",
-              "SHOP DROP",
-              "Eklektik Mama Love",
-              "UNFILTERED AF",
-              "WHAT'S ON",
-              "GET EKLEKTIC AF",
-              "SHOP DROP",
-            ].map((text, i) => (
-              <span
-                key={i}
-                className="flex flex-row gap-4 items-center flex-shrink-0"
-              >
-                <Image
-                  src="/homepage/marqueeLogo.png"
-                  height={70}
-                  width={70}
-                  alt="Logo"
-                  className="flex-shrink-0"
-                />
-                <h4 className="text-white text-4xl uppercase whitespace-nowrap">
-                  {text}
-                </h4>
-              </span>
-            ))}
-          </div>
-        </marquee>
+        <Marquee/>
       </section>
 
       <section className="w-full h-full flex lg:flex-row flex-col-reverse items-center justify-start relative bg-white  lg:gap-0 gap-10">
@@ -70,7 +35,7 @@ const Page = () => {
             READ MORE <BsArrowRight className="ml-2 text-2xl" />
           </Link>
         </div>
-        <div className="w-full self-stretch flex flex-col justify-center  items-center md:basis-1/2 basis-full pr-0 bg-[url('/perks/subheader.webp')] bg-cover bg-center min-h-full"></div>
+        <div className="w-full self-stretch flex flex-col justify-center  items-center md:basis-1/2 basis-full pr-0 bg-[url('/blogs/featured.webp')] bg-cover bg-center min-h-full"></div>
       </section>
 
       <section className="w-full h-full flex flex-col lg:px-10 px-5">
@@ -105,14 +70,14 @@ const Page = () => {
               href="#"
               className="w-fit h-[40px] px-4 text-base flex items-center justify-center text-[#093166] hover:text-white rounded-[20px] my-6 border-2 border-[#bf378b] bg-transparent hover:bg-[#bf378b] transition-colors duration-500 ease-in-out md:scale-100 scale-75"
             >
-              Lifestyle
+              Lifestyle 
             </a>
           </span>
         </div>
 
-        <div className="w-full h-full flex flex-col lg:flex-row gap-5 py-10">
+        <div className="w-full h-full flex flex-col lg:flex-row gap-5 py-10 text-[#093166]">
           <div className="w-full h-full lg:basis-1/2 flex flex-col gap-5">
-            <span className="w-full min-h-[350px] bg-[url('/highlights/photos/1.png')] bg-cover bg-center rounded-lg p-5">
+            <span className="w-full min-h-[350px] bg-[url('/blogs/f1.webp')] bg-cover bg-center rounded-lg p-5">
               <a
                 href="#"
                 className="w-fit h-[40px] px-4 text-base flex items-center justify-center text-white hover:text-[#093166] rounded-[20px] border-2 border-white bg-transparent hover:bg-white transition-colors duration-500 ease-in-out md:scale-100 scale-75"
@@ -127,7 +92,7 @@ const Page = () => {
 
           <div className="w-full h-full lg:basis-1/2 flex flex-col gap-5">
             <span
-              className="w-full min-h-[350px] bg-[url('/highlights/photos/1.png')] bg-cover p-5
+              className="w-full min-h-[350px] bg-[url('/blogs/f2.webp')] bg-cover p-5
              bg-center rounded-lg"
             >
               <a
@@ -144,7 +109,7 @@ const Page = () => {
         </div>
       </section>
 
-      <section className="w-full h-full flex flex-col lg:px-10 px-5 py-10">
+      <section className="w-full h-full flex flex-col lg:px-10 px-5 py-10 text-[#093166]">
         <h2 className="md:text-[60px] font-thin text-4xl uppercase font-anton text-center leading-[100%] text-[#093166]">
           ALL STORIES
         </h2>
@@ -152,7 +117,7 @@ const Page = () => {
         <div className="w-full h-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 py-10">
           {/* Card 1 */}
           <div className="w-full h-full flex flex-col gap-5">
-            <span className="w-full min-h-[300px] md:min-h-[350px] bg-[url('/highlights/photos/1.png')] bg-cover bg-center rounded-lg p-5">
+            <span className="w-full min-h-[300px] md:min-h-[350px] bg-[url('/blogs/1.webp')] bg-cover bg-center rounded-lg p-5">
               <a
                 href="#"
                 className="w-fit h-[40px] px-4 text-base flex items-center justify-center text-white hover:text-[#093166] rounded-[20px] border-2 border-white bg-transparent hover:bg-white transition-colors duration-500 ease-in-out md:scale-100 scale-75"
@@ -168,7 +133,7 @@ const Page = () => {
 
           {/* Card 2 */}
           <div className="w-full h-full flex flex-col gap-5">
-            <span className="w-full min-h-[300px] md:min-h-[350px] bg-[url('/highlights/photos/2.png')] bg-cover bg-center rounded-lg p-5">
+            <span className="w-full min-h-[300px] md:min-h-[350px] bg-[url('/blogs/2.webp')] bg-cover bg-center rounded-lg p-5">
               <a
                 href="#"
                 className="w-fit h-[40px] px-4 text-base flex items-center justify-center text-white hover:text-[#093166] rounded-[20px] border-2 border-white bg-transparent hover:bg-white transition-colors duration-500 ease-in-out md:scale-100 scale-75"
@@ -183,7 +148,7 @@ const Page = () => {
 
           {/* Card 3 */}
           <div className="w-full h-full flex flex-col gap-5">
-            <span className="w-full min-h-[300px] md:min-h-[350px] bg-[url('/highlights/photos/3.png')] bg-cover bg-center rounded-lg p-5">
+            <span className="w-full min-h-[300px] md:min-h-[350px] bg-[url('/blogs/3.webp')] bg-cover bg-center rounded-lg p-5">
               <a
                 href="#"
                 className="w-fit h-[40px] px-4 text-base flex items-center justify-center text-white hover:text-[#093166] rounded-[20px] border-2 border-white bg-transparent hover:bg-white transition-colors duration-500 ease-in-out md:scale-100 scale-75"
@@ -198,7 +163,7 @@ const Page = () => {
           </div>
 
           <div className="w-full h-full flex flex-col gap-5">
-            <span className="w-full min-h-[300px] md:min-h-[350px] bg-[url('/highlights/photos/4.png')] bg-cover bg-center rounded-lg p-5">
+            <span className="w-full min-h-[300px] md:min-h-[350px] bg-[url('/blogs/4.webp')] bg-cover bg-center rounded-lg p-5">
               <a
                 href="#"
                 className="w-fit h-[40px] px-4 text-base flex items-center justify-center text-white hover:text-[#093166] rounded-[20px] border-2 border-white bg-transparent hover:bg-white transition-colors duration-500 ease-in-out md:scale-100 scale-75"
@@ -213,7 +178,7 @@ const Page = () => {
 
           {/* Card 2 */}
           <div className="w-full h-full flex flex-col gap-5">
-            <span className="w-full min-h-[300px] md:min-h-[350px] bg-[url('/highlights/photos/5.png')] bg-cover bg-center rounded-lg p-5">
+            <span className="w-full min-h-[300px] md:min-h-[350px] bg-[url('/blogs/5.webp')] bg-cover bg-center rounded-lg p-5">
               <a
                 href="#"
                 className="w-fit h-[40px] px-4 text-base flex items-center justify-center text-white hover:text-[#093166] rounded-[20px] border-2 border-white bg-transparent hover:bg-white transition-colors duration-500 ease-in-out md:scale-100 scale-75"
@@ -228,7 +193,7 @@ const Page = () => {
 
           {/* Card 3 */}
           <div className="w-full h-full flex flex-col gap-5">
-            <span className="w-full min-h-[300px] md:min-h-[350px] bg-[url('/highlights/photos/6.png')] bg-cover bg-center rounded-lg p-5">
+            <span className="w-full min-h-[300px] md:min-h-[350px] bg-[url('/blogs/6.webp')] bg-cover bg-center rounded-lg p-5">
               <a
                 href="#"
                 className="w-fit h-[40px] px-4 text-base flex items-center justify-center text-white hover:text-[#093166] rounded-[20px] border-2 border-white bg-transparent hover:bg-white transition-colors duration-500 ease-in-out md:scale-100 scale-75"
@@ -242,7 +207,7 @@ const Page = () => {
           </div>
 
           <div className="w-full h-full flex flex-col gap-5">
-            <span className="w-full min-h-[300px] md:min-h-[350px] bg-[url('/highlights/photos/7.png')] bg-cover bg-center rounded-lg p-5">
+            <span className="w-full min-h-[300px] md:min-h-[350px] bg-[url('/blogs/7.webp')] bg-cover bg-center rounded-lg p-5">
               <a
                 href="#"
                 className="w-fit h-[40px] px-4 text-base flex items-center justify-center text-white hover:text-[#093166] rounded-[20px] border-2 border-white bg-transparent hover:bg-white transition-colors duration-500 ease-in-out md:scale-100 scale-75"
@@ -257,7 +222,7 @@ const Page = () => {
 
           {/* Card 2 */}
           <div className="w-full h-full flex flex-col gap-5">
-            <span className="w-full min-h-[300px] md:min-h-[350px] bg-[url('/highlights/photos/8.png')] bg-cover bg-center rounded-lg p-5">
+            <span className="w-full min-h-[300px] md:min-h-[350px] bg-[url('/blogs/8.webp')] bg-cover bg-center rounded-lg p-5">
               <a
                 href="#"
                 className="w-fit h-[40px] px-4 text-base flex items-center justify-center text-white hover:text-[#093166] rounded-[20px] border-2 border-white bg-transparent hover:bg-white transition-colors duration-500 ease-in-out md:scale-100 scale-75"
@@ -272,7 +237,7 @@ const Page = () => {
 
           {/* Card 3 */}
           <div className="w-full h-full flex flex-col gap-5">
-            <span className="w-full min-h-[300px] md:min-h-[350px] bg-[url('/highlights/photos/9.png')] bg-cover bg-center rounded-lg p-5">
+            <span className="w-full min-h-[300px] md:min-h-[350px] bg-[url('/blogs/9.webp')] bg-cover bg-center rounded-lg p-5">
               <a
                 href="#"
                 className="w-fit h-[40px] px-4 text-base flex items-center justify-center text-white hover:text-[#093166] rounded-[20px] border-2 border-white bg-transparent hover:bg-white transition-colors duration-500 ease-in-out md:scale-100 scale-75"

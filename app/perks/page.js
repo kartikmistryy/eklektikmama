@@ -1,54 +1,19 @@
 import Image from "next/image";
 import Link from "next/link";
 import { BsArrowRight } from "react-icons/bs";
+import Marquee from "../components/Marquee";
 
 const Page = () => {
   return (
     <div className="w-full h-full flex flex-col">
-      <section className="w-full flex min-h-[90vh] h-full flex-col items-center justify-end  bg-[url('/perks/header.webp')] bg-cover bg-center pt-20">
+      <section className="w-full flex min-h-[90vh] h-full flex-col items-center justify-end  bg-[url('/perks/header.webp')] bg-cover bg-center pt-20 overflow-x-hidden">
         <div className="w-full h-full grow min-h-full flex flex-col items-center justify-center">
           <h1 className="w-fit md:text-[90px] text-[40px] font-bold uppercase text-[#f6f6f6] leading-[130%] text-center font-anton">
             Eklektik Mama <br />
             <b className="md:text-[130px] text-[60px]">Loves</b>
           </h1>
         </div>
-        <marquee
-          behavior="scroll"
-          direction="left"
-          scrollamount="6" // controls speed
-          className="bg-[#102A43] font-antonio py-2"
-        >
-          <div className="flex flex-row gap-5 items-center flex-shrink-0">
-            {[
-              "Eklektik Mama Love",
-              "UNFILTERED AF",
-              "WHAT'S ON",
-              "GET EKLEKTIC AF",
-              "SHOP DROP",
-              "Eklektik Mama Love",
-              "UNFILTERED AF",
-              "WHAT'S ON",
-              "GET EKLEKTIC AF",
-              "SHOP DROP",
-            ].map((text, i) => (
-              <span
-                key={i}
-                className="flex flex-row gap-4 items-center flex-shrink-0"
-              >
-                <Image
-                  src="/homepage/marqueeLogo.png"
-                  height={70}
-                  width={70}
-                  alt="Logo"
-                  className="flex-shrink-0"
-                />
-                <h4 className="text-white text-4xl uppercase whitespace-nowrap">
-                  {text}
-                </h4>
-              </span>
-            ))}
-          </div>
-        </marquee>
+        <Marquee />
       </section>
 
       <section className="w-full h-full flex lg:flex-row flex-col-reverse items-center justify-start relative bg-white  lg:gap-0 gap-10">
@@ -68,7 +33,7 @@ const Page = () => {
           </p>
           <Link
             href="/"
-            className="w-fit h-[45px] px-12 text-base flex items-center justify-center uppercase text-[#093166] hover:text-white rounded-[20px] my-6 border-2 border-[#bf378b] bg-transparent hover:bg-[#bf378b] transition-colors duration-500 ease-in-out md:scale-100 scale-75"
+            className="w-fit md:h-[45px] h-[40px] md:px-12 px-6 md:text-base text-xs flex items-center justify-center uppercase text-[#093166] hover:text-white rounded-[20px] my-6 border-2 border-[#bf378b] bg-transparent hover:bg-[#bf378b] transition-colors duration-500 ease-in-out"
           >
             PARTNER WITH US <BsArrowRight className="ml-2 text-2xl" />
           </Link>

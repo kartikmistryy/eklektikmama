@@ -12,24 +12,24 @@ import Link from "next/link";
 
 export default function Home() {
   return (
-    <div className="w-full h-full flex flex-col bg-[#231f20] lg:pt-[170px] pt-[70px] relative overflow-hidden">
-      <section className="w-full h-full flex flex-col items-center justify-start relative overflow-y-hidden">
-        <div className="w-full h-full flex flex-col relative pb-[140px]">
-          <main className="w-full h-full flex items-center justify-start lg:pt-[50px] md:pt-[120px] pt-[80px] relative px-5">
+    <div className="w-full h-full flex flex-col bg-[#231f20] lg:pt-[170px] pt-[120px] relative overflow-hidden">
+      <section className="w-full h-full flex flex-col items-center justify-start relative overflow-hidden">
+        <div className="w-full h-full flex flex-col relative lg:pb-[240px] md:pb-[160px] pb-[80px]">
+          <main className="w-full h-full flex items-center justify-start lg:pt-[30px] md:pt-[120px] pt-[80px] relative px-5">
             <div className="w-full h-full lg:max-w-[1000px] md:max-w-[600px] max-w-[380px] mx-auto relative overflow-visible">
               {/* Statue Image */}
-              <div className="absolute md:-top-16 -top-12 -left-5 md:-left-20 w-[120px] lg:w-[150px] z-10">
+              <div className="absolute md:-top-10 -top-12 -left-5 md:-left-8 w-[150px] lg:w-[150px] z-10">
                 <Image
                   src="/homepage/statue.webp"
                   alt="Statue"
                   width={90}
                   height={150}
-                  className="object-contain rotate-[-5deg] md:w-fit md:h-fit w-[60px] h-[70px]"
+                  className="object-contain rotate-[-5deg] md:w-fit md:h-fit md:max-h-[130px] w-[70px] h-[80px]"
                 />
               </div>
 
               {/* Heading */}
-              <h1 className="lg:text-[6.5rem] md:text-[4rem] text-4xl tracking-tight leading-[130%] font-anton font-bold uppercase text-white relative z-0">
+              <h1 className="lg:text-[6.5rem] md:text-[4rem] text-4xl tracking-tight leading-[130%] font-anton font-bold uppercase text-white relative z-0 px-[0px]">
                 Shaking Up Mamahood, <br />
                 <b className="lg:text-[10rem] md:text-[5rem] text-4xl">
                   your way
@@ -88,7 +88,7 @@ export default function Home() {
           src="/homepage/pinkpaper.webp"
           height={400}
           width={600}
-          className="w-fit absolute bottom-[-10px] left-[-100px] rotate-0 z-[1]"
+          className="w-fit absolute md:bottom-[-2vw] md:left-[-100px] bottom-[-100px] left-[-60px] rotate-0 z-[1]"
         />
         <Image
           src="/homepage/whitepaper.webp"
@@ -133,13 +133,13 @@ export default function Home() {
           </p>
           <Link
             href="/"
-            className="w-fit h-[45px] px-12 text-base flex items-center justify-center uppercase text-[#093166] hover:text-white rounded-[20px] my-6 border-2 border-[#bf378b] bg-transparent hover:bg-[#bf378b] transition-colors duration-500 ease-in-out md:scale-100 scale-75"
+            className="w-fit md:h-[45px] h-[40px] md:px-12 px-6 md:text-base text-xs flex items-center justify-center uppercase text-[#093166] hover:text-white rounded-[20px] my-6 border-2 border-[#bf378b] bg-transparent hover:bg-[#bf378b] transition-colors duration-500 ease-in-out"
           >
-            LEARN MORE ABOUT US <BsArrowRight className="ml-2 text-2xl" />
+            LEARN MORE ABOUT US <BsArrowRight className="ml-2 md:text-2xl text-lg" />
           </Link>
         </div>
         <div className="w-full h-full flex flex-col justify-center  items-center md:basis-1/2 basis-full pr-0">
-          <span className="md:w-[350px] md:h-[450px] w-[250px] h-[300px] relative">
+          <span className="md:w-[350px] md:h-[450px] w-[250px] h-[300px] relative lg:scale-100 scale-90">
             <Image
               src="/homepage/img3.png"
               height={500}
@@ -155,7 +155,7 @@ export default function Home() {
               alt="image"
             />
             <Image
-              src="/homepage/evileye.png"
+              src="/homepage/evileye.webp"
               height={500}
               width={400}
               className="absolute md:bottom-[-50px] bottom-[-20px] md:left-[-100px] left-[0px] md:w-[200px] md:h-[200px] w-[120px] h-[120px]"
@@ -181,7 +181,7 @@ export default function Home() {
             The Good <b className="font-anton tracking-normal">Stuff</b>
           </h2>
         </div>
-        <div className="w-full h-full lg:px-10 py-10 hidden lg:block">
+        <div className="w-full h-full lg:px-10 py-10 hidden [@media(min-width:1060px)]:block">
           <Carousel
             opts={{
               align: "start",
@@ -204,7 +204,7 @@ export default function Home() {
                   />
                   <span className="py-4 w-full h-full flex flex-col justify-start items-start relative basis-1/2">
                     <Image
-                      src="/homepage/pen.png"
+                      src="/homepage/pen.webp"
                       width={150}
                       height={150}
                       alt="img"
@@ -308,9 +308,9 @@ export default function Home() {
                   {/* Text Section */}
                   <span className="py-4 w-full flex flex-col justify-start items-start relative flex-grow">
                     <Image
-                      src="/homepage/statue.png"
-                      width={100}
-                      height={100}
+                      src="/homepage/flower.webp"
+                      width={130}
+                      height={130}
                       alt="img"
                       className="absolute bottom-14 right-10"
                     />
@@ -377,7 +377,7 @@ export default function Home() {
           </Carousel>
         </div>
 
-        <div className="block lg:hidden px-10 py-10">
+        <div className="block [@media(min-width:1060px)]:hidden px-5 py-10">
           <Carousel
             opts={{
               align: "start",
@@ -387,10 +387,10 @@ export default function Home() {
             className="w-full"
           >
             <CarouselContent>
-              {/* Page 1 */}
+              {/* Page 1: Get Eklektik AF */}
               <CarouselItem className="basis-full">
-                <div className="bg-pink-400 w-full min-h-[420px] p-3 rounded-sm flex flex-col">
-                  <div className="w-full h-[200px]">
+                <div className="bg-pink-400 w-full min-h-[420px] p-4 rounded-sm flex flex-col gap-3">
+                  <div className="w-full h-[220px] sm:h-[250px]">
                     <Image
                       src="/homepage/party.webp"
                       width={500}
@@ -399,20 +399,98 @@ export default function Home() {
                       className="rounded-md w-full h-full object-cover"
                     />
                   </div>
-                  <h4 className="mt-3 uppercase font-poppins font-bold text-2xl text-white">
+                  <h4 className="uppercase font-poppins font-bold text-2xl text-white">
                     Get Eklektik AF
                   </h4>
-                  <p className="text-base font-quicksand text-white">
-                    Ready for early access, cheeky discounts, and WhatsApp chaos
-                    you’ll actually enjoy? Membership starts at AED 50/month.
+                  <p className="text-base font-quicksand text-white font-medium">
+                    Ready for early access, cheeky discounts, and WhatsApp group
+                    chaos you’ll actually enjoy? Membership starts at AED
+                    50/month.
                   </p>
+                  <div className="mt-auto flex flex-row items-center justify-between">
+                    <button className="text-sm bg-white rounded-full font-medium font-poppins flex flex-row items-center justify-start gap-3 px-3 py-1.5">
+                      JOIN THE MEMBERSHIP{" "}
+                      <BsArrowRight className="text-lg font-bold" />
+                    </button>
+                    <button className="bg-white rounded-full p-1 text-2xl font-bold">
+                      <BsPlus />
+                    </button>
+                  </div>
                 </div>
               </CarouselItem>
 
-              {/* Page 2 */}
+              {/* Page 2: What’s On */}
               <CarouselItem className="basis-full">
-                <div className="bg-[#093166] w-full min-h-[420px] p-3 rounded-sm flex flex-col">
-                  <div className="w-full h-[200px]">
+                <div className="bg-white w-full min-h-[420px] p-4 rounded-sm flex flex-col gap-3 border-2 border-[#093166]">
+                  <div className="w-full h-[220px] sm:h-[250px]">
+                    <Image
+                      src="/homepage/mum.webp"
+                      width={500}
+                      height={300}
+                      alt="img"
+                      className="rounded-md w-full h-full object-cover"
+                    />
+                  </div>
+                  <h4 className="uppercase font-poppins font-bold text-2xl text-[#093166]">
+                    What’s On
+                  </h4>
+                  <p className="text-base font-quicksand text-[#093166] font-semibold">
+                    BYOBaby™ Events: Breakfasts, cinema mornings, and IRL
+                    convos. View this month’s line-up or miss out.
+                  </p>
+                  <div className="mt-auto flex flex-row items-center justify-between">
+                    <button className="text-sm text-white rounded-full font-medium font-poppins flex flex-row items-center bg-[#093166] gap-3 px-3 py-1.5">
+                      SEE THE LINEUP{" "}
+                      <BsArrowRight className="text-lg font-bold" />
+                    </button>
+                    <button className="bg-white rounded-full p-1 text-2xl font-bold border border-[#093166] text-[#093166]">
+                      <BsPlus />
+                    </button>
+                  </div>
+                </div>
+              </CarouselItem>
+
+              {/* Page 3: Unfiltered Blogs */}
+              <CarouselItem className="basis-full">
+                <div className="bg-white w-full min-h-[420px] p-4 rounded-sm flex flex-col gap-3 border-2 border-[#093166]">
+                  <div className="w-full h-[220px] sm:h-[250px] flex gap-2">
+                    <Image
+                      src="/homepage/vibes.webp"
+                      width={500}
+                      height={300}
+                      alt="img"
+                      className="rounded-md w-1/2 h-full object-cover"
+                    />
+                    <Image
+                      src="/homepage/board.webp"
+                      width={500}
+                      height={300}
+                      alt="img"
+                      className="rounded-md w-1/2 h-full object-cover"
+                    />
+                  </div>
+                  <h4 className="uppercase font-poppins font-bold text-2xl text-[#093166]">
+                    Unfiltered Blogs
+                  </h4>
+                  <p className="text-base font-quicksand text-[#093166] font-medium">
+                    Our blog. Therapy-adjacent. Censorship-free.
+                  </p>
+                  <div className="mt-auto flex flex-row items-center justify-between">
+                    <button className="text-sm bg-[#093166] text-white rounded-full font-medium font-poppins flex flex-row items-center gap-3 px-3 py-1.5">
+                      READ THE BLOG{" "}
+                      <BsArrowRight className="text-lg font-bold" />
+                    </button>
+                    <button className="rounded-full p-1 text-2xl font-bold border border-[#093166] text-[#093166]">
+                      <BsPlus />
+                    </button>
+                  </div>
+                </div>
+              </CarouselItem>
+
+              {/* Page 4: Shop Drops */}
+              <CarouselItem className="basis-full">
+                <div className="bg-[#093166] w-full min-h-[420px] p-4 rounded-sm flex flex-col gap-3">
+                  <div className="w-full h-[220px] sm:h-[250px]">
                     <Image
                       src="/homepage/bag.webp"
                       width={500}
@@ -421,19 +499,29 @@ export default function Home() {
                       className="rounded-md w-full h-full object-cover"
                     />
                   </div>
-                  <h4 className="mt-3 uppercase font-poppins font-bold text-2xl text-white">
-                    Shop drops
+                  <h4 className="uppercase font-poppins font-bold text-2xl text-white">
+                    Shop Drops
                   </h4>
-                  <p className="text-base font-quicksand text-white">
-                    Downloads for surviving the mess and thriving anyway.
+                  <p className="text-base font-quicksand text-white font-semibold">
+                    Downloads for surviving the mess and thriving anyway. No
+                    pastels. No pandering.
                   </p>
+                  <div className="mt-auto flex flex-row items-center justify-between">
+                    <button className="text-sm text-white rounded-full font-medium font-poppins flex flex-row items-center bg-[#093166] gap-3 px-3 py-1.5 border border-white">
+                      SHOP THE DROP{" "}
+                      <BsArrowRight className="text-lg font-bold" />
+                    </button>
+                    <button className="rounded-full p-1 text-2xl font-bold border border-white text-white">
+                      <BsPlus />
+                    </button>
+                  </div>
                 </div>
               </CarouselItem>
 
-              {/* Page 3 */}
+              {/* Page 5: Eklektik Mama Loves */}
               <CarouselItem className="basis-full">
-                <div className="bg-pink-400 w-full min-h-[420px] p-3 rounded-sm flex flex-col">
-                  <div className="w-full h-[200px]">
+                <div className="bg-pink-400 w-full min-h-[420px] p-4 rounded-sm flex flex-col gap-3">
+                  <div className="w-full h-[220px] sm:h-[250px]">
                     <Image
                       src="/homepage/package.webp"
                       width={500}
@@ -442,19 +530,29 @@ export default function Home() {
                       className="rounded-md w-full h-full object-cover"
                     />
                   </div>
-                  <h4 className="mt-3 uppercase font-poppins font-bold text-2xl text-white">
+                  <h4 className="uppercase font-poppins font-bold text-2xl text-white">
                     EKLEKTIK MAMA LOVES
                   </h4>
-                  <p className="text-base font-quicksand text-white">
-                    Brands that get the chaos, cravings, and joy — minus the
-                    pastel pandering.
+                  <p className="text-base font-quicksand text-white font-medium">
+                    The ones that get the chaos, coffee cravings, identity
+                    crises, and joy that comes with it all. If they’re here,
+                    they passed the vibe check.
                   </p>
+                  <div className="mt-auto flex flex-row items-center justify-between">
+                    <button className="text-sm bg-white rounded-full font-medium font-poppins flex flex-row items-center gap-3 px-3 py-1.5">
+                      explore our partners{" "}
+                      <BsArrowRight className="text-lg font-bold" />
+                    </button>
+                    <button className="bg-white rounded-full p-1 text-2xl font-bold">
+                      <BsPlus />
+                    </button>
+                  </div>
                 </div>
               </CarouselItem>
             </CarouselContent>
 
-            <CarouselPrevious className="text-[#093166] border-2 border-[#093166]" />
-            <CarouselNext className="text-[#093166] border-2 border-[#093166]" />
+            <CarouselPrevious className="text-[#093166] border-2 border-[#093166] ml-3" />
+            <CarouselNext className="text-[#093166] border-2 border-[#093166] mr-3" />
           </Carousel>
         </div>
       </section>

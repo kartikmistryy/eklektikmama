@@ -8,7 +8,7 @@ const Marquee = () => {
                 {[...Array(2)].map((_, repeatIndex) => (
                   <div
                     key={repeatIndex}
-                    className="flex flex-row gap-5 items-center flex-shrink-0"
+                    className="flex flex-row gap-7 items-center flex-shrink-0"
                   >
                     {[
                       "Eklektik Mama Love",
@@ -19,10 +19,10 @@ const Marquee = () => {
                     ].map((text, i) => (
                       <span
                         key={`${repeatIndex}-${i}`}
-                        className="flex flex-row gap-4 items-center flex-shrink-0"
+                        className="flex flex-row gap-2 items-center flex-shrink-0"
                       >
                         <Image
-                          src="/homepage/marqueeLogo.png"
+                          src="/homepage/marqueeLogo.webp"
                           height={70}
                           width={70}
                           alt="Logo"

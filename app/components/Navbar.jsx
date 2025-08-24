@@ -1,76 +1,102 @@
 "use client";
 
-import { ShoppingCart, Menu, X } from "lucide-react";
+import { ShoppingCart, X } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 import { useState } from "react";
+import { FiMenu } from "react-icons/fi";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <nav className="w-full flex items-center px-6 py-4 absolute top-0 left-0 z-50">
+    <nav className="w-full flex items-start px-6 pt-4 absolute top-0 left-0 z-50">
       {/* Left container */}
-      <div className="flex-1 flex items-center gap-2">
-        {/* JOIN button */}
-        <button className="px-4 py-2 md:text-sm text-[8px] gradient-animate text-white font-semibold rounded-full border-2 border-pink-500">
+      <div className="flex-1 flex items-center gap-2 py-4">
+        <Link
+          href="/membership"
+          className="px-2 md:px-4 py-2 text-[8px] md:text-sm gradient-animate text-white font-semibold rounded-full border-2 border-pink-500"
+        >
           JOIN EKLEKTIK AF
-        </button>
+        </Link>
       </div>
 
-      {/* Center container (desktop links) */}
-<div className="hidden md:flex items-center justify-center gap-12 text-white font-medium text-sm">
-  <a href="#">EVENTS</a>
-  <a href="#">UNFILTERED AF BLOG</a>
+      {/* Center container (desktop links, only ≥1060px) */}
+      <div className="hidden [@media(min-width:1060px)]:flex items-start justify-center gap-12 text-white font-medium text-sm py-6">
+        <Link href="/events">EVENTS</Link>
+        <Link href="/blogs">UNFILTERED AF BLOG</Link>
 
-  {/* Logo in center */}
-  <div className="flex-shrink-0">
-    <Image
-      src="/desktopLogo.png"
-      alt="Eklektik Mama"
-      width={80}
-      height={80}
-      className="h-16 w-auto"
-    />
-  </div>
+        {/* Logo in center */}
+        <Link href="/" className="flex-shrink-0 translate-y-[-20px]">
+          <Image
+            src="/desktopLogo.png"
+            alt="Eklektik Mama"
+            width={80}
+            height={80}
+            className="h-26 w-auto"
+          />
+        </Link>
 
-  <a href="#">WORK WITH US</a>
-  <a href="#">ABOUT</a>
-</div>
+        <Link href="/partner">WORK WITH US</Link>
+        <Link href="/whatwedo">ABOUT</Link>
+      </div>
 
-      {/* Mobile Logo */}
-      <div className="md:hidden flex-1 flex justify-center">
+      {/* Mobile Logo (<1060px only) */}
+      <Link
+        href="/"
+        className="flex-1 flex justify-center [@media(min-width:1060px)]:hidden"
+      >
         <Image
-          src="/desktopLogo.png"
+          src="/mobileLogo.png"
           alt="Eklektik Mama"
           width={60}
           height={60}
-          className="h-12 w-auto"
+          className="h-18 w-auto"
         />
-      </div>
+      </Link>
 
       {/* Right container */}
-      <div className="flex-1 flex justify-end items-center gap-4">
-        {/* Desktop Shopping Cart */}
-        <button className="hidden md:flex items-center justify-center">
+      <div className="flex-1 flex justify-end items-center gap-4 py-4">
+        {/* Shopping Cart (≥1060px only) */}
+        <button className="hidden [@media(min-width:1060px)]:flex items-center justify-center relative">
           <ShoppingCart className="w-6 h-6 text-white" />
+          {/* Badge */}
+          <span className="absolute -top-2 -right-2 bg-pink-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+            0
+          </span>
         </button>
 
-        {/* Mobile Hamburger */}
+        {/* Mobile Menu Trigger (<1060px only) */}
         <button
-          className="md:hidden text-white"
-          onClick={() => setIsOpen(!isOpen)}
+          className="[@media(min-width:1060px)]:hidden text-white"
+          onClick={() => setIsOpen(true)}
         >
-          {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+          <FiMenu className="w-6 h-6" />
         </button>
       </div>
 
-      {/* Mobile Dropdown Menu */}
+      {/* Mobile Fullscreen Overlay Menu */}
       {isOpen && (
-        <div className="absolute top-full left-0 w-full bg-[#231F20] flex flex-col items-center gap-6 py-6 text-white font-medium text-base md:hidden z-50">
-          <a href="#">EVENTS</a>
-          <a href="#">UNFILTERED AF BLOG</a>
-          <a href="#">WORK WITH US</a>
-          <a href="#">ABOUT</a>
+        <div className="fixed inset-0 bg-[#231F20] flex flex-col items-end text-white font-medium text-lg z-50 animate-slideIn">
+          {/* Close button */}
+          <button className="p-5" onClick={() => setIsOpen(false)}>
+            <X className="w-8 h-8" />
+          </button>
+
+          {/* Links */}
+          <div className="flex flex-col items-end gap-6 px-5 py-10 w-full">
+            <button className="flex items-center justify-center relative">
+              <ShoppingCart className="w-6 h-6 text-white" />
+              {/* Badge */}
+              <span className="absolute -top-2 -right-2 bg-pink-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+                0
+              </span>
+            </button>
+            <a href="/events">EVENTS</a>
+            <a href="/blogs">UNFILTERED AF BLOG</a>
+            <a href="/partner">WORK WITH US</a>
+            <a href="/about">ABOUT</a>
+          </div>
         </div>
       )}
     </nav>

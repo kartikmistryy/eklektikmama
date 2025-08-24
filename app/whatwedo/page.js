@@ -1,11 +1,12 @@
 import Image from "next/image";
 import Link from "next/link";
 import { BsArrowRight } from "react-icons/bs";
+import Marquee from "../components/Marquee";
 
 const Page = () => {
   return (
     <div className="w-full h-full flex flex-col">
-      <section className="w-full flex min-h-[90vh] h-full flex-col items-center justify-end  bg-[url('/homepage/bar.webp')] bg-cover bg-center pt-20">
+      <section className="w-full flex min-h-[90vh] h-full flex-col items-center justify-end  bg-[url('/homepage/bar.webp')] bg-cover bg-center pt-20 overflow-x-hidden">
         <div className="w-full h-full grow min-h-full flex flex-col items-center justify-center">
           <h1 className="w-fit md:text-[90px] text-[40px] font-bold uppercase text-[#f6f6f6] leading-[130%] text-center font-anton">
             WHAT REALLY
@@ -13,47 +14,11 @@ const Page = () => {
             <b className="md:text-[130px] text-[60px]">WENT DOWN</b>
           </h1>
         </div>
-        <marquee
-          behavior="scroll"
-          direction="left"
-          scrollamount="6" // controls speed
-          className="bg-[#102A43] font-antonio py-2"
-        >
-          <div className="flex flex-row gap-5 items-center flex-shrink-0">
-            {[
-              "Eklektik Mama Love",
-              "UNFILTERED AF",
-              "WHAT'S ON",
-              "GET EKLEKTIC AF",
-              "SHOP DROP",
-              "Eklektik Mama Love",
-              "UNFILTERED AF",
-              "WHAT'S ON",
-              "GET EKLEKTIC AF",
-              "SHOP DROP",
-            ].map((text, i) => (
-              <span
-                key={i}
-                className="flex flex-row gap-4 items-center flex-shrink-0"
-              >
-                <Image
-                  src="/homepage/marqueeLogo.png"
-                  height={70}
-                  width={70}
-                  alt="Logo"
-                  className="flex-shrink-0"
-                />
-                <h4 className="text-white text-4xl uppercase whitespace-nowrap">
-                  {text}
-                </h4>
-              </span>
-            ))}
-          </div>
-        </marquee>
+        <Marquee />
       </section>
 
       <section className="w-full h-full flex lg:flex-row flex-col-reverse items-center justify-start relative bg-white py-10 lg:gap-0 gap-10">
-        <div className="w-full h-full flex flex-col justify-start items-start md:basis-1/2 basis-full md:pl-14 md:pr-0 px-5 text-[#093166]">
+        <div className="w-full h-full flex flex-col justify-start items-start md:basis-1/2 basis-full lg:pl-14 md:pr-0 px-5 text-[#093166]">
           <p className="font-quicksand font-semibold uppercase text-base">
             Unleashed
           </p>
@@ -73,28 +38,28 @@ const Page = () => {
         <div className="w-full h-full flex flex-col justify-center  items-center md:basis-1/2 basis-full pr-0 ">
           <span className="md:w-[350px] md:h-[450px] w-[250px] h-[300px] relative">
             <Image
-              src="/highlights/photos/s1.png"
+              src="/highlights/s1.webp"
               height={500}
               width={400}
               className="absolute top-26 md:-left-[200px] left-32 md:w-full md:h-full w-[200px] h-[250px] md:max-w-[260px] md:max-h-[340px]"
               alt="image"
             />
             <Image
-              src="/highlights/photos/s2.png"
+              src="/highlights/s2.webp"
               height={500}
               width={400}
               className="absolute top-[70px] md:left-[0] left-[-50px] md:w-full md:h-full w-[200px] h-[250px] md:max-w-[260px] md:max-h-[340px]"
               alt="image"
             />
             <Image
-              src="/highlights/photos/s3.png"
+              src="/highlights/s3.webp"
               height={500}
               width={400}
               className="absolute top-[50px] md:left-[160px] left-0 md:w-full md:h-full w-[200px] h-[250px] md:max-w-[260px] md:max-h-[340px]"
               alt="image"
             />
             <Image
-              src="/highlights/sun.png"
+              src="/highlights/sun.webp"
               height={500}
               width={400}
               className="absolute md:top-[0%] top-[30%] md:right-[-40%] right-[-35%] md:w-[100px] md:h-[100px] w-[80px] h-[80px]"
@@ -140,7 +105,7 @@ const Page = () => {
         <div className="w-full h-full flex md:flex-row flex-col flex-wrap gap-4 justify-start lg:px-10 px-5 py-5">
           <div className="w-full md:max-w-[330px] md:min-w-[330px] flex-1 min-h-[400px] flex flex-col p-3 rounded-sm border-2 border-[#093166]">
             <Image
-              src="/highlights/photos/2.png"
+              src="/highlights/2.webp"
               width={500}
               height={300}
               alt="img"
@@ -163,7 +128,7 @@ const Page = () => {
 
           <div className="w-full md:max-w-[330px] md:min-w-[330px] flex-1 min-h-[400px] flex flex-col p-3 rounded-sm border-2 border-[#093166]">
             <Image
-              src="/highlights/photos/3.png"
+              src="/highlights/3.webp"
               width={500}
               height={300}
               alt="img"
@@ -185,7 +150,7 @@ const Page = () => {
           </div>
           <div className="w-full md:max-w-[330px] md:min-w-[330px] flex-1 min-h-[400px] flex flex-col p-3 rounded-sm border-2 border-[#093166]">
             <Image
-              src="/highlights/photos/4.png"
+              src="/highlights/4.webp"
               width={500}
               height={300}
               alt="img"
@@ -207,7 +172,7 @@ const Page = () => {
           </div>
           <div className="w-full md:max-w-[330px] md:min-w-[330px] flex-1 min-h-[400px] flex flex-col p-3 rounded-sm border-2 border-[#093166]">
             <Image
-              src="/highlights/photos/5.png"
+              src="/highlights/5.webp"
               width={500}
               height={300}
               alt="img"
@@ -229,7 +194,7 @@ const Page = () => {
           </div>
           <div className="w-full md:max-w-[330px] md:min-w-[330px] flex-1 min-h-[400px] flex flex-col p-3 rounded-sm border-2 border-[#093166]">
             <Image
-              src="/highlights/photos/6.png"
+              src="/highlights/6.webp"
               width={500}
               height={300}
               alt="img"
@@ -251,7 +216,7 @@ const Page = () => {
           </div>
           <div className="w-full md:max-w-[330px] md:min-w-[330px] flex-1 min-h-[400px] flex flex-col p-3 rounded-sm border-2 border-[#093166]">
             <Image
-              src="/highlights/photos/7.png"
+              src="/highlights/7.webp"
               width={500}
               height={300}
               alt="img"
@@ -273,7 +238,7 @@ const Page = () => {
           </div>
           <div className="w-full md:max-w-[330px] md:min-w-[330px] flex-1 min-h-[400px] flex flex-col p-3 rounded-sm border-2 border-[#093166]">
             <Image
-              src="/highlights/photos/8.png"
+              src="/highlights/8.webp"
               width={500}
               height={300}
               alt="img"
@@ -296,7 +261,7 @@ const Page = () => {
 
           <div className="w-full md:max-w-[330px] md:min-w-[330px] flex-1 min-h-[400px] flex flex-col p-3 rounded-sm border-2 border-[#093166]">
             <Image
-              src="/highlights/photos/9.png"
+              src="/highlights/9.webp"
               width={500}
               height={300}
               alt="img"
@@ -344,7 +309,7 @@ const Page = () => {
             WORK WITH US <BsArrowRight className="ml-2 md:text-2xl text-lg" />
           </Link>
         </div>
-        <div className="w-full self-stretch flex flex-col justify-center  items-center md:basis-1/2 basis-full pr-0 bg-[url('/homepage/bar.webp')] bg-cover bg-center min-h-full"></div>
+        <div className="w-full self-stretch flex flex-col justify-center  items-center md:basis-1/2 basis-full pr-0 bg-[url('/highlights/brand.webp')] bg-cover bg-center min-h-full"></div>
       </section>
     </div>
   );

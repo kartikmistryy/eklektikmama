@@ -2,11 +2,12 @@ import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { BsArrowRight, BsDownload } from "react-icons/bs";
+import Marquee from "../components/Marquee";
 
 const Parnterwithus = () => {
   return (
     <div className="w-full h-full flex flex-col">
-      <section className="w-full flex min-h-[90vh] h-full flex-col items-center justify-end  bg-[url('/partner/header.webp')] bg-cover bg-center pt-20">
+      <section className="w-full flex min-h-[90vh] h-full flex-col items-center justify-end  bg-[url('/partner/header.webp')] bg-cover bg-center pt-20 overflow-x-hidden">
         <div className="w-full h-full grow min-h-full flex flex-col items-center justify-center">
           <h1 className="w-fit md:text-[85px] text-[45px] font-bold uppercase text-[#f6f6f6] leading-[130%] text-center font-anton">
             PITCH US
@@ -14,43 +15,7 @@ const Parnterwithus = () => {
             <b className="md:text-[100px] text-[60px]">SOMETHING WILD</b>
           </h1>
         </div>
-        <marquee
-          behavior="scroll"
-          direction="left"
-          scrollamount="6" // controls speed
-          className="bg-[#102A43] font-antonio py-2"
-        >
-          <div className="flex flex-row gap-5 items-center flex-shrink-0">
-            {[
-              "Eklektik Mama Love",
-              "UNFILTERED AF",
-              "WHAT'S ON",
-              "GET EKLEKTIC AF",
-              "SHOP DROP",
-              "Eklektik Mama Love",
-              "UNFILTERED AF",
-              "WHAT'S ON",
-              "GET EKLEKTIC AF",
-              "SHOP DROP",
-            ].map((text, i) => (
-              <span
-                key={i}
-                className="flex flex-row gap-4 items-center flex-shrink-0"
-              >
-                <Image
-                  src="/homepage/marqueeLogo.png"
-                  height={70}
-                  width={70}
-                  alt="Logo"
-                  className="flex-shrink-0"
-                />
-                <h4 className="text-white text-4xl uppercase whitespace-nowrap">
-                  {text}
-                </h4>
-              </span>
-            ))}
-          </div>
-        </marquee>
+        <Marquee />
       </section>
       <section className="flex lg:flex-row flex-col-reverse w-full h-full items-stretch">
         <div className="lg:w-1/2 w-full h-full flex flex-col justify-start items-start basis-full lg:pl-14 px-5 text-[#093166] py-10 lg:basis-1/2">
@@ -133,13 +98,13 @@ const Parnterwithus = () => {
           </h2>
         </div>
         <div className="w-full h-full flex flex-col justify-center items-center py-10 px-5">
-          <form className="w-full h-full lg:px-14 px-7 lg:py-5 py-6 border-2 border-[#db4e9f] max-w-[600px] rounded-lg flex flex-col gap-5 font-poppins relative">
+          <form className="w-full h-full lg:px-14 px-5 lg:py-5 py-6 border-2 border-[#db4e9f] max-w-[600px] rounded-lg flex flex-col gap-5 font-poppins relative">
             <Image
                   src="/partner/star.webp"
                   height={100}
                   width={100}
                   alt="Logo"
-                  className="absolute lg:bottom-[10px] lg:right-[-70px] right-[-50px] bottom-[-20px]"
+                  className="absolute lg:bottom-[10px] lg:right-[-70px] right-[-10px] bottom-[-20px]"
                 />
             <div className="w-full h-full flex flex-row items-start justify-start gap-5 text-[#093166]">
               <span className="border-2 border-[#db4e9f] h-7 w-7 rounded-full flex justify-center items-center  text-xs">
@@ -240,14 +205,14 @@ const Parnterwithus = () => {
           </p>
           <Link
             href="/"
-            className="w-fit h-[45px] px-12 text-base flex items-center justify-center uppercase text-[#093166] hover:text-white rounded-[20px] my-6 border-2 border-[#bf378b] bg-transparent hover:bg-[#bf378b] transition-colors duration-500 ease-in-out md:scale-100 scale-75"
+            className="w-fit md:h-[45px] h-[40px] md:px-12 px-6 md:text-base text-xs flex items-center justify-center uppercase text-[#093166] hover:text-white rounded-[20px] my-6 border-2 border-[#bf378b] bg-transparent hover:bg-[#bf378b] transition-colors duration-500 ease-in-out "
           >
             DOWNLOAD THE ONBOARDING PACK <BsDownload className="ml-6 text-2xl" />
           </Link>
           <Link
             href="/"
-            className="w-fit h-[45px] px-12 text-base flex items-center justify-center uppercase text-[#093166] hover:text-white rounded-[20px]  border-2 border-[#bf378b] bg-transparent hover:bg-[#bf378b] transition-colors duration-500 ease-in-out md:scale-100 scale-75"
-          >
+            className="w-fit md:h-[45px] h-[40px] md:px-12 px-6 md:text-base text-xs flex items-center justify-center uppercase text-[#093166] hover:text-white rounded-[20px]  border-2 border-[#bf378b] bg-transparent hover:bg-[#bf378b] transition-colors duration-500 ease-in-out"
+            >
             CONTACT US <BsArrowRight className="ml-6 text-2xl" />
           </Link>
         </div>

@@ -1,15 +1,10 @@
-import { Calendar, momentLocalizer } from "react-big-calendar";
 import moment from "moment";
-import "react-big-calendar/lib/css/react-big-calendar.css";
 
-const localizer = momentLocalizer(moment);
-
-function DateCellWrapper({ value, children }) {
-  // Find if there's an event on this date
+export default function DateCellWrapper({ value, children, events }) {
   const event = events.find(
     (ev) =>
       moment(ev.start).isSame(value, "day") ||
-      (moment(value).isBetween(ev.start, ev.end, "day", "[]"))
+      moment(value).isBetween(ev.start, ev.end, "day", "[]")
   );
 
   return (
@@ -21,18 +16,14 @@ function DateCellWrapper({ value, children }) {
         backgroundPosition: "center",
       }}
     >
-      {/* Date Number */}
-      <div className="absolute top-1 left-1 text-white font-bold bg-black/40 px-2 py-1 rounded text-sm">
+      <div className="absolute top-1 left-1 bg-black/50 text-white text-xs px-1.5 py-0.5 rounded">
         {moment(value).date()}
       </div>
-
-      {/* Event Title at Bottom */}
       {event && (
-        <div className="absolute bottom-1 left-0 w-full text-center text-white font-semibold bg-black/50 px-2 py-1 text-xs truncate">
+        <div className="absolute bottom-1 left-0 w-full text-center text-white text-[10px] md:text-xs truncate bg-black/50 px-1">
           {event.title}
         </div>
       )}
-
       {children}
     </div>
   );
