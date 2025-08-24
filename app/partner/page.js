@@ -1,10 +1,19 @@
+"use client";
 import React from "react";
+import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { BsArrowRight, BsDownload } from "react-icons/bs";
 import Marquee from "../components/Marquee";
 
 const Parnterwithus = () => {
+
+    const [openIndex, setOpenIndex] = useState(null)
+
+  const toggleDropdown = (index) => {
+    setOpenIndex(openIndex === index ? null : index);
+  };
+
   return (
     <div className="w-full h-full flex flex-col">
       <section className="w-full flex min-h-[90vh] h-full flex-col items-center justify-end  bg-[url('/partner/header.webp')] bg-cover bg-center pt-20 overflow-x-hidden">
@@ -63,28 +72,76 @@ const Parnterwithus = () => {
         </div>
 
         <div className="w-full h-full bg-[#db4e9f] my-5">
-          <div className="w-full max-w-[1400px] mx-auto lg:px-10 px-5 flex flex-row justify-between items-center">
-            <p className="lg:text-3xl text-lg uppercase font-antonio text-white pt-[30px] pb-[18px]">
-              Bold brands that want real reach
-            </p>
-
-            <BsArrowRight className="lg:text-3xl text-xl text-white" />
+          {/* Item 1 */}
+          <div
+            className="w-full max-w-[1400px] mx-auto lg:px-10 px-5 cursor-pointer"
+            onClick={() => toggleDropdown(1)}
+          >
+            <div className="flex flex-row justify-between items-center">
+              <p className="lg:text-3xl text-lg uppercase font-antonio text-white pt-[30px] pb-[18px]">
+                Bold brands that want real reach
+              </p>
+              <BsArrowRight
+                className={`lg:text-3xl text-xl text-white transform transition-transform duration-300 ${
+                  openIndex === 1 ? "rotate-90" : ""
+                }`}
+              />
+            </div>
+            {openIndex === 1 && (
+              <div className="text-white pb-6">
+                <p className="font-quicksand md:text-xl text-base leading-[150%]">
+                  We work with unapologetic, stand-out brands that refuse to blend in. For us, “real reach” isn’t just about numbers, it’s about sparking genuine conversations, building a loyal following, and turning bold ideas into movements. If your brand has the guts to be loud, proud, and wildly authentic, we’ll make sure the world hears you.
+                </p>
+              </div>
+            )}
           </div>
           <hr />
-          <div className="w-full max-w-[1400px] mx-auto lg:px-10 px-5 flex flex-row justify-between items-center">
-            <p className="lg:text-3xl text-lg uppercase font-antonio text-white pt-[30px] pb-[18px]">
-              Thoughtful start-ups who value word of mouth
-            </p>
 
-            <BsArrowRight className="lg:text-3xl text-xl text-white" />
+          {/* Item 2 */}
+          <div
+            className="w-full max-w-[1400px] mx-auto lg:px-10 px-5 cursor-pointer"
+            onClick={() => toggleDropdown(2)}
+          >
+            <div className="flex flex-row justify-between items-center">
+              <p className="lg:text-3xl text-lg uppercase font-antonio text-white pt-[30px] pb-[18px]">
+                Thoughtful start-ups who value word of mouth
+              </p>
+              <BsArrowRight
+                className={`lg:text-3xl text-xl text-white transform transition-transform duration-300 ${
+                  openIndex === 2 ? "rotate-90" : ""
+                }`}
+              />
+            </div>
+            {openIndex === 2 && (
+              <p className="font-quicksand text-white md:text-xl pb-6 text-base leading-[150%]">
+                  We back start-ups that understand the magic of genuine connection. With Eklektik Mama’s loyal tribe of mums, word travels fast — and it’s real. We don’t just market your brand; we turn it into a trusted name whispered in playgrounds, messaged in mum groups, and recommended over coffee.
+                </p>
+            )}
           </div>
           <hr />
-          <div className="w-full max-w-[1400px] mx-auto lg:px-10 px-5 flex flex-row justify-between items-center">
-            <p className="lg:text-3xl text-lg uppercase font-antonio text-white pt-[30px] pb-[18px]">
-              TWomen looking to run Eklektik Mama in their own cities
-            </p>
 
-            <BsArrowRight className="lg:text-3xl text-xl text-white" />
+          {/* Item 3 */}
+          <div
+            className="w-full max-w-[1400px] mx-auto lg:px-10 px-5 cursor-pointer"
+            onClick={() => toggleDropdown(3)}
+          >
+            <div className="flex flex-row justify-between items-center">
+              <p className="lg:text-3xl text-lg uppercase font-antonio text-white pt-[30px] pb-[18px]">
+                Women looking to run Eklektik Mama in their own cities
+              </p>
+              <BsArrowRight
+                className={`lg:text-3xl text-xl text-white transform transition-transform duration-300 ${
+                  openIndex === 3 ? "rotate-90" : ""
+                }`}
+              />
+            </div>
+            {openIndex === 3 && (
+              <div className="text-white pb-6">
+                <p className="font-quicksand text-white md:text-xl text-base leading-[150%]">
+                 Bring the Eklektik Mama energy to your own city. As a franchise owner, you’ll tap into our loyal network of unapologetic mums, ready-made brand power, and proven systems that actually work. We hand you the playbook, the support, and the community — you bring your local flair and ambition. Together, we’ll build something your city can’t stop talking about.
+                </p>
+              </div>
+            )}
           </div>
           <hr />
         </div>

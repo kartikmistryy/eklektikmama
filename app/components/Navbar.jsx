@@ -14,7 +14,7 @@ export default function Navbar() {
       {/* Left container */}
       <div className="flex-1 flex items-center gap-2 py-4">
         <Link
-          href="/membership"
+          href="/eklektikmamaMembership"
           className="px-2 md:px-4 py-2 text-[8px] md:text-sm gradient-animate text-white font-semibold rounded-full border-2 border-pink-500"
         >
           JOIN EKLEKTIK AF

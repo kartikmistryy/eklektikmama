@@ -190,7 +190,7 @@ export default function Events() {
 
       {/* What's Hot Section */}
       <section className="w-full flex flex-col gap-5 mt-10">
-        <div className="max-w-[1400px] mx-auto px-5 lg:px-10 text-[#093166]">
+        <div className="px-5 lg:px-10 text-[#093166]">
           <p className="font-quicksand font-semibold">what’s hot</p>
           <h2 className="text-5xl md:text-[80px] uppercase font-antonio font-thin leading-[100%] tracking-tighter">
             View This Month’s <b className="font-bold">Events</b>
@@ -213,7 +213,7 @@ export default function Events() {
 
       {/* Connected AF Section */}
       <section className="w-full flex flex-col gap-5 mt-10 px-5 lg:px-12">
-        <div className="text-[#093166] max-w-[1400px] mx-auto">
+        <div className="text-[#093166]">
           <p className="font-quicksand font-semibold">#MumsThatGetIt</p>
           <h2 className="text-5xl md:text-[80px] uppercase font-antonio font-thin leading-[100%]">
             CONNECTED <b className="font-bold">AF</b>
