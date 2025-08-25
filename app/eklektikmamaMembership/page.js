@@ -118,13 +118,13 @@ export default function MembershipPage() {
         </div>
       </section>
       <section className="w-full h-full flex flex-col bg-white md:px-10 px-5">
-        <div className="w-full h-full flex flex-col text-[#093166] px-10">
+        <div className="w-full h-full flex flex-col text-[#093166]">
           <p className="font-quicksand font-semibold text-base">briefly</p>
           <h2 className="md:text-[80px] text-5xl uppercase font-antonio font-thin tracking-tighter leading-[100%]">
             HOW IT <b className="font-bold tracking-normal">WORKS</b>
           </h2>
         </div>
-        <div className="w-full h-full flex  flex-col lg:px-10 py-10">
+        <div className="w-full h-full flex  flex-col lg:px-0 py-10">
           <Carousel>
             <CarouselContent className="w-full h-full grid  md:grid-cols-3 grid-cols-1 gap-5">
               <CarouselItem>
@@ -134,7 +134,7 @@ export default function MembershipPage() {
                     width={500}
                     height={300}
                     alt="img"
-                    className="rounded-md w-full h-[220px] object-cover"
+                    className="rounded-md w-full h-[220px] object-cover object-center"
                   />
                   <span className="py-4 w-full h-full flex flex-col justify-start items-start relative">
                     <h4 className="uppercase font-poppins font-bold text-4xl text-[#093166]">
@@ -154,7 +154,7 @@ export default function MembershipPage() {
                     width={500}
                     height={300}
                     alt="img"
-                    className="rounded-md w-full h-[220px] object-cover"
+                    className="rounded-md w-full h-[220px] object-cover object-center"
                   />
                   <span className="py-4 w-full h-full flex flex-col justify-start items-start relative">
                     <h4 className="uppercase font-poppins font-bold text-4xl text-[#093166]">
@@ -174,7 +174,7 @@ export default function MembershipPage() {
                     width={500}
                     height={300}
                     alt="img"
-                    className="rounded-md w-full h-[220px] object-cover"
+                    className="rounded-md w-full h-[220px] object-cover object-center"
                   />
                   <span className="py-4 w-full h-full flex flex-col justify-start items-start relative">
                     <h4 className="uppercase font-poppins font-bold text-4xl text-[#fff]">
@@ -188,8 +188,6 @@ export default function MembershipPage() {
                 </div>
               </CarouselItem>
             </CarouselContent>
-            <CarouselPrevious className="text-[#093166] border-2 border-[#093166] md:flex hidden" />
-            <CarouselNext className="text-[#093166] border-2 border-[#093166] md:flex hidden" />
           </Carousel>
           <span className="md:w-fit w-full h-[45px] px-12 flex items-center text-sm mt-10 md:text-base justify-center uppercase text-[#093166] hover:text-white rounded-[20px] my-6 border-2 border-[#bf378b] bg-transparent hover:bg-[#bf378b] text-center transition-colors duration-500 ease-in-out md:scale-100 scale-75">
             Auto-discounts apply once you’re logged in. Welcome to the chaos.
@@ -198,7 +196,7 @@ export default function MembershipPage() {
       </section>
 
       <section className="w-full h-full flex flex-col">
-        <p className="font-quicksand font-semibold text-base max-w-[1400px] mx-auto w-full lg:px-10 px-5">
+        <p className="font-quicksand font-semibold text-base  w-full lg:px-10 px-5">
           Plans
         </p>
         <MembershipOptions />

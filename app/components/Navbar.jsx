@@ -10,7 +10,7 @@ export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <nav className="w-full flex items-start px-6 pt-4 absolute top-0 left-0 z-50">
+    <nav className="w-full flex items-start px-6 pt-4 absolute top-0 left-0 z-[10]">
       {/* Left container */}
       <div className="flex-1 flex items-center gap-2 py-4">
         <Link

@@ -12,29 +12,30 @@ import Link from "next/link";
 
 export default function Home() {
   return (
-    <div className="w-full h-full flex flex-col bg-[#231f20] lg:pt-[170px] pt-[120px] relative overflow-hidden">
-      <section className="w-full h-full flex flex-col items-center justify-start relative overflow-hidden">
-        <div className="w-full h-full flex flex-col relative lg:pb-[240px] md:pb-[160px] pb-[80px]">
-          <main className="w-full h-full flex items-center justify-start lg:pt-[30px] md:pt-[120px] pt-[80px] relative px-5">
-            <div className="w-full h-full lg:max-w-[1000px] md:max-w-[600px] max-w-[380px] mx-auto relative overflow-visible">
-              {/* Statue Image */}
-              <div className="absolute md:-top-10 -top-12 -left-5 md:-left-8 w-[150px] lg:w-[150px] z-10">
-                <Image
-                  src="/homepage/statue.webp"
-                  alt="Statue"
-                  width={90}
-                  height={150}
-                  className="object-contain rotate-[-5deg] md:w-fit md:h-fit md:max-h-[130px] w-[70px] h-[80px]"
-                />
-              </div>
+<div className="w-full h-full flex flex-col bg-[#231f20] lg:pt-[120px] pt-[120px] relative overflow-hidden">
+  <section className="w-full h-full flex flex-col items-center justify-start relative overflow-visible">{/* this one  */}
+        <div className="w-full h-full flex flex-col relative lg:pb-[240px] md:pb-[160px] pb-[80px] overflow-visible">
+        <main className="w-full h-full flex items-center justify-start lg:pt-[30px] md:pt-[120px] pt-[80px] relative px-5 overflow-visible">
+        <div className="w-full h-full lg:max-w-[1000px] md:max-w-[600px] max-w-[380px] mx-auto relative overflow-visible z-[30]">
+          
+          {/* Statue Image */}
+          <div className="absolute flex justify-center items-center md:-top-14 -top-12 -left-5 md:-left-14 w-[150px] lg:w-[120px] h-fit z-[60]">
+            <Image
+              src="/homepage/statue.webp"
+              alt="Statue"
+              width={100}
+              height={150}
+              className="object-contain rotate-[-5deg] md:w-fit md:h-fit md:max-h-[160px] w-[70px] h-[80px] z-[90]"
+            />
+          </div>
 
-              {/* Heading */}
-              <h1 className="lg:text-[6.5rem] md:text-[4rem] text-4xl tracking-tight leading-[130%] font-anton font-bold uppercase text-white relative z-0 px-[0px]">
-                Shaking Up Mamahood, <br />
-                <b className="lg:text-[10rem] md:text-[5rem] text-4xl">
-                  your way
-                </b>
-              </h1>
+          {/* Heading */}
+          <h1 className="lg:text-[6.5rem] md:text-[4rem] text-4xl tracking-tight leading-[130%] font-anton font-bold uppercase text-white relative z-0 px-[0px]">
+            Shaking Up Mamahood, <br />
+            <b className="lg:text-[10rem] md:text-[5rem] text-4xl">
+              your way
+            </b>
+          </h1>
 
               {/* Overlapping Images after text */}
               <div className="md:absolute relative  lg:top-[110px] md:top-[70px] lg:left-[57%] md:left-[45%] lg:scale-100 md:scale-90 scale-70 flex space-x-[-40px] z-10 overflow-visible">
@@ -84,27 +85,28 @@ export default function Home() {
           </Link>
         </div>
 
+{/* Need to hide their overdlow */}
         <Image
           src="/homepage/pinkpaper.webp"
           height={400}
           width={600}
-          className="w-fit absolute md:bottom-[-2vw] md:left-[-100px] bottom-[-100px] left-[-60px] rotate-0 z-[1]"
+          className="w-fit absolute md:bottom-[-2vw] md:left-[-100px] bottom-[-100px] left-[-60px] rotate-0 z-[1] overflow-hidden"
         />
         <Image
           src="/homepage/whitepaper.webp"
           height={400}
           width={600}
-          className="w-full absolute bottom-0 left-0 rotate-0 z-[2]"
+          className="w-full absolute bottom-0 left-0 rotate-0 z-[2] overflow-hidden"
         />
         <Image
           src="/homepage/bluepaper.webp"
           height={400}
           width={600}
-          className="w-fit absolute bottom-[-180px] right-[-100px] rotate-0 z-[1]"
+          className="w-fit absolute bottom-[-180px] right-[-100px] rotate-0 z-[1] overflow-hidden"
         />
       </section>
 
-      <section className="w-full h-full flex lg:flex-row flex-col-reverse items-center justify-start relative bg-white py-10 lg:gap-0 gap-10">
+      <section className="w-full h-full flex lg:flex-row flex-col-reverse items-center justify-start relative bg-white py-10 lg:gap-0 gap-10 z-30">
         <div className="w-full h-full flex flex-col justify-start items-start md:basis-1/2 basis-full md:pl-14 md:pr-0 px-5 text-[#093166]">
           <p className="font-quicksand font-semibold uppercase text-base">
             About Us
@@ -141,14 +143,14 @@ export default function Home() {
         <div className="w-full h-full flex flex-col justify-center  items-center md:basis-1/2 basis-full pr-0">
           <span className="md:w-[350px] md:h-[450px] w-[250px] h-[300px] relative lg:scale-100 scale-90">
             <Image
-              src="/homepage/img3.png"
+              src="/homepage/img3.webp"
               height={500}
               width={400}
               className="absolute top-0 md:left-[-150px] left-[-50px] md:w-full md:h-full w-[250px] h-[300px] md:max-w-[350px] md:max-h-[450px]"
               alt="image"
             />
             <Image
-              src="/homepage/img2.png"
+              src="/homepage/img2.webp"
               height={500}
               width={400}
               className="absolute top-0 md:left-0 left-10 md:w-full md:h-full w-[250px] h-[300px] md:max-w-[350px] md:max-h-[450px]"
@@ -200,7 +202,7 @@ export default function Home() {
                     width={500}
                     height={500}
                     alt="img"
-                    className="basis-1/2 rounded-md w-full h-full bg-cover max-h-[400px]"
+                    className="basis-1/2 rounded-md w-full h-full object-cover object-center max-h-[400px]"
                   />
                   <span className="py-4 w-full h-full flex flex-col justify-start items-start relative basis-1/2">
                     <Image
@@ -235,7 +237,7 @@ export default function Home() {
                     width={500}
                     height={300}
                     alt="img"
-                    className="rounded-md w-full h-[170px] bg-cover max-h-[200px]"
+                    className="rounded-md w-full h-[170px] object-cover object-center max-h-[200px]"
                   />
                   <span className="py-4 w-full h-full flex flex-col justify-start items-start relative">
                     <h4 className="uppercase font-poppins font-bold text-4xl text-[#093166]">
@@ -263,14 +265,14 @@ export default function Home() {
                     width={500}
                     height={500}
                     alt="img"
-                    className="basis-1/2 rounded-md w-full h-full bg-cover max-h-[400px] max-w-[200px]"
+                    className="basis-1/2 rounded-md w-full h-full object-cover object-center max-h-[400px] max-w-[200px]"
                   />
                   <Image
                     src="/homepage/board.webp"
                     width={500}
                     height={500}
                     alt="img"
-                    className="basis-1/2 rounded-md w-full h-full bg-cover max-h-[400px] max-w-[400px]"
+                    className="basis-1/2 rounded-md w-full h-full object-cover object-center max-h-[400px] max-w-[400px]"
                   />
                   <span className="py-4 w-full h-full flex flex-col justify-start items-start relative basis-1/2">
                     <h4 className="uppercase font-poppins font-bold text-4xl text-[#093166]">
@@ -302,7 +304,7 @@ export default function Home() {
                     width={500}
                     height={300}
                     alt="img"
-                    className="rounded-md w-full h-auto max-h-[400px] object-cover"
+                    className="rounded-md w-full h-auto max-h-[400px] object-cover object-center"
                   />
 
                   {/* Text Section */}
@@ -345,7 +347,7 @@ export default function Home() {
                     width={500}
                     height={500}
                     alt="img"
-                    className="basis-1/2 rounded-md w-full h-auto bg-cover max-h-[400px]"
+                    className="basis-1/2 rounded-md w-full h-auto object-cover object-center max-h-[400px]"
                   />
                   <span className="py-4 w-full h-full flex flex-col justify-start items-start relative">
                     <h4 className="uppercase font-poppins font-bold text-4xl text-white">

@@ -76,7 +76,7 @@ export default function Footer() {
         </span>
       </div>
       <div className="w-full h-full flex flex-col mt-10">
-        <Marquee/>
+        <Marquee />
 
         <footer className="bg-[#d94e9b] text-white pt-10 pb-5 px-6 font-poppins">
           <div className="mx-auto grid md:grid-cols-4 gap-5 items-start">
@@ -96,7 +96,7 @@ export default function Footer() {
                 >
                   <FaTiktok className="inline mr-1" /> TikTok
                 </Link>
-                <Link 
+                <Link
                   href="https://www.facebook.com/people/Eklektik-Mama/61560699879306/"
                   className="bg-white text-[#102A43] px-3 py-1 rounded-full text-sm font-semibold shadow hover:scale-105 transition"
                 >
@@ -196,11 +196,10 @@ export default function Footer() {
 
           {/* Bottom Note */}
           <div className=" text-center text-xs opacity-80 font-quicksand pt-10">
-            © {new Date().getFullYear()} Eklektik Mama™️ and BYOBaby™️ are trademarks of Eklektik Mama Event Management L.L.C. – S.P.C. <br />
-All rights reserved under UAE law.<br />
-            {/* <span className="flex flex-row gap-2 justify-center">
-              <a href="#">Privacy Policy</a>|<a href="#">Terms & Conditions</a>
-            </span> */}
+            © {new Date().getFullYear()} Eklektik Mama™ and BYOBaby™ are
+            trademarks of Eklektik Mama Event Management L.L.C. – S.P.C. <br />
+            © 2025 All rights reserved under UAE law
+            <br />
           </div>
         </footer>
       </div>

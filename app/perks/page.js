@@ -38,7 +38,7 @@ const Page = () => {
             PARTNER WITH US <BsArrowRight className="ml-2 text-2xl" />
           </Link>
         </div>
-        <div className="w-full self-stretch flex flex-col justify-center  items-center md:basis-1/2 basis-full pr-0 bg-[url('/perks/subheader.webp')] bg-cover bg-center min-h-full"></div>
+        <div className="w-full self-stretch flex flex-col justify-center  items-center md:basis-1/2 basis-full pr-0 bg-[url('/perks/subheader.webp')] bg-cover bg-center min-h-full rounded-tl-xl rounded-bl-xl"></div>
       </section>
 
       <section className="w-full h-full flex flex-col items-start justify-start relative bg-white  lg:gap-0 gap-10">
