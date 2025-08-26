@@ -6,12 +6,12 @@ import Marquee from "../components/Marquee";
 const Page = () => {
   return (
     <div className="w-full h-full flex flex-col">
-      <section className="w-full flex min-h-[90vh] h-full flex-col items-center justify-end  bg-[url('/homepage/bar.webp')] bg-cover bg-center pt-20 overflow-x-hidden">
+      <section className="w-full flex min-h-[90vh] h-full flex-col items-center justify-end  bg-[url('/headerBg/eklekticaf.webp')] bg-cover bg-center pt-20 overflow-x-hidden">
         <div className="w-full h-full grow min-h-full flex flex-col items-center justify-center">
-          <h1 className="w-fit md:text-[90px] text-[40px] font-bold uppercase text-[#f6f6f6] leading-[130%] text-center font-anton">
+          <h1 className="w-fit md:text-[85px] text-[45px] font-bold uppercase text-[#f6f6f6] leading-[130%] text-center font-anton">
             WHAT REALLY
             <br />
-            <b className="md:text-[130px] text-[60px]">WENT DOWN</b>
+            <b className="md:text-[100px] text-[60px]">WENT DOWN</b>
           </h1>
         </div>
         <Marquee />

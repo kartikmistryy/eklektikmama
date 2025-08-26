@@ -3,7 +3,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import { BsArrowRight } from "react-icons/bs";
-import { FiChevronDown } from "react-icons/fi";
+import { FiArrowRight, FiChevronDown } from "react-icons/fi";
 
 export default function MembershipOptions() {
   const [openIndex, setOpenIndex] = useState(null);
@@ -13,22 +13,23 @@ export default function MembershipOptions() {
       title: "JOIN MONTHLY",
       price: "AED 50",
       perks: [
-        { icon: "/membership/icons/1.webp", text: "Early access to all event drops" },
-        { icon: "/membership/icons/2.webp", text: "Discounts on every BYOBaby™ ticket" },
-        { icon: "/membership/icons/3.webp", text: "Exclusive access to our members-only WhatsApp group" },
-        { icon: "/membership/icons/4.webp", text: "Special perks on Shop Drops" },
-        { icon: "/membership/icons/5.webp", text: "Surprise invites to Members-Only things we’re not supposed to talk about" },
+        { icon: "/membership/whiteIcons/1.webp", text: "Early access to all event drops" },
+        { icon: "/membership/whiteIcons/2.webp", text: "Discounts on every BYOBaby™ ticket" },
+        { icon: "/membership/whiteIcons/3.webp", text: "Exclusive access to our members-only WhatsApp group" },
+        { icon: "/membership/whiteIcons/4.webp", text: "Special perks on Shop Drops" },
+        { icon: "/membership/whiteIcons/5.webp", text: "Surprise invites to Members-Only things we’re not supposed to talk about" },
       ],
     },
     {
       title: "JOIN YEARLY",
       price: "AED 450",
       perks: [
-        { icon: "/membership/icons/1.webp", text: "Early access to all event drops" },
-        { icon: "/membership/icons/2.webp", text: "Discounts on every BYOBaby™ ticket" },
-        { icon: "/membership/icons/3.webp", text: "Exclusive access to our members-only WhatsApp group" },
-        { icon: "/membership/icons/4.webp", text: "Special perks on Shop Drops" },
-        { icon: "/membership/icons/5.webp", text: "Surprise invites to Members-Only things we’re not supposed to talk about" },
+        { icon: "/membership/whiteIcons/1.webp", text: "Early access to all event drops" },
+        { icon: "/membership/whiteIcons/2.webp", text: "Discounts on every BYOBaby™ ticket" },
+        { icon: "/membership/whiteIcons/3.webp", text: "Exclusive access to our members-only WhatsApp group" },
+        { icon: "/membership/whiteIcons/4.webp", text: "Special perks on Shop Drops" },
+        { icon: "/membership/whiteIcons/5.webp", text: "Surprise invites to Members-Only things we’re not supposed to talk about" },
+        { icon: "/membership/whiteIcons/6.webp", text: "Save more with our yearly membership" },
       ],
     },
   ];
@@ -81,7 +82,7 @@ export default function MembershipOptions() {
             <span className="text-2xl font-medium">{plan.title}</span>
             <div className="flex items-center gap-3">
               <span className="text-2xl font-bold">{plan.price}</span>
-              {openIndex === index ? <F iChevronDown /> : <BsArrowRight className="text-2xl ml-7" />}
+              {openIndex === index ? <FiChevronDown /> : <BsArrowRight className="text-2xl ml-7" />}
             </div>
           </button>
 
@@ -112,8 +113,8 @@ export default function MembershipOptions() {
                     </li>
                   ))}
                 </ul>
-                <button className="mt-6 flex items-center gap-2 border border-white rounded-full px-6 py-2 text-white hover:bg-white hover:text-[#db4e9f] transition">
-                  PAY VIA STRIPE →
+                <button className="mt-6 flex items-center border border-white rounded-full px-6 py-1 text-white hover:bg-white gap-6 tracking-wider ml-auto hover:text-[#db4e9f] transition">
+                  PAY VIA STRIPE <BsArrowRight />
                 </button>
               </motion.div>
             )}
@@ -128,7 +129,18 @@ export default function MembershipOptions() {
           className="w-full flex items-center justify-between bg-[#db4e9f] px-6 py-6 text-white font-bold text-lg"
         >
           <span className="text-2xl">QUESTIONS?</span>
-          {openIndex === "faq" ? <FiChevronDown /> : <BsArrowRight className="text-2xl ml-7" />}
+          {openIndex === "faq" ? (
+            <>
+            See Membership FAQs
+            <FiChevronDown />
+            </>
+            
+          )  :
+          <span className="w-fit ml-auto flex flex-row items-center uppercase text-xl">
+            See Membership FAQs
+            <BsArrowRight className="text-2xl ml-7" />
+            </span>
+          }
         </button>
 
         <AnimatePresence initial={false}>

@@ -16,7 +16,7 @@ const Parnterwithus = () => {
 
   return (
     <div className="w-full h-full flex flex-col">
-      <section className="w-full flex min-h-[90vh] h-full flex-col items-center justify-end  bg-[url('/partner/header.webp')] bg-cover bg-center pt-20 overflow-x-hidden">
+      <section className="w-full flex min-h-[90vh] h-full flex-col items-center justify-end  bg-[url('/headerBg/partner.webp')] bg-cover bg-center pt-20 overflow-x-hidden">
         <div className="w-full h-full grow min-h-full flex flex-col items-center justify-center">
           <h1 className="w-fit md:text-[85px] text-[45px] font-bold uppercase text-[#f6f6f6] leading-[130%] text-center font-anton">
             PITCH US
@@ -251,9 +251,9 @@ const Parnterwithus = () => {
             <section className="flex lg:flex-row flex-col-reverse w-full h-full items-stretch">
         <div className="lg:w-1/2 w-full h-full flex flex-col justify-start items-start basis-full lg:pl-14 px-5 text-[#093166] py-10 lg:basis-1/2">
           <p className="font-quicksand font-semibold text-base">Franchise</p>
-          <h2 className="md:text-[80px] text-5xl tracking-tight uppercase font-antonio leading-[100%]">
-            <b>Start</b>  Eklektik  Mama
-            <b className="font-antonio font-normal tracking-tight">
+          <h2 className="md:text-[80px] text-5xl tracking-tight uppercase font-antonio font-thin leading-[100%]">
+            <b className="font-bold">Start</b>  Eklektik  Mama <br />
+            <b className="font-anton font-normal tracking-tight">
               in your city
             </b>
           </h2>

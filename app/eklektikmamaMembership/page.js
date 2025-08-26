@@ -15,10 +15,11 @@ import Marquee from "../components/Marquee";
 export default function MembershipPage() {
   return (
     <div className="w-full h-full flex flex-col">
-      <section className="w-full flex min-h-[90vh] h-full flex-col items-center justify-end  bg-[url('/membership/bar.webp')] bg-cover bg-center pt-20 overflow-x-hidden">
+      <section className="w-full flex min-h-[90vh] h-full flex-col items-center justify-end  bg-[url('/headerBg/wentdown.webp')] bg-cover bg-center pt-20 overflow-x-hidden">
         <div className="w-full h-full grow min-h-full flex flex-col items-center justify-center">
-          <h1 className="w-fit md:text-[70px] text-[40px] font-bold uppercase text-[#f6f6f6] leading-[130%] text-center font-anton">
-            GET <br />
+          <h1 className="w-fit md:text-[85px] text-[45px] font-bold uppercase text-[#f6f6f6] leading-[130%] text-center font-anton">
+            GET
+            <br />
             <b className="md:text-[100px] text-[60px]">Eklektik AF</b>
           </h1>
         </div>

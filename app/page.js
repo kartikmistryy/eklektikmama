@@ -1,3 +1,5 @@
+"use client";
+import { useState } from "react";
 import { BsArrowRight, BsPlus } from "react-icons/bs";
 import {
   Carousel,
@@ -6,38 +8,242 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
+import { delay, motion } from "framer-motion";
 
 import Image from "next/image";
 import Link from "next/link";
+import { useEffect } from "react";
 
 export default function Home() {
+   const [statueRotation, setStatueRotation] = useState(-5);
+  const [glitchTrigger, setGlitchTrigger] = useState(0);
+
+   const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    setIsVisible(true);
+    const interval = setInterval(() => {
+      setStatueRotation(prev => prev === -5 ? 5 : -5);
+    }, 5000);
+    
+    return () => clearInterval(interval);
+  }, []);
+
+  // Auto glitch effect for cards
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setGlitchTrigger(prev => prev + 1);
+    }, 1000);
+    
+    return () => clearInterval(interval);
+  }, []);
+
+  // Glitch effect variants for cards
+  const glitchVariants = {
+    rest: {
+      x: 0,
+      y: 0,
+      rotate: 0,
+      opacity: 1,
+      transition: {
+        duration: 0.5,
+        ease: "easeOut"
+      }
+    },
+    glitch: {
+      x: [0, -4, 4, -2, 2, 0],
+      y: [0, 2, -2, 1, -1, 0],
+      opacity: [1, 0.8, 0.9, 0.7, 0.9, 1],
+      transition: {
+        duration: 0.3,
+        ease: "easeInOut"
+      }
+    }
+  };
+
+  // Individual glitch variants for each card with different timing
+  const card1Variants = {
+    rest: {
+      x: 0,
+      y: 0,
+      rotate: -9,
+      opacity: 1,
+      transition: {
+        duration: 0.5,
+        ease: "easeOut"
+      }
+    },
+    glitch: {
+      x: [0, -5, 5, -3, 3, 0],
+      y: [0, 3, -3, 2, -2, 0],
+      opacity: [1, 0.8, 0.9, 0.7, 0.9, 1],
+      rotate: [-9, -11, -7, -11, -7, -9],
+      transition: {
+        duration: 0.4,
+        ease: "easeInOut"
+      }
+    }
+  };
+
+  const card2Variants = {
+    rest: {
+      x: 0,
+      y: 24,
+      rotate: 0,
+      opacity: 1,
+      transition: {
+        duration: 0.5,
+        ease: "easeOut"
+      }
+    },
+    glitch: {
+      x: [0, -6, 6, -4, 4, 0],
+      y: [24, 28, 20, 28, 20, 24],
+      opacity: [1, 0.7, 0.8, 0.6, 0.8, 1],
+      transition: {
+        duration: 0.35,
+        ease: "easeInOut"
+      }
+    }
+  };
+
+  const card3Variants = {
+    rest: {
+      x: 0,
+      y: 56,
+      rotate: -6,
+      opacity: 1,
+      transition: {
+        duration: 0.5,
+        ease: "easeOut"
+      }
+    },
+    glitch: {
+      x: [0, -7, 7, -5, 5, 0],
+      y: [56, 60, 52, 60, 52, 56],
+      opacity: [1, 0.6, 0.7, 0.5, 0.7, 1],
+      rotate: [-6, -8, -4, -8, -4, -6],
+      transition: {
+        duration: 0.45,
+        ease: "easeInOut"
+      }
+    }
+  };
+
+  const card4Variants = {
+    rest: {
+      x: 0,
+      y: 0,
+      rotate: 9,
+      opacity: 1,
+      transition: {
+        duration: 0.5,
+        ease: "easeOut"
+      }
+    },
+    glitch: {
+      x: [0, -5, 5, -3, 3, 0],
+      y: [0, 4, -4, 2, -2, 0],
+      opacity: [1, 0.8, 0.9, 0.7, 0.9, 1],
+      rotate: [9, 11, 7, 11, 7, 9],
+      transition: {
+        duration: 0.5,
+        ease: "easeInOut"
+      }
+    }
+  };
+
+  // 
+
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.2,
+        delayChildren: 0.3
+      }
+    }
+  };
+
+  const imageVariants = {
+    hidden: { 
+      opacity: 0, 
+      y: 20 
+    },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        type: "spring",
+        stiffness: 100,
+        damping: 10
+      }
+    }
+  };
+
+  const floatVariants = {
+    initial: { y: 0 },
+    float: {
+      y: [-5, 5, -5],
+      transition: {
+        duration: 4,
+        repeat: Infinity,
+        ease: "easeInOut"
+      }
+    }
+  };
+
+  const rotateVariants = {
+    initial: { rotate: 0 },
+    rotate: {
+      rotate: [0, -5, 0, 5, 0],
+      transition: {
+        duration: 8,
+        repeat: Infinity,
+        ease: "easeInOut"
+      }
+    }
+  };
+
+  const pulseVariants = {
+    initial: { scale: 1 },
+    pulse: {
+      scale: [1, 1.05, 1],
+      transition: {
+        duration: 3,
+        repeat: Infinity,
+        ease: "easeInOut"
+      }
+    }
+  };
+
   return (
-<div className="w-full h-full flex flex-col bg-[#231f20] lg:pt-[120px] pt-[120px] relative overflow-hidden">
-  <section className="w-full h-full flex flex-col items-center justify-start relative overflow-visible">{/* this one  */}
+    <div className="w-full h-full flex flex-col bg-[#231f20] lg:pt-[120px] pt-[120px] relative overflow-hidden">
+      <section className="w-full h-full flex flex-col items-center justify-start relative overflow-visible">
+        {/* this one  */}
         <div className="w-full h-full flex flex-col relative lg:pb-[240px] md:pb-[160px] pb-[80px] overflow-visible">
-        <main className="w-full h-full flex items-center justify-start lg:pt-[30px] md:pt-[120px] pt-[80px] relative px-5 overflow-visible">
-        <div className="w-full h-full lg:max-w-[1000px] md:max-w-[600px] max-w-[380px] mx-auto relative overflow-visible z-[30]">
-          
-          {/* Statue Image */}
-          <div className="absolute flex justify-center items-center md:-top-14 -top-12 -left-5 md:-left-14 w-[150px] lg:w-[120px] h-fit z-[60]">
-            <Image
-              src="/homepage/statue.webp"
-              alt="Statue"
-              width={100}
-              height={150}
-              className="object-contain rotate-[-5deg] md:w-fit md:h-fit md:max-h-[160px] w-[70px] h-[80px] z-[90]"
-            />
-          </div>
+          {/* <main className="w-full h-full flex items-center justify-start lg:pt-[30px] md:pt-[120px] pt-[80px] relative px-5 overflow-visible">
+            <div className="w-full h-full lg:max-w-[1000px] md:max-w-[600px] max-w-[380px] mx-auto relative overflow-visible z-[30]">
 
-          {/* Heading */}
-          <h1 className="lg:text-[6.5rem] md:text-[4rem] text-4xl tracking-tight leading-[130%] font-anton font-bold uppercase text-white relative z-0 px-[0px]">
-            Shaking Up Mamahood, <br />
-            <b className="lg:text-[10rem] md:text-[5rem] text-4xl">
-              your way
-            </b>
-          </h1>
+              <div className="absolute flex justify-center items-center md:-top-14 -top-12 -left-5 md:-left-14 w-[150px] lg:w-[120px] h-fit z-[60]">
+                <Image
+                  src="/homepage/statue.webp"
+                  alt="Statue"
+                  width={100}
+                  height={150}
+                  className="object-contain rotate-[-5deg] md:w-fit md:h-fit md:max-h-[160px] w-[70px] h-[80px] z-[90]"
+                />
+              </div>
 
-              {/* Overlapping Images after text */}
+
+              <h1 className="lg:text-[6.5rem] md:text-[4rem] text-4xl tracking-tight leading-[130%] font-anton font-bold uppercase text-white relative z-0 px-[0px]">
+                Shaking Up Mamahood, <br />
+                <b className="lg:text-[10rem] md:text-[5rem] text-4xl">
+                  your way
+                </b>
+              </h1>
+
               <div className="md:absolute relative  lg:top-[110px] md:top-[70px] lg:left-[57%] md:left-[45%] lg:scale-100 md:scale-90 scale-70 flex space-x-[-40px] z-10 overflow-visible">
                 <Image
                   src="/homepage/card1.webp"
@@ -69,23 +275,126 @@ export default function Home() {
                 />
               </div>
             </div>
-          </main>
+          </main> */}
 
-          <p className="max-w-[600px] mx-auto font-quicksand lg:mt-10 md:mt-24 mt-5 px-4 text-center text-white lg:text-lg md:text-base text-sm">
+<main className="w-full h-full flex items-center justify-start lg:pt-[30px] md:pt-[120px] pt-[80px] relative px-5 overflow-visible">
+      <div className="w-full h-full lg:max-w-[1000px] md:max-w-[600px] max-w-[380px] mx-auto relative overflow-visible z-[30]">
+        {/* Statue Image */}
+        <div className="absolute flex justify-center items-center md:-top-14 -top-14 -left-16 md:-left-14 w-[150px] lg:w-[120px] h-fit z-[60]">
+          <motion.div
+            key={`card1-${glitchTrigger % 3 === 0 ? glitchTrigger : 0}`}
+            variants={card1Variants}
+            initial="rest"
+            animate={glitchTrigger % 3 === 0 ? "glitch" : "rest"}
+          >
+            <Image
+              src="/homepage/statue.webp"
+              alt="Statue"
+              width={100}
+              height={150}
+              className="object-contain md:w-fit md:h-fit md:max-h-[160px] w-[70px] h-[80px] z-[90]"
+            />
+          </motion.div>
+        </div>
+
+        {/* Heading */}
+        <h1 className="lg:text-[6.5rem] md:text-[4rem] text-4xl tracking-tight leading-[130%] font-anton font-bold uppercase text-white relative z-0 px-[0px]">
+          Shaking Up Mamahood, <br />
+          <b className="lg:text-[10rem] md:text-[5rem] text-4xl">
+            your way
+          </b>
+        </h1>
+
+        {/* Overlapping Images after text */}
+        <div   className="md:absolute relative lg:top-[110px] md:top-[70px] lg:left-[57%] md:left-[45%] lg:scale-100 md:scale-90 scale-70 flex space-x-[-40px] z-10 overflow-visible">
+          {/* Card 1 */}
+          <motion.div
+            key={`card1-${glitchTrigger % 3 === 0 ? glitchTrigger : 0}`}
+            variants={card1Variants}
+            initial="rest"
+            animate={glitchTrigger % 3 === 0 ? "glitch" : "rest"}
+            className="relative"
+          >
+            <Image
+              src="/homepage/card1.webp"
+              alt="Image 1"
+              width={120}
+              height={190}
+              className="object-cover w-fit h-fit max-w-[130px] max-h-[190px] rounded-md shadow-lg z-[1]"
+            />
+          </motion.div>
+          
+          {/* Card 2 */}
+          <motion.div
+            key={`card2-${glitchTrigger % 4 === 0 ? glitchTrigger : 0}`}
+            variants={card2Variants}
+            initial="rest"
+            animate={glitchTrigger % 4 === 0 ? "glitch" : "rest"}
+            className="relative"
+          >
+            <Image
+              src="/homepage/card2.webp"
+              alt="Image 2"
+              width={130}
+              height={190}
+              className="object-cover w-fit h-fit max-w-[130px] max-h-[190px] rounded-md shadow-lg overflow-visible z-[2]"
+            />
+          </motion.div>
+          
+          {/* Card 3 */}
+          <motion.div
+            key={`card3-${glitchTrigger % 5 === 0 ? glitchTrigger : 0}`}
+            variants={card3Variants}
+            initial="rest"
+            animate={glitchTrigger % 5 === 0 ? "glitch" : "rest"}
+            className="relative"
+          >
+            <Image
+              src="/homepage/card3.webp"
+              alt="Image 3"
+              width={130}
+              height={190}
+              className="object-cover w-fit h-fit max-w-[130px] max-h-[190px] rounded-md shadow-lg overflow-visible z-[1]"
+            />
+          </motion.div>
+          
+          {/* Card 4 */}
+          <motion.div
+            key={`card4-${glitchTrigger % 6 === 0 ? glitchTrigger : 0}`}
+            variants={card4Variants}
+            initial="rest"
+            animate={glitchTrigger % 6 === 0 ? "glitch" : "rest"}
+            className="relative"
+          >
+            <Image
+              src="/homepage/card4.webp"
+              alt="Image 4"
+              width={130}
+              height={190}
+              className="object-cover w-fit h-fit max-w-[130px] max-h-[190px] rounded-md shadow-lg overflow-visible"
+            />
+          </motion.div>
+        </div>
+      </div>
+    </main>
+
+          <motion.p initial={{opacity: 0, y: "40px"}} whileInView={{opacity: 1, y: 0}} transition={{type: 'keyframes', duration: 0.6, }} className="max-w-[600px] mx-auto font-quicksand lg:mt-10 md:mt-24 mt-5 px-4 text-center text-white lg:text-lg md:text-base text-sm">
             Welcome to Eklektik Mama™, where motherhood meets rebellion. A home
             for bold mums, BYOBaby™ events, unapologetic blogs, and gear you
             didn’t know you needed.
-          </p>
+          </motion.p>
 
-          <Link
+          <motion.Link
+          initial={{opacity: 0, y: "40px"}} whileInView={{opacity: 1, y: 0}} transition={{type: 'keyframes', duration: 0.4, delay: 0.5 }}
             href="/"
             className="w-[190px] h-[45px] text-base flex items-center justify-center uppercase mx-auto text-white rounded-[20px] my-6 border-2 border-[#bf378b] bg-transparent hover:bg-[#bf378b] transition-colors duration-500 ease-in-out md:scale-100 scale-75"
+            
           >
             VIEW EVENTS
-          </Link>
+          </motion.Link>
         </div>
 
-{/* Need to hide their overdlow */}
+        {/* Need to hide their overdlow */}
         <Image
           src="/homepage/pinkpaper.webp"
           height={400}
@@ -94,8 +403,8 @@ export default function Home() {
         />
         <Image
           src="/homepage/whitepaper.webp"
-          height={400}
-          width={600}
+          height={1500}
+          width={1500}
           className="w-full absolute bottom-0 left-0 rotate-0 z-[2] overflow-hidden"
         />
         <Image
@@ -137,52 +446,129 @@ export default function Home() {
             href="/"
             className="w-fit md:h-[45px] h-[40px] md:px-12 px-6 md:text-base text-xs flex items-center justify-center uppercase text-[#093166] hover:text-white rounded-[20px] my-6 border-2 border-[#bf378b] bg-transparent hover:bg-[#bf378b] transition-colors duration-500 ease-in-out"
           >
-            LEARN MORE ABOUT US <BsArrowRight className="ml-2 md:text-2xl text-lg" />
+            LEARN MORE ABOUT US{" "}
+            <BsArrowRight className="ml-2 md:text-2xl text-lg" />
           </Link>
         </div>
         <div className="w-full h-full flex flex-col justify-center  items-center md:basis-1/2 basis-full pr-0">
-          <span className="md:w-[350px] md:h-[450px] w-[250px] h-[300px] relative lg:scale-100 scale-90">
-            <Image
-              src="/homepage/img3.webp"
-              height={500}
-              width={400}
-              className="absolute top-0 md:left-[-150px] left-[-50px] md:w-full md:h-full w-[250px] h-[300px] md:max-w-[350px] md:max-h-[450px]"
-              alt="image"
-            />
-            <Image
-              src="/homepage/img2.webp"
-              height={500}
-              width={400}
-              className="absolute top-0 md:left-0 left-10 md:w-full md:h-full w-[250px] h-[300px] md:max-w-[350px] md:max-h-[450px]"
-              alt="image"
-            />
-            <Image
-              src="/homepage/evileye.webp"
-              height={500}
-              width={400}
-              className="absolute md:bottom-[-50px] bottom-[-20px] md:left-[-100px] left-[0px] md:w-[200px] md:h-[200px] w-[120px] h-[120px]"
-              alt="image"
-            />
-            <Image
-              src="/homepage/branding.png"
-              height={500}
-              width={400}
-              className="absolute md:top-[30%] top-[30%] md:right-[-30%] right-[-35%] md:w-[200px] md:h-[200px] w-[120px] h-[120px]"
-              alt="image"
-            />
-          </span>
+          <motion.span 
+      className="md:w-[350px] md:h-[450px] w-[250px] h-[300px] relative lg:scale-100 scale-90"
+      variants={containerVariants}
+      initial="hidden"
+      animate={isVisible ? "visible" : "hidden"}
+    >
+      {/* First Image - Floating animation */}
+      <motion.div
+        variants={imageVariants}
+        animate="visible"
+        initial="hidden"
+        className="absolute top-0 md:left-[-150px] left-[-50px] md:w-full md:h-full w-[250px] h-[300px] md:max-w-[350px] md:max-h-[450px]"
+      >
+        <motion.div
+          variants={floatVariants}
+          initial="initial"
+          animate="float"
+        >
+          <Image
+            src="/homepage/img3.webp"
+            height={500}
+            width={400}
+            alt="image"
+            className="w-full h-full object-contain"
+          />
+        </motion.div>
+      </motion.div>
+
+      {/* Second Image - Subtle pulse animation */}
+      <motion.div
+        variants={imageVariants}
+        animate="visible"
+        initial="hidden"
+        className="absolute top-0 md:left-0 left-10 md:w-full md:h-full w-[250px] h-[300px] md:max-w-[350px] md:max-h-[450px]"
+      >
+        <motion.div
+          variants={pulseVariants}
+          initial="initial"
+          animate="pulse"
+        >
+          <Image
+            src="/homepage/img2.webp"
+            height={500}
+            width={400}
+            alt="image"
+            className="w-full h-full object-contain"
+          />
+        </motion.div>
+      </motion.div>
+
+      {/* Evil Eye - Rotating animation */}
+      <motion.div
+        className="absolute md:bottom-[-50px] bottom-[-20px] md:left-[-100px] left-[0px] md:w-[200px] md:h-[200px] w-[120px] h-[120px] rotate-infinite"
+      >
+        <motion.div
+          variants={rotateVariants}
+          initial="initial"
+          animate="rotate"
+        >
+          <Image
+            src="/homepage/evileye.webp"
+            height={500}
+            width={400}
+            alt="image"
+            className="w-full h-full object-contain"
+          />
+        </motion.div>
+      </motion.div>
+
+      {/* Branding - Floating with slight rotation */}
+      <motion.div
+        variants={imageVariants}
+        animate="visible"
+        initial="hidden"
+        className="absolute md:top-[30%] top-[30%] md:right-[-30%] right-[-35%] md:w-[200px] md:h-[200px] w-[120px] h-[120px]"
+      >
+        <motion.div
+          animate={{
+            y: [-10, 10, -10],
+            rotate: [0, -2, 0, 2, 0],
+          }}
+          transition={{
+            y: {
+              duration: 6,
+              repeat: Infinity,
+              ease: "easeInOut"
+            },
+            rotate: {
+              duration: 8,
+              repeat: Infinity,
+              ease: "easeInOut"
+            }
+          }}
+        >
+          <Image
+            src="/homepage/branding.png"
+            height={500}
+            width={400}
+            alt="image"
+            className="w-full h-full object-contain"
+          />
+        </motion.div>
+      </motion.div>
+    </motion.span>
         </div>
       </section>
 
       <section className="w-full h-full flex flex-col bg-white md:px-10 px-5">
-        <div className="w-full h-full flex flex-col text-[#093166] lg:px-10 px-5 pt-10">
+        <motion.div 
+          initial={{opacity: 0, y: "40px"}} whileInView={{opacity: 1, y: 0}} transition={{type: 'keyframes', duration: 0.4, }}
+         className="w-full h-full flex flex-col text-[#093166] lg:px-10 px-5 pt-10">
           <p className="font-quicksand font-semibold uppercase text-base">
             Step right into
           </p>
           <h2 className="md:text-[80px] text-5xl uppercase font-antonio tracking-tighter leading-[100%]">
             The Good <b className="font-anton tracking-normal">Stuff</b>
           </h2>
-        </div>
+        </motion.div>
         <div className="w-full h-full lg:px-10 py-10 hidden [@media(min-width:1060px)]:block">
           <Carousel
             opts={{
@@ -190,8 +576,9 @@ export default function Home() {
               slidesToScroll: 1, // scrolls 1 page at a time
               loop: true,
             }}
+            
           >
-            <CarouselContent>
+            <CarouselContent >
               <CarouselItem
                 id="1"
                 className="w-full h-full grid grid-cols-3 gap-5 basis-[75%]"

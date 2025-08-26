@@ -8,6 +8,12 @@ import moment from "moment";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import Marquee from "../components/Marquee";
 import DateCellWrapper from "../components/DateCellWrapper";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+} from "@/components/ui/carousel";
+import EventsCalendar from "../components/EventsCalendar";
 
 const localizer = momentLocalizer(moment);
 
@@ -51,7 +57,7 @@ export default function Events() {
   return (
     <div className="w-full h-full flex flex-col">
       {/* Hero */}
-      <section className="w-full flex min-h-[90vh] flex-col items-center justify-end bg-[url('/events/header.webp')] bg-cover bg-center pt-20">
+      <section className="w-full flex min-h-[90vh] flex-col items-center justify-end bg-[url('/headerBg/events.webp')] bg-cover bg-center pt-20 overflow-x-hidden">
         <div className="flex-1 flex flex-col items-center justify-center">
           {/* <h1 className="text-center font-anton uppercase leading-[130%] text-[#f6f6f6]">
             <span className="block text-[45px] md:text-[85px] font-bold">
@@ -109,27 +115,27 @@ export default function Events() {
             alt="aboutImg"
             width={1000}
             height={1000}
-            className="w-full h-full object-cover lg:rounded-tl-xl lg:rounded-bl-xl"
+            className="w-full h-full max-h-[700px] object-cover lg:rounded-tl-xl lg:rounded-bl-xl"
           />
         </div>
       </section>
 
       {/* Calendar Section */}
       <section className="flex flex-col w-full py-10">
-        <div className="px-5 lg:px-14 text-[#093166]">
+        <div className="px-5 lg:px-14 text-[#093166] mb-10">
           <p className="font-quicksand font-semibold">2025</p>
           <h2 className="text-5xl md:text-[80px] uppercase font-antonio font-bold leading-[100%]">
             Calendar view <b className="font-light">/List view</b>
           </h2>
         </div>
 
-        <div className="w-full px-5 lg:px-14 mt-8 overflow-x-auto">
+        {/* <div className="w-full px-10 lg:px-24 mt-8 overflow-x-auto">
           <Calendar
             localizer={localizer}
             events={events}
             startAccessor="start"
             endAccessor="end"
-            style={{ height: 600, minWidth: "800px" }}
+            style={{ height: "740px", minWidth: "800px" }}
             components={{
               event: EventCard,
               dateCellWrapper: (props) => (
@@ -138,7 +144,9 @@ export default function Events() {
             }}
             onSelectEvent={(event) => setSelectedEvent(event)}
           />
-        </div>
+        </div> */}
+
+        <EventsCalendar/>
 
         {/* Event Modal */}
         {selectedEvent && (
@@ -157,13 +165,13 @@ export default function Events() {
                   className="w-full h-48 object-cover rounded mb-4"
                 />
               )}
-              <h2 className="text-2xl font-bold mb-2">
-                {selectedEvent.title}
-              </h2>
+              <h2 className="text-2xl font-bold mb-2">{selectedEvent.title}</h2>
               <p className="text-gray-600 mb-2">
                 📅 {moment(selectedEvent.start).format("MMMM Do YYYY, h:mm A")}
                 {selectedEvent.end &&
-                  ` - ${moment(selectedEvent.end).format("MMMM Do YYYY, h:mm A")}`}
+                  ` - ${moment(selectedEvent.end).format(
+                    "MMMM Do YYYY, h:mm A"
+                  )}`}
               </p>
               {selectedEvent.location && (
                 <p className="text-gray-600 mb-2">
@@ -191,24 +199,130 @@ export default function Events() {
       {/* What's Hot Section */}
       <section className="w-full flex flex-col gap-5 mt-10">
         <div className="px-5 lg:px-10 text-[#093166]">
-          <p className="font-quicksand font-semibold">what’s hot</p>
+          <p className="font-quicksand font-semibold">Explore</p>
           <h2 className="text-5xl md:text-[80px] uppercase font-antonio font-thin leading-[100%] tracking-tighter">
-            View This Month’s <b className="font-bold">Events</b>
+            Check <b className="font-bold">Previous Events</b>
           </h2>
         </div>
-        <div className="bg-[#db4e9f]">
-          {[
-            "The Eklektik Edit — August Session: Good Mums",
-            "Unsupervised: A Morning with Eklektik",
-            "The Soft Launch of Losing It",
-            "Leave the House, Keep the Baby",
-          ].map((title, i) => (
-            <div key={i} className="max-w-[1400px] mx-auto flex justify-between items-center px-5 lg:px-10 py-4 border-b border-white/40">
-              <p className="text-lg lg:text-3xl uppercase font-antonio text-white">{title}</p>
-              <BsArrowRight className="text-xl lg:text-3xl text-white" />
-            </div>
-          ))}
-        </div>
+
+        <Carousel className="w-full h-full flex flex-row overflow-scroll gap-4 justify-start ">
+          <CarouselContent className="w-full h-full flex flex-row justify-between items-center gap-4 lg:px-10 px-5 py-5">
+            <CarouselItem className="w-full md:max-w-[330px] md:min-w-[330px] min-w-full flex-1 min-h-[400px] flex flex-col p-3 rounded-sm border-2 border-[#093166] ml-4">
+              <Image
+                src="/highlights/2.webp"
+                width={500}
+                height={300}
+                alt="img"
+                className="rounded-md w-full h-[170px] bg-cover max-h-[200px]"
+              />
+              <span className="py-4 w-full h-full flex flex-col justify-start items-start relative">
+                <h4 className="uppercase font-poppins font-bold text-4xl text-[#093166]">
+                  EVENT NAME
+                </h4>
+                {/* <p className="text-base font-quicksand text-[#093166] font-semibold">
+                                BYOBaby™ Events: Breakfasts, cinema mornings, and IRL
+                                convos. View this month’s line-up or miss out.
+                              </p> */}
+                <button className="text-sm text-white rounded-full font-medium font-poppins flex flex-row items-center bg-[#093166] justify-start gap-5 px-3 py-1.5 mt-auto ml-auto">
+                  VIEW ALL
+                  <BsArrowRight className="text-lg font-bold" />
+                </button>
+              </span>
+            </CarouselItem>
+
+            <CarouselItem className="w-full md:max-w-[330px] md:min-w-[330px] min-w-full flex-1 min-h-[400px] flex flex-col p-3 rounded-sm border-2 border-[#093166]">
+              <Image
+                src="/highlights/2.webp"
+                width={500}
+                height={300}
+                alt="img"
+                className="rounded-md w-full h-[170px] bg-cover max-h-[200px]"
+              />
+              <span className="py-4 w-full h-full flex flex-col justify-start items-start relative">
+                <h4 className="uppercase font-poppins font-bold text-4xl text-[#093166]">
+                  EVENT NAME
+                </h4>
+                {/* <p className="text-base font-quicksand text-[#093166] font-semibold">
+                                BYOBaby™ Events: Breakfasts, cinema mornings, and IRL
+                                convos. View this month’s line-up or miss out.
+                              </p> */}
+                <button className="text-sm text-white rounded-full font-medium font-poppins flex flex-row items-center bg-[#093166] justify-start gap-5 px-3 py-1.5 mt-auto ml-auto">
+                  VIEW ALL
+                  <BsArrowRight className="text-lg font-bold" />
+                </button>
+              </span>
+            </CarouselItem>
+
+<CarouselItem className="w-full md:max-w-[330px] md:min-w-[330px] min-w-full flex-1 min-h-[400px] flex flex-col p-3 rounded-sm border-2 border-[#093166]">
+              <Image
+                src="/highlights/2.webp"
+                width={500}
+                height={300}
+                alt="img"
+                className="rounded-md w-full h-[170px] bg-cover max-h-[200px]"
+              />
+              <span className="py-4 w-full h-full flex flex-col justify-start items-start relative">
+                <h4 className="uppercase font-poppins font-bold text-4xl text-[#093166]">
+                  EVENT NAME
+                </h4>
+                {/* <p className="text-base font-quicksand text-[#093166] font-semibold">
+                                BYOBaby™ Events: Breakfasts, cinema mornings, and IRL
+                                convos. View this month’s line-up or miss out.
+                              </p> */}
+                <button className="text-sm text-white rounded-full font-medium font-poppins flex flex-row items-center bg-[#093166] justify-start gap-5 px-3 py-1.5 mt-auto ml-auto">
+                  VIEW ALL
+                  <BsArrowRight className="text-lg font-bold" />
+                </button>
+              </span>
+            </CarouselItem>
+
+            <CarouselItem className="w-full md:max-w-[330px] md:min-w-[330px] min-w-full flex-1 min-h-[400px] flex flex-col p-3 rounded-sm border-2 border-[#093166]">
+              <Image
+                src="/highlights/2.webp"
+                width={500}
+                height={300}
+                alt="img"
+                className="rounded-md w-full h-[170px] bg-cover max-h-[200px]"
+              />
+              <span className="py-4 w-full h-full flex flex-col justify-start items-start relative">
+                <h4 className="uppercase font-poppins font-bold text-4xl text-[#093166]">
+                  EVENT NAME
+                </h4>
+                {/* <p className="text-base font-quicksand text-[#093166] font-semibold">
+                                BYOBaby™ Events: Breakfasts, cinema mornings, and IRL
+                                convos. View this month’s line-up or miss out.
+                              </p> */}
+                <button className="text-sm text-white rounded-full font-medium font-poppins flex flex-row items-center bg-[#093166] justify-start gap-5 px-3 py-1.5 mt-auto ml-auto">
+                  VIEW ALL
+                  <BsArrowRight className="text-lg font-bold" />
+                </button>
+              </span>
+            </CarouselItem>
+
+            <CarouselItem className="w-full md:max-w-[330px] md:min-w-[330px] min-w-full flex-1 min-h-[400px] flex flex-col p-3 rounded-sm border-2 border-[#093166]">
+              <Image
+                src="/highlights/2.webp"
+                width={500}
+                height={300}
+                alt="img"
+                className="rounded-md w-full h-[170px] bg-cover max-h-[200px]"
+              />
+              <span className="py-4 w-full h-full flex flex-col justify-start items-start relative">
+                <h4 className="uppercase font-poppins font-bold text-4xl text-[#093166]">
+                  EVENT NAME
+                </h4>
+                {/* <p className="text-base font-quicksand text-[#093166] font-semibold">
+                                BYOBaby™ Events: Breakfasts, cinema mornings, and IRL
+                                convos. View this month’s line-up or miss out.
+                              </p> */}
+                <button className="text-sm text-white rounded-full font-medium font-poppins flex flex-row items-center bg-[#093166] justify-start gap-5 px-3 py-1.5 mt-auto ml-auto">
+                  VIEW ALL
+                  <BsArrowRight className="text-lg font-bold" />
+                </button>
+              </span>
+            </CarouselItem>
+          </CarouselContent>
+        </Carousel>
       </section>
 
       {/* Connected AF Section */}
@@ -220,15 +334,34 @@ export default function Events() {
           </h2>
         </div>
         <div className="flex flex-col lg:flex-row gap-5 border-2 border-[#093166] rounded-md p-3">
-          <Image src="/events/c1.webp" alt="img1" width={400} height={400} className="w-full lg:w-1/4 object-cover rounded-md" />
-          <Image src="/events/c2.webp" alt="img2" width={400} height={400} className="w-full lg:w-1/4 object-cover rounded-md" />
-          <Image src="/events/c3.webp" alt="img3" width={400} height={400} className="w-full lg:w-1/4 object-cover rounded-md" />
+          <Image
+            src="/events/c1.webp"
+            alt="img1"
+            width={400}
+            height={400}
+            className="w-full lg:w-1/4 object-cover rounded-md"
+          />
+          <Image
+            src="/events/c2.webp"
+            alt="img2"
+            width={400}
+            height={400}
+            className="w-full lg:w-1/4 object-cover rounded-md"
+          />
+          <Image
+            src="/events/c3.webp"
+            alt="img3"
+            width={400}
+            height={400}
+            className="w-full lg:w-1/4 object-cover rounded-md"
+          />
           <div className="flex flex-col justify-between w-full lg:w-1/2">
             <h4 className="uppercase font-poppins font-bold text-2xl lg:text-4xl text-[#093166]">
               you’ve entered the chat
             </h4>
             <p className="text-base font-quicksand font-medium text-[#093166] mt-3">
-              Think of it as your inner circle — but louder, realer, and way more fun...
+              Think of it as your inner circle — but louder, realer, and way
+              more fun...
             </p>
             <div className="flex items-center justify-between mt-5">
               <button className="text-sm bg-[#093166] text-white rounded-full font-medium flex items-center gap-2 px-3 py-1.5">

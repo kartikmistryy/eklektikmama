@@ -171,9 +171,9 @@ export default function Footer() {
               <h3 className="font-bold mb-6">EXTRAS / RESOURCES</h3>
               <ul className="space-y-2 uppercase">
                 <li>
-                  <a href="#" className="hover:underline">
+                  <Link href="/perks" className="hover:underline">
                     Eklektik Mama Loves (Partners)
-                  </a>
+                  </Link>
                 </li>
                 <li>
                   <a href="#" className="hover:underline">

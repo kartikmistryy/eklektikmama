@@ -3,23 +3,134 @@
 
 @custom-variant dark (&:is(.dark *));
 
-.font-anton { font-family: var(--font-anton), sans-serif; }
-.font-antonio { font-family: var(--font-antonio), sans-serif; }
-.font-poppins { font-family: var(--font-poppins), sans-serif; }
-.font-quicksand { font-family: var(--font-quicksand), sans-serif; }
+.font-anton {
+  font-family: var(--font-anton), sans-serif;
+}
+.font-antonio {
+  font-family: var(--font-antonio), sans-serif;
+}
+.font-poppins {
+  font-family: var(--font-poppins), sans-serif;
+}
+.font-quicksand {
+  font-family: var(--font-quicksand), sans-serif;
+}
 
-@theme inline { --radius-sm: calc(var(--radius) - 4px); --radius-md: calc(var(--radius) - 2px); --radius-lg: var(--radius); --radius-xl: calc(var(--radius) + 4px); --color-background: var(--background); --color-foreground: var(--foreground); --color-card: var(--card); --color-card-foreground: var(--card-foreground); --color-popover: var(--popover); --color-popover-foreground: var(--popover-foreground); --color-primary: var(--primary); --color-primary-foreground: var(--primary-foreground); --color-secondary: var(--secondary); --color-secondary-foreground: var(--secondary-foreground); --color-muted: var(--muted); --color-muted-foreground: var(--muted-foreground); --color-accent: var(--accent); --color-accent-foreground: var(--accent-foreground); --color-destructive: var(--destructive); --color-border: var(--border); --color-input: var(--input); --color-ring: var(--ring); --color-chart-1: var(--chart-1); --color-chart-2: var(--chart-2); --color-chart-3: var(--chart-3); --color-chart-4: var(--chart-4); --color-chart-5: var(--chart-5); --color-sidebar: var(--sidebar); --color-sidebar-foreground: var(--sidebar-foreground); --color-sidebar-primary: var(--sidebar-primary); --color-sidebar-primary-foreground: var(--sidebar-primary-foreground); --color-sidebar-accent: var(--sidebar-accent); --color-sidebar-accent-foreground: var(--sidebar-accent-foreground); --color-sidebar-border: var(--sidebar-border); --color-sidebar-ring: var(--sidebar-ring); }
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
 
-:root { --radius: 0.625rem; --background: oklch(1 0 0); --foreground: oklch(0.145 0 0); --card: oklch(1 0 0); --card-foreground: oklch(0.145 0 0); --popover: oklch(1 0 0); --popover-foreground: oklch(0.145 0 0); --primary: oklch(0.205 0 0); --primary-foreground: oklch(0.985 0 0); --secondary: oklch(0.97 0 0); --secondary-foreground: oklch(0.205 0 0); --muted: oklch(0.97 0 0); --muted-foreground: oklch(0.556 0 0); --accent: oklch(0.97 0 0); --accent-foreground: oklch(0.205 0 0); --destructive: oklch(0.577 0.245 27.325); --border: oklch(0.922 0 0); --input: oklch(0.922 0 0); --ring: oklch(0.708 0 0); --chart-1: oklch(0.646 0.222 41.116); --chart-2: oklch(0.6 0.118 184.704); --chart-3: oklch(0.398 0.07 227.392); --chart-4: oklch(0.828 0.189 84.429); --chart-5: oklch(0.769 0.188 70.08); --sidebar: oklch(0.985 0 0); --sidebar-foreground: oklch(0.145 0 0); --sidebar-primary: oklch(0.205 0 0); --sidebar-primary-foreground: oklch(0.985 0 0); --sidebar-accent: oklch(0.97 0 0); --sidebar-accent-foreground: oklch(0.205 0 0); --sidebar-border: oklch(0.922 0 0); --sidebar-ring: oklch(0.708 0 0); }
+:root {
+  --radius: 0.625rem;
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.145 0 0);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.145 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.145 0 0);
+  --primary: oklch(0.205 0 0);
+  --primary-foreground: oklch(0.985 0 0);
+  --secondary: oklch(0.97 0 0);
+  --secondary-foreground: oklch(0.205 0 0);
+  --muted: oklch(0.97 0 0);
+  --muted-foreground: oklch(0.556 0 0);
+  --accent: oklch(0.97 0 0);
+  --accent-foreground: oklch(0.205 0 0);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: oklch(0.922 0 0);
+  --input: oklch(0.922 0 0);
+  --ring: oklch(0.708 0 0);
+  --chart-1: oklch(0.646 0.222 41.116);
+  --chart-2: oklch(0.6 0.118 184.704);
+  --chart-3: oklch(0.398 0.07 227.392);
+  --chart-4: oklch(0.828 0.189 84.429);
+  --chart-5: oklch(0.769 0.188 70.08);
+  --sidebar: oklch(0.985 0 0);
+  --sidebar-foreground: oklch(0.145 0 0);
+  --sidebar-primary: oklch(0.205 0 0);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.97 0 0);
+  --sidebar-accent-foreground: oklch(0.205 0 0);
+  --sidebar-border: oklch(0.922 0 0);
+  --sidebar-ring: oklch(0.708 0 0);
+}
 
-.dark { --background: oklch(0.145 0 0); --foreground: oklch(0.985 0 0); --card: oklch(0.205 0 0); --card-foreground: oklch(0.985 0 0); --popover: oklch(0.205 0 0); --popover-foreground: oklch(0.985 0 0); --primary: oklch(0.922 0 0); --primary-foreground: oklch(0.205 0 0); --secondary: oklch(0.269 0 0); --secondary-foreground: oklch(0.985 0 0); --muted: oklch(0.269 0 0); --muted-foreground: oklch(0.708 0 0); --accent: oklch(0.269 0 0); --accent-foreground: oklch(0.985 0 0); --destructive: oklch(0.704 0.191 22.216); --border: oklch(1 0 0 / 10%); --input: oklch(1 0 0 / 15%); --ring: oklch(0.556 0 0); --chart-1: oklch(0.488 0.243 264.376); --chart-2: oklch(0.696 0.17 162.48); --chart-3: oklch(0.769 0.188 70.08); --chart-4: oklch(0.627 0.265 303.9); --chart-5: oklch(0.645 0.246 16.439); --sidebar: oklch(0.205 0 0); --sidebar-foreground: oklch(0.985 0 0); --sidebar-primary: oklch(0.488 0.243 264.376); --sidebar-primary-foreground: oklch(0.985 0 0); --sidebar-accent: oklch(0.269 0 0); --sidebar-accent-foreground: oklch(0.985 0 0); --sidebar-border: oklch(1 0 0 / 10%); --sidebar-ring: oklch(0.556 0 0); }
+.dark {
+  --background: oklch(0.145 0 0);
+  --foreground: oklch(0.985 0 0);
+  --card: oklch(0.205 0 0);
+  --card-foreground: oklch(0.985 0 0);
+  --popover: oklch(0.205 0 0);
+  --popover-foreground: oklch(0.985 0 0);
+  --primary: oklch(0.922 0 0);
+  --primary-foreground: oklch(0.205 0 0);
+  --secondary: oklch(0.269 0 0);
+  --secondary-foreground: oklch(0.985 0 0);
+  --muted: oklch(0.269 0 0);
+  --muted-foreground: oklch(0.708 0 0);
+  --accent: oklch(0.269 0 0);
+  --accent-foreground: oklch(0.985 0 0);
+  --destructive: oklch(0.704 0.191 22.216);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(0.556 0 0);
+  --chart-1: oklch(0.488 0.243 264.376);
+  --chart-2: oklch(0.696 0.17 162.48);
+  --chart-3: oklch(0.769 0.188 70.08);
+  --chart-4: oklch(0.627 0.265 303.9);
+  --chart-5: oklch(0.645 0.246 16.439);
+  --sidebar: oklch(0.205 0 0);
+  --sidebar-foreground: oklch(0.985 0 0);
+  --sidebar-primary: oklch(0.488 0.243 264.376);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.269 0 0);
+  --sidebar-accent-foreground: oklch(0.985 0 0);
+  --sidebar-border: oklch(1 0 0 / 10%);
+  --sidebar-ring: oklch(0.556 0 0);
+}
 
 @layer base {
   * {
-    @apply border-border outline-ring/50; }
+    @apply border-border outline-ring/50;
+  }
   body {
-    @apply bg-background text-foreground; } }
-
+    @apply bg-background text-foreground;
+  }
+}
 
 @keyframes marquee {
   0% {
@@ -57,7 +168,7 @@
 }
 
 .gradient-animate {
-  background: linear-gradient(135deg, #E847A5, #15146B, #E847A5);
+  background: linear-gradient(135deg, #e847a5, #15146b, #e847a5);
   background-size: 400% 400%;
   animation: gradientMove 8s ease-in-out infinite;
 }
@@ -78,3 +189,242 @@
 /* * {
   border: 1px dashed black;
 } */
+
+/*  */
+
+.logo {
+  font-size: 28px;
+  font-weight: 700;
+  color: #4a5568;
+}
+
+.logo span {
+  color: #667eea;
+}
+
+.month-nav {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.month-name {
+  font-size: 24px;
+  font-weight: 600;
+  min-width: 180px;
+  text-align: center;
+}
+
+.nav-btn {
+  background: #edf2f7;
+  border: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.nav-btn:hover {
+  background: #e2e8f0;
+  transform: translateY(-2px);
+}
+
+.calendar-container {
+  background: white;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  margin-bottom: 30px;
+}
+
+.weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  background: #f8fafc;
+  border-bottom: 1px solid #e2e8f0;
+  font-weight: 600;
+  text-align: center;
+  padding: 15px 0;
+}
+
+.weekdays div {
+  padding: 10px;
+}
+
+.days-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  grid-gap: 1px;
+  background: #edf2f7;
+}
+
+.day-cell {
+  min-height: 120px;
+  background: white;
+  padding: 12px;
+  position: relative;
+  overflow: hidden;
+}
+
+.day-cell:hover {
+  background: #f8fafc;
+}
+
+.day-number {
+  font-size: 16px;
+  font-weight: 500;
+  margin-bottom: 8px;
+  color: #4a5568;
+}
+
+.event {
+  background: #667eea;
+  color: white;
+  padding: 6px 8px;
+  border-radius: 6px;
+  font-size: 13px;
+  margin-bottom: 6px;
+  cursor: pointer;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.event:hover {
+  background: #5a67d8;
+}
+
+.event-coffee {
+  background: #ed8936;
+}
+
+.event-coffee:hover {
+  background: #dd7724;
+}
+
+.event-nature {
+  background: #48bb78;
+}
+
+.event-nature:hover {
+  background: #38a169;
+}
+
+.event-meeting {
+  background: #9f7aea;
+}
+
+.event-meeting:hover {
+  background: #8f66d8;
+}
+
+.quote {
+  font-style: italic;
+  color: #718096;
+  font-size: 13px;
+  line-height: 1.4;
+  padding: 8px 0;
+}
+
+.current-day {
+  background: #ebf4ff;
+}
+
+.current-day .day-number {
+  color: #667eea;
+  font-weight: 700;
+}
+
+.other-month {
+  color: #cbd5e0;
+}
+
+.other-month .day-number {
+  color: #cbd5e0;
+}
+
+footer {
+  text-align: center;
+  padding: 20px;
+  color: #718096;
+  font-size: 14px;
+}
+
+@media (max-width: 768px) {
+  .day-cell {
+    min-height: 100px;
+    padding: 8px;
+  }
+
+  .event {
+    font-size: 11px;
+    padding: 4px 6px;
+  }
+
+  .quote {
+    font-size: 11px;
+  }
+}
+
+@keyframes infinite-rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.rotate-infinite {
+  animation: infinite-rotate 5s linear infinite;
+}
+
+
+/* Calendar CSS */
+
+/* Override default react-big-calendar styles */
+.rbc-month-view {
+  border: none !important;
+}
+
+.rbc-month-row {
+  min-height: 120px; /* Adjust based on your needs */
+}
+
+.rbc-date-cell {
+  padding: 0 !important;
+  text-align: left !important;
+}
+
+.rbc-day-bg {
+  border: none !important;
+}
+
+.rbc-month-view .rbc-row-content {
+  position: relative;
+  z-index: 1;
+}
+
+/* Custom class for our wrapper */
+.rbc-date-cell-wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+/* Ensure event elements are positioned correctly */
+.rbc-event {
+  position: relative;
+  z-index: 2;
+} 
+
+
+.rbc-row {
+  display: none !important;
+}
