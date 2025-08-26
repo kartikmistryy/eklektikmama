@@ -15,18 +15,12 @@ import Link from "next/link";
 import { useEffect } from "react";
 
 export default function Home() {
-   const [statueRotation, setStatueRotation] = useState(-5);
   const [glitchTrigger, setGlitchTrigger] = useState(0);
 
    const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
     setIsVisible(true);
-    const interval = setInterval(() => {
-      setStatueRotation(prev => prev === -5 ? 5 : -5);
-    }, 5000);
-    
-    return () => clearInterval(interval);
   }, []);
 
   // Auto glitch effect for cards
@@ -281,20 +275,13 @@ export default function Home() {
       <div className="w-full h-full lg:max-w-[1000px] md:max-w-[600px] max-w-[380px] mx-auto relative overflow-visible z-[30]">
         {/* Statue Image */}
         <div className="absolute flex justify-center items-center md:-top-14 -top-14 -left-16 md:-left-14 w-[150px] lg:w-[120px] h-fit z-[60]">
-          <motion.div
-            key={`card1-${glitchTrigger % 3 === 0 ? glitchTrigger : 0}`}
-            variants={card1Variants}
-            initial="rest"
-            animate={glitchTrigger % 3 === 0 ? "glitch" : "rest"}
-          >
-            <Image
-              src="/homepage/statue.webp"
-              alt="Statue"
-              width={100}
-              height={150}
-              className="object-contain md:w-fit md:h-fit md:max-h-[160px] w-[70px] h-[80px] z-[90]"
-            />
-          </motion.div>
+          <Image
+            src="/homepage/statue.webp"
+            alt="Statue"
+            width={100}
+            height={150}
+            className="object-contain md:w-fit md:h-fit md:max-h-[160px] w-[70px] h-[80px] z-[90]"
+          />
         </div>
 
         {/* Heading */}

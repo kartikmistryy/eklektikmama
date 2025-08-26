@@ -118,7 +118,7 @@ export default function Footer() {
             </div>
 
             {/* Explore */}
-            <div>
+            <div className="text-white">
               <h3 className="font-bold mb-6">EXPLORE</h3>
               <ul className="space-y-2 uppercase">
                 <li>
@@ -145,7 +145,7 @@ export default function Footer() {
             </div>
 
             {/* Work With Us */}
-            <div>
+            <div className="text-white">
               <h3 className="font-bold mb-6">WORK WITH US</h3>
               <ul className="space-y-2 uppercase">
                 <li>
@@ -167,7 +167,7 @@ export default function Footer() {
             </div>
 
             {/* Extras / Resources */}
-            <div>
+            <div className="text-white">
               <h3 className="font-bold mb-6">EXTRAS / RESOURCES</h3>
               <ul className="space-y-2 uppercase">
                 <li>
