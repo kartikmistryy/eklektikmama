@@ -79,9 +79,9 @@ export default function Footer() {
         <Marquee />
 
         <footer className="bg-[#d94e9b] text-white pt-10 pb-5 px-6 font-poppins">
-          <div className="mx-auto grid md:grid-cols-4 gap-5 items-start">
+          <div className="mx-auto grid md:grid-cols-4 lg:gap-[4vw] justify-between">
             {/* Logo + Social */}
-            <div className="flex flex-col items-center md:items-start">
+            <div className="flex flex-col items-start">
               <Image
                 src="/footer/logo.webp" // replace with your actual logo path
                 alt="Eklektik Mama"
@@ -89,7 +89,7 @@ export default function Footer() {
                 height={160}
                 className="mb-6"
               />
-              <div className="flex flex-wrap gap-3 justify-center md:justify-start">
+              <div className="flex flex-wrap gap-3 justify-start">
                 <Link
                   href="https://www.tiktok.com/@eklektikmama?_t=8pqLsaRIulk&_r=1"
                   className="bg-white text-[#102A43] px-3 py-1 rounded-full text-sm font-semibold shadow hover:scale-105 transition"
@@ -118,9 +118,9 @@ export default function Footer() {
             </div>
 
             {/* Explore */}
-            <div className="text-white">
+            <div className="w-full flex flex-col items-start justify-start text-white">
               <h3 className="font-bold mb-6">EXPLORE</h3>
-              <ul className="space-y-2 uppercase">
+              <ul className="space-y-2 uppercase text-left">
                 <li>
                   <a href="#" className="hover:underline">
                     Home
@@ -145,9 +145,9 @@ export default function Footer() {
             </div>
 
             {/* Work With Us */}
-            <div className="text-white">
+            <div className="flex flex-col items-start text-white">
               <h3 className="font-bold mb-6">WORK WITH US</h3>
-              <ul className="space-y-2 uppercase">
+              <ul className="space-y-2 uppercase text-left">
                 <li>
                   <a href="#" className="hover:underline">
                     Pitch Us Something Wild
@@ -167,13 +167,13 @@ export default function Footer() {
             </div>
 
             {/* Extras / Resources */}
-            <div className="text-white">
+            <div className="flex flex-col items-start text-white">
               <h3 className="font-bold mb-6">EXTRAS / RESOURCES</h3>
-              <ul className="space-y-2 uppercase">
+              <ul className="space-y-2 uppercase text-left">
                 <li>
-                  <Link href="/perks" className="hover:underline">
+                  <a href="#" className="hover:underline">
                     Eklektik Mama Loves (Partners)
-                  </Link>
+                  </a>
                 </li>
                 <li>
                   <a href="#" className="hover:underline">
@@ -195,7 +195,7 @@ export default function Footer() {
           </div>
 
           {/* Bottom Note */}
-          <div className=" text-center text-xs opacity-80 font-quicksand pt-10">
+          <div className=" text-center text-xs opacity-80 font-quicksand pt-10 text-white">
             © {new Date().getFullYear()} Eklektik Mama™ and BYOBaby™ are
             trademarks of Eklektik Mama Event Management L.L.C. – S.P.C. <br />
             © 2025 All rights reserved under UAE law
