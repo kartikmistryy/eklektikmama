@@ -7,19 +7,91 @@ import { Calendar, momentLocalizer } from "react-big-calendar";
 import moment from "moment";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import Marquee from "../components/Marquee";
-import DateCellWrapper from "../components/DateCellWrapper";
+
 import {
   Carousel,
   CarouselContent,
   CarouselItem,
 } from "@/components/ui/carousel";
 import EventsCalendar from "../components/EventsCalendar";
+import { motion, useInView } from "framer-motion";
+import { useRef } from "react";
 
 const localizer = momentLocalizer(moment);
 
 export default function Events() {
   const [events, setEvents] = useState([]);
   const [selectedEvent, setSelectedEvent] = useState(null);
+
+  // Refs for animations
+  const heroRef = useRef(null);
+  const introRef = useRef(null);
+  const calendarRef = useRef(null);
+  const previousEventsRef = useRef(null);
+  const connectedRef = useRef(null);
+
+  // InView hooks
+  const heroInView = useInView(heroRef, { once: true, amount: 0.3 });
+  const introInView = useInView(introRef, { once: true, amount: 0.3 });
+  const calendarInView = useInView(calendarRef, { once: true, amount: 0.2 });
+  const previousEventsInView = useInView(previousEventsRef, { once: true, amount: 0.2 });
+  const connectedInView = useInView(connectedRef, { once: true, amount: 0.2 });
+
+  // Animation variants
+  const fadeInUp = {
+    hidden: { opacity: 0, y: 30 },
+    visible: { 
+      opacity: 1, 
+      y: 0,
+      transition: { duration: 0.8, ease: "easeOut" }
+    }
+  };
+
+  const fadeIn = {
+    hidden: { opacity: 0 },
+    visible: { 
+      opacity: 1,
+      transition: { duration: 0.6, ease: "easeOut" }
+    }
+  };
+
+  const staggerContainer = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+        delayChildren: 0.2
+      }
+    }
+  };
+
+  const tagButton = {
+    hidden: { opacity: 0, scale: 0.9 },
+    visible: { 
+      opacity: 1, 
+      scale: 1,
+      transition: { duration: 0.4, ease: "easeOut" }
+    }
+  };
+
+  const carouselItem = {
+    hidden: { opacity: 0, x: 50 },
+    visible: { 
+      opacity: 1, 
+      x: 0,
+      transition: { duration: 0.5, ease: "easeOut" }
+    }
+  };
+
+  const imageGrid = {
+    hidden: { opacity: 0, scale: 0.95 },
+    visible: { 
+      opacity: 1, 
+      scale: 1,
+      transition: { duration: 0.5, ease: "easeOut" }
+    }
+  };
 
   useEffect(() => {
     async function fetchEvents() {
@@ -57,26 +129,30 @@ export default function Events() {
   return (
     <div className="w-full h-full flex flex-col">
       {/* Hero */}
-      <section className="w-full flex min-h-[90vh] flex-col items-center justify-end bg-[url('/headerBg/events.webp')] bg-cover bg-center pt-20 overflow-x-hidden">
-        <div className="flex-1 flex flex-col items-center justify-center">
-          {/* <h1 className="text-center font-anton uppercase leading-[130%] text-[#f6f6f6]">
-            <span className="block text-[45px] md:text-[85px] font-bold">
-              Events that don’t
-            </span>
-            <b className="block text-[70px] md:text-[115px]">suck</b>
-          </h1> */}
+      <section ref={heroRef} className="w-full flex min-h-[90vh] flex-col items-center justify-end bg-[url('/headerBg/events.webp')] bg-cover bg-center pt-20 overflow-x-hidden">
+        <motion.div 
+          className="flex-1 flex flex-col items-center justify-center"
+          initial="hidden"
+          animate={heroInView ? "visible" : "hidden"}
+          variants={fadeInUp}
+        >
           <h1 className="w-fit md:text-[85px] text-[45px] font-bold uppercase text-[#f6f6f6] leading-[130%] text-center font-anton">
-            Events that don’t
+            Events that don&apos;t
             <br />
             <b className="md:text-[100px] text-[60px]">suck</b>
           </h1>
-        </div>
+        </motion.div>
         <Marquee />
       </section>
 
       {/* Intro Section */}
-      <section className="flex flex-col-reverse lg:flex-row w-full items-stretch">
-        <div className="lg:w-1/2 w-full px-5 lg:pl-14 py-10 text-[#093166]">
+      <section ref={introRef} className="flex flex-col-reverse lg:flex-row w-full items-stretch">
+        <motion.div 
+          className="lg:w-1/2 w-full px-5 lg:pl-14 py-10 text-[#093166]"
+          initial="hidden"
+          animate={introInView ? "visible" : "hidden"}
+          variants={fadeInUp}
+        >
           <p className="font-quicksand font-semibold">Stuff</p>
           <h2 className="text-5xl md:text-[80px] uppercase font-anton leading-[100%]">
             Worth{" "}
@@ -86,10 +162,13 @@ export default function Events() {
           </h2>
           <p className="mt-6 font-quicksand font-medium lg:text-base">
             Every IRL event falls under BYOBaby™. Bring your baby (or
-            don’t)—just bring your whole self...
+            don&apos;t)—just bring your whole self...
           </p>
           {/* Tag Buttons */}
-          <div className="flex flex-wrap gap-3 mt-6">
+          <motion.div 
+            className="flex flex-wrap gap-3 mt-6"
+            variants={staggerContainer}
+          >
             {[
               "BYOBaby™ Mama Breakfast",
               "BYOBaby™ Cinema Morning",
@@ -97,19 +176,29 @@ export default function Events() {
               "Eklektik Edit",
               "Do Not BYOBaby™ Mama Nights",
             ].map((tag, i) => (
-              <button
+              <motion.button
                 key={i}
                 className="px-3 py-2 text-xs lg:text-sm uppercase border-2 border-[#bf378b] rounded-[20px] bg-transparent hover:bg-[#bf378b] hover:text-white transition"
+                variants={tagButton}
               >
                 {tag}
-              </button>
+              </motion.button>
             ))}
-            <button className="px-4 py-2 text-xs lg:text-sm uppercase text-white bg-[#dc5ca6] border-2 border-[#bf378b] rounded-[20px]">
+            <motion.button 
+              className="px-4 py-2 text-xs lg:text-sm uppercase text-white bg-[#dc5ca6] border-2 border-[#bf378b] rounded-[20px]"
+              variants={tagButton}
+            >
               View All
-            </button>
-          </div>
-        </div>
-        <div className="lg:w-1/2 w-full">
+            </motion.button>
+          </motion.div>
+        </motion.div>
+        <motion.div 
+          className="lg:w-1/2 w-full"
+          initial="hidden"
+          animate={introInView ? "visible" : "hidden"}
+          variants={fadeIn}
+          transition={{ delay: 0.3 }}
+        >
           <Image
             src="/events/subheader.webp"
             alt="aboutImg"
@@ -117,19 +206,31 @@ export default function Events() {
             height={1000}
             className="w-full h-full max-h-[700px] object-cover lg:rounded-tl-xl lg:rounded-bl-xl"
           />
-        </div>
+        </motion.div>
       </section>
 
       {/* Calendar Section */}
-      <section className="flex flex-col w-full py-10">
-        <div className="px-5 lg:px-14 text-[#093166] mb-10">
+      <section ref={calendarRef} className="flex flex-col w-full py-10">
+        <motion.div 
+          className="px-5 lg:px-14 text-[#093166] mb-10"
+          initial="hidden"
+          animate={calendarInView ? "visible" : "hidden"}
+          variants={fadeInUp}
+        >
           <p className="font-quicksand font-semibold">2025</p>
           <h2 className="text-5xl md:text-[80px] uppercase font-antonio font-bold leading-[100%]">
             Calendar view <b className="font-light">/List view</b>
           </h2>
-        </div>
+        </motion.div>
 
-        <EventsCalendar/>
+        <motion.div
+          initial="hidden"
+          animate={calendarInView ? "visible" : "hidden"}
+          variants={fadeIn}
+          transition={{ delay: 0.2 }}
+        >
+          <EventsCalendar/>
+        </motion.div>
 
         {/* Event Modal */}
         {selectedEvent && (
@@ -182,132 +283,55 @@ export default function Events() {
       </section>
 
       {/* What's Hot Section */}
-      <section className="w-full flex flex-col gap-5 mt-10">
-        <div className="px-5 lg:px-10 text-[#093166]">
+      <section ref={previousEventsRef} className="w-full flex flex-col gap-5 mt-10">
+        <motion.div 
+          className="px-5 lg:px-10 text-[#093166]"
+          initial="hidden"
+          animate={previousEventsInView ? "visible" : "hidden"}
+          variants={fadeInUp}
+        >
           <p className="font-quicksand font-semibold">Explore</p>
           <h2 className="text-5xl md:text-[80px] uppercase font-antonio font-thin leading-[100%] tracking-tighter">
             Check <b className="font-bold">Previous Events</b>
           </h2>
-        </div>
+        </motion.div>
 
-        <Carousel className="w-full h-full flex flex-row overflow-scroll gap-4 justify-start ">
-          <CarouselContent className="w-full h-full flex flex-row justify-between items-center gap-4 lg:px-10 px-5 py-5">
-            <CarouselItem className="w-full md:max-w-[330px] md:min-w-[330px] min-w-full flex-1 min-h-[400px] flex flex-col p-3 rounded-sm border-2 border-[#093166] ml-4">
-              <Image
-                src="/highlights/2.webp"
-                width={500}
-                height={300}
-                alt="img"
-                className="rounded-md w-full h-[170px] bg-cover max-h-[200px]"
-              />
-              <span className="py-4 w-full h-full flex flex-col justify-start items-start relative">
-                <h4 className="uppercase font-poppins font-bold text-4xl text-[#093166]">
-                  EVENT NAME
-                </h4>
-                {/* <p className="text-base font-quicksand text-[#093166] font-semibold">
-                                BYOBaby™ Events: Breakfasts, cinema mornings, and IRL
-                                convos. View this month’s line-up or miss out.
-                              </p> */}
-                <button className="text-sm text-white rounded-full font-medium font-poppins flex flex-row items-center bg-[#093166] justify-start gap-5 px-3 py-1.5 mt-auto ml-auto">
-                  VIEW ALL
-                  <BsArrowRight className="text-lg font-bold" />
-                </button>
-              </span>
-            </CarouselItem>
-
-            <CarouselItem className="w-full md:max-w-[330px] md:min-w-[330px] min-w-full flex-1 min-h-[400px] flex flex-col p-3 rounded-sm border-2 border-[#093166]">
-              <Image
-                src="/highlights/2.webp"
-                width={500}
-                height={300}
-                alt="img"
-                className="rounded-md w-full h-[170px] bg-cover max-h-[200px]"
-              />
-              <span className="py-4 w-full h-full flex flex-col justify-start items-start relative">
-                <h4 className="uppercase font-poppins font-bold text-4xl text-[#093166]">
-                  EVENT NAME
-                </h4>
-                {/* <p className="text-base font-quicksand text-[#093166] font-semibold">
-                                BYOBaby™ Events: Breakfasts, cinema mornings, and IRL
-                                convos. View this month’s line-up or miss out.
-                              </p> */}
-                <button className="text-sm text-white rounded-full font-medium font-poppins flex flex-row items-center bg-[#093166] justify-start gap-5 px-3 py-1.5 mt-auto ml-auto">
-                  VIEW ALL
-                  <BsArrowRight className="text-lg font-bold" />
-                </button>
-              </span>
-            </CarouselItem>
-
-<CarouselItem className="w-full md:max-w-[330px] md:min-w-[330px] min-w-full flex-1 min-h-[400px] flex flex-col p-3 rounded-sm border-2 border-[#093166]">
-              <Image
-                src="/highlights/2.webp"
-                width={500}
-                height={300}
-                alt="img"
-                className="rounded-md w-full h-[170px] bg-cover max-h-[200px]"
-              />
-              <span className="py-4 w-full h-full flex flex-col justify-start items-start relative">
-                <h4 className="uppercase font-poppins font-bold text-4xl text-[#093166]">
-                  EVENT NAME
-                </h4>
-                {/* <p className="text-base font-quicksand text-[#093166] font-semibold">
-                                BYOBaby™ Events: Breakfasts, cinema mornings, and IRL
-                                convos. View this month’s line-up or miss out.
-                              </p> */}
-                <button className="text-sm text-white rounded-full font-medium font-poppins flex flex-row items-center bg-[#093166] justify-start gap-5 px-3 py-1.5 mt-auto ml-auto">
-                  VIEW ALL
-                  <BsArrowRight className="text-lg font-bold" />
-                </button>
-              </span>
-            </CarouselItem>
-
-            <CarouselItem className="w-full md:max-w-[330px] md:min-w-[330px] min-w-full flex-1 min-h-[400px] flex flex-col p-3 rounded-sm border-2 border-[#093166]">
-              <Image
-                src="/highlights/2.webp"
-                width={500}
-                height={300}
-                alt="img"
-                className="rounded-md w-full h-[170px] bg-cover max-h-[200px]"
-              />
-              <span className="py-4 w-full h-full flex flex-col justify-start items-start relative">
-                <h4 className="uppercase font-poppins font-bold text-4xl text-[#093166]">
-                  EVENT NAME
-                </h4>
-                {/* <p className="text-base font-quicksand text-[#093166] font-semibold">
-                                BYOBaby™ Events: Breakfasts, cinema mornings, and IRL
-                                convos. View this month’s line-up or miss out.
-                              </p> */}
-                <button className="text-sm text-white rounded-full font-medium font-poppins flex flex-row items-center bg-[#093166] justify-start gap-5 px-3 py-1.5 mt-auto ml-auto">
-                  VIEW ALL
-                  <BsArrowRight className="text-lg font-bold" />
-                </button>
-              </span>
-            </CarouselItem>
-
-            <CarouselItem className="w-full md:max-w-[330px] md:min-w-[330px] min-w-full flex-1 min-h-[400px] flex flex-col p-3 rounded-sm border-2 border-[#093166]">
-              <Image
-                src="/highlights/2.webp"
-                width={500}
-                height={300}
-                alt="img"
-                className="rounded-md w-full h-[170px] bg-cover max-h-[200px]"
-              />
-              <span className="py-4 w-full h-full flex flex-col justify-start items-start relative">
-                <h4 className="uppercase font-poppins font-bold text-4xl text-[#093166]">
-                  EVENT NAME
-                </h4>
-                {/* <p className="text-base font-quicksand text-[#093166] font-semibold">
-                                BYOBaby™ Events: Breakfasts, cinema mornings, and IRL
-                                convos. View this month’s line-up or miss out.
-                              </p> */}
-                <button className="text-sm text-white rounded-full font-medium font-poppins flex flex-row items-center bg-[#093166] justify-start gap-5 px-3 py-1.5 mt-auto ml-auto">
-                  VIEW ALL
-                  <BsArrowRight className="text-lg font-bold" />
-                </button>
-              </span>
-            </CarouselItem>
-          </CarouselContent>
-        </Carousel>
+        <motion.div
+          initial="hidden"
+          animate={previousEventsInView ? "visible" : "hidden"}
+          variants={staggerContainer}
+          transition={{ delay: 0.2 }}
+        >
+          <Carousel className="w-full h-full flex flex-row overflow-scroll gap-4 justify-start ">
+            <CarouselContent className="w-full h-full flex flex-row justify-between items-center gap-4 lg:px-10 px-5 py-5">
+              {[1, 2, 3, 4].map((item, index) => (
+                <motion.div
+                  key={index}
+                  variants={carouselItem}
+                >
+                  <CarouselItem className="w-full md:max-w-[330px] md:min-w-[330px] min-w-full flex-1 min-h-[400px] flex flex-col p-3 rounded-sm border-2 border-[#093166] ml-4">
+                    <Image
+                      src="/highlights/2.webp"
+                      width={500}
+                      height={300}
+                      alt="img"
+                      className="rounded-md w-full h-[170px] bg-cover max-h-[200px]"
+                    />
+                    <span className="py-4 w-full h-full flex flex-col justify-start items-start relative">
+                      <h4 className="uppercase font-poppins font-bold text-4xl text-[#093166]">
+                        EVENT NAME
+                      </h4>
+                      <button className="text-sm text-white rounded-full font-medium font-poppins flex flex-row items-center bg-[#093166] justify-start gap-5 px-3 py-1.5 mt-auto ml-auto">
+                        VIEW ALL
+                        <BsArrowRight className="text-lg font-bold" />
+                      </button>
+                    </span>
+                  </CarouselItem>
+                </motion.div>
+              ))}
+            </CarouselContent>
+          </Carousel>
+        </motion.div>
       </section>
 
       {/* Connected AF Section */}
@@ -318,7 +342,7 @@ export default function Events() {
             CONNECTED <b className="font-bold">AF</b>
           </h2>
         </div>
-        <div className="flex flex-col lg:flex-row gap-5 border-2 border-[#093166] rounded-md p-3">
+        <div className="flex flex-col lg:flex-row gap-5 w-full h-full max-h-[350px] relative border-2 border-[#093166] rounded-md p-3">
           <Image
             src="/events/c1.webp"
             alt="img1"
@@ -340,15 +364,15 @@ export default function Events() {
             height={400}
             className="w-full lg:w-1/4 object-cover rounded-md"
           />
-          <div className="flex flex-col justify-between w-full lg:w-1/2">
+          <div className="flex flex-col justify-start items-start w-full lg:w-1/2">
             <h4 className="uppercase font-poppins font-bold text-2xl lg:text-4xl text-[#093166]">
-              you’ve entered the chat
+              you&apos;ve entered the chat
             </h4>
             <p className="text-base font-quicksand font-medium text-[#093166] mt-3">
               Think of it as your inner circle — but louder, realer, and way
               more fun...
             </p>
-            <div className="flex items-center justify-between mt-5">
+            <div className="flex items-center justify-between mt-auto w-full">
               <button className="text-sm bg-[#093166] text-white rounded-full font-medium flex items-center gap-2 px-3 py-1.5">
                 JOIN NOW <BsArrowRight />
               </button>

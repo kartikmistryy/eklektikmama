@@ -1,29 +1,47 @@
-"use client"
+"use client";
 import React from "react";
 import Image from "next/image";
+import marqueeLogo from "@/public/homepage/marqueeLogo.webp";
 
 const Marquee = () => {
+  const marqueeItems = [
+    "Eklektik Mama Love",
+    "UNFILTERED AF",
+    "WHAT'S ON",
+    "GET EKLEKTIK AF",
+    "SHOP DROP",
+    "Eklektik Mama Love",
+    "UNFILTERED AF",
+    "WHAT'S ON",
+    "GET EKLEKTIK AF",
+    "SHOP DROP",
+    "Eklektik Mama Love",
+    "UNFILTERED AF",
+    "WHAT'S ON",
+    "GET EKLEKTIK AF",
+    "SHOP DROP",
+    "Eklektik Mama Love",
+    "UNFILTERED AF",
+    "WHAT'S ON",
+    "GET EKLEKTIK AF",
+    "SHOP DROP",
+  ];
+
   return (
-    <div className="bg-[#102A43] font-antonio py-0 overflow-hidden whitespace-nowrap">
-      <div className="marquee flex">
+    <div className="bg-[#102A43] font-antonio py-0 overflow-hidden whitespace-nowrap relative">
+      <div className="marquee flex w-max">
         {[...Array(2)].map((_, repeatIndex) => (
           <div
             key={repeatIndex}
             className="flex flex-row gap-7 items-center flex-shrink-0"
           >
-            {[
-              "Eklektik Mama Love",
-              "UNFILTERED AF",
-              "WHAT'S ON",
-              "GET EKLEKTIK AF",
-              "SHOP DROP",
-            ].map((text, i) => (
+            {marqueeItems.map((text, i) => (
               <span
                 key={`${repeatIndex}-${i}`}
                 className="flex flex-row gap-2 items-center flex-shrink-0"
               >
                 <Image
-                  src="/homepage/marqueeLogo.webp"
+                  src={marqueeLogo}
                   height={70}
                   width={70}
                   alt="Logo"
@@ -38,17 +56,17 @@ const Marquee = () => {
         ))}
       </div>
 
-      {/* CSS styles */}
       <style jsx>{`
         .marquee {
-          animation: marquee 55s linear infinite;
+          display: flex;
+          animation: marquee 70s linear infinite;
         }
 
         @keyframes marquee {
-          from {
-            transform: translateX(0%);
+          0% {
+            transform: translateX(0);
           }
-          to {
+          100% {
             transform: translateX(-50%);
           }
         }

@@ -132,23 +132,6 @@
   }
 }
 
-@keyframes marquee {
-  0% {
-    transform: translateX(0%);
-  }
-  100% {
-    transform: translateX(-50%);
-  }
-}
-
-.marquee {
-  animation: marquee 20s linear infinite;
-}
-
-/* * {
-  border: 1px dashed green;
-} */
-
 @keyframes gradientMove {
   0% {
     background-position: 0% 50%;

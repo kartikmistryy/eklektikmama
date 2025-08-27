@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { headers } from "next/headers";
+import moment from "moment";
 
 export const dynamic = "force-dynamic";
 
@@ -48,7 +49,7 @@ export default async function EventDetailPage({ params }) {
           </div>
           <div className="md:col-span-1 space-y-3">
             {event.date && (
-              <p className="text-sm text-gray-700">📅 {new Date(event.date).toLocaleString()}</p>
+              <p className="text-sm text-gray-700">📅 {moment(event.date).format("MMMM Do YYYY, h:mm A")}</p>
             )}
             {event.location && (
               <p className="text-sm text-gray-700">📍 {event.location}</p>

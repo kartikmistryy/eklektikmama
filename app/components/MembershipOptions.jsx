@@ -2,8 +2,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
-import { BsArrowRight } from "react-icons/bs";
-import { FiArrowRight, FiChevronDown } from "react-icons/fi";
+import { BsArrowDown, BsArrowRight } from "react-icons/bs";
 
 export default function MembershipOptions() {
   const [openIndex, setOpenIndex] = useState(null);
@@ -13,23 +12,56 @@ export default function MembershipOptions() {
       title: "JOIN MONTHLY",
       price: "AED 50",
       perks: [
-        { icon: "/membership/whiteIcons/1.webp", text: "Early access to all event drops" },
-        { icon: "/membership/whiteIcons/2.webp", text: "Discounts on every BYOBaby™ ticket" },
-        { icon: "/membership/whiteIcons/3.webp", text: "Exclusive access to our members-only WhatsApp group" },
-        { icon: "/membership/whiteIcons/4.webp", text: "Special perks on Shop Drops" },
-        { icon: "/membership/whiteIcons/5.webp", text: "Surprise invites to Members-Only things we’re not supposed to talk about" },
+        {
+          icon: "/membership/whiteIcons/1.webp",
+          text: "Early access to all event drops",
+        },
+        {
+          icon: "/membership/whiteIcons/2.webp",
+          text: "Discounts on every BYOBaby™ ticket",
+        },
+        {
+          icon: "/membership/whiteIcons/3.webp",
+          text: "Exclusive access to our members-only WhatsApp group",
+        },
+        {
+          icon: "/membership/whiteIcons/4.webp",
+          text: "Special perks on Shop Drops",
+        },
+        {
+          icon: "/membership/whiteIcons/5.webp",
+          text: "Surprise invites to Members-Only things we’re not supposed to talk about",
+        },
       ],
     },
     {
       title: "JOIN YEARLY",
       price: "AED 450",
       perks: [
-        { icon: "/membership/whiteIcons/1.webp", text: "Early access to all event drops" },
-        { icon: "/membership/whiteIcons/2.webp", text: "Discounts on every BYOBaby™ ticket" },
-        { icon: "/membership/whiteIcons/3.webp", text: "Exclusive access to our members-only WhatsApp group" },
-        { icon: "/membership/whiteIcons/4.webp", text: "Special perks on Shop Drops" },
-        { icon: "/membership/whiteIcons/5.webp", text: "Surprise invites to Members-Only things we’re not supposed to talk about" },
-        { icon: "/membership/whiteIcons/6.webp", text: "Save more with our yearly membership" },
+        {
+          icon: "/membership/whiteIcons/1.webp",
+          text: "Early access to all event drops",
+        },
+        {
+          icon: "/membership/whiteIcons/2.webp",
+          text: "Discounts on every BYOBaby™ ticket",
+        },
+        {
+          icon: "/membership/whiteIcons/3.webp",
+          text: "Exclusive access to our members-only WhatsApp group",
+        },
+        {
+          icon: "/membership/whiteIcons/4.webp",
+          text: "Special perks on Shop Drops",
+        },
+        {
+          icon: "/membership/whiteIcons/5.webp",
+          text: "Surprise invites to Members-Only things we’re not supposed to talk about",
+        },
+        {
+          icon: "/membership/whiteIcons/6.webp",
+          text: "Save more with our yearly membership",
+        },
       ],
     },
   ];
@@ -37,36 +69,44 @@ export default function MembershipOptions() {
   const faqs = [
     {
       question: "What’s included in the membership?",
-      answer: "Early event access, exclusive member discounts, and entry to our members-only WhatsApp group for tips, deals, and connections."
+      answer:
+        "Early event access, exclusive member discounts, and entry to our members-only WhatsApp group for tips, deals, and connections.",
     },
     {
       question: "How much does it cost?",
-      answer: "AED 50/month or AED 450/year. Yearly memberships save you AED 150."
+      answer:
+        "AED 50/month or AED 450/year. Yearly memberships save you AED 150.",
     },
     {
       question: "How do I get my discounts?",
-      answer: "Log in before you shop or book events — your member discounts are applied automatically at checkout."
+      answer:
+        "Log in before you shop or book events — your member discounts are applied automatically at checkout.",
     },
     {
       question: "Can I switch from monthly to yearly?",
-      answer: "Yes! You can upgrade anytime in your account settings to start saving more."
+      answer:
+        "Yes! You can upgrade anytime in your account settings to start saving more.",
     },
-      {
+    {
       question: "Is there a contract or can I cancel anytime?",
-      answer: "No contracts. You can cancel your membership anytime via your account dashboard."
+      answer:
+        "No contracts. You can cancel your membership anytime via your account dashboard.",
     },
-        {
+    {
       question: "Is there a contract or can I cancel anytime?",
-      answer: "No contracts. You can cancel your membership anytime via your account dashboard. "
+      answer:
+        "No contracts. You can cancel your membership anytime via your account dashboard. ",
     },
     {
       question: "How do I join the WhatsApp group?",
-      answer: "Once you become a member, you’ll get a link in your welcome email to join the group instantly."
+      answer:
+        "Once you become a member, you’ll get a link in your welcome email to join the group instantly.",
     },
-      {
+    {
       question: "What’s the difference between monthly and yearly plans?",
-      answer: "Same perks — yearly just saves you more (and the hassle of monthly renewals)."
-    }
+      answer:
+        "Same perks — yearly just saves you more (and the hassle of monthly renewals).",
+    },
   ];
 
   return (
@@ -77,12 +117,16 @@ export default function MembershipOptions() {
           {/* Header */}
           <button
             onClick={() => setOpenIndex(openIndex === index ? null : index)}
-            className="w-full flex items-center justify-between bg-[#db4e9f] px-6 py-6 text-white font-bold text-lg"
+            className="w-full flex items-center justify-between bg-[#db4e9f] lg:px-10 px-5 py-6 text-white font-bold text-lg"
           >
             <span className="text-2xl font-medium">{plan.title}</span>
             <div className="flex items-center gap-3">
               <span className="text-2xl font-bold">{plan.price}</span>
-              {openIndex === index ? <FiChevronDown /> : <BsArrowRight className="text-2xl ml-7" />}
+              {openIndex === index ? (
+                <BsArrowDown className="text-2xl ml-7"/>
+              ) : (
+                <BsArrowRight className="text-2xl ml-7" />
+              )}
             </div>
           </button>
 
@@ -126,21 +170,20 @@ export default function MembershipOptions() {
       <div className="border-b border-white font-antonio">
         <button
           onClick={() => setOpenIndex(openIndex === "faq" ? null : "faq")}
-          className="w-full flex items-center justify-between bg-[#db4e9f] px-6 py-6 text-white font-bold text-lg"
+          className="w-full flex items-center justify-between bg-[#db4e9f] lg:px-10 px-5 py-6 text-white font-bold text-lg"
         >
           <span className="text-2xl">QUESTIONS?</span>
           {openIndex === "faq" ? (
-            <>
-            See Membership FAQs
-            <FiChevronDown />
-            </>
-            
-          )  :
-          <span className="w-fit ml-auto flex flex-row items-center uppercase text-xl">
-            See Membership FAQs
-            <BsArrowRight className="text-2xl ml-7" />
+            <span className="w-fit ml-auto flex flex-row items-center uppercase text-xl">
+              See Membership FAQs
+              <BsArrowDown className="text-2xl ml-7" />
             </span>
-          }
+          ) : (
+            <span className="w-fit ml-auto flex flex-row items-center uppercase text-xl">
+              See Membership FAQs
+              <BsArrowRight className="text-2xl ml-7" />
+            </span>
+          )}
         </button>
 
         <AnimatePresence initial={false}>
@@ -154,7 +197,10 @@ export default function MembershipOptions() {
             >
               <ul className="flex flex-col gap-6 mt-4">
                 {faqs.map((faq, i) => (
-                  <li key={i} className="flex flex-col gap-2 text-white font-quicksand">
+                  <li
+                    key={i}
+                    className="flex flex-col gap-2 text-white font-quicksand"
+                  >
                     <p className="font-semibold">{faq.question}</p>
                     <p className="text-sm opacity-90">{faq.answer}</p>
                   </li>
