@@ -33,6 +33,7 @@ export default function EventsCalendar() {
       const mapped = data.map((event) => ({
         id: event._id,
         title: event.title,
+        slug: event.slug,
         start: new Date(event.date),
         end: new Date(event.endDate || event.date),
         coverImage: event.coverImage,
@@ -148,42 +149,47 @@ export default function EventsCalendar() {
           sortedEvents.map((event) => (
             <div
               key={event.id}
-              className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow cursor-pointer"
-              onClick={() => setSelectedEvent(event)}
+              className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow"
             >
-              <div className="flex items-start space-x-4">
-                {event.coverImage && (
-                  <img
-                    src={event.coverImage}
-                    alt={event.title}
-                    className="w-16 h-16 object-cover rounded-lg flex-shrink-0"
-                  />
-                )}
+              <div className="flex items-start gap-4">
+                {/* Left date rail */}
+                <div className="flex flex-col items-center justify-center px-2 border-l-4 border-[#DB4E9F] mr-1">
+                  <div className="text-xs font-semibold text-gray-600 leading-none">
+                    {moment(event.start).format('ddd').toUpperCase()}
+                  </div>
+                  <div className="text-xl font-bold text-[#093166]">
+                    {moment(event.start).format('D')}
+                  </div>
+                </div>
+
+                {/* Right content */}
                 <div className="flex-1 min-w-0">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-1 truncate">
-                    {event.title}
-                  </h3>
-                  <p className="text-sm text-gray-600 mb-2">
-                    📅 {moment(event.start).format("dddd, MMMM Do YYYY")}
-                    {event.start !== event.end && (
-                      <span> - {moment(event.end).format("dddd, MMMM Do YYYY")}</span>
+                  {event.coverImage && (
+                    <img
+                      src={event.coverImage}
+                      alt={event.title}
+                      className="w-full h-40 object-cover rounded-md mb-2"
+                    />
+                  )}
+                  <div className="text-sm text-gray-600 mb-1">
+                    {moment(event.start).format('MMM D, h:mm A')}
+                    {event.end && (
+                      <span> - {moment(event.end).format('h:mm A')}</span>
                     )}
-                  </p>
-                  {event.location && (
-                    <p className="text-sm text-gray-600 mb-1">
-                      📍 {event.location}
-                    </p>
-                  )}
-                  {event.price > 0 && (
-                    <p className="text-sm text-gray-600 mb-2">
-                      🎟️ ₹{event.price}
-                    </p>
-                  )}
+                  </div>
                   {event.description && (
-                    <p className="text-sm text-gray-700 line-clamp-2">
-                      {event.description}
+                    <p className="text-sm text-gray-700 mb-2">
+                      {event.description.length > 90
+                        ? `${event.description.slice(0, 90)}...`
+                        : event.description}
                     </p>
                   )}
+                  <a
+                    href={`/events/${event.slug || event.id}`}
+                    className="text-[#DB4E9F] text-sm font-semibold hover:underline"
+                  >
+                    Know more
+                  </a>
                 </div>
               </div>
             </div>
@@ -195,7 +201,7 @@ export default function EventsCalendar() {
 
   return (
     <div className="w-full min-h-screen p-4 md:p-6 bg-white">
-      <div className="max-w-6xl mx-auto bg-white rounded-xl shadow-lg p-4 md:p-6">
+      <div className="mx-auto bg-white rounded-xl shadow-lg p-4 md:p-6">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
           <h1 className="text-2xl md:text-3xl font-bold text-center md:text-left mb-4 md:mb-0 font-antonio uppercase text-[#093166]">
             Events Calendar
@@ -233,81 +239,85 @@ export default function EventsCalendar() {
           <ListView />
         )}
 
-        {/* Desktop Calendar View */}
+        {/* Desktop Calendar View with right-side detail panel */}
         {viewMode === 'calendar' && (
-          <>
-            {/* Custom days of week header */}
-            <div className="grid grid-cols-7 gap-1 mb-1 bg-gray-100 py-2 rounded-t-lg">
-              {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
-                <div key={day} className="text-center font-semibold text-gray-700">
-                  {day}
-                </div>
-              ))}
-            </div>
+          <div className="flex flex-col lg:flex-row gap-4">
+            <div className="flex-1 min-w-0">
+              {/* Custom days of week header */}
+              <div className="grid grid-cols-7 gap-1 mb-1 bg-gray-100 py-2 rounded-t-lg">
+                {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
+                  <div key={day} className="text-center font-semibold text-gray-700">
+                    {day}
+                  </div>
+                ))}
+              </div>
 
-            <div className="overflow-x-auto">
-              <Calendar
-                localizer={localizer}
-                events={events}
-                startAccessor="start"
-                endAccessor="end"
-                style={{ height: "740px", minWidth: "800px" }}
-                components={{
-                  event: EventCard,
-                  dateCellWrapper: (props) => (
-                    <DateCellWrapper {...props} events={events} />
-                  ),
-                  toolbar: CustomToolbar
-                }}
-                onSelectEvent={(event) => setSelectedEvent(event)}
-              />
-            </div>
-          </>
-        )}
-
-        {selectedEvent && (
-          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 p-4">
-            <div className="bg-white rounded-lg shadow-lg p-4 md:p-6 w-full max-w-lg relative max-h-[90vh] overflow-y-auto">
-              <button
-                onClick={() => setSelectedEvent(null)}
-                className="absolute top-2 right-2 text-gray-600 hover:text-gray-900 z-10"
-              >
-                ✖
-              </button>
-              {selectedEvent.coverImage && (
-                <img
-                  src={selectedEvent.coverImage}
-                  alt={selectedEvent.title}
-                  className="w-full h-48 object-cover rounded mb-4"
+              <div className="overflow-x-auto">
+                <Calendar
+                  localizer={localizer}
+                  events={events}
+                  startAccessor="start"
+                  endAccessor="end"
+                  selectable
+                  style={{ height: "740px", minWidth: "800px" }}
+                  components={{
+                    event: EventCard,
+                    dateCellWrapper: (props) => (
+                      <DateCellWrapper {...props} events={events} />
+                    ),
+                    toolbar: CustomToolbar
+                  }}
+                  onSelectEvent={(event) => setSelectedEvent(event)}
+                  onSelectSlot={(slotInfo) => {
+                    const clickedDate = moment(slotInfo.start);
+                    const found = events.find(ev =>
+                      clickedDate.isSame(ev.start, 'day') ||
+                      clickedDate.isBetween(ev.start, ev.end, 'day', '[]')
+                    );
+                    setSelectedEvent(found || null);
+                  }}
                 />
+              </div>
+            </div>
+
+            {/* Right-side detail panel */}
+            <div className="w-full lg:w-[380px] flex-shrink-0">
+              {selectedEvent ? (
+                <div className="sticky top-4 bg-white border border-gray-200 rounded-xl shadow-sm p-4">
+                  {selectedEvent.coverImage && (
+                    <img
+                      src={selectedEvent.coverImage}
+                      alt={selectedEvent.title}
+                      className="w-full h-[180px] object-cover rounded-lg mb-3"
+                    />
+                  )}
+                  <h2 className="text-lg font-bold mb-2 text-[#093166]">{selectedEvent.title}</h2>
+                  <p className="text-sm text-gray-600 mb-1">
+                    📅 {moment(selectedEvent.start).format('ddd, MMM D, h:mm A')}
+                    {selectedEvent.end && (
+                      <span> - {moment(selectedEvent.end).format('h:mm A')}</span>
+                    )}
+                  </p>
+                  {selectedEvent.location && (
+                    <p className="text-sm text-gray-600 mb-3">📍 {selectedEvent.location}</p>
+                  )}
+                  {selectedEvent.description && (
+                    <p className="text-sm text-gray-700 mb-4 line-clamp-2">{selectedEvent.description}</p>
+                  )}
+                  <div className="flex gap-2">
+                    <a href={`/events/${selectedEvent.slug || selectedEvent.id}`} className="flex-1 px-3 py-2 bg-[#DB4E9F] text-white rounded-md text-center hover:bg-[#DB4E9F]/90">Know more</a>
+                  </div>
+                </div>
+              ) : (
+                <div className="sticky top-4 border border-dashed border-gray-300 rounded-xl p-4 text-sm text-gray-500">
+                  Select a date or event to see details here
+                </div>
               )}
-              <h2 className="text-xl md:text-2xl font-bold mb-2 pr-8">{selectedEvent.title}</h2>
-              <p className="text-gray-600 mb-2">
-                📅 {moment(selectedEvent.start).format("MMMM Do YYYY, h:mm A")}
-                {selectedEvent.end &&
-                  ` - ${moment(selectedEvent.end).format("MMMM Do YYYY, h:mm A")}`}
-              </p>
-              {selectedEvent.location && (
-                <p className="text-gray-600 mb-2">
-                  📍 {selectedEvent.location}
-                </p>
-              )}
-              {selectedEvent.price > 0 && (
-                <p className="text-gray-600 mb-2">
-                  🎟️ Ticket Price: ₹{selectedEvent.price}
-                </p>
-              )}
-              {selectedEvent.description && (
-                <p className="text-gray-800 mb-4">
-                  {selectedEvent.description}
-                </p>
-              )}
-              <button className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
-                Book Ticket
-              </button>
             </div>
           </div>
         )}
+
+        {/* Modal removed in favor of side panel */}
       </div>
 
       <style jsx global>{`

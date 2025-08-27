@@ -1,9 +1,13 @@
+"use client";
 import Image from "next/image";
 import Link from "next/link";
 import { BsArrowRight } from "react-icons/bs";
 import Marquee from "../components/Marquee";
+import { useState } from "react";
 
 const Page = () => {
+  const [partnershipType, setPartnershipType] = useState("");
+  const [otherDetails, setOtherDetails] = useState("");
   return (
     <div className="w-full h-full flex flex-col">
       <section className="w-full flex min-h-[90vh] h-full flex-col items-center justify-end  bg-[url('/headerBg/loves.webp')] bg-cover bg-center pt-20 overflow-x-hidden">
@@ -175,6 +179,140 @@ const Page = () => {
             </div>
             <div className="w-full h-full lg:flex hidden flex-col items-center justify-center lg:basis-1/4 md:basis-1/3 basis-full gap-5"></div>
           </div>
+        </div>
+      </section>
+
+      <section className="w-full h-full flex flex-col gap-5 mt-10">
+        <div className="w-full h-full text-[#093166] max-w-[1400px] mx-auto flex flex-col lg:px-10 px-5">
+          <p className="font-quicksand font-semibold text-base">GROW</p>
+          <h2 className="md:text-[80px] text-5xl uppercase tracking-tighter font-antonio font-thin leading-[100%]">
+          <b className="tracking-tight font-bold">PARTNER </b>
+            WITH US
+          </h2>
+        </div>
+        <div className="w-full h-full flex flex-col justify-center items-center py-10 px-5">
+          <form className="w-full h-full lg:px-14 px-5 lg:py-5 py-6 border-2 border-[#db4e9f] max-w-[600px] rounded-lg flex flex-col gap-5 font-poppins relative">
+            <Image
+                  src="/partner/star.webp"
+                  height={100}
+                  width={100}
+                  alt="Logo"
+                  className="absolute lg:bottom-[10px] lg:right-[-70px] right-[-10px] bottom-[-20px]"
+                />
+            <div className="w-full h-full flex flex-row items-start justify-start gap-5 text-[#093166]">
+              <span className="border-2 border-[#db4e9f] h-7 w-7 rounded-full flex justify-center items-center  text-xs">
+                1
+              </span>
+              <div className="w-full h-full flex flex-col gap-5 max-w-[350px] mt-2">
+                <h4 className="font-medium uppercase text-sm">QUICK INTRO</h4>
+                <input
+                  type="text"
+                  required
+                  placeholder="NAME*"
+                  className="text-sm border-2 border-[#db4e9f] px-5 py-1 rounded-xl"
+                />
+                <input
+                  type="email"
+                  required
+                  placeholder="EMAIL*"
+                  className="text-sm border-2 border-[#db4e9f] px-5 py-1 rounded-xl"
+                />
+                <input
+                  type="url"
+                  required
+                  placeholder="Website"
+                  className="text-sm border-2 border-[#db4e9f] px-5 py-1 rounded-xl"
+                />
+              </div>
+            </div>
+
+            <div className="w-full h-full flex flex-row items-start justify-start gap-5 text-[#093166]">
+              <span className="border-2 border-[#db4e9f] h-7 w-7 rounded-full flex justify-center items-center  text-xs">
+                2
+              </span>
+              <div className="w-full h-full flex flex-col gap-3 max-w-[350px] mt-2">
+                <h4 className="font-medium uppercase text-sm">What kind of partnership are you looking for</h4>
+                <div className="w-full h-full flex flex-col gap-3 mt-1">
+                  {[
+                    "Product Collab (Feature your product with us)",
+                    "Service Collab (Bundle OR Cross-promote)",
+                    "Brand Promo (Get listed in our partner dictionary)",
+                    "Service Collab (Bundle OR Cross-promote)",
+                    "Event/ Campaign (Co-host OR Sponsor)",
+                    "Affiliate/Referral (Earn through referrals)",
+                    "Other (Please specify)",
+                  ].map((label) => (
+                    <label key={label} className="flex items-center gap-3 uppercase text-sm">
+                      <input
+                        type="radio"
+                        name="partnershipType"
+                        value={label}
+                        checked={partnershipType === label}
+                        onChange={(e) => setPartnershipType(e.target.value)}
+                        className="accent-[#db4e9f]"
+                      />
+                      <span className="uppercase">{label}</span>
+                    </label>
+                  ))}
+                </div>
+                <textarea
+                  placeholder="Please specify"
+                  className="text-sm border-2 border-[#db4e9f] px-5 py-2 min-h-[100px] rounded-xl"
+                  disabled={partnershipType !== "Other (Please specify)"}
+                  value={otherDetails}
+                  onChange={(e) => setOtherDetails(e.target.value)}
+                />
+              </div>
+            </div>
+
+            <div className="w-full h-full flex flex-row items-start justify-start gap-5 text-[#093166] mt-4">
+              <span className="border-2 border-[#db4e9f] h-7 w-7 rounded-full flex justify-center items-center  text-xs">
+                3
+              </span>
+              <div className="w-full h-full flex flex-col gap-2">
+                <h4 className="font-semibold">What Brings You Here?</h4>
+                <span className="w-full h-full flex lg:flex-row flex-col gap-5 mt-3">
+                  <label htmlFor="brand" className="uppercase w-full">
+                    Are you a brand?{" "}
+                  </label>
+                  <div className="w-full max-w-[150px] h-fit flex flex-row gap-5">
+                    <span className="w-fit h-full flex flex-row gap-2 uppercase">
+                      <input type="radio" name="yes" />
+                      <label htmlFor="yes">Yes</label>
+                    </span>
+                    <span className="w-fit h-full flex flex-row gap-2 uppercase">
+                      <input type="radio" name="no" id="" />
+                      <label htmlFor="no">No</label>
+                    </span>
+                  </div>
+                </span>
+
+                <span className="w-full h-full flex lg:flex-row flex-col gap-3 mt-3">
+                  <label htmlFor="brand" className="uppercase w-full text-base">
+                    Are you interested in running Eklektik Mama in your city?
+                  </label>
+                  <div className="w-full max-w-[150px] h-fit flex flex-row gap-5">
+                    <span className="w-fit h-full flex flex-row gap-2 uppercase">
+                      <input type="radio" name="yes" id="" />
+                      <label htmlFor="yes">Yes</label>
+                    </span>
+                    <span className="w-fit h-full flex flex-row gap-2 uppercase">
+                      <input type="radio" name="no" id="" />
+                      <label htmlFor="no">No</label>
+                    </span>
+                  </div>
+                </span>
+              </div>
+            </div>
+
+
+          </form>
+          <Link
+            href="/"
+            className="w-fit h-[45px] px-12 text-base flex items-center justify-center uppercase text-[#093166] hover:text-white rounded-[20px] my-6 border-2 border-[#bf378b] bg-transparent hover:bg-[#bf378b] transition-colors duration-500 ease-in-out md:scale-100 scale-75"
+          >
+            SUBMIT <BsArrowRight className="ml-2 text-2xl" />
+          </Link>
         </div>
       </section>
     </div>

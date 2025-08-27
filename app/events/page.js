@@ -129,23 +129,6 @@ export default function Events() {
           </h2>
         </div>
 
-        {/* <div className="w-full px-10 lg:px-24 mt-8 overflow-x-auto">
-          <Calendar
-            localizer={localizer}
-            events={events}
-            startAccessor="start"
-            endAccessor="end"
-            style={{ height: "740px", minWidth: "800px" }}
-            components={{
-              event: EventCard,
-              dateCellWrapper: (props) => (
-                <DateCellWrapper {...props} events={events} />
-              ),
-            }}
-            onSelectEvent={(event) => setSelectedEvent(event)}
-          />
-        </div> */}
-
         <EventsCalendar/>
 
         {/* Event Modal */}
@@ -159,7 +142,9 @@ export default function Events() {
                 ✖
               </button>
               {selectedEvent.coverImage && (
-                <img
+                <Image
+                width={500}
+                height={500}
                   src={selectedEvent.coverImage}
                   alt={selectedEvent.title}
                   className="w-full h-48 object-cover rounded mb-4"

@@ -50,28 +50,28 @@ export default function Footer() {
             alt="icons"
             width={300}
             height={130}
-            className="h-[100px] w-auto object-contain"
+            className="h-[100px] w-auto object-contain rounded"
           />
           <Image
             src="/footer/2.webp"
             alt="icons"
             width={300}
             height={130}
-            className="h-[100px] w-auto object-contain"
+            className="h-[100px] w-auto object-contain rounded"
           />
           <Image
             src="/footer/3.gif"
             alt="icons"
             width={250}
             height={200}
-            className="h-[200px] w-auto object-contain"
+            className="h-[200px] w-auto object-contain rounded"
           />
           <Image
             src="/footer/4.webp"
             alt="icons"
             width={300}
             height={130}
-            className="h-[100px] w-auto object-contain"
+            className="h-[100px] w-auto object-contain rounded"
           />
         </span>
       </div>
@@ -171,7 +171,7 @@ export default function Footer() {
               <h3 className="font-bold mb-6">EXTRAS / RESOURCES</h3>
               <ul className="space-y-2 uppercase text-left">
                 <li>
-                  <a href="#" className="hover:underline">
+                  <a href="/perks" className="hover:underline">
                     Eklektik Mama Loves (Partners)
                   </a>
                 </li>
