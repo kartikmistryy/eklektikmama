@@ -36,6 +36,11 @@ yarn-error.log*
 # vercel
 .vercel
 
+# sensitive files
+*Webhook*.json
+*stripe*.json
+*credentials*.json
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts

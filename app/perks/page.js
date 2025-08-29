@@ -171,8 +171,8 @@ const Page = () => {
             brands who&apos;ve earned their place here, bold, brilliant, and vetted
             by mums who know what works (and what&apos;s just marketing fluff). From
             the products that save your sanity to the services that make life
-            easier, this is our go-to list when someone says, &quot;Do you know
-            anyone who…?
+            easier, this is our go-to list when someone says, &quot;            Do you know
+            anyone who&hellip;?
           </p>
           <Link
             href="/"

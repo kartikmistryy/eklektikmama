@@ -379,10 +379,10 @@ export default function Home() {
             <p id="interactivePara">
               Because being a mum doesn&apos;t mean disappearing into soft pastels,
               sugar-coated advice, or a WhatsApp group that only talks about nap
-              schedules. Eklektik Mama™️ was born from the chaos, the 3AM feeds,
+              schedules. Eklektik Mama™ was born from the chaos, the 3AM feeds,
               the unfiltered rants, the fierce need for community that actually
               gets it. <br /> <br />
-              We're here for bold mums who crave more than just "mommy & me" who
+              We&apos;re here for bold mums who crave more than just &ldquo;mommy & me&rdquo; who
               want real conversations, real connection, and a little rebellion
               with their baby wipes.
               {showFullPara && (
