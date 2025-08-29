@@ -121,7 +121,7 @@ export default function MembershipOptions() {
           >
             <span className="text-2xl font-medium">{plan.title}</span>
             <div className="flex items-center gap-3">
-              <span className="text-2xl font-bold">{plan.price}</span>
+              <span className="text-xl font-bold">{plan.price}</span>
               {openIndex === index ? (
                 <BsArrowDown className="text-2xl ml-7"/>
               ) : (
@@ -157,8 +157,8 @@ export default function MembershipOptions() {
                     </li>
                   ))}
                 </ul>
-                <button className="mt-6 flex items-center border border-white rounded-full px-6 py-1 text-white hover:bg-white gap-6 tracking-wider ml-auto hover:text-[#db4e9f] transition">
-                  PAY VIA STRIPE <BsArrowRight />
+                <button className="mt-6 flex items-center border border-white rounded-full px-6 py-1 text-white opacity-75 cursor-not-allowed ml-auto">
+                  coming soon
                 </button>
               </motion.div>
             )}
@@ -174,12 +174,12 @@ export default function MembershipOptions() {
         >
           <span className="text-2xl">QUESTIONS?</span>
           {openIndex === "faq" ? (
-            <span className="w-fit ml-auto flex flex-row items-center uppercase text-xl">
+            <span className="w-fit ml-auto flex flex-row items-center uppercase text-xl font-bold">
               See Membership FAQs
               <BsArrowDown className="text-2xl ml-7" />
             </span>
           ) : (
-            <span className="w-fit ml-auto flex flex-row items-center uppercase text-xl">
+            <span className="w-fit ml-auto flex flex-row items-center uppercase text-xl font-bold">
               See Membership FAQs
               <BsArrowRight className="text-2xl ml-7" />
             </span>

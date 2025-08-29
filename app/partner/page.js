@@ -163,7 +163,7 @@ const Parnterwithus = () => {
           animate={introInView ? "visible" : "hidden"}
           variants={fadeInUp}
         >
-          <p className="font-quicksand font-semibold text-base">Unleashed</p>
+          <p className="font-quicksand font-semibold text-base uppercase">Unleashed</p>
           <h2 className="md:text-[80px] text-5xl uppercase font-anton leading-[100%]">
             Brand collabs. <br />
             <b className="font-antonio font-normal tracking-tight">
@@ -210,7 +210,7 @@ const Parnterwithus = () => {
           animate={teamUpInView ? "visible" : "hidden"}
           variants={fadeInUp}
         >
-          <p className="font-quicksand font-semibold text-base">
+          <p className="font-quicksand font-semibold text-base uppercase">
             Team Up With Us
           </p>
           <h2 className="md:text-[80px] text-5xl uppercase font-antonio font-thin leading-[100%]">
@@ -325,7 +325,7 @@ const Parnterwithus = () => {
           animate={pitchInView ? "visible" : "hidden"}
           variants={fadeInUp}
         >
-          <p className="font-quicksand font-semibold text-base">Pitch</p>
+          <p className="font-quicksand font-semibold text-base uppercase">Pitch</p>
           <h2 className="md:text-[80px] text-5xl uppercase tracking-tighter font-antonio font-thin leading-[100%]">
             This Is Where {""}
             <b className="tracking-tight font-bold">It Starts</b>

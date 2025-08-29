@@ -102,7 +102,7 @@ export default function MembershipPage() {
           <h1 className="w-fit md:text-[85px] text-[45px] font-bold uppercase text-[#f6f6f6] leading-[130%] text-center font-anton">
             GET
             <br />
-            <b className="md:text-[100px] text-[60px]">Eklektik AF</b>
+            <b className="md:text-[100px] text-[60px]">Eklektik AF</b> <br /> (Coming Soon)
           </h1>
         </motion.div>
         <Marquee />
@@ -116,7 +116,7 @@ export default function MembershipPage() {
             animate={introInView ? "visible" : "hidden"}
             variants={fadeInUp}
           >
-            <p className="font-quicksand font-semibold text-base">Membership</p>
+            <p className="font-quicksand font-semibold text-base uppercase">Membership</p>
             <h2 className="md:text-[80px] text-5xl uppercase font-antonio font-medium tracking-tighter leading-[100%]">
               <b className="font-anton tracking-normal font-semibold">AED 50</b>
               / Month.
@@ -245,7 +245,7 @@ export default function MembershipPage() {
           animate={howItWorksInView ? "visible" : "hidden"}
           variants={fadeInUp}
         >
-          <p className="font-quicksand font-semibold text-base">Briefly</p>
+          <p className="font-quicksand font-semibold text-base uppercase">Briefly</p>
           <h2 className="md:text-[80px] text-5xl uppercase font-antonio font-thin tracking-tighter leading-[100%]">
             HOW IT <b className="font-bold tracking-normal">WORKS</b>
           </h2>
@@ -344,7 +344,7 @@ export default function MembershipPage() {
 
       <section ref={plansRef} className="w-full h-full flex flex-col">
         <motion.p 
-          className="font-quicksand font-semibold text-base w-full lg:px-10 px-5"
+          className="font-quicksand font-semibold text-base w-full lg:px-10 px-5 uppercase"
           initial="hidden"
           animate={plansInView ? "visible" : "hidden"}
           variants={fadeInUp}

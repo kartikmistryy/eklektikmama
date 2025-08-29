@@ -100,7 +100,7 @@ const Page = () => {
           animate={introInView ? "visible" : "hidden"}
           variants={fadeInUp}
         >
-          <p className="font-quicksand font-semibold text-base">
+          <p className="font-quicksand font-semibold text-base uppercase">
             Unleashed
           </p>
           <h2 className="md:text-[80px] text-5xl uppercase font-antonio leading-[100%]">
@@ -116,7 +116,7 @@ const Page = () => {
             Think of it as our brag wall—but for stuff that matters.
           </p>
         </motion.div>
-        <motion.div 
+        <motion.div id="target"
           className="w-full h-full flex flex-col justify-center  items-center md:basis-1/2 basis-full pr-0"
           initial="hidden"
           animate={introInView ? "visible" : "hidden"}
@@ -124,34 +124,100 @@ const Page = () => {
           transition={{ delay: 0.3 }}
         >
           <span className="md:w-[350px] md:h-[450px] w-[250px] h-[300px] relative">
-            <Image
-              src="/highlights/s1.webp"
-              height={500}
-              width={400}
+            {/* Image 1 - Left movement */}
+            <motion.div
+              animate={{
+                x: [0, -30, 0],
+              }}
+              transition={{
+                duration: 6,
+                ease: "easeInOut",
+                repeat: Infinity,
+                repeatType: "reverse",
+                delay: 0
+              }}
               className="absolute top-26 md:-left-[200px] left-32 md:w-full md:h-full w-[200px] h-[250px] md:max-w-[260px] md:max-h-[340px]"
-              alt="image"
-            />
-            <Image
-              src="/highlights/s2.webp"
-              height={500}
-              width={400}
+            >
+              <Image
+                src="/highlights/s1.webp"
+                height={500}
+                width={400}
+                className="w-full h-full object-contain"
+                alt="image"
+              />
+            </motion.div>
+
+            {/* Image 2 - Up and down movement */}
+            <motion.div
+              animate={{
+                y: [0, 20, 0],
+              }}
+              transition={{
+                duration: 5,
+                ease: "easeInOut",
+                repeat: Infinity,
+                repeatType: "reverse",
+                delay: 1
+              }}
               className="absolute top-[70px] md:left-[0] left-[-50px] md:w-full md:h-full w-[200px] h-[250px] md:max-w-[260px] md:max-h-[340px]"
-              alt="image"
-            />
-            <Image
-              src="/highlights/s3.webp"
-              height={500}
-              width={400}
+            >
+              <Image
+                src="/highlights/s2.webp"
+                height={500}
+                width={400}
+                className="w-full h-full object-contain"
+                alt="image"
+              />
+            </motion.div>
+
+            {/* Image 3 - Center movement */}
+            <motion.div
+              animate={{
+                scale: [1, 1.1, 1],
+                x: [0, 10, 0],
+              }}
+              transition={{
+                duration: 7,
+                ease: "easeInOut",
+                repeat: Infinity,
+                repeatType: "reverse",
+                delay: 2
+              }}
               className="absolute top-[50px] md:left-[160px] left-0 md:w-full md:h-full w-[200px] h-[250px] md:max-w-[260px] md:max-h-[340px]"
-              alt="image"
-            />
-            <Image
-              src="/highlights/sun.webp"
-              height={500}
-              width={400}
+            >
+              <Image
+                src="/highlights/s3.webp"
+                height={500}
+                width={400}
+                className="w-full h-full object-contain"
+                alt="image"
+              />
+            </motion.div>
+
+            {/* Image 4 - Sun with rotation and subtle movement */}
+            <motion.div
+              animate={{
+                rotate: [0, 360],
+                scale: [1, 1.2, 1],
+                y: [0, -10, 0],
+              }}
+              transition={{
+                duration: 8,
+                ease: "easeInOut",
+                repeat: Infinity,
+                repeatType: "reverse",
+                delay: 3
+              }}
               className="absolute md:top-[0%] top-[30%] md:right-[-40%] right-[-35%] md:w-[100px] md:h-[100px] w-[80px] h-[80px]"
-              alt="image"
-            />
+            >
+              <Image
+                src="/highlights/sun.webp"
+                height={500}
+                width={400}
+                className="w-full h-full object-contain"
+                alt="image"
+              />
+            </motion.div>
           </span>
         </motion.div>
       </section>
@@ -242,7 +308,7 @@ const Page = () => {
           animate={brandSectionInView ? "visible" : "hidden"}
           variants={fadeInUp}
         >
-          <p className="font-quicksand font-semibold text-base">
+          <p className="font-quicksand font-semibold text-base uppercase">
             Powered by mums
           </p>
           <h2 className="md:text-[80px] text-5xl uppercase font-antonio leading-[100%]">

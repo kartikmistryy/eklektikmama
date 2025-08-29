@@ -92,7 +92,7 @@ const Page = () => {
           animate={featuredInView ? "visible" : "hidden"}
           variants={fadeInUp}
         >
-          <p className="font-quicksand font-semibold text-base">
+          <p className="font-quicksand font-semibold text-base uppercase">
             Unfiltered Blogs
           </p>
           <h2 className="md:text-[80px] font-thin text-5xl uppercase font-anton leading-[100%]">
@@ -184,7 +184,7 @@ const Page = () => {
               </a>
             </span>
             <h4 className="text-xl font-poppins uppercase">
-              Let&apos;s Talk About Sex in Motherhood (After Kids Ruined It)
+            Mum Rage: The Silent Scream of Motherhood
             </h4>
           </motion.div>
         </motion.div>

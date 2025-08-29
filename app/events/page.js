@@ -16,6 +16,7 @@ import {
 import EventsCalendar from "../components/EventsCalendar";
 import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
+import Link from "next/link";
 
 const localizer = momentLocalizer(moment);
 
@@ -153,7 +154,7 @@ export default function Events() {
           animate={introInView ? "visible" : "hidden"}
           variants={fadeInUp}
         >
-          <p className="font-quicksand font-semibold">Stuff</p>
+          <p className="font-quicksand font-semibold uppercase">Stuff</p>
           <h2 className="text-5xl md:text-[80px] uppercase font-anton leading-[100%]">
             Worth{" "}
             <b className="font-antonio font-medium tracking-tight">
@@ -290,7 +291,7 @@ export default function Events() {
           animate={previousEventsInView ? "visible" : "hidden"}
           variants={fadeInUp}
         >
-          <p className="font-quicksand font-semibold">Explore</p>
+          <p className="font-quicksand font-semibold uppercase">Explore</p>
           <h2 className="text-5xl md:text-[80px] uppercase font-antonio font-thin leading-[100%] tracking-tighter">
             Check <b className="font-bold">Previous Events</b>
           </h2>
@@ -302,9 +303,9 @@ export default function Events() {
           variants={staggerContainer}
           transition={{ delay: 0.2 }}
         >
-          <Carousel className="w-full h-full flex flex-row overflow-scroll gap-4 justify-start ">
+          <Carousel className="w-full h-full flex flex-row overflow-scroll gap-4 justify-start">
             <CarouselContent className="w-full h-full flex flex-row justify-between items-center gap-4 lg:px-10 px-5 py-5">
-              {[1, 2, 3, 4].map((item, index) => (
+              {[1, 2, 3].map((item, index) => (
                 <motion.div
                   key={index}
                   variants={carouselItem}
@@ -321,23 +322,27 @@ export default function Events() {
                       <h4 className="uppercase font-poppins font-bold text-4xl text-[#093166]">
                         EVENT NAME
                       </h4>
-                      <button className="text-sm text-white rounded-full font-medium font-poppins flex flex-row items-center bg-[#093166] justify-start gap-5 px-3 py-1.5 mt-auto ml-auto">
-                        VIEW ALL
-                        <BsArrowRight className="text-lg font-bold" />
-                      </button>
                     </span>
                   </CarouselItem>
                 </motion.div>
               ))}
             </CarouselContent>
           </Carousel>
+          
+          {/* View All Button */}
+          <div className="flex justify-center mt-6">
+            <Link href="/whatwedo" className="text-sm text-white rounded-full font-medium font-poppins flex flex-row items-center bg-[#093166] justify-start gap-5 px-6 py-2 hover:bg-[#072a4d] transition-colors duration-300">
+              VIEW ALL
+              <BsArrowRight className="text-lg font-bold" />
+            </Link>
+          </div>
         </motion.div>
       </section>
 
       {/* Connected AF Section */}
       <section className="w-full flex flex-col gap-5 mt-10 px-5 lg:px-12">
         <div className="text-[#093166]">
-          <p className="font-quicksand font-semibold">#MumsThatGetIt</p>
+          <p className="font-quicksand font-semibold uppercase">#MumsThatGetIt</p>
           <h2 className="text-5xl md:text-[80px] uppercase font-antonio font-thin leading-[100%]">
             CONNECTED <b className="font-bold">AF</b>
           </h2>

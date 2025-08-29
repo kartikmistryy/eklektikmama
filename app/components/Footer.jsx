@@ -175,11 +175,11 @@ export default function Footer() {
                     Eklektik Mama Loves (Partners)
                   </a>
                 </li>
-                <li>
+                {/* <li>
                   <a href="#" className="hover:underline">
                     Eklektik AF Welcome Pack
                   </a>
-                </li>
+                </li> */}
                 <li>
                   <a href="#" className="hover:underline">
                     UAE Mum Survival Guide

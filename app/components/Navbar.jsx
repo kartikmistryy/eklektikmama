@@ -38,7 +38,7 @@ export default function Navbar() {
         </Link>
 
         <Link href="/partner">WORK WITH US</Link>
-        <Link href="/whatwedo">ABOUT</Link>
+        <Link href="/whatwedo">HIGHLIGHTS</Link>
       </div>
 
       {/* Mobile Logo (<1060px only) */}
@@ -95,7 +95,7 @@ export default function Navbar() {
             <a href="/events">EVENTS</a>
             <a href="/blogs">UNFILTERED AF BLOG</a>
             <a href="/partner">WORK WITH US</a>
-            <a href="/about">ABOUT</a>
+            <a href="/about">HIGHLIGHTS</a>
           </div>
         </div>
       )}

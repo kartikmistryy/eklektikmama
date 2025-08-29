@@ -15,21 +15,10 @@ import Link from "next/link";
 import { useEffect } from "react";
 
 export default function Home() {
-  const [glitchTrigger, setGlitchTrigger] = useState(0);
-
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
     setIsVisible(true);
-  }, []);
-
-  // Auto glitch effect for cards
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setGlitchTrigger((prev) => prev + 1);
-    }, 1000);
-
-    return () => clearInterval(interval);
   }, []);
 
   // Glitch effect variants for cards
@@ -55,7 +44,7 @@ export default function Home() {
     },
   };
 
-  // Individual glitch variants for each card with different timing
+  // Smooth floating animations for cards
   const card1Variants = {
     rest: {
       x: 0,
@@ -63,18 +52,22 @@ export default function Home() {
       rotate: -9,
       opacity: 1,
       transition: {
-        duration: 0.5,
-        ease: "easeOut",
+        duration: 2,
+        ease: "easeInOut",
+        repeat: Infinity,
+        repeatType: "reverse",
       },
     },
-    glitch: {
-      x: [0, -5, 5, -3, 3, 0],
-      y: [0, 3, -3, 2, -2, 0],
-      opacity: [1, 0.8, 0.9, 0.7, 0.9, 1],
-      rotate: [-9, -11, -7, -11, -7, -9],
+    float: {
+      x: [0, -3, 3, 0],
+      y: [0, -5, -3, 0],
+      rotate: [-9, -8, -10, -9],
+      opacity: 1,
       transition: {
-        duration: 0.4,
+        duration: 4,
         ease: "easeInOut",
+        repeat: Infinity,
+        repeatType: "reverse",
       },
     },
   };
@@ -86,17 +79,22 @@ export default function Home() {
       rotate: 0,
       opacity: 1,
       transition: {
-        duration: 0.5,
-        ease: "easeOut",
+        duration: 2,
+        ease: "easeInOut",
+        repeat: Infinity,
+        repeatType: "reverse",
       },
     },
-    glitch: {
-      x: [0, -6, 6, -4, 4, 0],
-      y: [24, 28, 20, 28, 20, 24],
-      opacity: [1, 0.7, 0.8, 0.6, 0.8, 1],
+    float: {
+      x: [0, 4, -2, 0],
+      y: [24, 20, 28, 24],
+      rotate: [0, 1, -1, 0],
+      opacity: 1,
       transition: {
-        duration: 0.35,
+        duration: 3.5,
         ease: "easeInOut",
+        repeat: Infinity,
+        repeatType: "reverse",
       },
     },
   };
@@ -108,18 +106,22 @@ export default function Home() {
       rotate: -6,
       opacity: 1,
       transition: {
-        duration: 0.5,
-        ease: "easeOut",
+        duration: 2,
+        ease: "easeInOut",
+        repeat: Infinity,
+        repeatType: "reverse",
       },
     },
-    glitch: {
-      x: [0, -7, 7, -5, 5, 0],
-      y: [56, 60, 52, 60, 52, 56],
-      opacity: [1, 0.6, 0.7, 0.5, 0.7, 1],
-      rotate: [-6, -8, -4, -8, -4, -6],
+    float: {
+      x: [0, -2, 4, 0],
+      y: [56, 52, 60, 56],
+      rotate: [-6, -5, -7, -6],
+      opacity: 1,
       transition: {
-        duration: 0.45,
+        duration: 4.5,
         ease: "easeInOut",
+        repeat: Infinity,
+        repeatType: "reverse",
       },
     },
   };
@@ -131,18 +133,22 @@ export default function Home() {
       rotate: 9,
       opacity: 1,
       transition: {
-        duration: 0.5,
-        ease: "easeOut",
+        duration: 2,
+        ease: "easeInOut",
+        repeat: Infinity,
+        repeatType: "reverse",
       },
     },
-    glitch: {
-      x: [0, -5, 5, -3, 3, 0],
-      y: [0, 4, -4, 2, -2, 0],
-      opacity: [1, 0.8, 0.9, 0.7, 0.9, 1],
-      rotate: [9, 11, 7, 11, 7, 9],
+    float: {
+      x: [0, 3, -3, 0],
+      y: [0, -4, -2, 0],
+      rotate: [9, 10, 8, 9],
+      opacity: 1,
       transition: {
-        duration: 0.5,
+        duration: 3,
         ease: "easeInOut",
+        repeat: Infinity,
+        repeatType: "reverse",
       },
     },
   };
@@ -212,6 +218,8 @@ export default function Home() {
     },
   };
 
+  const [showFullPara, setShowFullPara] = useState(false);
+
   return (
     <div className="w-full h-full flex flex-col bg-[#231f20] lg:pt-[120px] pt-[120px] relative overflow-hidden">
       <section className="w-full h-full flex flex-col items-center justify-start relative overflow-visible mb-[-1px]">
@@ -238,13 +246,12 @@ export default function Home() {
               </h1>
 
               {/* Overlapping Images after text */}
-              <div className="md:absolute relative lg:top-[110px] md:top-[70px] lg:left-[57%] md:left-[45%] lg:scale-100 md:scale-90 scale-70 flex space-x-[-40px] z-10 overflow-visible">
+              <div className="md:absolute relative lg:top-[110px] md:top-[70px] lg:left-[60%] md:left-[50%] lg:scale-100 md:scale-90 scale-70 flex space-x-[-40px] z-10 overflow-visible">
                 {/* Card 1 */}
                 <motion.div
-                  key={`card1-${glitchTrigger % 3 === 0 ? glitchTrigger : 0}`}
                   variants={card1Variants}
                   initial="rest"
-                  animate={glitchTrigger % 3 === 0 ? "glitch" : "rest"}
+                  animate="float"
                   className="relative"
                 >
                   <Image
@@ -258,10 +265,9 @@ export default function Home() {
 
                 {/* Card 2 */}
                 <motion.div
-                  key={`card2-${glitchTrigger % 4 === 0 ? glitchTrigger : 0}`}
                   variants={card2Variants}
                   initial="rest"
-                  animate={glitchTrigger % 4 === 0 ? "glitch" : "rest"}
+                  animate="float"
                   className="relative"
                 >
                   <Image
@@ -275,10 +281,9 @@ export default function Home() {
 
                 {/* Card 3 */}
                 <motion.div
-                  key={`card3-${glitchTrigger % 5 === 0 ? glitchTrigger : 0}`}
                   variants={card3Variants}
                   initial="rest"
-                  animate={glitchTrigger % 5 === 0 ? "glitch" : "rest"}
+                  animate="float"
                   className="relative"
                 >
                   <Image
@@ -292,10 +297,9 @@ export default function Home() {
 
                 {/* Card 4 */}
                 <motion.div
-                  key={`card4-${glitchTrigger % 6 === 0 ? glitchTrigger : 0}`}
                   variants={card4Variants}
                   initial="rest"
-                  animate={glitchTrigger % 6 === 0 ? "glitch" : "rest"}
+                  animate="float"
                   className="relative"
                 >
                   <Image
@@ -367,29 +371,40 @@ export default function Home() {
               we’re here
             </b>
           </h2>
-          <p className="lg:text-base font-quicksand font-medium mt-6 md:w-[95%] w-full">
-            Because being a mum doesn’t mean disappearing into soft pastels,
-            sugar-coated advice, or a WhatsApp group that only talks about nap
-            schedules. Eklektik Mama™ was born from the chaos — the 3AM feeds,
-            the unfiltered rants, the fierce need for community that actually
-            gets it.
-            <br />
-            We’re here for bold mums who crave more than just “mommy & me” — who
-            want real conversations, real connection, and a little rebellion
-            with their baby wipes. Through BYOBaby™ events, unapologetic blog
-            posts, and gear you didn’t know you needed, we’re building something
-            that feels like solidarity (not sanitised sisterhood).
-            <br />
-            This isn’t a parenting platform. It’s a movement. And if that sounds
-            like your kind of mess — welcome home.
-          </p>
-          <Link
-            href="/"
+          <motion.div
+            layout
+            transition={{ duration: 0.5, ease: "easeInOut" }}
+            className="lg:text-base font-quicksand font-medium mt-6 md:w-[95%] w-full"
+          >
+            <p id="interactivePara">
+              Because being a mum doesn&apos;t mean disappearing into soft pastels,
+              sugar-coated advice, or a WhatsApp group that only talks about nap
+              schedules. Eklektik Mama™️ was born from the chaos, the 3AM feeds,
+              the unfiltered rants, the fierce need for community that actually
+              gets it. <br /> <br />
+              We're here for bold mums who crave more than just "mommy & me" who
+              want real conversations, real connection, and a little rebellion
+              with their baby wipes.
+              {showFullPara && (
+                <>
+                  <br /> <br />Through BYOBaby™ events, unapologetic blog
+                  posts, and gear you didn&apos;t know you needed, we&apos;re building something
+                  that feels like solidarity (not sanitised sisterhood). 
+                  This isn&apos;t a parenting platform. It&apos;s a movement. And if that sounds
+                  like your kind of mess, welcome home. Because motherhood doesn&apos;t
+                  need a filter. <br />
+                  It needs fire, grit, and a space where your loud, raw, unpolished
+                  self isn&apos;t just accepted — it&apos;s celebrated.
+                </>
+              )}
+            </p>
+          </motion.div>
+          <button 
+            onClick={() => setShowFullPara(!showFullPara)}
             className="w-fit md:h-[45px] h-[40px] md:px-12 px-6 md:text-base text-xs flex items-center justify-center uppercase text-[#093166] hover:text-white rounded-[20px] my-6 border-2 border-[#bf378b] bg-transparent hover:bg-[#bf378b] transition-colors duration-500 ease-in-out"
           >
-            LEARN MORE ABOUT US{" "}
-            <BsArrowRight className="ml-2 md:text-2xl text-lg" />
-          </Link>
+            {showFullPara ? 'View Less' : 'View More'}
+          </button>
         </div>
         <div className="w-full h-full flex flex-col justify-center  items-center md:basis-1/2 basis-full pr-0">
           <motion.span
@@ -549,10 +564,10 @@ export default function Home() {
                       AED 50/month.
                     </p>
                     <span className="w-full h-fit mt-auto flex flex-row items-center justify-between pr-2">
-                      <button className="text-sm bg-white rounded-full font-medium font-poppins flex flex-row uppercase items-center justify-start gap-5 px-3 py-1.5 ">
+                      <Link href="/eklektikmamaMembership" className="text-sm bg-white rounded-full font-medium font-poppins flex flex-row uppercase items-center justify-start gap-5 px-3 py-1.5 ">
                         JOIN THE MEMBERSHIP{" "}
                         <BsArrowRight className="text-lg font-bold" />
-                      </button>
+                      </Link>
                       <button className="bg-white rounded-full p-1 text-2xl font-bold">
                         <BsPlus />
                       </button>
@@ -576,10 +591,10 @@ export default function Home() {
                       convos. View this month’s line-up or miss out.
                     </p>
                     <span className="w-full h-fit mt-auto flex flex-row items-center justify-between pr-2">
-                      <button className="text-sm text-white rounded-full font-medium font-poppins flex flex-row uppercase items-center bg-[#093166] justify-start gap-5 px-3 py-1.5 ">
+                      <Link href="/events" className="text-sm text-white rounded-full font-medium font-poppins flex flex-row uppercase items-center bg-[#093166] justify-start gap-5 px-3 py-1.5 ">
                         SEE THE LINEUP{" "}
                         <BsArrowRight className="text-lg font-bold" />
-                      </button>
+                      </Link>
                       <button className="bg-white rounded-full p-1 text-2xl font-bold border-[1px] border-[#093166]">
                         <BsPlus />
                       </button>
@@ -610,10 +625,10 @@ export default function Home() {
                       Our blog. Therapy-adjacent. Censorship-free.
                     </p>
                     <span className="w-full h-fit mt-auto flex flex-row items-center justify-between pr-2">
-                      <button className="text-sm bg-[#093166] text-white rounded-full font-medium font-poppins uppercase flex flex-row items-center justify-start gap-5 px-3 py-1.5 ">
+                      <Link href="/blogs" className="text-sm bg-[#093166] text-white rounded-full font-medium font-poppins uppercase flex flex-row items-center justify-start gap-5 px-3 py-1.5 ">
                         READ THE BLOG
                         <BsArrowRight className="text-lg font-bold" />
-                      </button>
+                      </Link>
                       <button className=" rounded-full p-1 text-2xl font-bold border-[1px] border-[#093166] text-[#093166]">
                         <BsPlus />
                       </button>
@@ -655,8 +670,9 @@ export default function Home() {
                     {/* Buttons */}
                     <span className="w-full mt-auto flex flex-row items-center justify-between pr-2">
                       <button className="text-sm text-white rounded-full font-medium font-poppins flex flex-row items-center bg-[#093166] justify-start gap-5 px-3 py-1.5 border uppercase border-white">
-                        SHOP THE DROP{" "}
-                        <BsArrowRight className="text-lg font-bold" />
+                        {/* SHOP THE DROP{" "} */}
+                        coming soon
+                        {/* <BsArrowRight className="text-lg font-bold" /> */}
                       </button>
                       <button className="rounded-full p-1 text-2xl font-bold border-[1px] border-white text-white">
                         <BsPlus />

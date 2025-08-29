@@ -161,7 +161,7 @@ const Page = () => {
           animate={introInView ? "visible" : "hidden"}
           variants={fadeInUp}
         >
-          <p className="font-quicksand font-semibold text-base">Our</p>
+          <p className="font-quicksand font-semibold text-base uppercase">Our</p>
           <h2 className="md:text-[80px] font-thin text-5xl uppercase font-antonio leading-[100%]">
             Partner <br />
             <b className="font-anton font-normal tracking-tight">Dictionary.</b>
@@ -362,7 +362,7 @@ const Page = () => {
           animate={formInView ? "visible" : "hidden"}
           variants={fadeInUp}
         >
-          <p className="font-quicksand font-semibold text-base">Grow</p>
+          <p className="font-quicksand font-semibold text-base uppercase">Grow</p>
           <h2 className="md:text-[80px] text-5xl uppercase tracking-tighter font-antonio font-thin leading-[100%]">
           <b className="tracking-tight font-bold">PARTNER </b>
             WITH US
