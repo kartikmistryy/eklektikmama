@@ -5,6 +5,8 @@ const BookingSchema = new mongoose.Schema({
   guardianName: String,
   childName: String,
   userEmail: String,
+  phone: String,
+  numberOfTickets: { type: Number, default: 1 },
   transactionId: String,
   qrCodeDataUrl: String,
   paymentStatus: { type: String, enum: ["pending", "paid"], default: "pending" },

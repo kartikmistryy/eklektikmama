@@ -71,7 +71,7 @@ export default function EventsCalendar() {
 
     return (
       <div
-        className="relative w-full h-full"
+        className="relative w-full h-full bg-red-300"
         style={{
           backgroundImage: event?.coverImage ? `url(${event.coverImage})` : "none",
           backgroundSize: "cover",
@@ -200,7 +200,7 @@ export default function EventsCalendar() {
   };
 
   return (
-    <div className="w-full min-h-screen p-4 md:p-6 bg-white">
+    <div className="w-full min-h-screen h-full p-4 md:p-6 bg-white">
       <div className="mx-auto bg-white rounded-xl shadow-lg p-4 md:p-6">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
           <h1 className="text-2xl md:text-3xl font-bold text-center md:text-left mb-4 md:mb-0 font-antonio uppercase text-[#093166]">
@@ -241,8 +241,8 @@ export default function EventsCalendar() {
 
         {/* Desktop Calendar View with right-side detail panel */}
         {viewMode === 'calendar' && (
-          <div className="flex flex-col lg:flex-row gap-4">
-            <div className="flex-1 min-w-0">
+          <div className="flex flex-col lg:flex-row gap-4 w-full h-full">
+            <div className="flex-1 min-w-0 h-full">
               {/* Custom days of week header */}
               <div className="grid grid-cols-7 gap-1 mb-1 bg-gray-100 py-2 rounded-t-lg">
                 {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
@@ -252,14 +252,14 @@ export default function EventsCalendar() {
                 ))}
               </div>
 
-              <div className="overflow-x-auto">
+              <div className="w-full">
                 <Calendar
                   localizer={localizer}
                   events={events}
                   startAccessor="start"
                   endAccessor="end"
                   selectable
-                  style={{ height: "740px", minWidth: "800px" }}
+                  style={{ height: "auto", minHeight: "600px" }}
                   components={{
                     event: EventCard,
                     dateCellWrapper: (props) => (
@@ -317,7 +317,6 @@ export default function EventsCalendar() {
           </div>
         )}
 
-        {/* Modal removed in favor of side panel */}
       </div>
 
       <style jsx global>{`

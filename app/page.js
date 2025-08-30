@@ -325,15 +325,15 @@ export default function Home() {
             didn’t know you needed.
           </motion.p>
 
-          <motion.Link
+          <motion.a
             initial={{ opacity: 0, y: "40px" }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ type: "keyframes", duration: 0.4, delay: 0.5 }}
-            href="/"
+            href="/events"
             className="w-[190px] h-[45px] text-base flex items-center justify-center uppercase mx-auto text-white rounded-[20px] my-6 border-2 border-[#bf378b] bg-transparent hover:bg-[#bf378b] transition-colors duration-500 ease-in-out md:scale-100 scale-75"
           >
             VIEW EVENTS
-          </motion.Link>
+          </motion.a>
         </div>
 
         {/* Need to hide their overdlow */}

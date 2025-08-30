@@ -16,7 +16,7 @@ export async function POST(req) {
       body = Object.fromEntries(formData.entries());
     }
 
-    const { eventId } = body;
+    const { eventId, guardianName, childName, email, phone, numberOfTickets } = body;
     await connectDB();
     const event = await Event.findById(eventId);
     if (!event) return NextResponse.json({ error: 'Event not found' }, { status: 404 });
@@ -37,6 +37,7 @@ export async function POST(req) {
       success_url: `${origin}/events/${event.slug || event._id}?success=true`,
       cancel_url: `${origin}/events/${event.slug || event._id}?canceled=true`,
       payment_method_types: ['card'],
+      customer_email: email,
       line_items: [
         {
           price_data: {
@@ -47,11 +48,16 @@ export async function POST(req) {
               images: event.coverImage ? [event.coverImage] : undefined,
             },
           },
-          quantity: 1,
+          quantity: parseInt(numberOfTickets) || 1,
         },
       ],
       metadata: {
-        eventId: String(event._id)
+        eventId: String(event._id),
+        guardianName: guardianName || '',
+        childName: childName || '',
+        email: email || '',
+        phone: phone || '',
+        numberOfTickets: String(numberOfTickets || 1)
       },
     });
 

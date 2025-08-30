@@ -502,7 +502,7 @@ const Parnterwithus = () => {
           animate={franchiseInView ? "visible" : "hidden"}
           variants={fadeInUp}
         >
-          <p className="font-quicksand font-semibold text-base">Franchise</p>
+          <p className="font-quicksand font-semibold text-base uppercase">Franchise</p>
           <h2 className="md:text-[80px] text-5xl tracking-tight uppercase font-antonio font-thin leading-[100%]">
             <b className="font-bold">Start</b>  Eklektik  Mama <br />
             <b className="font-anton font-normal tracking-tight">
@@ -519,7 +519,7 @@ const Parnterwithus = () => {
             DOWNLOAD THE ONBOARDING PACK <BsDownload className="ml-6 text-2xl" />
           </Link>
           <Link
-            href="/"
+            href="/partner"
             className="w-fit md:h-[45px] h-[40px] md:px-12 px-6 md:text-base text-xs flex items-center justify-center uppercase text-[#093166] hover:text-white rounded-[20px]  border-2 border-[#bf378b] bg-transparent hover:bg-[#bf378b] transition-colors duration-500 ease-in-out"
             >
             CONTACT US <BsArrowRight className="ml-6 text-2xl" />

@@ -28,17 +28,16 @@ export default async function EventDetailPage({ params }) {
         </div>
       )}
 
-      <div className="max-w-5xl mx-auto px-5 lg:px-0 py-6">
+      <div className="max-w-[1400px] mx-auto px-5 lg:px-0 py-6">
         <div className="flex items-start justify-between gap-4">
           <h1 className="text-3xl md:text-5xl font-antonio text-[#093166] uppercase">
             {event.title}
           </h1>
-          <form action="/api/checkout" method="post">
-            <input type="hidden" name="eventId" value={event._id} />
+          <a href={`/events/${event._id}/book`}>
             <button className="px-4 py-2 bg-[#093166] text-white rounded-md hover:bg-[#093166]/90 whitespace-nowrap mt-2">
-              Book now
+              Book Now
             </button>
-          </form>
+          </a>
         </div>
 
         <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-6">

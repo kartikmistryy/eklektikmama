@@ -13,26 +13,49 @@ export async function POST(req) {
   const payload = await req.text();
   const sig = req.headers.get('stripe-signature');
 
+  console.log('Webhook received:', { 
+    hasSecret: !!secret, 
+    hasPayload: !!payload, 
+    hasSignature: !!sig 
+  });
+
   let event;
   try {
     const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "");
     event = stripe.webhooks.constructEvent(payload, sig, secret);
+    console.log('Webhook event type:', event.type);
   } catch (err) {
+    console.error('Webhook signature verification failed:', err.message);
     return new NextResponse(`Webhook Error: ${err.message}`, { status: 400 });
   }
 
   if (event.type === 'checkout.session.completed') {
+    console.log('Processing checkout.session.completed event');
     const session = event.data.object;
     try {
       await connectDB();
       const eventId = session.metadata?.eventId;
+      console.log('Event ID from metadata:', eventId);
+      
       const paidEvent = await Event.findById(eventId);
       if (!paidEvent) throw new Error('Event not found for booking');
+      console.log('Found event:', paidEvent.title);
 
       const transactionId = session.payment_intent || session.id;
-      const guardianName = session.customer_details?.name || '';
-      const userEmail = session.customer_details?.email || '';
-      const childName = '';
+      const guardianName = session.metadata?.guardianName || session.customer_details?.name || '';
+      const userEmail = session.metadata?.email || session.customer_details?.email || '';
+      const childName = session.metadata?.childName || '';
+      const phone = session.metadata?.phone || '';
+      const numberOfTickets = parseInt(session.metadata?.numberOfTickets) || 1;
+
+      console.log('Extracted booking data:', {
+        guardianName,
+        childName,
+        userEmail,
+        phone,
+        numberOfTickets,
+        transactionId
+      });
 
       const qrPayload = JSON.stringify({
         eventId,
@@ -46,41 +69,85 @@ export async function POST(req) {
         guardianName,
         childName,
         userEmail,
+        phone,
+        numberOfTickets,
         transactionId,
         qrCodeDataUrl,
         paymentStatus: 'paid',
       });
 
+      console.log('Booking created in database:', booking._id);
+
       // Append to Google Sheet if configured
+      console.log('Checking Google Sheets configuration...');
+      console.log('GOOGLE_SHEETS_CLIENT_EMAIL:', !!process.env.GOOGLE_SHEETS_CLIENT_EMAIL);
+      console.log('GOOGLE_SHEETS_PRIVATE_KEY:', !!process.env.GOOGLE_SHEETS_PRIVATE_KEY);
+      console.log('GOOGLE_SHEETS_SPREADSHEET_ID:', !!process.env.GOOGLE_SHEETS_SPREADSHEET_ID);
+      
       if (
         process.env.GOOGLE_SHEETS_CLIENT_EMAIL &&
         process.env.GOOGLE_SHEETS_PRIVATE_KEY &&
         process.env.GOOGLE_SHEETS_SPREADSHEET_ID
       ) {
-        const auth = new google.auth.JWT(
-          process.env.GOOGLE_SHEETS_CLIENT_EMAIL,
-          undefined,
-          process.env.GOOGLE_SHEETS_PRIVATE_KEY.replace(/\\n/g, '\n'),
-          ["https://www.googleapis.com/auth/spreadsheets"]
-        );
-        const sheets = google.sheets({ version: 'v4', auth });
-        await sheets.spreadsheets.values.append({
-          spreadsheetId: process.env.GOOGLE_SHEETS_SPREADSHEET_ID,
-          range: 'Sheet1!A1',
-          valueInputOption: 'USER_ENTERED',
-          requestBody: {
-            values: [[
-              '',
-              paidEvent.title,
-              new Date(paidEvent.date).toLocaleString(),
-              guardianName,
-              childName,
-              transactionId,
-            ]],
-          },
+        try {
+          console.log('Attempting to add to Google Sheets...');
+          const auth = new google.auth.JWT(
+            process.env.GOOGLE_SHEETS_CLIENT_EMAIL,
+            undefined,
+            process.env.GOOGLE_SHEETS_PRIVATE_KEY.replace(/\\n/g, '\n'),
+            ["https://www.googleapis.com/auth/spreadsheets"]
+          );
+          
+          const sheets = google.sheets({ version: 'v4', auth });
+          
+          // Prepare the row data
+          const rowData = [
+            new Date().toLocaleString('en-US', { timeZone: 'Asia/Dubai' }), // Booking Date/Time (Dubai timezone)
+            paidEvent.title, // Event Title
+            new Date(paidEvent.date).toLocaleString('en-US', { timeZone: 'Asia/Dubai' }), // Event Date
+            guardianName, // Guardian Name
+            childName, // Child Name
+            userEmail, // Email
+            phone, // Phone
+            numberOfTickets, // Number of Tickets
+            transactionId, // Transaction ID
+            'Paid', // Payment Status
+            new Date().toISOString() // Timestamp for reference
+          ];
+          
+          console.log('Row data to add:', rowData);
+          
+          const response = await sheets.spreadsheets.values.append({
+            spreadsheetId: process.env.GOOGLE_SHEETS_SPREADSHEET_ID,
+            range: 'Sheet1!A:K', // Specify columns A through K
+            valueInputOption: 'USER_ENTERED',
+            insertDataOption: 'INSERT_ROWS', // Insert new row at the top
+            requestBody: {
+              values: [rowData],
+            },
+          });
+          
+          console.log('Google Sheets response:', response.data);
+          console.log('Successfully added booking to Google Sheets');
+        } catch (sheetsError) {
+          console.error('Google Sheets Error:', sheetsError);
+          console.error('Error details:', {
+            message: sheetsError.message,
+            code: sheetsError.code,
+            status: sheetsError.status
+          });
+          // Don't fail the webhook if Google Sheets fails
+        }
+      } else {
+        console.log('Google Sheets not configured - skipping sheet update');
+        console.log('Missing environment variables:', {
+          clientEmail: !process.env.GOOGLE_SHEETS_CLIENT_EMAIL,
+          privateKey: !process.env.GOOGLE_SHEETS_PRIVATE_KEY,
+          spreadsheetId: !process.env.GOOGLE_SHEETS_SPREADSHEET_ID
         });
       }
     } catch (e) {
+      console.error('Error processing webhook:', e);
       return NextResponse.json({ received: true, error: e.message }, { status: 200 });
     }
   }

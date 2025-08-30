@@ -122,22 +122,22 @@ export default function Footer() {
               <h3 className="font-bold mb-6">EXPLORE</h3>
               <ul className="space-y-2 uppercase text-left">
                 <li>
-                  <a href="#" className="hover:underline">
+                  <a href="/" className="hover:underline">
                     Home
                   </a>
                 </li>
                 <li>
-                  <a href="#" className="hover:underline">
+                  <a href="/shop" className="hover:underline">
                     Shop
                   </a>
                 </li>
                 <li>
-                  <a href="#" className="hover:underline">
+                  <a href="/eklektikmamaMembership" className="hover:underline">
                     Events
                   </a>
                 </li>
                 <li>
-                  <a href="#" className="hover:underline">
+                  <a href="/partner" className="hover:underline">
                     Contact Us
                   </a>
                 </li>
