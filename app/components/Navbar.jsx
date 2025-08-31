@@ -92,10 +92,10 @@ export default function Navbar() {
                 0
               </span>
             </button>
-            <a href="/events">EVENTS</a>
-            <a href="/blogs">UNFILTERED AF BLOG</a>
-            <a href="/partner">WORK WITH US</a>
-            <a href="/about">HIGHLIGHTS</a>
+            <Link href="/events">EVENTS</Link>
+            <Link href="/blogs">UNFILTERED AF BLOG</Link>
+            <Link href="/partner">WORK WITH US</Link>
+            <Link href="/about">HIGHLIGHTS</Link>
           </div>
         </div>
       )}

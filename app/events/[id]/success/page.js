@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Image from 'next/image';
+import Link from 'next/link';
 
 export default function BookingSuccessPage({ params }) {
   const searchParams = useSearchParams();
@@ -51,9 +52,9 @@ export default function BookingSuccessPage({ params }) {
           <div className="text-red-500 text-6xl mb-4">⚠️</div>
           <h1 className="text-2xl font-bold text-gray-800 mb-2">Oops!</h1>
           <p className="text-gray-600">{error}</p>
-          <a href="/events" className="mt-4 inline-block bg-pink-500 text-white px-6 py-2 rounded-md hover:bg-pink-600">
+          <Link href="/events" className="mt-4 inline-block bg-pink-500 text-white px-6 py-2 rounded-md hover:bg-pink-600">
             Back to Events
-          </a>
+          </Link>
         </div>
       </div>
     );
@@ -65,10 +66,10 @@ export default function BookingSuccessPage({ params }) {
         <div className="text-center">
           <div className="text-red-500 text-6xl mb-4">❌</div>
           <h1 className="text-2xl font-bold text-gray-800 mb-2">Booking Not Found</h1>
-          <p className="text-gray-600">We couldn't find your booking details.</p>
-          <a href="/events" className="mt-4 inline-block bg-pink-500 text-white px-6 py-2 rounded-md hover:bg-pink-600">
+          <p className="text-gray-600">We couldn&apos;t find your booking details.</p>
+          <Link href="/events" className="mt-4 inline-block bg-pink-500 text-white px-6 py-2 rounded-md hover:bg-pink-600">
             Back to Events
-          </a>
+          </Link>
         </div>
       </div>
     );
@@ -163,7 +164,7 @@ export default function BookingSuccessPage({ params }) {
 
         {/* Additional Information */}
         <div className="mt-8 bg-white rounded-lg shadow-lg p-6">
-          <h2 className="text-2xl font-bold text-gray-800 mb-4">What's Next?</h2>
+          <h2 className="text-2xl font-bold text-gray-800 mb-4">What&apos;s Next?</h2>
           <div className="grid md:grid-cols-3 gap-4">
             <div className="text-center">
               <div className="text-blue-500 text-4xl mb-2">📧</div>
@@ -178,19 +179,19 @@ export default function BookingSuccessPage({ params }) {
             <div className="text-center">
               <div className="text-purple-500 text-4xl mb-2">🎉</div>
               <h3 className="font-semibold text-gray-800 mb-1">Get Ready!</h3>
-              <p className="text-sm text-gray-600">We can't wait to see you at the event</p>
+              <p className="text-sm text-gray-600">We can&apos;t wait to see you at the event</p>
             </div>
           </div>
         </div>
 
         {/* Action Buttons */}
         <div className="mt-8 text-center space-x-4">
-          <a 
+          <Link 
             href="/events" 
             className="inline-block bg-gray-500 text-white px-6 py-3 rounded-md hover:bg-gray-600 transition-colors"
           >
             Browse More Events
-          </a>
+          </Link>
           <button 
             onClick={() => window.print()} 
             className="inline-block bg-pink-500 text-white px-6 py-3 rounded-md hover:bg-pink-600 transition-colors"
