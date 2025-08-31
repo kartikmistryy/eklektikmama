@@ -30,8 +30,11 @@ export default function EventsCalendar() {
       const res = await fetch("/api/events", { cache: "no-store" });
       const data = await res.json();
 
+      console.log('Raw events data:', data);
+      console.log('First event structure:', data[0]);
+
       const mapped = data.map((event) => ({
-        id: event._id,
+        id: event._id || event.id || event._id?.toString() || 'unknown',
         title: event.title,
         slug: event.slug,
         start: new Date(event.date),
@@ -40,7 +43,12 @@ export default function EventsCalendar() {
         description: event.description,
         location: event.location,
         price: event.price,
+        segment: event.segment,
       }));
+      
+      console.log('Mapped events:', mapped);
+      console.log('First mapped event:', mapped[0]);
+      
       setEvents(mapped);
     }
     fetchEvents();
@@ -185,10 +193,11 @@ export default function EventsCalendar() {
                     </p>
                   )}
                   <a
-                    href={`/events/${event.slug || event.id}`}
+                    href={`/events/${event.id}`}
                     className="text-[#DB4E9F] text-sm font-semibold hover:underline"
+                    onClick={() => console.log('Event link clicked:', { eventId: event.id, eventTitle: event.title, fullEvent: event })}
                   >
-                    Know more
+                    Know more (ID: {event.id})
                   </a>
                 </div>
               </div>
@@ -305,7 +314,7 @@ export default function EventsCalendar() {
                     <p className="text-sm text-gray-700 mb-4 line-clamp-2">{selectedEvent.description}</p>
                   )}
                   <div className="flex gap-2">
-                    <a href={`/events/${selectedEvent.slug || selectedEvent.id}`} className="flex-1 px-3 py-2 bg-[#DB4E9F] text-white rounded-md text-center hover:bg-[#DB4E9F]/90">Know more</a>
+                    <a href={`/events/${selectedEvent.id}`} className="flex-1 px-3 py-2 bg-[#DB4E9F] text-white rounded-md text-center hover:bg-[#DB4E9F]/90">Know more (ID: {selectedEvent.id})</a>
                   </div>
                 </div>
               ) : (

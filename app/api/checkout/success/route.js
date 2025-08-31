@@ -1,77 +1,58 @@
 import { NextResponse } from "next/server";
+import Stripe from "stripe";
 import { connectDB } from "@/lib/db";
 import Event from "@/models/Event";
 import Booking from "@/models/Booking";
 import QRCode from "qrcode";
 import { google } from "googleapis";
 
-export async function POST(req) {
+// Success handler that processes the payment and saves data
+export async function GET(req) {
   try {
+    const { searchParams } = new URL(req.url);
+    const sessionId = searchParams.get('session_id');
+    
+    if (!sessionId) {
+      return NextResponse.redirect(new URL('/events?error=no_session', req.url));
+    }
+
+    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+    const session = await stripe.checkout.sessions.retrieve(sessionId);
+    
+    if (session.payment_status !== 'paid') {
+      return NextResponse.redirect(new URL(`/events/${session.metadata.eventId}?error=payment_failed`, req.url));
+    }
+
+    // Connect to database
     await connectDB();
     
-    const body = await req.json();
-    
-    // Get the event for testing, or use provided eventId
-    let testEvent;
-    if (body.eventId) {
-      testEvent = await Event.findById(body.eventId);
-    } else {
-      testEvent = await Event.findOne({});
-    }
-    
-    if (!testEvent) {
-      return NextResponse.json({ 
-        error: 'No events found in database' 
-      }, { status: 400 });
+    const eventId = session.metadata.eventId;
+    const event = await Event.findById(eventId);
+    if (!event) {
+      return NextResponse.redirect(new URL('/events?error=event_not_found', req.url));
     }
 
-    // Use provided data or simulate webhook data
-    const mockSession = body.mockSession || {
-      metadata: {
-        eventId: testEvent._id.toString(),
-        eventSegment: body.eventSegment || 'cinemaMorning',
-        guardianName: body.guardianName || 'Test Guardian',
-        childName: body.childName || 'Test Child',
-        email: body.email || 'test@example.com',
-        phone: body.phone || '+1234567890',
-        numberOfTickets: String(body.numberOfTickets || 1),
-        additionalData: JSON.stringify(body)
-      },
-      payment_intent: 'pi_test_' + Date.now(),
-      id: 'cs_test_' + Date.now()
-    };
+    // Extract booking data from session metadata
+    const transactionId = session.payment_intent || session.id;
+    const guardianName = session.metadata.guardianName || '';
+    const userEmail = session.metadata.email || '';
+    const childName = session.metadata.childName || '';
+    const phone = session.metadata.phone || '';
+    const numberOfTickets = parseInt(session.metadata.numberOfTickets) || 1;
+    const eventSegment = session.metadata.eventSegment || '';
+    const additionalData = session.metadata.additionalData ? JSON.parse(session.metadata.additionalData) : {};
 
-    console.log('Simulating webhook with event:', testEvent.title);
-    console.log('Event segment:', mockSession.metadata.eventSegment);
-
-    const transactionId = mockSession.payment_intent || mockSession.id;
-    const guardianName = mockSession.metadata?.guardianName || '';
-    const userEmail = mockSession.metadata?.email || '';
-    const childName = mockSession.metadata?.childName || '';
-    const phone = mockSession.metadata?.phone || '';
-    const numberOfTickets = parseInt(mockSession.metadata?.numberOfTickets) || 1;
-    const eventSegment = mockSession.metadata?.eventSegment || '';
-    const additionalData = mockSession.metadata?.additionalData ? JSON.parse(mockSession.metadata.additionalData) : {};
-
-    console.log('Extracted booking data:', {
-      guardianName,
-      childName,
-      userEmail,
-      phone,
-      numberOfTickets,
-      transactionId,
-      eventSegment
-    });
-
+    // Generate QR code
     const qrPayload = JSON.stringify({
-      eventId: testEvent._id,
+      eventId,
       transactionId,
       email: userEmail,
     });
     const qrCodeDataUrl = await QRCode.toDataURL(qrPayload);
 
+    // Save to database
     const booking = await Booking.create({
-      eventId: testEvent._id,
+      eventId,
       guardianName,
       childName,
       userEmail,
@@ -85,13 +66,11 @@ export async function POST(req) {
 
     console.log('Booking created in database:', booking._id);
 
-    // Append to Google Sheet if configured
-    console.log('Checking Google Sheets configuration...');
-    let sheetsResult = null;
+    // Save to Google Sheets based on event segment
+    let sheetsResult = { success: false, error: 'Not configured' };
     
     if (eventSegment && process.env.GOOGLE_SHEETS_CLIENT_EMAIL && process.env.GOOGLE_SHEETS_PRIVATE_KEY) {
       try {
-        console.log('Attempting to add to Google Sheets for segment:', eventSegment);
         const auth = new google.auth.JWT(
           process.env.GOOGLE_SHEETS_CLIENT_EMAIL,
           undefined,
@@ -117,17 +96,15 @@ export async function POST(req) {
             spreadsheetId = process.env.EKLEKTIK_EDIT_SPREADSHEET_ID;
             break;
           default:
-            spreadsheetId = null;
+            spreadsheetId = process.env.GOOGLE_SHEETS_SPREADSHEET_ID;
         }
-
-        console.log('Using spreadsheet ID:', spreadsheetId);
 
         if (spreadsheetId) {
           // Prepare the row data based on event segment
           let rowData = [
             new Date().toLocaleString('en-US', { timeZone: 'Asia/Dubai' }), // Booking Date/Time
-            testEvent.title, // Event Title
-            new Date(testEvent.date).toLocaleString('en-US', { timeZone: 'Asia/Dubai' }), // Event Date
+            event.title, // Event Title
+            new Date(event.date).toLocaleString('en-US', { timeZone: 'Asia/Dubai' }), // Event Date
             guardianName, // Guardian Name
             childName, // Child Name
             userEmail, // Email
@@ -161,8 +138,6 @@ export async function POST(req) {
             );
           }
 
-          console.log('Row data to add:', rowData);
-          
           // First, get the current data to find the next available row
           const currentData = await sheets.spreadsheets.values.get({
             spreadsheetId,
@@ -182,56 +157,21 @@ export async function POST(req) {
             },
           });
           
-          console.log('Google Sheets response:', response.data);
-          sheetsResult = {
-            success: true,
-            response: response.data
-          };
+          sheetsResult = { success: true, response: response.data };
           console.log('Successfully added booking to Google Sheets');
-        } else {
-          sheetsResult = {
-            success: false,
-            error: `No spreadsheet ID configured for segment: ${eventSegment}`
-          };
         }
       } catch (sheetsError) {
         console.error('Google Sheets Error:', sheetsError);
-        sheetsResult = {
-          success: false,
-          error: sheetsError.message,
-          code: sheetsError.code
-        };
+        sheetsResult = { success: false, error: sheetsError.message };
       }
-    } else {
-      console.log('Google Sheets not configured - skipping sheet update');
-      sheetsResult = {
-        success: false,
-        error: 'Google Sheets not configured'
-      };
     }
 
-    return NextResponse.json({
-      success: true,
-      message: 'Test webhook processed successfully',
-      booking: {
-        id: booking._id,
-        eventTitle: testEvent.title,
-        guardianName,
-        childName,
-        userEmail,
-        phone,
-        numberOfTickets,
-        transactionId,
-        eventSegment
-      },
-      googleSheets: sheetsResult
-    });
+    // Redirect to success page with booking details
+    const successUrl = new URL(`/events/${eventId}/success?booking_id=${booking._id}`, req.url);
+    return NextResponse.redirect(successUrl);
 
   } catch (error) {
-    console.error('Test webhook error:', error);
-    return NextResponse.json({
-      success: false,
-      error: error.message
-    }, { status: 500 });
+    console.error('Error processing payment success:', error);
+    return NextResponse.redirect(new URL('/events?error=processing_failed', req.url));
   }
 }

@@ -79,7 +79,7 @@ export default function Footer() {
         <Marquee />
 
         <footer className="bg-[#d94e9b] text-white pt-10 pb-5 px-6 font-poppins">
-          <div className="mx-auto grid md:grid-cols-4 lg:gap-[4vw] justify-between">
+          <div className="mx-auto grid md:grid-cols-4 lg:gap-[4vw] justify-between gap-10">
             {/* Logo + Social */}
             <div className="flex flex-col items-start">
               <Image

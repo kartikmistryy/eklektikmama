@@ -67,7 +67,7 @@ export default function Navbar() {
 
       {/* Mobile Fullscreen Overlay Menu */}
       {isOpen && (
-        <div className="fixed inset-0 bg-[#231F20] flex flex-col items-end text-white font-medium text-lg z-50 animate-slideIn">
+        <div className="fixed inset-0 bg-[#231f20] flex flex-col items-end text-white font-medium text-lg z-[999] w-full h-full animate-slideIn">
           {/* Close button */}
           <button
             className="p-4"

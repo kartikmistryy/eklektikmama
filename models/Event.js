@@ -9,6 +9,12 @@ const EventSchema = new mongoose.Schema({
   endDate: Date,
   price: Number,
   location: String,
+  segment: { 
+    type: String, 
+    required: true,
+    enum: ['cinemaMorning', 'mamaBreakfast', 'mamaFit', 'eklektikEdit'],
+    default: 'cinemaMorning'
+  },
   createdAt: { type: Date, default: Date.now },
 });
 

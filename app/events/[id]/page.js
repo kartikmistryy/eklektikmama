@@ -54,7 +54,7 @@ export default async function EventDetailPage({ params }) {
               <p className="text-sm text-gray-700">📍 {event.location}</p>
             )}
             {event.price > 0 && (
-              <p className="text-sm text-gray-700">🎟️ ₹{event.price}</p>
+              <p className="text-sm text-gray-700">🎟️ AED {event.price}</p>
             )}
             {event.location && (
               <iframe

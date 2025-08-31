@@ -433,3 +433,39 @@ footer {
 .rbc-row {
   display: none !important;
 }
+
+/* Custom fade-in animation for blog header */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 1.5s ease-out forwards;
+  opacity: 0;
+}
+
+/* Fix list marker alignment in blog body */
+.prose ul {
+  list-style-position: outside;
+}
+
+.prose ul li {
+  display: list-item;
+  margin-bottom: 0.5rem;
+}
+
+.prose ol {
+  list-style-position: outside;
+}
+
+.prose ol li {
+  display: list-item;
+  margin-bottom: 0.5rem;
+}

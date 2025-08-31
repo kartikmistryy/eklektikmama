@@ -225,7 +225,7 @@ export default function Home() {
       <section className="w-full h-full flex flex-col items-center justify-start relative overflow-visible mb-[-1px]">
         <div className="w-full h-full flex flex-col relative lg:pb-[240px] md:pb-[160px] pb-[80px] overflow-visible">
           <main className="w-full h-full flex items-center justify-start lg:pt-[30px] md:pt-[120px] pt-[80px] relative px-5 overflow-visible">
-            <div className="w-full h-full lg:max-w-[1000px] md:max-w-[600px] max-w-[380px] mx-auto relative overflow-visible z-[30]">
+            <div className="w-full h-full lg:max-w-[1000px] md:max-w-[600px] max-w-[380px] mx-auto relative overflow-visible z-2">
               {/* Statue Image */}
               <div className="absolute flex justify-center items-center md:-top-14 -top-14 -left-16 md:-left-14 w-[150px] lg:w-[120px] h-fit z-[60]">
                 <Image
@@ -303,7 +303,7 @@ export default function Home() {
                   className="relative"
                 >
                   <Image
-                    src="/homepage/card4.webp"
+                    src="/homepage/card5.webp"
                     alt="Image 4"
                     width={130}
                     height={190}

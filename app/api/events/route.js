@@ -16,6 +16,7 @@ export async function POST(req) {
       endDate: body.endDate || body.date,
       price: body.price,
       location: body.location,
+      segment: body.segment,
     });
 
     return NextResponse.json(newEvent, { status: 201 });

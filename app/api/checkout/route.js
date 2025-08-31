@@ -3,7 +3,6 @@ import { headers } from "next/headers";
 import Stripe from "stripe";
 import { connectDB } from "@/lib/db";
 import Event from "@/models/Event";
-import Booking from "@/models/Booking";
 
 export async function POST(req) {
   try {
@@ -16,7 +15,7 @@ export async function POST(req) {
       body = Object.fromEntries(formData.entries());
     }
 
-    const { eventId, guardianName, childName, email, phone, numberOfTickets } = body;
+    const { eventId, guardianName, childName, email, phone, numberOfTickets, eventSegment, ...otherFormData } = body;
     await connectDB();
     const event = await Event.findById(eventId);
     if (!event) return NextResponse.json({ error: 'Event not found' }, { status: 404 });
@@ -34,8 +33,8 @@ export async function POST(req) {
 
     const session = await stripe.checkout.sessions.create({
       mode: 'payment',
-      success_url: `${origin}/events/${event.slug || event._id}?success=true`,
-      cancel_url: `${origin}/events/${event.slug || event._id}?canceled=true`,
+      success_url: `${origin}/api/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${origin}/events/${event._id}?canceled=true`,
       payment_method_types: ['card'],
       customer_email: email,
       line_items: [
@@ -53,11 +52,14 @@ export async function POST(req) {
       ],
       metadata: {
         eventId: String(event._id),
+        eventSegment: eventSegment || '',
         guardianName: guardianName || '',
         childName: childName || '',
         email: email || '',
         phone: phone || '',
-        numberOfTickets: String(numberOfTickets || 1)
+        numberOfTickets: String(numberOfTickets || 1),
+        // Store additional form data as JSON string
+        additionalData: JSON.stringify(otherFormData)
       },
     });
 
@@ -66,5 +68,7 @@ export async function POST(req) {
     return NextResponse.json({ error: err.message }, { status: 500 });
   }
 }
+
+
 
 

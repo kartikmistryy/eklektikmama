@@ -10,6 +10,7 @@ export default function AdminEventsPage() {
     endDate: "",
     price: "",
     location: "",
+    segment: "cinemaMorning",
   });
 
   const handleChange = (e) => {
@@ -33,6 +34,7 @@ export default function AdminEventsPage() {
         endDate: "",
         price: "",
         location: "",
+        segment: "cinemaMorning",
       });
     } else {
       alert("❌ Failed to create event");
@@ -50,6 +52,23 @@ export default function AdminEventsPage() {
         <input type="date" name="endDate" value={form.endDate} onChange={handleChange} className="w-full border p-2" />
         <input type="number" name="price" value={form.price} onChange={handleChange} placeholder="Price" className="w-full border p-2" />
         <input name="location" value={form.location} onChange={handleChange} placeholder="Location" className="w-full border p-2" />
+        
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Event Segment *</label>
+          <select 
+            name="segment" 
+            value={form.segment} 
+            onChange={handleChange} 
+            className="w-full border p-2"
+            required
+          >
+            <option value="cinemaMorning">Cinema Morning</option>
+            <option value="mamaBreakfast">Mama Breakfast</option>
+            <option value="mamaFit">MamaFit</option>
+            <option value="eklektikEdit">Eklektik Edit</option>
+          </select>
+        </div>
+        
         <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded">Create</button>
       </form>
     </div>

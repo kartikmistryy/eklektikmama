@@ -64,7 +64,7 @@ const Page = async ({ searchParams }) => {
       {/* Hero Section */}
       <section className="w-full flex min-h-[90vh] h-full flex-col items-center justify-end bg-[url('/headerBg/unfiltered.webp')] bg-cover bg-center pt-20 overflow-x-hidden">
         <div className="w-full h-full grow min-h-full flex flex-col items-center justify-center">
-          <h1 className="w-fit md:text-[85px] text-[45px] font-bold uppercase text-[#f6f6f6] leading-[130%] text-center font-anton">
+          <h1 className="w-fit md:text-[85px] text-[45px] font-bold uppercase text-[#f6f6f6] leading-[130%] text-center font-anton animate-fade-in">
             Unfiltered AF
           </h1>
         </div>

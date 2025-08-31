@@ -267,7 +267,7 @@ export default function Events() {
               )}
               {selectedEvent.price > 0 && (
                 <p className="text-gray-600 mb-2">
-                  🎟️ Ticket Price: ₹{selectedEvent.price}
+                  🎟️ Ticket Price: AED {selectedEvent.price}
                 </p>
               )}
               {selectedEvent.description && (
@@ -303,8 +303,8 @@ export default function Events() {
           variants={staggerContainer}
           transition={{ delay: 0.2 }}
         >
-          <Carousel className="w-full h-full flex flex-row overflow-scroll gap-4 justify-start">
-            <CarouselContent className="w-full h-full flex flex-row justify-between items-center gap-4 lg:px-10 px-5 py-5">
+          <Carousel className="w-full h-full flex flex-row justify-center items-center overflow-scroll gap-4">
+            <CarouselContent className="w-full h-full flex md:flex-row flex-col justify-between items-center gap-4 lg:px-10 px-5 py-5">
               {[1, 2, 3].map((item, index) => (
                 <motion.div
                   key={index}
@@ -347,7 +347,7 @@ export default function Events() {
             CONNECTED <b className="font-bold">AF</b>
           </h2>
         </div>
-        <div className="flex flex-col lg:flex-row gap-5 w-full h-full max-h-[350px] relative border-2 border-[#093166] rounded-md p-3">
+        <div className="flex flex-col lg:flex-row gap-5 w-full h-full md:max-h-[350px] relative border-2 border-[#093166] rounded-md p-3">
           <Image
             src="/events/c1.webp"
             alt="img1"
@@ -378,9 +378,9 @@ export default function Events() {
               more fun...
             </p>
             <div className="flex items-center justify-between mt-auto w-full">
-              <button className="text-sm bg-[#093166] text-white rounded-full font-medium flex items-center gap-2 px-3 py-1.5">
+              <Link target="_blank" href={"https://chat.whatsapp.com/IgI5yoSHSKx5m5EWiYMNqX?mode=ac_t"} className="text-sm bg-[#093166] text-white rounded-full font-medium flex items-center gap-2 px-3 py-1.5">
                 JOIN NOW <BsArrowRight />
-              </button>
+              </Link>
               <button className="text-2xl text-[#093166] p-2 rounded-full">
                 <BsWhatsapp />
               </button>

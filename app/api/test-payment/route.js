@@ -24,8 +24,8 @@ export async function POST(req) {
 
     const session = await stripe.checkout.sessions.create({
       mode: 'payment',
-      success_url: `${origin}/events/${event.slug || event._id}?success=true`,
-      cancel_url: `${origin}/events/${event.slug || event._id}?canceled=true`,
+              success_url: `${origin}/events/${event._id}?success=true`,
+        cancel_url: `${origin}/events/${event._id}?canceled=true`,
       payment_method_types: ['card'],
       customer_email: 'test@example.com',
       line_items: [
