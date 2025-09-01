@@ -46,17 +46,31 @@ export default function BookingPage({ params }) {
     setSubmitting(true);
 
     try {
+      // Map form field names to API expected field names
+      const mappedData = {
+        eventId: params.id,
+        eventSegment: event.segment,
+        // Map motherName to guardianName
+        guardianName: formData.motherName || formData.name || '',
+        // Map motherEmail to email
+        email: formData.motherEmail || formData.email || '',
+        // Map motherPhone to phone
+        phone: formData.motherPhone || formData.contact || '',
+        // Keep childName as is
+        childName: formData.childName || '',
+        // Keep numberOfTickets as is
+        numberOfTickets: formData.numberOfTickets || 1,
+        // Pass all other form data as additionalData
+        ...formData
+      };
+
       // Proceed directly to payment - data will be saved after successful payment
       const response = await fetch('/api/checkout', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          eventId: params.id,
-          eventSegment: event.segment,
-          ...formData
-        }),
+        body: JSON.stringify(mappedData),
       });
 
       const data = await response.json();
@@ -103,7 +117,7 @@ export default function BookingPage({ params }) {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="min-h-screen bg-gray-50 py-8" style={{ paddingTop: '10em' }}>
       <div className="max-w-4xl mx-auto px-4">
         <div className="bg-white rounded-xl shadow-lg overflow-hidden">
           {/* Header */}

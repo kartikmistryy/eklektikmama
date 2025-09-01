@@ -90,11 +90,6 @@ export default function MembershipOptions() {
     {
       question: "Is there a contract or can I cancel anytime?",
       answer:
-        "No contracts. You can cancel your membership anytime via your account dashboard.",
-    },
-    {
-      question: "Is there a contract or can I cancel anytime?",
-      answer:
         "No contracts. You can cancel your membership anytime via your account dashboard. ",
     },
     {
@@ -157,7 +152,7 @@ export default function MembershipOptions() {
                     </li>
                   ))}
                 </ul>
-                <button className="mt-6 flex items-center border border-white rounded-full px-6 py-1 text-white opacity-75 cursor-not-allowed ml-auto">
+                <button className="mt-6 flex items-center border border-white rounded-full px-6 py-1 text-white uppercase opacity-75 cursor-not-allowed ml-auto">
                   coming soon
                 </button>
               </motion.div>

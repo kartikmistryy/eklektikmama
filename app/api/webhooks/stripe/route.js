@@ -5,6 +5,7 @@ import Event from "@/models/Event";
 import Booking from "@/models/Booking";
 import QRCode from "qrcode";
 import { google } from "googleapis";
+import { sendBookingConfirmationEmail } from "@/lib/mailchimp";
 
 export const dynamic = "force-dynamic";
 
@@ -129,6 +130,37 @@ export async function POST(req) {
           
           console.log('Google Sheets response:', response.data);
           console.log('Successfully added booking to Google Sheets');
+          
+          // Send booking confirmation email after successful Google Sheets update
+          try {
+            console.log('Sending booking confirmation email...');
+            const emailResult = await sendBookingConfirmationEmail(
+              {
+                userEmail,
+                guardianName,
+                childName,
+                numberOfTickets,
+                transactionId,
+                qrCodeDataUrl
+              },
+              {
+                title: paidEvent.title,
+                date: paidEvent.date,
+                location: paidEvent.location,
+                description: paidEvent.description,
+                price: paidEvent.price
+              }
+            );
+            
+            if (emailResult.success) {
+              console.log('Booking confirmation email sent successfully');
+            } else {
+              console.error('Failed to send booking confirmation email:', emailResult.error);
+            }
+          } catch (emailError) {
+            console.error('Error sending booking confirmation email:', emailError);
+            // Don't fail the webhook if email fails
+          }
         } catch (sheetsError) {
           console.error('Google Sheets Error:', sheetsError);
           console.error('Error details:', {

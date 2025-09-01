@@ -44,7 +44,41 @@ export default function Footer() {
             </button>
           </span>
         </span>
-        <span className="w-full h-full flex flex-row items-end justify-center md:basis-[60%] basis-full lg:pt-14 md:flex-nowrap flex-wrap overflow-hidden gap-2">
+        {/* Fix here */}
+        {/* Mobile-only footer images */}
+        <div className="md:hidden w-full flex flex-row items-center justify-center gap-0 py-4">
+          <Image
+            src="/footer/1.png"
+            alt="footer icon 1"
+            width={80}
+            height={80}
+            className="h-16 w-auto object-contain rounded"
+          />
+          <Image
+            src="/footer/2.png"
+            alt="footer icon 2"
+            width={80}
+            height={80}
+            className="h-16 w-auto object-contain rounded"
+          />
+          <Image
+            src="/footer/4.gif"
+            alt="footer icon 4"
+            width={80}
+            height={80}
+            className="h-22 w-auto object-contain rounded"
+          />
+          <Image
+            src="/footer/3.png"
+            alt="footer icon 3"
+            width={80}
+            height={80}
+            className="h-16 w-auto object-contain rounded"
+          />
+        </div>
+
+        {/* Desktop-only footer images */}
+        <span className="hidden md:flex w-full h-full flex-row items-end justify-center md:basis-[60%] basis-full lg:pt-14 md:flex-nowrap flex-wrap overflow-hidden gap-2">
           <Image
             src="/footer/1.webp"
             alt="icons"
@@ -74,6 +108,8 @@ export default function Footer() {
             className="h-[100px] w-auto object-contain rounded"
           />
         </span>
+
+
       </div>
       <div className="w-full h-full flex flex-col mt-10">
         <Marquee />
@@ -94,25 +130,28 @@ export default function Footer() {
                   href="https://www.tiktok.com/@eklektikmama?_t=8pqLsaRIulk&_r=1"
                   className="bg-white text-[#102A43] px-3 py-1 rounded-full text-sm font-semibold shadow hover:scale-105 transition"
                 >
-                  <FaTiktok className="inline mr-1" /> TikTok
+                  <label htmlFor="tiktok"></label>
+                  <FaTiktok className="inline mr-1 text-xl" /> <b className="font-medium lg:flex hidden">TikTok</b>
                 </Link>
                 <Link
                   href="https://www.facebook.com/people/Eklektik-Mama/61560699879306/"
                   className="bg-white text-[#102A43] px-3 py-1 rounded-full text-sm font-semibold shadow hover:scale-105 transition"
                 >
-                  <FaFacebook className="inline mr-1" /> Facebook
+                  <FaFacebook className="inline mr-1 text-xl" /><b className="font-medium md:flex hidden">Facebook</b> 
                 </Link>
                 <Link
                   href="https://www.linkedin.com/company/eklektik-mama/"
                   className="bg-white text-[#102A43] px-3 py-1 rounded-full text-sm font-semibold shadow hover:scale-105 transition"
                 >
-                  <FaLinkedin className="inline mr-1" /> Linkedin
+                  <FaLinkedin className="inline mr-1 text-xl" /> 
+                  <b className="font-medium md:flex hidden">Linkedin</b> 
                 </Link>
                 <Link
                   href="https://www.instagram.com/eklektikmama"
                   className="bg-white text-[#102A43] px-3 py-1 rounded-full text-sm font-semibold shadow hover:scale-105 transition"
                 >
-                  <FaInstagram className="inline mr-1" /> Instagram
+                  <FaInstagram className="inline mr-1 text-xl" /><b className="font-medium md:flex hidden">Instagram</b>  
+                  
                 </Link>
               </div>
             </div>
@@ -137,7 +176,7 @@ export default function Footer() {
                   </a>
                 </li>
                 <li>
-                  <a href="/partner" className="hover:underline">
+                  <a href="/partner#contact" className="hover:underline">
                     Contact Us
                   </a>
                 </li>
@@ -149,18 +188,13 @@ export default function Footer() {
               <h3 className="font-bold mb-6">WORK WITH US</h3>
               <ul className="space-y-2 uppercase text-left">
                 <li>
-                  <a href="#" className="hover:underline">
+                  <a href="/partner" className="hover:underline">
                     Pitch Us Something Wild
                   </a>
                 </li>
                 <li>
                   <a href="#" className="hover:underline">
                     Start Eklektik Mama In Your City
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:underline">
-                    Contact Us
                   </a>
                 </li>
               </ul>

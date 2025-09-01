@@ -205,7 +205,7 @@ export default function Events() {
             alt="aboutImg"
             width={1000}
             height={1000}
-            className="w-full h-full max-h-[700px] object-cover lg:rounded-tl-xl lg:rounded-bl-xl"
+            className="w-full h-full lg:max-h-[700px] max-h-[500px] object-cover lg:rounded-tl-xl lg:rounded-bl-xl"
           />
         </motion.div>
       </section>
@@ -303,31 +303,68 @@ export default function Events() {
           variants={staggerContainer}
           transition={{ delay: 0.2 }}
         >
-          <Carousel className="w-full h-full flex flex-row justify-center items-center overflow-scroll gap-4">
-            <CarouselContent className="w-full h-full flex md:flex-row flex-col justify-between items-center gap-4 lg:px-10 px-5 py-5">
-              {[1, 2, 3].map((item, index) => (
-                <motion.div
-                  key={index}
-                  variants={carouselItem}
-                >
-                  <CarouselItem className="w-full md:max-w-[330px] md:min-w-[330px] min-w-full flex-1 min-h-[400px] flex flex-col p-3 rounded-sm border-2 border-[#093166] ml-4">
-                    <Image
-                      src="/highlights/2.webp"
-                      width={500}
-                      height={300}
-                      alt="img"
-                      className="rounded-md w-full h-[170px] bg-cover max-h-[200px]"
-                    />
-                    <span className="py-4 w-full h-full flex flex-col justify-start items-start relative">
-                      <h4 className="uppercase font-poppins font-bold text-4xl text-[#093166]">
-                        EVENT NAME
-                      </h4>
-                    </span>
-                  </CarouselItem>
-                </motion.div>
-              ))}
-            </CarouselContent>
-          </Carousel>
+          {/* 3-Column Grid for Previous Events */}
+          <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:px-10 px-5 py-5">
+            {/* Event 1 */}
+            <motion.a
+              href="https://photos.google.com/share/AF1QipMZROP7KoDG762HCpU592F7sDpR_o8Z5nOu1lBxFyOegXJPF4CFkjpdkOWj1JLQog?key=STdtbzZLeDdrVkJwanNaTXcwbDA3QWlfdjVtM1d3"
+              variants={carouselItem}
+              className="w-full flex flex-col p-3 rounded-sm border-2 border-[#093166] hover:shadow-lg transition-shadow duration-300"
+            >
+              <Image
+                src="/eventsPic/bateen.jpg"
+                width={500}
+                height={300}
+                alt="BYOB - Al Bateen Ladies Club"
+                className="rounded-md w-full h-[240px] object-cover max-h-[240px]"
+              />
+              <span className="py-4 w-full h-full flex flex-col justify-start items-start relative">
+                <h4 className="uppercase font-poppins font-bold text-2xl text-[#093166]">
+                  BYOB - Al Bateen Ladies Club
+                </h4>
+              </span>
+            </motion.a>
+
+            {/* Event 2 */}
+            <motion.a
+            href="https://photos.google.com/share/AF1QipOI-jSZEmq9DypBWyPbF6fnP3O2qv_KwM9PTgGIGPFsD-Qb14ylY0LrZbiyjBdLOA?key=YW1oZVFuNjNIZ3hMd2pBbXlYMGpkaC13ZjBGdDFn"
+              variants={carouselItem}
+              className="w-full flex flex-col p-3 rounded-sm border-2 border-[#093166] hover:shadow-lg transition-shadow duration-300"
+            >
+              <Image
+                src="/eventsPic/cocktails.jpg"
+                width={500}
+                height={300}
+                alt="Eklektik Mama Cocktail Masterclass"
+                className="rounded-md w-full h-[240px] object-cover object-center max-h-[240px]"
+              />
+              <span className="py-4 w-full h-full flex flex-col justify-start items-start relative">
+                <h4 className="uppercase font-poppins font-bold text-2xl text-[#093166]">
+                  Eklektik Mama Cocktail Masterclass
+                </h4>
+              </span>
+            </motion.a>
+
+            {/* Event 3 */}
+            <motion.a
+            href="https://photos.google.com/share/AF1QipPI3suUDjtRdSgACKcMdHMNpuE824azy2CRm0WnTmDBZB7ZzUD1MgnF0HwKzdJRxQ?key=SXh3SHhkZUhzOUZLSE9lU2lyd0NyT0RpUUtiT2xR"
+              variants={carouselItem}
+              className="w-full flex flex-col p-3 rounded-sm border-2 border-[#093166] hover:shadow-lg transition-shadow duration-300"
+            >
+              <Image
+                src="/eventsPic/entepreneur.jpg"
+                width={500}
+                height={300}
+                alt="Entrepreneur Morning"
+                className="rounded-md w-full h-[240px] object-cover object-center max-h-[240px]"
+              />
+              <span className="py-4 w-full h-full flex flex-col justify-start items-start relative">
+                <h4 className="uppercase font-poppins font-bold text-2xl text-[#093166]">
+                  Entrepreneur Morning
+                </h4>
+              </span>
+            </motion.a>
+          </div>
           
           {/* View All Button */}
           <div className="flex justify-center mt-6">

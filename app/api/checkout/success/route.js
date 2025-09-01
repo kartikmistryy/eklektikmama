@@ -5,6 +5,7 @@ import Event from "@/models/Event";
 import Booking from "@/models/Booking";
 import QRCode from "qrcode";
 import { google } from "googleapis";
+import { sendBookingConfirmationEmail } from "@/lib/mailchimp";
 
 // Success handler that processes the payment and saves data
 export async function GET(req) {
@@ -159,6 +160,37 @@ export async function GET(req) {
           
           sheetsResult = { success: true, response: response.data };
           console.log('Successfully added booking to Google Sheets');
+          
+          // Send booking confirmation email after successful Google Sheets update
+          try {
+            console.log('Sending booking confirmation email...');
+            const emailResult = await sendBookingConfirmationEmail(
+              {
+                userEmail,
+                guardianName,
+                childName,
+                numberOfTickets,
+                transactionId,
+                qrCodeDataUrl
+              },
+              {
+                title: event.title,
+                date: event.date,
+                location: event.location,
+                description: event.description,
+                price: event.price
+              }
+            );
+            
+            if (emailResult.success) {
+              console.log('Booking confirmation email sent successfully');
+            } else {
+              console.error('Failed to send booking confirmation email:', emailResult.error);
+            }
+          } catch (emailError) {
+            console.error('Error sending booking confirmation email:', emailError);
+            // Don't fail the process if email fails
+          }
         }
       } catch (sheetsError) {
         console.error('Google Sheets Error:', sheetsError);

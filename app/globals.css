@@ -3,6 +3,10 @@
 
 @custom-variant dark (&:is(.dark *));
 
+html, body {
+  scroll-behavior: smooth;
+}
+
 /* Line clamp utilities */
 .line-clamp-1 {
   overflow: hidden;

@@ -10,6 +10,7 @@ export default function EventsCalendar() {
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [viewMode, setViewMode] = useState('calendar'); // 'calendar' or 'list'
   const [isMobile, setIsMobile] = useState(false);
+  const [currentDate, setCurrentDate] = useState(new Date());
 
   useEffect(() => {
     // Check if device is mobile
@@ -107,34 +108,55 @@ export default function EventsCalendar() {
   // Custom toolbar to show month navigation
   const CustomToolbar = (toolbar) => {
     const goToBack = () => {
+      console.log('Going to previous month');
+      const newDate = moment(currentDate).subtract(1, 'month').toDate();
+      setCurrentDate(newDate);
       toolbar.onNavigate('PREV');
     };
 
     const goToNext = () => {
+      console.log('Going to next month');
+      const newDate = moment(currentDate).add(1, 'month').toDate();
+      setCurrentDate(newDate);
       toolbar.onNavigate('NEXT');
     };
 
     const goToCurrent = () => {
+      console.log('Going to current month');
+      const newDate = new Date();
+      setCurrentDate(newDate);
       toolbar.onNavigate('TODAY');
     };
 
     const label = () => {
-      const date = moment(toolbar.date);
+      const date = moment(currentDate);
       return (
         <span className="text-xl font-bold">{date.format('MMMM YYYY')}</span>
       );
     };
 
     return (
-      <div className="flex items-center justify-between mb-4">
+      <div className="custom-toolbar">
         <div className="flex items-center space-x-4">
-          <button onClick={goToBack} className="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300">
+          <button 
+            onClick={goToBack} 
+            className="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300 transition-colors"
+            type="button"
+          >
             &lt; Prev
           </button>
-          <button onClick={goToCurrent} className="px-3 py-1 bg-[#DB4E9F] text-white rounded hover:bg-[#DB4E9F]/80">
+          <button 
+            onClick={goToCurrent} 
+            className="px-3 py-1 bg-[#DB4E9F] text-white rounded hover:bg-[#DB4E9F]/80 transition-colors"
+            type="button"
+          >
             Today
           </button>
-          <button onClick={goToNext} className="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300">
+          <button 
+            onClick={goToNext} 
+            className="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300 transition-colors"
+            type="button"
+          >
             Next &gt;
           </button>
         </div>
@@ -268,6 +290,9 @@ export default function EventsCalendar() {
                   startAccessor="start"
                   endAccessor="end"
                   selectable
+                  view="month"
+                  defaultView="month"
+                  date={currentDate}
                   style={{ height: "auto", minHeight: "600px" }}
                   components={{
                     event: EventCard,
@@ -284,6 +309,10 @@ export default function EventsCalendar() {
                       clickedDate.isBetween(ev.start, ev.end, 'day', '[]')
                     );
                     setSelectedEvent(found || null);
+                  }}
+                  onNavigate={(newDate, view, action) => {
+                    console.log('Calendar navigation:', { newDate, view, action });
+                    setCurrentDate(newDate);
                   }}
                 />
               </div>
@@ -354,6 +383,15 @@ export default function EventsCalendar() {
         
         .rbc-toolbar {
           display: none;
+        }
+        
+        /* Ensure our custom toolbar is visible */
+        .custom-toolbar {
+          display: flex !important;
+          align-items: center;
+          justify-content: space-between;
+          margin-bottom: 1rem;
+          padding: 0.5rem 0;
         }
 
         /* Line clamp utility */

@@ -227,6 +227,10 @@ export default function Home() {
           <main className="w-full h-full flex items-center justify-start lg:pt-[30px] md:pt-[120px] pt-[80px] relative px-5 overflow-visible">
             <div className="w-full h-full lg:max-w-[1000px] md:max-w-[600px] max-w-[380px] mx-auto relative overflow-visible z-2">
               {/* Statue Image */}
+
+
+              {/* Heading */}
+              <h1 className="lg:text-[6.5rem] md:text-[4rem] text-[50px] tracking-tight leading-[130%] font-anton font-bold uppercase text-white w-fit mx-auto relative z-0 px-[0px]">
               <div className="absolute flex justify-center items-center md:-top-14 -top-14 -left-16 md:-left-14 w-[150px] lg:w-[120px] h-fit z-[60]">
                 <Image
                   src="/homepage/statue.webp"
@@ -236,17 +240,14 @@ export default function Home() {
                   className="object-contain md:w-fit md:h-fit md:max-h-[160px] w-[70px] h-[80px] z-[90]"
                 />
               </div>
-
-              {/* Heading */}
-              <h1 className="lg:text-[6.5rem] md:text-[4rem] text-4xl tracking-tight leading-[130%] font-anton font-bold uppercase text-white relative z-0 px-[0px]">
-                Shaking Up Mamahood, <br />
-                <b className="lg:text-[10rem] md:text-[5rem] text-4xl">
+                Shaking Up <br className="lg:hidden block"/> Mamahood, <br />
+                <b className="lg:text-[10rem] md:text-[5rem] text-[40px] lg:block hidden">
                   your way
                 </b>
               </h1>
 
               {/* Overlapping Images after text */}
-              <div className="md:absolute relative lg:top-[110px] md:top-[70px] lg:left-[60%] md:left-[50%] lg:scale-100 md:scale-90 scale-70 flex space-x-[-40px] z-10 overflow-visible">
+              <div className="md:absolute relative lg:top-[110px] md:top-[70px] lg:left-[60%] md:left-[50%] lg:scale-100 md:scale-90 scale-75 flex space-x-[-40px] z-10 overflow-visible">
                 {/* Card 1 */}
                 <motion.div
                   variants={card1Variants}
@@ -320,9 +321,7 @@ export default function Home() {
             transition={{ type: "keyframes", duration: 0.6 }}
             className="max-w-[600px] mx-auto font-quicksand lg:mt-10 md:mt-24 mt-5 px-4 text-center text-white lg:text-lg md:text-base text-sm"
           >
-            Welcome to Eklektik Mama™, where motherhood meets rebellion. A home
-            for bold mums, BYOBaby™ events, unapologetic blogs, and gear you
-            didn’t know you needed.
+           Eklektik Mama brings together modern mums in Abu Dhabi and the UAE through curated events, baby-friendly meetups, and a vibrant online community.Think real talk, real support, and real connection, for mums who want more than just the usual. Because mamas need playdates too.
           </motion.p>
 
           <motion.a

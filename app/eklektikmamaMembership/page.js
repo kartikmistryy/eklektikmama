@@ -331,7 +331,7 @@ export default function MembershipPage() {
             </CarouselContent>
           </Carousel>
           <motion.span 
-            className="md:w-fit w-full h-[45px] px-12 flex items-center text-sm mt-10 md:text-base justify-center uppercase text-[#093166] hover:text-white rounded-[20px] my-6 border-2 border-[#bf378b] bg-transparent hover:bg-[#bf378b] text-center transition-colors duration-500 ease-in-out md:scale-100 scale-75"
+            className="md:w-fit w-full h-fit py-1 px-12 flex items-center text-sm mt-10 md:text-base justify-center uppercase text-[#093166] hover:text-white rounded-[20px] my-6 border-2 border-[#bf378b] bg-transparent hover:bg-[#bf378b] text-center transition-colors duration-500 ease-in-out md:scale-100 scale-75"
             initial="hidden"
             animate={howItWorksInView ? "visible" : "hidden"}
             variants={fadeInUp}

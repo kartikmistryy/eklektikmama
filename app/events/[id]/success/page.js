@@ -76,7 +76,7 @@ export default function BookingSuccessPage({ params }) {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-pink-50 to-purple-50 py-12">
+    <div className="min-h-screen bg-gradient-to-br from-pink-50 to-purple-50 py-12" style={{ paddingTop: '10em' }}>
       <div className="max-w-4xl mx-auto px-4">
         {/* Success Header */}
         <div className="text-center mb-8">
@@ -85,80 +85,39 @@ export default function BookingSuccessPage({ params }) {
           <p className="text-xl text-gray-600">Your payment was successful and your booking is confirmed.</p>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-8">
-          {/* Booking Details */}
-          <div className="bg-white rounded-lg shadow-lg p-6">
-            <h2 className="text-2xl font-bold text-gray-800 mb-4">Booking Details</h2>
-            
-            <div className="space-y-3">
-              <div className="flex justify-between">
-                <span className="font-semibold text-gray-600">Booking ID:</span>
-                <span className="text-gray-800 font-mono text-sm">{booking._id}</span>
-              </div>
-              
-              <div className="flex justify-between">
-                <span className="font-semibold text-gray-600">Guardian Name:</span>
-                <span className="text-gray-800">{booking.guardianName}</span>
-              </div>
-              
-              {booking.childName && (
-                <div className="flex justify-between">
-                  <span className="font-semibold text-gray-600">Child Name:</span>
-                  <span className="text-gray-800">{booking.childName}</span>
-                </div>
-              )}
-              
-              <div className="flex justify-between">
-                <span className="font-semibold text-gray-600">Email:</span>
-                <span className="text-gray-800">{booking.userEmail}</span>
-              </div>
-              
-              <div className="flex justify-between">
-                <span className="font-semibold text-gray-600">Phone:</span>
-                <span className="text-gray-800">{booking.phone}</span>
-              </div>
-              
-              <div className="flex justify-between">
-                <span className="font-semibold text-gray-600">Tickets:</span>
-                <span className="text-gray-800">{booking.numberOfTickets}</span>
-              </div>
-              
-              <div className="flex justify-between">
-                <span className="font-semibold text-gray-600">Transaction ID:</span>
-                <span className="text-gray-800 font-mono text-sm">{booking.transactionId}</span>
-              </div>
-              
-              <div className="flex justify-between">
-                <span className="font-semibold text-gray-600">Status:</span>
-                <span className="text-green-600 font-semibold">{booking.paymentStatus}</span>
-              </div>
+        <div className="bg-white rounded-lg shadow-lg p-6">
+          <h2 className="text-2xl font-bold text-gray-800 mb-4">Booking Details</h2>
+          
+          <div className="space-y-3">
+            <div className="flex justify-between">
+              <span className="font-semibold text-gray-600">Booking ID:</span>
+              <span className="text-gray-800 font-mono text-sm">{booking._id}</span>
             </div>
-          </div>
-
-          {/* QR Code */}
-          <div className="bg-white rounded-lg shadow-lg p-6">
-            <h2 className="text-2xl font-bold text-gray-800 mb-4">Entry QR Code</h2>
-            <p className="text-gray-600 mb-4">Show this QR code at the event entrance for quick check-in.</p>
             
-            {booking.qrCodeDataUrl ? (
-              <div className="text-center">
-                <div className="inline-block p-4 bg-white border-2 border-gray-200 rounded-lg">
-                  <Image 
-                    src={booking.qrCodeDataUrl} 
-                    alt="Entry QR Code"
-                    width={200}
-                    height={200}
-                    className="rounded-lg"
-                  />
-                </div>
-                <p className="text-sm text-gray-500 mt-2">Scan this QR code for entry</p>
-              </div>
-            ) : (
-              <div className="text-center py-8">
-                <div className="text-gray-400 text-6xl mb-2">📱</div>
-                <p className="text-gray-500">QR Code not available</p>
-              </div>
-            )}
+            <div className="flex justify-between">
+              <span className="font-semibold text-gray-600">Email:</span>
+              <span className="text-gray-800">{booking.userEmail}</span>
+            </div>
+            
+            <div className="flex justify-between">
+              <span className="font-semibold text-gray-600">Guardian/Parent Name:</span>
+              <span className="text-gray-800">{booking.guardianName || 'Not provided'}</span>
+            </div>
+            
+            <div className="flex justify-between">
+              <span className="font-semibold text-gray-600">Tickets:</span>
+              <span className="text-gray-800">{booking.numberOfTickets}</span>
+            </div>
+            
+            <div className="flex justify-between">
+              <span className="font-semibold text-gray-600">Transaction ID:</span>
+              <span className="text-gray-800 font-mono text-sm">{booking.transactionId}</span>
+            </div>
+            
+            <div className="flex justify-between">
+              <span className="font-semibold text-gray-600">Status:</span>
+              <span className="text-green-600 font-semibold">{booking.paymentStatus}</span>
+            </div>
           </div>
         </div>
 
