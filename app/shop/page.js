@@ -38,7 +38,7 @@ export default function ShopPage() {
               COMING SOON
             </h2>
             <p className="text-lg text-gray-600 mb-8 max-w-2xl mx-auto">
-              We're crafting something special for our amazing community. Get ready for exclusive merchandise, 
+              We&apos;re crafting something special for our amazing community. Get ready for exclusive merchandise, 
               curated products, and everything that makes Eklektik Mama unique.
             </p>
             
@@ -112,7 +112,7 @@ export default function ShopPage() {
           </Link>
           
           <div className="text-gray-500">
-            <p>Can't wait? Check out our upcoming events while you wait!</p>
+            <p>Can&apos;t wait? Check out our upcoming events while you wait!</p>
           </div>
         </motion.div>
       </div>
