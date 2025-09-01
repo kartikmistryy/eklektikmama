@@ -226,12 +226,8 @@ export default function Home() {
         <div className="w-full h-full flex flex-col relative lg:pb-[240px] md:pb-[160px] pb-[80px] overflow-visible">
           <main className="w-full h-full flex items-center justify-start lg:pt-[30px] md:pt-[120px] pt-[80px] relative px-5 overflow-visible">
             <div className="w-full h-full lg:max-w-[1000px] md:max-w-[600px] max-w-[380px] mx-auto relative overflow-visible z-2">
-              {/* Statue Image */}
-
-
-              {/* Heading */}
               <h1 className="lg:text-[6.5rem] md:text-[4rem] text-[50px] tracking-tight leading-[130%] font-anton font-bold uppercase text-white w-fit mx-auto relative z-0 px-[0px]">
-              <div className="absolute flex justify-center items-center md:-top-14 -top-14 -left-16 md:-left-14 w-[150px] lg:w-[120px] h-fit z-[60]">
+              <div className="absolute inline-flex justify-center items-center md:-top-14 -top-14 -left-16 md:-left-14 w-[150px] lg:w-[120px] h-fit z-[60]">
                 <Image
                   src="/homepage/statue.webp"
                   alt="Statue"
@@ -240,7 +236,7 @@ export default function Home() {
                   className="object-contain md:w-fit md:h-fit md:max-h-[160px] w-[70px] h-[80px] z-[90]"
                 />
               </div>
-                Shaking Up <br className="lg:hidden block"/> Mamahood, <br />
+                Shaking Up <br className="lg:hidden flex"/> Mamahood <i className="opacity-0">,</i><br />
                 <b className="lg:text-[10rem] md:text-[5rem] text-[40px] lg:block hidden">
                   your way
                 </b>
@@ -358,7 +354,7 @@ export default function Home() {
           className="w-fit absolute bottom-[-180px] right-[-100px] rotate-0 z-[1] overflow-hidden"
         />
       </section>
-
+{/* Here */}
       <section className="w-full h-full flex lg:flex-row flex-col-reverse items-center justify-start relative bg-white py-10 lg:gap-0 gap-10 z-30">
         <div className="w-full h-full flex flex-col justify-start items-start md:basis-1/2 basis-full md:pl-14 md:pr-0 px-5 text-[#093166]">
           <p className="font-quicksand font-semibold uppercase text-base">
@@ -372,10 +368,20 @@ export default function Home() {
           </h2>
           <motion.div
             layout
-            transition={{ duration: 0.5, ease: "easeInOut" }}
+            transition={{ 
+              duration: 0.8, 
+              ease: [0.4, 0.0, 0.2, 1],
+              opacity: { duration: 0.4 },
+              height: { duration: 0.6 }
+            }}
             className="lg:text-base font-quicksand font-medium mt-6 md:w-[95%] w-full"
           >
-            <p id="interactivePara">
+            <motion.p 
+              id="interactivePara"
+              initial={{ opacity: 1 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.3 }}
+            >
               Because being a mum doesn&apos;t mean disappearing into soft pastels,
               sugar-coated advice, or a WhatsApp group that only talks about nap
               schedules. Eklektik Mama™ was born from the chaos, the 3AM feeds,
@@ -384,26 +390,51 @@ export default function Home() {
               We&apos;re here for bold mums who crave more than just &ldquo;mommy & me&rdquo; who
               want real conversations, real connection, and a little rebellion
               with their baby wipes.
-              {showFullPara && (
-                <>
-                  <br /> <br />Through BYOBaby™ events, unapologetic blog
-                  posts, and gear you didn&apos;t know you needed, we&apos;re building something
-                  that feels like solidarity (not sanitised sisterhood). 
-                  This isn&apos;t a parenting platform. It&apos;s a movement. And if that sounds
-                  like your kind of mess, welcome home. Because motherhood doesn&apos;t
-                  need a filter. <br />
-                  It needs fire, grit, and a space where your loud, raw, unpolished
-                  self isn&apos;t just accepted — it&apos;s celebrated.
-                </>
-              )}
-            </p>
+            </motion.p>
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ 
+                opacity: showFullPara ? 1 : 0, 
+                height: showFullPara ? "auto" : 0 
+              }}
+              transition={{ 
+                duration: 0.6, 
+                ease: [0.4, 0.0, 0.2, 1],
+                opacity: { duration: 0.4, delay: showFullPara ? 0.1 : 0 }
+              }}
+              className="overflow-hidden"
+            >
+              <p className="pt-4">
+                Through BYOBaby™ events, unapologetic blog
+                posts, and gear you didn&apos;t know you needed, we&apos;re building something
+                that feels like solidarity (not sanitised sisterhood). 
+                This isn&apos;t a parenting platform. It&apos;s a movement. And if that sounds
+                like your kind of mess, welcome home. Because motherhood doesn&apos;t
+                need a filter. <br />
+                It needs fire, grit, and a space where your loud, raw, unpolished
+                self isn&apos;t just accepted — it&apos;s celebrated.
+              </p>
+            </motion.div>
           </motion.div>
-          <button 
+          <motion.button 
             onClick={() => setShowFullPara(!showFullPara)}
-            className="w-fit md:h-[45px] h-[40px] md:px-12 px-6 md:text-base text-xs flex items-center justify-center uppercase text-[#093166] hover:text-white rounded-[20px] my-6 border-2 border-[#bf378b] bg-transparent hover:bg-[#bf378b] transition-colors duration-500 ease-in-out"
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            transition={{ 
+              duration: 0.2, 
+              ease: [0.4, 0.0, 0.2, 1] 
+            }}
+            className="w-fit md:h-[45px] h-[40px] md:px-12 px-6 md:text-base text-xs flex items-center justify-center uppercase text-[#093166] hover:text-white rounded-[20px] my-6 border-2 border-[#bf378b] bg-transparent hover:bg-[#bf378b] transition-all duration-300 ease-out"
           >
-            {showFullPara ? 'View Less' : 'View More'}
-          </button>
+            <motion.span
+              key={showFullPara ? 'less' : 'more'}
+              initial={{ opacity: 0, y: 5 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3, ease: [0.4, 0.0, 0.2, 1] }}
+            >
+              {showFullPara ? 'View Less' : 'View More'}
+            </motion.span>
+          </motion.button>
         </div>
         <div className="w-full h-full flex flex-col justify-center  items-center md:basis-1/2 basis-full pr-0">
           <motion.span
@@ -884,7 +915,7 @@ export default function Home() {
                     they passed the vibe check.
                   </p>
                   <div className="mt-auto flex flex-row items-center justify-between">
-                    <button className="text-sm bg-white rounded-full font-medium font-poppins flex flex-row items-center gap-3 px-3 py-1.5">
+                    <button className="text-sm bg-white rounded-full font-medium font-poppins flex flex-row uppercase items-center gap-3 px-3 py-1.5">
                       explore our partners{" "}
                       <BsArrowRight className="text-lg font-bold" />
                     </button>

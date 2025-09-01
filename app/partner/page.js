@@ -180,7 +180,7 @@ const Parnterwithus = () => {
             story.
           </p>
           <Link
-            href="/"
+            href="#form"
             className="w-fit lg:h-[45px] h-[35px] lg:text-sm lg:px-12 px-8 text-xs flex items-center justify-center uppercase text-[#093166] hover:text-white rounded-[20px] my-6 border-2 border-[#bf378b] bg-transparent hover:bg-[#bf378b] transition-colors duration-500 ease-in-out scale-100"
           >
             PARTNER WITH US <BsArrowRight className="ml-2 lg:text-2xl text-sm" />
@@ -326,7 +326,7 @@ const Parnterwithus = () => {
           variants={fadeInUp}
         >
           <p className="font-quicksand font-semibold text-base uppercase">Pitch</p>
-          <h2 className="md:text-[80px] text-5xl uppercase tracking-tighter font-antonio font-thin leading-[100%]">
+          <h2 id="form" className="md:text-[80px] text-5xl uppercase tracking-tighter font-antonio font-thin leading-[100%]">
             This Is Where {""}
             <b className="tracking-tight font-bold">It Starts</b>
           </h2>
@@ -363,7 +363,7 @@ const Parnterwithus = () => {
               className="w-full h-full flex flex-row items-start justify-start gap-5 text-[#093166]"
               variants={formItem}
             >
-              <span className="border-2 border-[#db4e9f] h-7 w-7 rounded-full flex justify-center items-center  text-xs">
+              <span className="border-2 border-[#db4e9f] h-7 w-7 rounded-full flex justify-center items-center text-xs font-semibold flex-shrink-0">
                 1
               </span>
               <div className="w-full h-full flex flex-col gap-5 max-w-[350px]">
@@ -397,7 +397,7 @@ const Parnterwithus = () => {
               className="w-full h-full flex flex-row items-start justify-start gap-5 text-[#093166] mt-4"
               variants={formItem}
             >
-              <span className="border-2 border-[#db4e9f] h-7 w-7 rounded-full flex justify-center items-center  text-xs">
+              <span className="border-2 border-[#db4e9f] h-7 w-7 rounded-full flex justify-center items-center text-xs font-semibold flex-shrink-0">
                 2
               </span>
               <div className="w-full h-full flex flex-col gap-2">
@@ -466,7 +466,7 @@ const Parnterwithus = () => {
               className="w-full h-full flex flex-row items-start justify-start gap-5 text-[#093166]"
               variants={formItem}
             >
-              <span className="border-2 border-[#db4e9f] h-7 w-7 rounded-full flex justify-center items-center  text-xs">
+              <span className="border-2 border-[#db4e9f] h-7 w-7 rounded-full flex justify-center items-center text-xs font-semibold flex-shrink-0">
                 3
               </span>
               <div className="w-full h-full flex flex-col gap-5 max-w-[350px]">

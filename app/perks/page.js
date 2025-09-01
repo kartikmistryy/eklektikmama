@@ -384,7 +384,7 @@ const Page = () => {
                   className="absolute lg:bottom-[10px] lg:right-[-70px] right-[-10px] bottom-[-20px]"
                 />
             <div className="w-full h-full flex flex-row items-start justify-start gap-5 text-[#093166]">
-              <span className="border-2 border-[#db4e9f] h-7 w-7 rounded-full flex justify-center items-center  text-xs">
+              <span className="border-2 border-[#db4e9f] h-7 w-7 rounded-full flex justify-center items-center text-xs font-semibold flex-shrink-0">
                 1
               </span>
               <div className="w-full h-full flex flex-col gap-5 max-w-[350px] mt-2">
@@ -426,7 +426,7 @@ const Page = () => {
             </div>
 
             <div className="w-full h-full flex flex-row items-start justify-start gap-5 text-[#093166]">
-              <span className="border-2 border-[#db4e9f] h-7 w-7 rounded-full flex justify-center items-center  text-xs">
+              <span className="border-2 border-[#db4e9f] h-7 w-7 rounded-full flex justify-center items-center text-xs font-semibold flex-shrink-0">
                 2
               </span>
               <div className="w-full h-full flex flex-col gap-3 max-w-[350px] mt-2">
@@ -478,7 +478,7 @@ const Page = () => {
             </div>
 
             <div className="w-full h-full flex flex-row items-start justify-start gap-5 text-[#093166] mt-4">
-              <span className="border-2 border-[#db4e9f] h-7 w-7 rounded-full flex justify-center items-center  text-xs">
+              <span className="border-2 border-[#db4e9f] h-7 w-7 rounded-full flex justify-center items-center text-xs font-semibold flex-shrink-0">
                 3
               </span>
               <div className="w-full h-full flex flex-col gap-2">

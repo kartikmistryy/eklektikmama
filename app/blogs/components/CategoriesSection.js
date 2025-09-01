@@ -168,7 +168,7 @@ const CategoriesSection = ({ allPosts }) => {
                 variants={blogCard}
               >
                 <Link href={`/blogs/${post.fields.slug}`} className="block">
-                  <div className="w-full min-h-[350px] relative overflow-hidden rounded-lg">
+                  <div className="w-full relative overflow-hidden rounded-lg">
                     {imageUrl ? (
                       <img
                         src={imageUrl}
@@ -177,7 +177,7 @@ const CategoriesSection = ({ allPosts }) => {
                       />
                     ) : (
                       <div className="w-full h-full bg-gradient-to-br from-[#bf378b] to-[#093166] flex items-center justify-center">
-                        <span className="text-white text-2xl font-bold">No Image</span>
+                        <span className="text-white md:text-2xl text-sm font-bold">No Image</span>
                       </div>
                     )}
                     <div className="absolute top-5 left-5">
@@ -188,7 +188,7 @@ const CategoriesSection = ({ allPosts }) => {
                   </div>
                 </Link>
                 <Link href={`/blogs/${post.fields.slug}`} className="block">
-                  <h4 className="text-xl font-poppins uppercase hover:text-[#bf378b] transition-colors duration-300">
+                  <h4 className="md:text-xl text-base font-poppins uppercase hover:text-[#bf378b] transition-colors duration-300">
                     {post.fields.title}
                   </h4>
                 </Link>

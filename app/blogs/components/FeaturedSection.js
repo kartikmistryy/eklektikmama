@@ -97,7 +97,7 @@ const FeaturedSection = ({ featuredPosts }) => {
             )}
             <Link
               href={`/blogs/${featuredPost.fields.slug}`}
-              className="w-fit h-[45px] px-6 text-base flex items-center justify-center uppercase text-[#093166] hover:text-white rounded-[20px] my-6 border-2 border-[#bf378b] bg-transparent hover:bg-[#bf378b] transition-colors duration-500 ease-in-out md:scale-100 scale-75"
+              className="w-fit md:h-[45px] h-[40px] px-6 md:text-base text-sm flex items-center justify-center uppercase text-[#093166] hover:text-white rounded-[20px] my-6 border-2 border-[#bf378b] bg-transparent hover:bg-[#bf378b] transition-colors duration-500 ease-in-out md:scale-100"
             >
               READ MORE <BsArrowRight className="ml-2 text-2xl" />
             </Link>

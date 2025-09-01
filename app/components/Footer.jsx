@@ -171,7 +171,7 @@ export default function Footer() {
                   </a>
                 </li>
                 <li>
-                  <a href="/eklektikmamaMembership" className="hover:underline">
+                  <a href="/events" className="hover:underline">
                     Events
                   </a>
                 </li>

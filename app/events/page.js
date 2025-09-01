@@ -390,21 +390,21 @@ export default function Events() {
             alt="img1"
             width={400}
             height={400}
-            className="w-full lg:w-1/4 object-cover rounded-md"
+            className="w-full lg:w-1/4 object-cover rounded-md md:flex hidden"
           />
           <Image
             src="/events/c2.webp"
             alt="img2"
             width={400}
             height={400}
-            className="w-full lg:w-1/4 object-cover rounded-md"
+            className="w-full h-full lg:w-1/4 object-cover rounded-md"
           />
           <Image
             src="/events/c3.webp"
             alt="img3"
             width={400}
             height={400}
-            className="w-full lg:w-1/4 object-cover rounded-md"
+            className="w-full lg:w-1/4 object-cover rounded-md md:flex hidden"
           />
           <div className="flex flex-col justify-start items-start w-full lg:w-1/2">
             <h4 className="uppercase font-poppins font-bold text-2xl lg:text-4xl text-[#093166]">
