@@ -1,9 +1,11 @@
 import React from 'react';
 import Link from 'next/link';
+import Navbar from '@/app/components/Navbar';
 
 const TermsAndConditions = () => {
   return (
-    <div className="max-w-4xl mx-auto px-4 py-8">
+    <div className="max-w-4xl mx-auto px-4 py-8 mt-[10em]">
+      <Navbar pageType="legal" />
       <h1 className="text-3xl font-bold mb-6">Terms and Conditions</h1>
       <p className="text-gray-600 mb-8">Last Updated: August 30, 2025</p>
 
@@ -14,7 +16,7 @@ const TermsAndConditions = () => {
         <p className="mb-4">1.3 Trade Licence No.: CN-5428275.</p>
         <p className="mb-4">1.4 VAT TRN: Not applicable.</p>
         <p className="mb-4">1.5 Registered Address: Office 1530, Darussalam Tower, Al Danah E5, Abu Dhabi, United Arab Emirates.</p>
-        <p className="mb-4">1.6 By using the Platform you confirm that you have read, understood, and agreed to be bound by these Terms and our <Link href="/privacy-policy" className="text-blue-600 hover:underline">Privacy Policy</Link>.</p>
+        <p className="mb-4">1.6 By using the Platform you confirm that you have read, understood, and agreed to be bound by these Terms and our <Link href="/privacy-policy" className="hover:underline" style={{ color: '#2e2e2e' }}>Privacy Policy</Link>.</p>
       </section>
 
       <section className="mb-8">
@@ -67,7 +69,7 @@ const TermsAndConditions = () => {
       <section className="mb-8">
         <h2 className="text-2xl font-semibold mb-4">8. Merchandise</h2>
         <p className="mb-4">8.1 Prices are stated in AED; your bank may apply fees.</p>
-        <p className="mb-4">8.2 If Merchandise is defective, damaged or mis-described, you must notify us at hello@eklektikmama.com within seven (7) days of receipt with proof and photographs.</p>
+        <p className="mb-4">8.2 If Merchandise is defective, damaged or mis-described, you must notify us at <a href="mailto:hello@eklektikmama.com" className="hover:underline" style={{ color: '#2e2e2e' }}>hello@eklektikmama.com</a> within seven (7) days of receipt with proof and photographs.</p>
         <p className="mb-4">8.3 Remedies shall include repair, replacement or refund in accordance with UAE law.</p>
         <p className="mb-4">8.4 Claims submitted after seven (7) days may be rejected.</p>
         <p>8.5 Returns for change of mind are not accepted.</p>

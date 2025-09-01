@@ -206,7 +206,7 @@ export default function Footer() {
               <ul className="space-y-2 uppercase text-left">
                 <li>
                   <a href="/perks" className="hover:underline">
-                    Eklektik Mama Loves (Partners)
+                  Partner with us 
                   </a>
                 </li>
                 {/* <li>
@@ -229,7 +229,10 @@ export default function Footer() {
           </div>
 
           {/* Bottom Note */}
+          
           <div className=" text-center text-xs opacity-80 font-quicksand pt-10 text-white">
+          <p className="my-1"><a href="/termsAndCondition" className="hover:underline">Terms and Conditions</a> | <a href="/privacyPolicy" className="hover:underline">Privacy Policy</a></p>
+
             © {new Date().getFullYear()} Eklektik Mama™ and BYOBaby™ are
             trademarks of Eklektik Mama Event Management L.L.C. – S.P.C. <br />
             © 2025 All rights reserved under UAE law

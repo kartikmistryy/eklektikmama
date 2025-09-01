@@ -322,8 +322,7 @@ export default function MembershipPage() {
                       Get instant access
                     </h4>
                     <p className="text-base font-quicksand text-[#fff] font-semibold mt-3">
-                      Login unlocks it all. Events, resources, chaos — welcome
-                      to the good side of motherhood.
+                    Membership unlocks it all. Events, resources, chaos — welcome to the loud side of motherhood.
                     </p>
                   </span>
                 </motion.div>

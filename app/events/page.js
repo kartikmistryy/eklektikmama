@@ -128,7 +128,7 @@ export default function Events() {
   );
 
   return (
-    <div className="w-full h-full flex flex-col">
+    <div className="w-full h-full flex flex-col overflow-x-hidden">
       {/* Hero */}
       <section ref={heroRef} className="w-full flex min-h-[90vh] flex-col items-center justify-end bg-[url('/headerBg/events.webp')] bg-cover bg-center pt-20 overflow-x-hidden">
         <motion.div 

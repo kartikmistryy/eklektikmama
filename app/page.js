@@ -319,7 +319,7 @@ export default function Home() {
             initial={{ opacity: 0, y: "40px" }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ type: "keyframes", duration: 0.6 }}
-            className="max-w-[600px] mx-auto font-quicksand lg:mt-10 md:mt-24 mt-5 px-4 text-center text-white lg:text-lg md:text-base text-sm"
+            className="max-w-[700px] mx-auto font-quicksand lg:mt-14 md:mt-24 mt-5 px-4 text-center text-white lg:text-lg md:text-base text-sm"
           >
            Eklektik Mama brings together modern mums in Abu Dhabi and the UAE through curated events, baby-friendly meetups, and a vibrant online community.Think real talk, real support, and real connection, for mums who want more than just the usual. Because mamas need playdates too.
           </motion.p>
@@ -694,7 +694,7 @@ export default function Home() {
                   />
                   <span className="py-4 w-full h-full flex flex-col justify-start items-start relative">
                     <h4 className="uppercase font-poppins font-bold text-4xl text-white">
-                      EKLEKTIK MAMA LOVES
+                     Partner with us 
                     </h4>
                     <p className="text-base font-quicksand text-white font-medium">
                       The ones that get the chaos, the coffee cravings, the
@@ -876,7 +876,7 @@ export default function Home() {
                     />
                   </div>
                   <h4 className="uppercase font-poppins font-bold text-2xl text-white">
-                    EKLEKTIK MAMA LOVES
+                  Partner with us 
                   </h4>
                   <p className="text-base font-quicksand text-white font-medium">
                     The ones that get the chaos, coffee cravings, identity

@@ -13,9 +13,10 @@ export default function Navbar({ pageType = 'default' }) {
   const menuRef = useRef(null);
   
   // Determine if we should use dark color for nav links
-  const useDarkNav = pageType === 'booking' || pageType === 'success' || 
+  const useDarkNav = pageType === 'booking' || pageType === 'success' || pageType === 'legal' || 
                      pathname.includes('/events/') && pathname.includes('/book') ||
-                     pathname.includes('/events/') && pathname.includes('/success');
+                     pathname.includes('/events/') && pathname.includes('/success') ||
+                     pathname.includes('/privacy-policy') || pathname.includes('/terms-and-condition');
 
   // Function to close mobile menu
   const closeMobileMenu = () => {

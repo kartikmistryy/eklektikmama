@@ -1,8 +1,10 @@
 import Link from 'next/link';
+import Navbar from '@/app/components/Navbar';
 
 export default function PrivacyPolicy() {
   return (
-    <div className="container mx-auto px-4 py-8 max-w-4xl">
+    <div className="container mx-auto px-4 py-8 max-w-4x mt-[10em]">
+      <Navbar pageType="legal" />
       <h1 className="text-3xl font-bold mb-6">Privacy Policy</h1>
       
       <p className="text-sm text-gray-600 mb-8">Last Updated: August 30, 2025</p>
@@ -10,13 +12,13 @@ export default function PrivacyPolicy() {
       <section className="mb-8">
         <h2 className="text-2xl font-semibold mb-4">1. Introduction</h2>
         <p className="mb-4">
-          1.1 This Privacy Policy (&quot;Policy&quot;) sets out the manner in which Eklektik Mama Event Management – L.L.C. – S.P.C. (&quot;Eklektik Mama&quot;, &quot;Company&quot;, &quot;we&quot;, &quot;us&quot;, or &quot;our&quot;) collects, processes, stores, shares and protects Personal Data in connection with the operation of the website located at <a href="https://eklektikmama.com" className="text-blue-600 hover:underline">https://eklektikmama.com</a> (the &quot;Platform&quot;), together with all associated membership services, digital downloads, merchandise sales, community groups, and events, including but not limited to those branded as BYOBaby® (collectively, the &quot;Services&quot;).
+          1.1 This Privacy Policy (&quot;Policy&quot;) sets out the manner in which Eklektik Mama Event Management – L.L.C. – S.P.C. (&quot;Eklektik Mama&quot;, &quot;Company&quot;, &quot;we&quot;, &quot;us&quot;, or &quot;our&quot;) collects, processes, stores, shares and protects Personal Data in connection with the operation of the website located at <a href="https://eklektikmama.com" className="hover:underline" style={{ color: '#2e2e2e' }}>https://eklektikmama.com</a> (the &quot;Platform&quot;), together with all associated membership services, digital downloads, merchandise sales, community groups, and events, including but not limited to those branded as BYOBaby® (collectively, the &quot;Services&quot;).
         </p>
         <p className="mb-4">
           1.2 This Policy is issued in compliance with Federal Decree-Law No. 45 of 2021 on the Protection of Personal Data (PDPL), the Consumer Protection Law (Federal Law No. 15 of 2020), Cabinet Decision No. 66 of 2023 (Executive Regulations), and applicable international standards.
         </p>
         <p>
-          1.3 Use of the Platform is also subject to our <Link href="/terms-of-service" className="text-blue-600 hover:underline">Terms and Conditions</Link>, which must be read in conjunction with this Policy.
+          1.3 Use of the Platform is also subject to our <Link href="/terms-of-service" className="hover:underline" style={{ color: '#2e2e2e' }}>Terms and Conditions</Link>, which must be read in conjunction with this Policy.
         </p>
       </section>
 
@@ -28,7 +30,7 @@ export default function PrivacyPolicy() {
           <li><span className="font-semibold">Trade Licence No.:</span> CN-5428275</li>
           <li><span className="font-semibold">Registered Address:</span> Office 1530, Darussalam Tower, Al Danah E5, Abu Dhabi, United Arab Emirates</li>
           <li><span className="font-semibold">VAT TRN:</span> Not applicable at present</li>
-          <li><span className="font-semibold">Privacy Contact:</span> Simone Anahid Mazloumian – <a href="mailto:hello@eklektikmama.com" className="text-blue-600 hover:underline">hello@eklektikmama.com</a></li>
+          <li><span className="font-semibold">Privacy Contact:</span> Simone Anahid Mazloumian – <a href="mailto:hello@eklektikmama.com" className="hover:underline" style={{ color: '#2e2e2e' }}>hello@eklektikmama.com</a></li>
         </ul>
       </section>
 
