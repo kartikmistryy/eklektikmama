@@ -15,6 +15,9 @@ export default function RootLayout({ children }) {
       lang="en"
       className={`${anton.variable} ${antonio.variable} ${poppins.variable} ${quicksand.variable}`}
     >
+      <head>
+        <link rel="icon" href="./favicon.png" />
+      </head>
       <body>
       <Navbar/>
         {children}
