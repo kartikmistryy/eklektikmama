@@ -5,8 +5,8 @@ import "react-big-calendar/lib/css/react-big-calendar.css";
 
 const localizer = momentLocalizer(moment);
 
-export default function EventsCalendar({ events: propEvents = [] }) {
-  const [events, setEvents] = useState([]);
+export default function EventsCalendar({ events = [] }) {
+  const [localEvents, setLocalEvents] = useState([]);
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [viewMode, setViewMode] = useState('calendar'); // 'calendar' or 'list'
   const [isMobile, setIsMobile] = useState(false);
@@ -27,45 +27,48 @@ export default function EventsCalendar({ events: propEvents = [] }) {
   }, []);
 
   useEffect(() => {
-    // If propEvents are provided, use them; otherwise fetch from API
-    if (propEvents && propEvents.length > 0) {
-      const mapped = propEvents.map((event) => ({
-        id: event._id || event.id || event._id?.toString() || 'unknown',
-        title: event.title,
-        slug: event.slug,
-        start: new Date(event.date),
-        end: new Date(event.endDate || event.date),
-        coverImage: event.coverImage,
-        description: event.description,
-        location: event.location,
-        price: event.price,
-        segment: event.segment,
-      }));
-      setEvents(mapped);
-    } else {
-      // Fallback to fetching events if no props provided
-      async function fetchEvents() {
-        const res = await fetch("/api/events", { cache: "no-store" });
-        const data = await res.json();
-
-        const mapped = data.map((event) => ({
-          id: event._id || event.id || event._id?.toString() || 'unknown',
+    console.log('EventsCalendar received events:', events);
+    // Process events when they change
+    if (events && events.length > 0) {
+      const processed = events.map((event) => {
+        const startDate = new Date(event.start);
+        const endDate = new Date(event.end || event.start);
+        console.log('Processing event:', {
+          title: event.title,
+          originalStart: event.start,
+          startDate: startDate,
+          endDate: endDate
+        });
+        return {
+          id: event.id || event._id || 'unknown',
           title: event.title,
           slug: event.slug,
-          start: new Date(event.date),
-          end: new Date(event.endDate || event.date),
+          start: startDate,
+          end: endDate,
           coverImage: event.coverImage,
           description: event.description,
           location: event.location,
           price: event.price,
           segment: event.segment,
-        }));
-        
-        setEvents(mapped);
+        };
+      });
+      console.log('Processed events:', processed);
+      setLocalEvents(processed);
+      
+      // Set current date to the first event's month if it's in the future
+      if (processed.length > 0) {
+        const firstEventDate = new Date(processed[0].start);
+        const now = new Date();
+        if (firstEventDate > now) {
+          console.log('Setting current date to first event month:', firstEventDate);
+          setCurrentDate(firstEventDate);
+        }
       }
-      fetchEvents();
+    } else {
+      console.log('No events provided or empty array');
+      setLocalEvents([]);
     }
-  }, [propEvents]);
+  }, [events]);
 
   const EventCard = ({ event }) => (
     <div className="flex flex-col items-start">
@@ -143,7 +146,9 @@ export default function EventsCalendar({ events: propEvents = [] }) {
     const label = () => {
       const date = moment(currentDate);
       return (
-        <span className="text-xl font-bold">{date.format('MMMM YYYY')}</span>
+        <span className="text-xl font-bold">
+          {isMobile ? date.format('MMM YYYY') : date.format('MMMM YYYY')}
+        </span>
       );
     };
 
@@ -179,11 +184,11 @@ export default function EventsCalendar({ events: propEvents = [] }) {
 
   // List view component for mobile
   const ListView = () => {
-    const sortedEvents = [...events].sort((a, b) => new Date(a.start) - new Date(b.start));
+    const sortedEvents = [...localEvents].sort((a, b) => new Date(a.start) - new Date(b.start));
     
     return (
       <div className="space-y-4">
-        {sortedEvents.length === 0 ? (
+        {localEvents.length === 0 ? (
           <div className="text-center py-8 text-gray-500">
             <p>No events scheduled</p>
           </div>
@@ -298,7 +303,7 @@ export default function EventsCalendar({ events: propEvents = [] }) {
               <div className="w-full">
                 <Calendar
                   localizer={localizer}
-                  events={events}
+                  events={localEvents}
                   startAccessor="start"
                   endAccessor="end"
                   selectable
@@ -309,14 +314,14 @@ export default function EventsCalendar({ events: propEvents = [] }) {
                   components={{
                     event: EventCard,
                     dateCellWrapper: (props) => (
-                      <DateCellWrapper {...props} events={events} />
+                      <DateCellWrapper {...props} events={localEvents} />
                     ),
                     toolbar: CustomToolbar
                   }}
                   onSelectEvent={(event) => setSelectedEvent(event)}
                   onSelectSlot={(slotInfo) => {
                     const clickedDate = moment(slotInfo.start);
-                    const found = events.find(ev =>
+                    const found = localEvents.find(ev =>
                       clickedDate.isSame(ev.start, 'day') ||
                       clickedDate.isBetween(ev.start, ev.end, 'day', '[]')
                     );

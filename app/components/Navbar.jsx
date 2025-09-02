@@ -89,7 +89,7 @@ export default function Navbar({ pageType = 'default' }) {
         {/* Logo in center */}
         <Link href="/" className="flex-shrink-0 translate-y-[-20px]">
           <Image
-            src="/desktopLogo.png"
+            src={useDarkNav ? "/mobileLogoBlue.png" : "/desktopLogo.png"}
             alt="Eklektik Mama"
             width={80}
             height={80}
@@ -113,10 +113,6 @@ export default function Navbar({ pageType = 'default' }) {
           height={60}
           className="h-16 w-auto"
         />
-        {/* Debug info */}
-        <div className="absolute top-0 right-0 text-xs bg-black text-white p-1 rounded">
-          {useDarkNav ? "Blue" : "White"} Logo
-        </div>
       </Link>
 
       {/* Right container */}

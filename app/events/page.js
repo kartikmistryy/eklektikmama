@@ -213,6 +213,12 @@ export default function Events() {
           variants={fadeIn}
           transition={{ delay: 0.2 }}
         >
+          {/* Debug info */}
+          <div className="px-5 lg:px-14 mb-4 text-sm text-gray-500">
+            <p>Events count: {events.length}</p>
+            <p>Events state: {JSON.stringify(events.map(e => ({ id: e.id, title: e.title, date: e.start })))}</p>
+          </div>
+          
           {events.length > 0 ? (
             <EventsCalendar events={events} />
           ) : (
