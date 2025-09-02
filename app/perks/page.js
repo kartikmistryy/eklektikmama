@@ -18,6 +18,9 @@ const Page = () => {
     interestedInFranchise: ""
   });
   const [errors, setErrors] = useState({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [message, setMessage] = useState("");
+  const [messageType, setMessageType] = useState("");
 
   // Refs for animations
   const heroRef = useRef(null);
@@ -82,18 +85,55 @@ const Page = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     
     if (validateForm()) {
+      setIsSubmitting(true);
+      setMessage("");
+      setMessageType("");
+      
       const submitData = {
         ...formData,
         partnershipType,
         otherDetails: partnershipType === "Other (Please specify)" ? otherDetails : ""
       };
-      console.log("Form Data:", submitData);
-      // Here you would typically send the data to your API
-      alert("Form submitted successfully! Check console for data.");
+      
+      try {
+        const response = await fetch('/api/perks-form', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(submitData),
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          setMessage(data.message);
+          setMessageType("success");
+          // Clear the form on success
+          setFormData({
+            name: "",
+            email: "",
+            website: "",
+            isBrand: "",
+            interestedInFranchise: ""
+          });
+          setPartnershipType("");
+          setOtherDetails("");
+        } else {
+          setMessage(data.error || "Failed to submit form. Please try again.");
+          setMessageType("error");
+        }
+      } catch (error) {
+        console.error('Form submission error:', error);
+        setMessage("Something went wrong. Please try again.");
+        setMessageType("error");
+      } finally {
+        setIsSubmitting(false);
+      }
     } else {
       console.log("Form validation failed:", errors);
     }
@@ -208,7 +248,7 @@ const Page = () => {
           animate={partnersInView ? "visible" : "hidden"}
           variants={staggerContainer}
         >
-          <div className="w-full h-full grid lg:grid-cols-4 md:grid-cols-3 grid-cols-1 max-w-[1400px] mx-auto gap-10">
+          <div className="w-full h-full grid lg:grid-cols-3 md:grid-cols-3 grid-cols-1 max-w-[1400px] mx-auto gap-10">
             <motion.div 
               className="w-full h-full flex flex-col items-center justify-center lg:basis-1/4 md:basis-1/3 basis-full gap-5"
               variants={partnerCard}
@@ -226,7 +266,8 @@ const Page = () => {
                 Toys and activities to keep kids happy while you unwind.
               </h3>
               <Link
-                href="/"
+              target="_blank"
+                href="https://kiddostoysclub.com/"
                 className="w-fit h-[40px] px-3 text-sm flex items-center justify-center uppercase text-white hover:text-[#093166] rounded-[20px] my-6 border-2 border-[#fff] bg-[#d756a1] hover:bg-[#fff] transition-colors duration-500 ease-in-out md:scale-100 scale-75 col-[]"
               >
                 Visit <BsArrowRight className="ml-5 text-2xl" />
@@ -234,6 +275,30 @@ const Page = () => {
             </motion.div>
 
             <motion.div 
+              className="w-full h-full flex flex-col items-center justify-center lg:basis-1/4 md:basis-1/3 basis-full gap-5"
+              variants={partnerCard}
+            >
+              <span className="w-full h-[120px] flex justify-center items-center">
+                <Image
+                src="/perks/logos/7.webp"
+                width={300}
+                height={300}
+                className="w-fit h-fit  max-w-[140px]"
+              />
+              </span>
+              <h3 className="lg:text-lg text-base font-quicksand text-white text-center">
+              Bayti Home Healthcare: UAE’s trusted in‑home care provider since 2013.
+              </h3>
+              <Link
+                target="_blank"
+                href="https://baytihealth.com/"
+                className="w-fit h-[40px] px-3 text-sm flex items-center justify-center uppercase text-white hover:text-[#093166] rounded-[20px] my-6 border-2 border-[#fff] bg-[#d756a1] hover:bg-[#fff] transition-colors duration-500 ease-in-out md:scale-100 scale-75 col-[]"
+              >
+                Visit <BsArrowRight className="ml-5 text-2xl" />
+              </Link>
+            </motion.div>
+
+            {/* <motion.div 
               className="w-full h-full flex flex-col items-center justify-center lg:basis-1/4 md:basis-1/3 basis-full gap-5"
               variants={partnerCard}
             >
@@ -254,9 +319,9 @@ const Page = () => {
               >
                 Visit <BsArrowRight className="ml-5 text-2xl" />
               </Link>
-            </motion.div>
+            </motion.div> */}
 
-            <motion.div 
+            {/* <motion.div 
               className="w-full h-full flex flex-col items-center justify-center lg:basis-1/4 md:basis-1/3 basis-full gap-5"
               variants={partnerCard}
             >
@@ -277,7 +342,7 @@ const Page = () => {
               >
                 Visit <BsArrowRight className="ml-5 text-2xl" />
               </Link>
-            </motion.div>
+            </motion.div> */}
 
             <motion.div 
               className="w-full h-full flex flex-col items-center justify-center lg:basis-1/4 md:basis-1/3 basis-full gap-5"
@@ -295,16 +360,17 @@ const Page = () => {
                 Wolves Zone MMA: training for strength and confidence.
               </h3>
               <Link
-                href="/"
+                target="_blank"
+                href="https://www.wolveszoneuae.com/?fbclid=PAZXh0bgNhZW0CMTEAAacVBslr4rjV5hfYp7urTrJo5ZRYHcSd9T5A7lmMJU4t5bDZlVoFgBiMU6u7Yw_aem_ThF2-qHjEx6v8A3Y8PB6dg"
                 className="w-fit h-[40px] px-3 text-sm flex items-center justify-center uppercase text-white hover:text-[#093166] rounded-[20px] my-6 border-2 border-[#fff] bg-[#d756a1] hover:bg-[#fff] transition-colors duration-500 ease-in-out md:scale-100 scale-75 col-[]"
               >
                 Visit <BsArrowRight className="ml-5 text-2xl" />
               </Link>
             </motion.div>
 
-            <div className="w-full h-full lg:flex hidden flex-col items-center justify-center lg:basis-1/4 md:basis-1/3 basis-full gap-5 "></div>
+            {/* <div className="w-full h-full lg:flex hidden flex-col items-center justify-center lg:basis-1/4 md:basis-1/3 basis-full gap-5 "></div> */}
 
-            <motion.div 
+            {/* <motion.div 
               className="w-full h-full flex flex-col items-center justify-center lg:basis-1/4 md:basis-1/3 basis-full gap-5"
               variants={partnerCard}
             >
@@ -326,9 +392,9 @@ const Page = () => {
               >
                 Visit <BsArrowRight className="ml-5 text-2xl" />
               </Link>
-            </motion.div>
+            </motion.div> */}
 
-            <motion.div 
+            {/* <motion.div 
               className="w-full h-full flex flex-col items-center justify-center lg:basis-1/4 md:basis-1/3 basis-full gap-5"
               variants={partnerCard}
             >
@@ -349,8 +415,8 @@ const Page = () => {
               >
                 Visit <BsArrowRight className="ml-5 text-2xl" />
               </Link>
-            </motion.div>
-            <div className="w-full h-full lg:flex hidden flex-col items-center justify-center lg:basis-1/4 md:basis-1/3 basis-full gap-5"></div>
+            </motion.div> */}
+            {/* <div className="w-full h-full lg:flex hidden flex-col items-center justify-center lg:basis-1/4 md:basis-1/3 basis-full gap-5"></div> */}
           </div>
         </motion.div>
       </section>
@@ -383,7 +449,7 @@ const Page = () => {
                   alt="Logo"
                   className="absolute lg:bottom-[10px] lg:right-[-70px] right-[-10px] bottom-[-20px]"
                 />
-            <div className="w-full h-full flex flex-row items-start justify-start gap-5 text-[#093166]">
+            <div id="form" className="w-full h-full flex flex-row items-start justify-start gap-5 text-[#093166]">
               <span className="border-2 border-[#db4e9f] h-7 w-7 rounded-full flex justify-center items-center text-xs font-semibold flex-shrink-0">
                 1
               </span>
@@ -545,10 +611,28 @@ const Page = () => {
             
             <button
               type="submit"
-              className="w-fit h-[45px] px-12 text-base flex items-center justify-center uppercase text-[#093166] hover:text-white rounded-[20px] my-6 border-2 border-[#bf378b] bg-transparent hover:bg-[#bf378b] transition-colors duration-500 ease-in-out md:scale-100 scale-75"
+              disabled={isSubmitting}
+              className="w-fit h-[45px] px-12 text-base flex items-center justify-center uppercase text-[#093166] hover:text-white rounded-[20px] my-6 border-2 border-[#bf378b] bg-transparent hover:bg-[#bf378b] transition-colors duration-500 ease-in-out md:scale-100 scale-75 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              SUBMIT <BsArrowRight className="ml-2 text-2xl" />
+              {isSubmitting ? (
+                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-[#093166]"></div>
+              ) : (
+                <>
+                  SUBMIT <BsArrowRight className="ml-2 text-2xl" />
+                </>
+              )}
             </button>
+            
+            {/* Message Display */}
+            {message && (
+              <div className={`mt-3 text-sm font-medium text-center ${
+                messageType === "success" 
+                  ? "text-green-600" 
+                  : "text-red-600"
+              }`}>
+                {message}
+              </div>
+            )}
           </form>
         </motion.div>
       </section>

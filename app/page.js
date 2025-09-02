@@ -317,7 +317,7 @@ export default function Home() {
             transition={{ type: "keyframes", duration: 0.6 }}
             className="max-w-[700px] mx-auto font-quicksand lg:mt-14 md:mt-24 mt-5 px-4 text-center text-white lg:text-lg md:text-base text-sm"
           >
-           Eklektik Mama brings together modern mums in Abu Dhabi and the UAE through curated events, baby-friendly meetups, and a vibrant online community.Think real talk, real support, and real connection, for mums who want more than just the usual. Because mamas need playdates too.
+           Call it rebellion, call it culture — we call it Eklektik Mama™️. A platform where modern mums connect through events, stories and spaces that challenge clichés and celebrate chaos. We’re raising hell and humans — and doing it loud AF.
           </motion.p>
 
           <motion.a
@@ -382,14 +382,7 @@ export default function Home() {
               animate={{ opacity: 1 }}
               transition={{ duration: 0.3 }}
             >
-              Because being a mum doesn&apos;t mean disappearing into soft pastels,
-              sugar-coated advice, or a WhatsApp group that only talks about nap
-              schedules. Eklektik Mama™ was born from the chaos, the 3AM feeds,
-              the unfiltered rants, the fierce need for community that actually
-              gets it. <br /> <br />
-              We&apos;re here for bold mums who crave more than just &ldquo;mommy & me&rdquo; who
-              want real conversations, real connection, and a little rebellion
-              with their baby wipes.
+             Eklektik Mama™️ isn’t a playdate. It’s a platform. Born from the sleepless hours and the side-eye at sugar-coated advice, we exist to disrupt the clichés of motherhood and build something bolder. We create spaces that feel more like culture than coffee mornings — where mums come to connect, be challenged, laugh too loud, and feel seen in all their contradictions. This is where modern motherhood takes up space, unapologetically.
             </motion.p>
             <motion.div
               initial={{ opacity: 0, height: 0 }}

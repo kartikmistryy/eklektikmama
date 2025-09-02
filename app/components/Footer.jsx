@@ -1,3 +1,4 @@
+"use client"
 import Image from "next/image";
 import { BsArrowRight } from "react-icons/bs";
 import {
@@ -10,8 +11,55 @@ import {
 } from "react-icons/fa6";
 import Marquee from "./Marquee";
 import Link from "next/link";
+import { useState } from "react";
 
 export default function Footer() {
+  const [email, setEmail] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [message, setMessage] = useState("");
+  const [messageType, setMessageType] = useState(""); // "success" or "error"
+
+  const handleNewsletterSubmit = async (e) => {
+    e.preventDefault();
+    
+    if (!email || !email.includes('@')) {
+      setMessage("Please enter a valid email address");
+      setMessageType("error");
+      return;
+    }
+
+    setIsSubmitting(true);
+    setMessage("");
+    setMessageType("");
+
+    try {
+      const response = await fetch('/api/newsletter-signup', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        setMessage(data.message);
+        setMessageType("success");
+        setEmail(""); // Clear the form on success
+      } else {
+        setMessage(data.error || "Failed to subscribe. Please try again.");
+        setMessageType("error");
+      }
+    } catch (error) {
+      console.error('Newsletter signup error:', error);
+      setMessage("Something went wrong. Please try again.");
+      setMessageType("error");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
     <section className="w-full h-full flex flex-col">
       <div className="flex lg:flex-row flex-col w-full h-full gap-10 md:pl-10 px-5">
@@ -31,18 +79,44 @@ export default function Footer() {
             Welcome to <b className="font-semibold">Eklektik Mama™</b>, where
             motherhood meets rebellion. A home for bold mums,{" "}
             <b className="font-semibold">BYOBaby™</b> events, unapologetic
-            blogs, and gear you didn’t know you needed.
+            blogs, and gear you didn't know you needed.
           </p>
-          <span className="flex flex-row w-full max-w-[500px] border-2 border-[#bf378b] rounded-full mt-10">
-            <input
-              type="email"
-              className="w-full flex text-sm md:px-6 px-4 outline-none border-0 py-2 text-[#093166] placeholder:text-[#093166]"
-              placeholder="ENTER YOUR EMAIL ADDRESS"
-            />
-            <button className="text-xl flex justify-center items-center px-3 cursor-pointer">
-              <BsArrowRight />
-            </button>
-          </span>
+          
+          {/* Newsletter Form */}
+          <form onSubmit={handleNewsletterSubmit} className="mt-10">
+            <div className="flex flex-row w-full max-w-[500px] border-2 border-[#bf378b] rounded-full">
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="w-full flex text-sm md:px-6 px-4 outline-none border-0 py-2 text-[#093166] placeholder:text-[#093166]"
+                placeholder="ENTER YOUR EMAIL ADDRESS"
+                disabled={isSubmitting}
+              />
+              <button 
+                type="submit"
+                disabled={isSubmitting}
+                className="text-xl flex justify-center items-center px-3 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105 transition-transform"
+              >
+                {isSubmitting ? (
+                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-[#093166]"></div>
+                ) : (
+                  <BsArrowRight />
+                )}
+              </button>
+            </div>
+            
+            {/* Message Display */}
+            {message && (
+              <div className={`mt-3 text-sm font-medium ${
+                messageType === "success" 
+                  ? "text-green-600" 
+                  : "text-red-600"
+              }`}>
+                {message}
+              </div>
+            )}
+          </form>
         </span>
         {/* Fix here */}
         {/* Mobile-only footer images */}
@@ -128,27 +202,27 @@ export default function Footer() {
               <div className="flex flex-wrap gap-3 justify-start">
                 <Link
                   href="https://www.tiktok.com/@eklektikmama?_t=8pqLsaRIulk&_r=1"
-                  className="bg-white text-[#102A43] px-3 py-1 rounded-full text-sm font-semibold shadow hover:scale-105 transition"
+                  className="bg-white text-[#102A43] flex flex-row items-center justify-center px-3 py-2  rounded-full text-sm font-semibold shadow hover:scale-105 transition"
                 >
                   <label htmlFor="tiktok"></label>
-                  <FaTiktok className="inline mr-1 text-xl" /> <b className="font-medium lg:flex hidden">TikTok</b>
+                  <FaTiktok className="inline mr-1 text-xl" /> <b className="font-medium md:flex hidden">TikTok</b>
                 </Link>
                 <Link
                   href="https://www.facebook.com/people/Eklektik-Mama/61560699879306/"
-                  className="bg-white text-[#102A43] px-3 py-1 rounded-full text-sm font-semibold shadow hover:scale-105 transition"
+                  className="bg-white text-[#102A43] flex flex-row items-center justify-center px-3 py-2 rounded-full text-sm font-semibold shadow hover:scale-105 transition"
                 >
-                  <FaFacebook className="inline mr-1 text-xl" /><b className="font-medium md:flex hidden">Facebook</b> 
+                  <FaFacebook className="inline mr-1 text-xl" /><b className="font-medium md:flex hidden ">Facebook</b> 
                 </Link>
                 <Link
                   href="https://www.linkedin.com/company/eklektik-mama/"
-                  className="bg-white text-[#102A43] px-3 py-1 rounded-full text-sm font-semibold shadow hover:scale-105 transition"
+                  className="bg-white text-[#102A43] flex flex-row items-center justify-center px-3 py-2 rounded-full text-sm font-semibold shadow hover:scale-105 transition"
                 >
                   <FaLinkedin className="inline mr-1 text-xl" /> 
                   <b className="font-medium md:flex hidden">Linkedin</b> 
                 </Link>
                 <Link
                   href="https://www.instagram.com/eklektikmama"
-                  className="bg-white text-[#102A43] px-3 py-1 rounded-full text-sm font-semibold shadow hover:scale-105 transition"
+                  className="bg-white text-[#102A43] flex flex-row items-center justify-center px-3 py-2 rounded-full text-sm font-semibold shadow hover:scale-105 transition"
                 >
                   <FaInstagram className="inline mr-1 text-xl" /><b className="font-medium md:flex hidden">Instagram</b>  
                   

@@ -16,7 +16,13 @@ export default function Navbar({ pageType = 'default' }) {
   const useDarkNav = pageType === 'booking' || pageType === 'success' || pageType === 'legal' || 
                      pathname.includes('/events/') && pathname.includes('/book') ||
                      pathname.includes('/events/') && pathname.includes('/success') ||
-                     pathname.includes('/privacy-policy') || pathname.includes('/terms-and-condition');
+                     pathname.includes('/privacy-policy') || pathname.includes('/terms-and-condition') ||
+                     pathname.includes('/admin') || pathname.includes('/shop');
+
+  // Debug logging
+  console.log('Current pathname:', pathname);
+  console.log('useDarkNav:', useDarkNav);
+  console.log('Logo src:', useDarkNav ? "/mobileLogoBlue.png" : "/mobileLogo.png");
 
   // Function to close mobile menu
   const closeMobileMenu = () => {
@@ -101,12 +107,16 @@ export default function Navbar({ pageType = 'default' }) {
         className="flex-1 flex justify-center [@media(min-width:1060px)]:hidden"
       >
         <Image
-          src="/mobileLogo.png"
+          src={useDarkNav ? "/mobileLogoBlue.png" : "/mobileLogo.png"}
           alt="Eklektik Mama"
           width={60}
           height={60}
-          className="h-18 w-auto"
+          className="h-16 w-auto"
         />
+        {/* Debug info */}
+        <div className="absolute top-0 right-0 text-xs bg-black text-white p-1 rounded">
+          {useDarkNav ? "Blue" : "White"} Logo
+        </div>
       </Link>
 
       {/* Right container */}

@@ -127,13 +127,13 @@ export default function BookingPage({ params }) {
           </div>
 
           <div className="p-6 space-y-8">
-            {/* Event Details - Full Width at Top */}
+            {/* Event Details - Cover Photo Left, Details Right */}
             <div className="space-y-6">
               <h2 className="text-2xl font-bold text-gray-800 border-b border-gray-200 pb-3">Event Details</h2>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {event.coverImage && (
-                  <div className="relative h-64 rounded-lg overflow-hidden">
+                  <div className="relative h-80 rounded-lg overflow-hidden">
                     <Image 
                       src={event.coverImage} 
                       alt={event.title} 
@@ -149,7 +149,36 @@ export default function BookingPage({ params }) {
                   {event.date && (
                     <div className="flex items-center text-gray-700">
                       <span className="mr-3 text-xl">📅</span>
-                      <span className="text-lg">{moment(event.date).format("dddd, MMMM Do YYYY, h:mm A")}</span>
+                      <span className="text-lg">
+                        {moment(event.date).format("dddd, MMMM Do YYYY")}
+                      </span>
+                    </div>
+                  )}
+                  
+                  {event.startTime && (
+                    <div className="flex items-center text-gray-700">
+                      <span className="mr-3 text-xl">🕐</span>
+                      <span className="text-lg font-semibold text-[#093166]">
+                        Start Time: {event.startTime}
+                      </span>
+                    </div>
+                  )}
+                  
+                  {event.endDate && event.endDate !== event.date && (
+                    <div className="flex items-center text-gray-700">
+                      <span className="mr-3 text-xl">📅</span>
+                      <span className="text-lg">
+                        End: {moment(event.endDate).format("dddd, MMMM Do YYYY")}
+                      </span>
+                    </div>
+                  )}
+                  
+                  {event.endTime && event.endTime !== event.startTime && (
+                    <div className="flex items-center text-gray-700">
+                      <span className="mr-3 text-xl">🕐</span>
+                      <span className="text-lg font-semibold text-[#093166]">
+                        End Time: {event.endTime}
+                      </span>
                     </div>
                   )}
                   
@@ -166,15 +195,17 @@ export default function BookingPage({ params }) {
                       <span className="text-xl font-semibold text-[#093166]">AED {event.price} per ticket</span>
                     </div>
                   )}
-
-                  {event.description && (
-                    <div className="text-gray-600">
-                      <p className="text-base leading-relaxed">{event.description}</p>
-                    </div>
-                  )}
                 </div>
               </div>
             </div>
+
+            {/* Description Section - Below Both Cover and Details */}
+            {event.description && (
+              <div className="border-t border-gray-200 pt-6">
+                <h2 className="text-2xl font-bold text-gray-800 mb-4">About This Event</h2>
+                <p className="text-base text-gray-800 leading-relaxed">{event.description}</p>
+              </div>
+            )}
 
             {/* Divider */}
             <div className="border-t border-gray-200 pt-6">

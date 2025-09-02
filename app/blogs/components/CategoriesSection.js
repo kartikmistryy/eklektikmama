@@ -118,12 +118,12 @@ const CategoriesSection = ({ allPosts }) => {
       >
         <p className="font-quicksand font-semibold text-base">Categories</p>
         <motion.span 
-          className="w-full h-fit flex flex-row gap-3 flex-wrap"
+          className="w-full h-fit flex flex-row gap-3 flex-wrap mt-6"
           variants={staggerContainer}
         >
           <motion.button
             onClick={() => handleTagClick('All')}
-            className={`w-fit h-[40px] px-4 text-base flex items-center justify-center rounded-[20px] my-6 border-2 transition-colors duration-500 ease-in-out md:scale-100 scale-75 ${
+            className={`w-fit h-[40px] px-4 lg:text-base text-sm flex items-center justify-center rounded-[18px] my-0 border-2 transition-colors duration-500 ease-in-out scale-100 ${
               activeTag === 'All'
                 ? 'text-white bg-[#bf378b] border-[#bf378b]'
                 : 'text-[#093166] border-[#bf378b] bg-transparent hover:text-white hover:bg-[#bf378b]'
@@ -136,7 +136,7 @@ const CategoriesSection = ({ allPosts }) => {
             <motion.button
               key={tag}
               onClick={() => handleTagClick(tag)}
-              className={`w-fit h-[40px] px-4 text-base flex items-center justify-center rounded-[20px] uppercase my-6 border-2 transition-colors duration-500 ease-in-out md:scale-100 scale-75 ${
+              className={`w-fit h-[40px] px-4 lg:text-base text-sm flex items-center justify-center rounded-[18px] my-0 border-2 transition-colors duration-500 ease-in-out scale-100 ${
                 activeTag === tag
                   ? 'text-white bg-[#bf378b] border-[#bf378b]'
                   : 'text-[#093166] border-[#bf378b] bg-transparent hover:text-white hover:bg-[#bf378b]'

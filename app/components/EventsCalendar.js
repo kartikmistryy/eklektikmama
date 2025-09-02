@@ -5,7 +5,7 @@ import "react-big-calendar/lib/css/react-big-calendar.css";
 
 const localizer = momentLocalizer(moment);
 
-export default function EventsCalendar() {
+export default function EventsCalendar({ events: propEvents = [] }) {
   const [events, setEvents] = useState([]);
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [viewMode, setViewMode] = useState('calendar'); // 'calendar' or 'list'
@@ -27,14 +27,9 @@ export default function EventsCalendar() {
   }, []);
 
   useEffect(() => {
-    async function fetchEvents() {
-      const res = await fetch("/api/events", { cache: "no-store" });
-      const data = await res.json();
-
-      console.log('Raw events data:', data);
-      console.log('First event structure:', data[0]);
-
-      const mapped = data.map((event) => ({
+    // If propEvents are provided, use them; otherwise fetch from API
+    if (propEvents && propEvents.length > 0) {
+      const mapped = propEvents.map((event) => ({
         id: event._id || event.id || event._id?.toString() || 'unknown',
         title: event.title,
         slug: event.slug,
@@ -46,14 +41,31 @@ export default function EventsCalendar() {
         price: event.price,
         segment: event.segment,
       }));
-      
-      console.log('Mapped events:', mapped);
-      console.log('First mapped event:', mapped[0]);
-      
       setEvents(mapped);
+    } else {
+      // Fallback to fetching events if no props provided
+      async function fetchEvents() {
+        const res = await fetch("/api/events", { cache: "no-store" });
+        const data = await res.json();
+
+        const mapped = data.map((event) => ({
+          id: event._id || event.id || event._id?.toString() || 'unknown',
+          title: event.title,
+          slug: event.slug,
+          start: new Date(event.date),
+          end: new Date(event.endDate || event.date),
+          coverImage: event.coverImage,
+          description: event.description,
+          location: event.location,
+          price: event.price,
+          segment: event.segment,
+        }));
+        
+        setEvents(mapped);
+      }
+      fetchEvents();
     }
-    fetchEvents();
-  }, []);
+  }, [propEvents]);
 
   const EventCard = ({ event }) => (
     <div className="flex flex-col items-start">

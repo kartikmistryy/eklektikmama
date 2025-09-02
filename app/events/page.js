@@ -8,11 +8,6 @@ import moment from "moment";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import Marquee from "../components/Marquee";
 
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-} from "@/components/ui/carousel";
 import EventsCalendar from "../components/EventsCalendar";
 import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
@@ -95,8 +90,9 @@ export default function Events() {
   };
 
   useEffect(() => {
+    console.log('Events page mounted - fetching events once');
     async function fetchEvents() {
-      const res = await fetch("/api/events", { cache: "no-store" });
+      const res = await fetch("/api/events");
       const data = await res.json();
 
       const mapped = data.map((event) => ({
@@ -112,20 +108,7 @@ export default function Events() {
       setEvents(mapped);
     }
     fetchEvents();
-  }, []);
-
-  const EventCard = ({ event }) => (
-    <div className="flex flex-col items-start">
-      {event.coverImage && (
-        <img
-          src={event.coverImage}
-          alt={event.title}
-          className="w-full h-12 object-cover rounded mb-1"
-        />
-      )}
-      <span className="text-sm font-medium">{event.title}</span>
-    </div>
-  );
+  }, []); // Empty dependency array ensures this only runs once on mount
 
   return (
     <div className="w-full h-full flex flex-col overflow-x-hidden">
@@ -166,7 +149,7 @@ export default function Events() {
             don&apos;t)—just bring your whole self...
           </p>
           {/* Tag Buttons */}
-          <motion.div 
+          {/* <motion.div 
             className="flex flex-wrap gap-3 mt-6"
             variants={staggerContainer}
           >
@@ -191,7 +174,7 @@ export default function Events() {
             >
               View All
             </motion.button>
-          </motion.div>
+          </motion.div> */}
         </motion.div>
         <motion.div 
           className="lg:w-1/2 w-full"
@@ -230,7 +213,13 @@ export default function Events() {
           variants={fadeIn}
           transition={{ delay: 0.2 }}
         >
-          <EventsCalendar/>
+          {events.length > 0 ? (
+            <EventsCalendar events={events} />
+          ) : (
+            <div className="px-5 lg:px-14">
+              <p className="text-gray-500">Loading events...</p>
+            </div>
+          )}
         </motion.div>
 
         {/* Event Modal */}
@@ -384,27 +373,27 @@ export default function Events() {
             CONNECTED <b className="font-bold">AF</b>
           </h2>
         </div>
-        <div className="flex flex-col lg:flex-row gap-5 w-full h-full md:max-h-[350px] relative border-2 border-[#093166] rounded-md p-3">
+        <div className="flex flex-col lg:flex-row gap-5 w-full relative border-2 border-[#093166] rounded-md p-3">
           <Image
             src="/events/c1.webp"
             alt="img1"
             width={400}
             height={400}
-            className="w-full lg:w-1/4 object-cover rounded-md md:flex hidden"
+            className="w-full lg:w-1/4 h-[200px] md:h-[300px] object-cover rounded-md md:flex hidden"
           />
           <Image
             src="/events/c2.webp"
             alt="img2"
             width={400}
             height={400}
-            className="w-full h-full lg:w-1/4 object-cover rounded-md"
+            className="w-full lg:w-1/4 h-[200px] md:h-[300px] object-cover rounded-md"
           />
           <Image
             src="/events/c3.webp"
             alt="img3"
             width={400}
             height={400}
-            className="w-full lg:w-1/4 object-cover rounded-md md:flex hidden"
+            className="w-full lg:w-1/4 h-[200px] md:h-[300px] object-cover rounded-md md:flex hidden"
           />
           <div className="flex flex-col justify-start items-start w-full lg:w-1/2">
             <h4 className="uppercase font-poppins font-bold text-2xl lg:text-4xl text-[#093166]">

@@ -17,6 +17,9 @@ const Parnterwithus = () => {
     note: ""
   });
   const [errors, setErrors] = useState({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [message, setMessage] = useState("");
+  const [messageType, setMessageType] = useState("");
 
   // Refs for animations
   const heroRef = useRef(null);
@@ -126,13 +129,46 @@ const Parnterwithus = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     
     if (validateForm()) {
-      console.log("Form Data:", formData);
-      // Here you would typically send the data to your API
-      alert("Form submitted successfully! Check console for data.");
+      setIsSubmitting(true);
+      setMessage("");
+      setMessageType("");
+      try {
+        const response = await fetch('/api/partner-form', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(formData),
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          setMessage(data.message);
+          setMessageType("success");
+          // Clear the form on success
+          setFormData({
+            name: "",
+            email: "",
+            isBrand: "",
+            interestedInFranchise: "",
+            note: ""
+          });
+        } else {
+          setMessage(data.error || "Failed to submit form. Please try again.");
+          setMessageType("error");
+        }
+      } catch (error) {
+        console.error('Form submission error:', error);
+        setMessage("Something went wrong. Please try again.");
+        setMessageType("error");
+      } finally {
+        setIsSubmitting(false);
+      }
     } else {
       console.log("Form validation failed:", errors);
     }
@@ -486,12 +522,35 @@ const Parnterwithus = () => {
             
             <motion.button
               type="submit"
-              className="w-fit h-[45px] px-12 text-base flex items-center justify-center uppercase text-[#093166] hover:text-white rounded-[20px] my-6 border-2 border-[#bf378b] bg-transparent hover:bg-[#bf378b] transition-colors duration-500 ease-in-out md:scale-100 scale-75"
+              disabled={isSubmitting}
+              className="w-fit h-[45px] px-12 text-base flex items-center justify-center uppercase text-[#093166] hover:text-white rounded-[20px] my-6 border-2 border-[#bf378b] bg-transparent hover:bg-[#bf378b] transition-colors duration-500 ease-in-out md:scale-100 scale-75 disabled:opacity-50 disabled:cursor-not-allowed"
               variants={fadeInUp}
               transition={{ delay: 0.4 }}
             >
-              SUBMIT <BsArrowRight className="ml-2 text-2xl" />
+              {isSubmitting ? (
+                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-[#093166]"></div>
+              ) : (
+                <>
+                  SUBMIT <BsArrowRight className="ml-2 text-2xl" />
+                </>
+              )}
             </motion.button>
+            
+            {/* Message Display */}
+            {message && (
+              <motion.div 
+                className={`mt-3 text-sm font-medium text-center ${
+                  messageType === "success" 
+                    ? "text-green-600" 
+                    : "text-red-600"
+                }`}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3 }}
+              >
+                {message}
+              </motion.div>
+            )}
           </motion.form>
         </motion.div>
       </section>

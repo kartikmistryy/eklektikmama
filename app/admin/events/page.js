@@ -1,5 +1,6 @@
 "use client";
-import { useState } from "react";
+import { useState, useRef } from "react";
+import Image from "next/image";
 
 export default function AdminEventsPage() {
   const [form, setForm] = useState({
@@ -13,17 +14,166 @@ export default function AdminEventsPage() {
     segment: "cinemaMorning",
   });
 
+  const [imageFile, setImageFile] = useState(null);
+  const [imagePreview, setImagePreview] = useState("");
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadMessage, setUploadMessage] = useState("");
+  const fileInputRef = useRef(null);
+
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
+  const handleFileSelect = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      // Validate file type
+      if (!file.type.startsWith("image/")) {
+        setUploadMessage("❌ Please select an image file");
+        return;
+      }
+
+      // Validate file size (5MB limit)
+      const maxSize = 5 * 1024 * 1024; // 5MB
+      if (file.size > maxSize) {
+        setUploadMessage("❌ File size must be less than 5MB");
+        return;
+      }
+
+      setImageFile(file);
+      setUploadMessage("");
+
+      // Create preview
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setImagePreview(e.target.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    e.currentTarget.classList.add("border-blue-500", "bg-blue-50");
+  };
+
+  const handleDragLeave = (e) => {
+    e.preventDefault();
+    e.currentTarget.classList.remove("border-blue-500", "bg-blue-50");
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    e.currentTarget.classList.remove("border-blue-500", "bg-blue-50");
+    
+    const file = e.dataTransfer.files[0];
+    if (file && file.type.startsWith("image/")) {
+      if (file.size > 5 * 1024 * 1024) {
+        setUploadMessage("❌ File size must be less than 5MB");
+        return;
+      }
+      
+      setImageFile(file);
+      setUploadMessage("");
+
+      // Create preview
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setImagePreview(e.target.result);
+      };
+      reader.readAsDataURL(file);
+    } else {
+      setUploadMessage("❌ Please drop an image file");
+    }
+  };
+
+  const uploadToCloudinary = async () => {
+    if (!imageFile) {
+      setUploadMessage("❌ Please select an image first");
+      return;
+    }
+
+    setIsUploading(true);
+    setUploadMessage("📤 Uploading to Cloudinary...");
+
+    try {
+      // Convert file to base64 for Cloudinary
+      const base64String = await fileToBase64(imageFile);
+      
+      // Upload to Cloudinary - NO transformation parameter for unsigned uploads
+      const cloudinaryUrl = `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload`;
+      
+      const uploadData = new FormData();
+      uploadData.append('file', base64String);
+      uploadData.append('upload_preset', process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET);
+      uploadData.append('folder', 'eklektikmama/events');
+
+      const response = await fetch(cloudinaryUrl, {
+        method: 'POST',
+        body: uploadData,
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error?.message || 'Failed to upload to Cloudinary');
+      }
+
+      const result = await response.json();
+      
+      // Update form with Cloudinary URL
+      setForm({ ...form, coverImage: result.secure_url });
+      setUploadMessage("✅ Image uploaded successfully to Cloudinary!");
+      
+      // Clear the file input and preview after successful upload
+      setTimeout(() => {
+        setImageFile(null);
+        setImagePreview("");
+        setUploadMessage("");
+        if (fileInputRef.current) {
+          fileInputRef.current.value = "";
+        }
+      }, 2000);
+
+    } catch (error) {
+      console.error('Cloudinary upload error:', error);
+      setUploadMessage(`❌ Upload failed: ${error.message}`);
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  const fileToBase64 = (file) => {
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result);
+      reader.readAsDataURL(file);
+    });
+  };
+
+  const removeImage = () => {
+    setImageFile(null);
+    setImagePreview("");
+    setForm({ ...form, coverImage: "" });
+    setUploadMessage("");
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    if (!form.coverImage) {
+      alert("❌ Please upload a cover image first");
+      return;
+    }
+
     const res = await fetch("/api/events", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(form),
     });
+    
     if (res.ok) {
       alert("✅ Event created!");
       setForm({
@@ -36,40 +186,265 @@ export default function AdminEventsPage() {
         location: "",
         segment: "cinemaMorning",
       });
+      setImageFile(null);
+      setImagePreview("");
+      setUploadMessage("");
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
     } else {
       alert("❌ Failed to create event");
     }
   };
 
   return (
-    <div className="p-6 max-w-xl mx-auto pt-32">
-      <h1 className="text-2xl font-bold mb-4">Create New Event</h1>
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <input name="title" value={form.title} onChange={handleChange} placeholder="Title" className="w-full border p-2" required />
-        <textarea name="description" value={form.description} onChange={handleChange} placeholder="Description" className="w-full border p-2" />
-        <input name="coverImage" value={form.coverImage} onChange={handleChange} placeholder="Cover Image URL" className="w-full border p-2" />
-        <input type="date" name="date" value={form.date} onChange={handleChange} className="w-full border p-2" required />
-        <input type="date" name="endDate" value={form.endDate} onChange={handleChange} className="w-full border p-2" />
-        <input type="number" name="price" value={form.price} onChange={handleChange} placeholder="Price" className="w-full border p-2" />
-        <input name="location" value={form.location} onChange={handleChange} placeholder="Location" className="w-full border p-2" />
-        
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Event Segment *</label>
-          <select 
-            name="segment" 
-            value={form.segment} 
-            onChange={handleChange} 
-            className="w-full border p-2"
-            required
-          >
-            <option value="cinemaMorning">Cinema Morning</option>
-            <option value="mamaBreakfast">Mama Breakfast</option>
-            <option value="mamaFit">MamaFit</option>
-            <option value="eklektikEdit">Eklektik Edit</option>
-          </select>
+    <div className="max-w-2xl mx-auto">
+      <h1 className="text-2xl font-bold mb-6">Create New Event</h1>
+      
+      
+      <form onSubmit={handleSubmit} className="space-y-6">
+        {/* Basic Event Details */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Event Title *</label>
+            <input 
+              name="title" 
+              value={form.title} 
+              onChange={handleChange} 
+              placeholder="Enter event title" 
+              className="w-full border border-gray-300 rounded-md p-3 focus:ring-2 focus:ring-blue-500 focus:border-transparent" 
+              required 
+            />
+          </div>
+          
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Event Segment *</label>
+            <select 
+              name="segment" 
+              value={form.segment} 
+              onChange={handleChange} 
+              className="w-full border border-gray-300 rounded-md p-3 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              required
+            >
+              <option value="cinemaMorning">Cinema Morning</option>
+              <option value="mamaBreakfast">Mama Breakfast</option>
+              <option value="mamaFit">MamaFit</option>
+              <option value="eklektikEdit">Eklektik Edit</option>
+            </select>
+          </div>
         </div>
-        
-        <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded">Create</button>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+          <textarea 
+            name="description" 
+            value={form.description} 
+            onChange={handleChange} 
+            placeholder="Enter event description" 
+            rows={3}
+            className="w-full border border-gray-300 rounded-md p-3 focus:ring-2 focus:ring-blue-500 focus:border-transparent" 
+          />
+        </div>
+
+        {/* Image Upload Section */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-3">Cover Image *</label>
+          
+          {/* Current Image Display */}
+          {form.coverImage && (
+            <div className="mb-4">
+              <div className="relative inline-block">
+                <Image
+                  src={form.coverImage}
+                  alt="Cover preview"
+                  width={200}
+                  height={150}
+                  className="rounded-lg object-cover border"
+                />
+                <button
+                  type="button"
+                  onClick={removeImage}
+                  className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm hover:bg-red-600"
+                >
+                  ×
+                </button>
+              </div>
+              <p className="text-sm text-gray-600 mt-2">
+                Image uploaded to Cloudinary: {form.coverImage}
+              </p>
+            </div>
+          )}
+
+          {/* File Upload Area */}
+          <div
+            className={`border-2 border-dashed border-gray-300 rounded-lg p-6 text-center transition-colors ${
+              imageFile ? "border-blue-500 bg-blue-50" : "hover:border-gray-400"
+            }`}
+            onDragOver={handleDragOver}
+            onDragLeave={handleDragLeave}
+            onDrop={handleDrop}
+          >
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              onChange={handleFileSelect}
+              className="hidden"
+            />
+            
+            {!imagePreview ? (
+              <div>
+                <div className="text-gray-400 mb-2">
+                  <svg className="mx-auto h-12 w-12" stroke="currentColor" fill="none" viewBox="0 0 48 48">
+                    <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </div>
+                <p className="text-sm text-gray-600 mb-2">
+                  Drag and drop an image here, or{" "}
+                  <button
+                    type="button"
+                    onClick={() => fileInputRef.current?.click()}
+                    className="text-blue-600 hover:text-blue-500 font-medium"
+                  >
+                    browse files
+                  </button>
+                </p>
+                <p className="text-xs text-gray-500">PNG, JPG, GIF up to 5MB</p>
+              </div>
+            ) : (
+              <div>
+                <div className="relative inline-block mb-4">
+                  <Image
+                    src={imagePreview}
+                    alt="Preview"
+                    width={200}
+                    height={150}
+                    className="rounded-lg object-cover border"
+                  />
+                  <button
+                    type="button"
+                    onClick={removeImage}
+                    className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm hover:bg-red-600"
+                  >
+                    ×
+                  </button>
+                </div>
+                <p className="text-sm text-gray-600 mb-3">
+                  Selected: {imageFile?.name} ({(imageFile?.size / 1024 / 1024).toFixed(2)}MB)
+                </p>
+                <button
+                  type="button"
+                  onClick={uploadToCloudinary}
+                  disabled={isUploading}
+                  className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {isUploading ? "Uploading..." : "Upload to Cloudinary"}
+                </button>
+              </div>
+            )}
+          </div>
+
+          {/* Upload Message */}
+          {uploadMessage && (
+            <div className={`mt-3 p-3 rounded-md text-sm ${
+              uploadMessage.includes("✅") 
+                ? "bg-green-50 text-green-800 border border-green-200" 
+                : uploadMessage.includes("❌")
+                ? "bg-red-50 text-red-800 border border-red-200"
+                : "bg-blue-50 text-blue-800 border border-blue-200"
+            }`}>
+              {uploadMessage}
+            </div>
+          )}
+        </div>
+
+        {/* Date and Time */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Start Date *</label>
+            <input 
+              type="date" 
+              name="date" 
+              value={form.date} 
+              onChange={handleChange} 
+              className="w-full border border-gray-300 rounded-md p-3 focus:ring-2 focus:ring-blue-500 focus:border-transparent" 
+              required 
+            />
+          </div>
+          
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Start Time *</label>
+            <input 
+              type="time" 
+              name="startTime" 
+              value={form.startTime} 
+              onChange={handleChange} 
+              className="w-full border border-gray-300 rounded-md p-3 focus:ring-2 focus:ring-blue-500 focus:border-transparent" 
+              required 
+            />
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">End Date</label>
+            <input 
+              type="date" 
+              name="endDate" 
+              value={form.endDate} 
+              onChange={handleChange} 
+              className="w-full border border-gray-300 rounded-md p-3 focus:ring-2 focus:ring-blue-500 focus:border-transparent" 
+            />
+          </div>
+          
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">End Time</label>
+            <input 
+              type="time" 
+              name="endTime" 
+              value={form.endTime} 
+              onChange={handleChange} 
+              className="w-full border border-gray-300 rounded-md p-3 focus:ring-2 focus:ring-blue-500 focus:border-transparent" 
+            />
+          </div>
+        </div>
+
+        {/* Price and Location */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Price (AED)</label>
+            <input 
+              type="number" 
+              name="price" 
+              value={form.price} 
+              onChange={handleChange} 
+              placeholder="0.00" 
+              step="0.01"
+              min="0"
+              className="w-full border border-gray-300 rounded-md p-3 focus:ring-2 focus:ring-blue-500 focus:border-transparent" 
+            />
+          </div>
+          
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Location</label>
+            <input 
+              name="location" 
+              value={form.location} 
+              onChange={handleChange} 
+              placeholder="Enter event location" 
+              className="w-full border border-gray-300 rounded-md p-3 focus:ring-2 focus:ring-blue-500 focus:border-transparent" 
+            />
+          </div>
+        </div>
+
+        {/* Submit Button */}
+        <button 
+          type="submit" 
+          disabled={!form.coverImage || isUploading}
+          className="w-full bg-blue-600 text-white px-6 py-3 rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed font-medium"
+        >
+          Create Event
+        </button>
       </form>
     </div>
   );

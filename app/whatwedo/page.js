@@ -511,12 +511,12 @@ const Page = () => {
           </div>
           
           {/* View All Button */}
-          <div className="flex justify-center mt-6">
+          {/* <div className="flex justify-center mt-6">
             <Link href="/whatwedo" className="text-sm text-white rounded-full font-medium font-poppins flex flex-row items-center bg-[#093166] justify-start gap-5 px-6 py-2 hover:bg-[#072a4d] transition-colors duration-300">
               VIEW ALL
               <BsArrowRight className="text-lg font-bold" />
             </Link>
-          </div>
+          </div> */}
         </motion.div>
       </section>
 
@@ -542,7 +542,7 @@ const Page = () => {
             all the right reasons.
           </p>
           <Link
-            href="/"
+            href="/perks#form"
             className="w-fit md:h-[45px] h-[40px] md:px-6 px-3 md:text-base text-sm flex items-center justify-center uppercase text-[#093166] hover:text-white rounded-[20px] my-6 border-2 border-[#bf378b] bg-transparent hover:bg-[#bf378b] transition-colors duration-500 ease-in-out scale-100"
           >
             WORK WITH US <BsArrowRight className="ml-2 md:text-2xl text-lg" />

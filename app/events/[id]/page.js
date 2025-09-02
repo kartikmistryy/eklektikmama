@@ -43,7 +43,16 @@ export default async function EventDetailPage({ params }) {
         <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="md:col-span-2">
             {event.description && (
-              <p className="text-base text-gray-800 leading-relaxed">{event.description}</p>
+              <div className="space-y-4">
+                {event.description
+                  .split(/\s{2,}/) // Split on 2 or more spaces
+                  .filter(paragraph => paragraph.trim()) // Remove empty paragraphs
+                  .map((paragraph, index) => (
+                    <p key={index} className="text-base text-gray-800 leading-relaxed">
+                      {paragraph.trim()}
+                    </p>
+                  ))}
+              </div>
             )}
           </div>
           <div className="md:col-span-1 space-y-3">
