@@ -11,7 +11,7 @@ const TermsAndConditions = () => {
 
       <section className="mb-8">
         <h2 className="text-2xl font-semibold mb-4">1. Parties and Corporate Information</h2>
-        <p className="mb-4">1.1 These Terms and Conditions ("Terms") govern access to and use of https://eklektikmama.com (the "Platform") and the services provided by Eklektik Mama Event Management – L.L.C. – S.P.C. ("Company", "we", "us", "our").</p>
+        <p className="mb-4">1.1 These Terms and Conditions (&quot;Terms&quot;) govern access to and use of https://eklektikmama.com (the &quot;Platform&quot;) and the services provided by Eklektik Mama Event Management – L.L.C. – S.P.C. (&quot;Company&quot;, &quot;we&quot;, &quot;us&quot;, &quot;our&quot;).</p>
         <p className="mb-4">1.2 Licensing Authority: Abu Dhabi Department of Economic Development (ADDED).</p>
         <p className="mb-4">1.3 Trade Licence No.: CN-5428275.</p>
         <p className="mb-4">1.4 VAT TRN: Not applicable.</p>
@@ -112,7 +112,7 @@ const TermsAndConditions = () => {
 
       <section className="mb-8">
         <h2 className="text-2xl font-semibold mb-4">13. Liability</h2>
-        <p className="mb-4">13.1 The Services are provided "as is" and "as available" without warranties, except where expressly required by law.</p>
+        <p className="mb-4">13.1 The Services are provided &quot;as is&quot; and &quot;as available&quot; without warranties, except where expressly required by law.</p>
         <p className="mb-4">13.2 To the maximum extent permitted by law, we exclude liability for indirect, incidental, consequential, special, or punitive damages, including loss of profits, goodwill, or data.</p>
         <p className="mb-4">13.3 We are not responsible for user conduct, community content, or third-party websites linked from the Platform.</p>
         <p>13.4 Nothing in these Terms excludes or limits liability that cannot be excluded under UAE law, including liability for death or personal injury caused by negligence.</p>

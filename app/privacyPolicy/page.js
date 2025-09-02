@@ -12,7 +12,7 @@ export default function PrivacyPolicy() {
       <section className="mb-8">
         <h2 className="text-2xl font-semibold mb-4">1. Introduction</h2>
         <p className="mb-4">
-          This Privacy Policy ("Policy") sets out how Eklektik Mama Event Management – L.L.C. – S.P.C. ("Company", "we", "us", "our") collects, uses, stores, shares, and protects personal data in connection with the website https://eklektikmama.com (the "Platform"), and associated services including membership, events (including BYOBaby®), community groups, merchandise sales, and digital downloads.
+          This Privacy Policy (&quot;Policy&quot;) sets out how Eklektik Mama Event Management – L.L.C. – S.P.C. (&quot;Company&quot;, &quot;we&quot;, &quot;us&quot;, &quot;our&quot;) collects, uses, stores, shares, and protects personal data in connection with the website https://eklektikmama.com (the &quot;Platform&quot;), and associated services including membership, events (including BYOBaby®), community groups, merchandise sales, and digital downloads.
         </p>
         <p>
           This Policy complies with Federal Decree-Law No. 45 of 2021 on the Protection of Personal Data (PDPL), the Consumer Protection Law (Federal Law No. 15 of 2020), and applicable international standards. Use of the Platform is also subject to our Terms and Conditions.
