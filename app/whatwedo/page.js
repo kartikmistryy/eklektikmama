@@ -312,7 +312,7 @@ const Page = () => {
         </motion.div>
       </section> */}
 
-      {/* <section ref={previousEventsRef} className="w-full flex flex-col gap-5 mt-10 mb-10">
+      <section ref={previousEventsRef} className="w-full flex flex-col gap-5 mt-10 mb-10">
         <motion.div 
           className="px-5 lg:px-10 text-[#093166]"
           initial="hidden"
@@ -508,7 +508,7 @@ const Page = () => {
             </Link>
           </div>
         </motion.div>
-      </section> */}
+      </section>
 
       <section ref={brandSectionRef} className="w-full h-full flex lg:flex-row flex-col-reverse items-center justify-start relative bg-white  lg:gap-0 gap-10">
         <motion.div 

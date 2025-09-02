@@ -92,40 +92,61 @@ export default function Events() {
   useEffect(() => {
     console.log('Events page mounted - fetching events once');
     async function fetchEvents() {
-      const res = await fetch("/api/events");
-      const data = await res.json();
+      try {
+        console.log('Fetching events from API...');
+        const res = await fetch("/api/events");
+        console.log('API response status:', res.status);
+        
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`);
+        }
+        
+        const data = await res.json();
+        console.log('API response data:', data);
+        console.log('Number of events received:', data.length);
 
-      const mapped = data.map((event) => {
-        // Parse the date string and preserve the original time
-        const startDate = new Date(event.date);
-        const endDate = event.endDate ? new Date(event.endDate) : new Date(event.date);
-        
-        console.log('Event date mapping:', {
-          title: event.title,
-          originalDate: event.date,
-          parsedStart: startDate,
-          parsedEnd: endDate,
-          startISO: startDate.toISOString(),
-          startLocal: startDate.toString(),
-          startLocalTime: startDate.toLocaleTimeString(),
-          timezoneOffset: startDate.getTimezoneOffset()
+        if (data.length === 0) {
+          console.log('No events found in database');
+          setEvents([]);
+          return;
+        }
+
+        const mapped = data.map((event) => {
+          // Parse the date string and preserve the original time
+          const startDate = new Date(event.date);
+          const endDate = event.endDate ? new Date(event.endDate) : new Date(event.date);
+          
+          console.log('Event date mapping:', {
+            title: event.title,
+            originalDate: event.date,
+            parsedStart: startDate,
+            parsedEnd: endDate,
+            startISO: startDate.toISOString(),
+            startLocal: startDate.toString(),
+            startLocalTime: startDate.toLocaleTimeString(),
+            timezoneOffset: startDate.getTimezoneOffset()
+          });
+          
+          return {
+            id: event._id,
+            title: event.title,
+            start: startDate,
+            end: endDate,
+            coverImage: event.coverImage,
+            description: event.description,
+            location: event.location,
+            price: event.price,
+            // Store original date strings for proper timezone handling
+            originalStart: event.date,
+            originalEnd: event.endDate
+          };
         });
-        
-        return {
-          id: event._id,
-          title: event.title,
-          start: startDate,
-          end: endDate,
-          coverImage: event.coverImage,
-          description: event.description,
-          location: event.location,
-          price: event.price,
-          // Store original date strings for proper timezone handling
-          originalStart: event.date,
-          originalEnd: event.endDate
-        };
-      });
-      setEvents(mapped);
+        console.log('Mapped events:', mapped);
+        setEvents(mapped);
+      } catch (error) {
+        console.error('Error fetching events:', error);
+        setEvents([]);
+      }
     }
     fetchEvents();
   }, []); // Empty dependency array ensures this only runs once on mount
