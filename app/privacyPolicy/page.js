@@ -55,7 +55,7 @@ export default function PrivacyPolicy() {
       </section>
 
       <section className="mb-8">
-        <h2 className="text-2xl font-semibold mb-4">5. Children's Data</h2>
+        <h2 className="text-2xl font-semibold mb-4">5. Children&apos;s Data</h2>
         <p>We only collect limited child data necessary for Events. Parents/guardians remain legally responsible for their children at all times, even when childcare or sitters are present.</p>
       </section>
 
@@ -82,7 +82,7 @@ export default function PrivacyPolicy() {
       <section className="mb-8">
         <h2 className="text-2xl font-semibold mb-4">8. Cookies and Payments</h2>
         <p className="mb-4">Essential cookies are required for functionality. Optional cookies (Google Analytics, Meta Pixel) are used only with consent.</p>
-        <p>Payments are processed via authorised providers. Multiple transactions may result in multiple postings to the cardholder's statement. Users are responsible for any bank or issuer fees.</p>
+        <p>Payments are processed via authorised providers. Multiple transactions may result in multiple postings to the cardholder&apos;s statement. Users are responsible for any bank or issuer fees.</p>
       </section>
 
       <section className="mb-8">
