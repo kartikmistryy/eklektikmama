@@ -37,6 +37,13 @@ export default function AdminPage() {
       href: "/admin/test-webhook",
       icon: "🔗",
       color: "bg-red-500"
+    },
+    {
+      title: "Debug Panel",
+      description: "Test all API routes and debug issues",
+      href: "/admin/debug-panel",
+      icon: "🔍",
+      color: "bg-indigo-500"
     }
   ];
 
