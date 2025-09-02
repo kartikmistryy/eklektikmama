@@ -19,9 +19,15 @@ export default function Navbar({ pageType = 'default' }) {
                      pathname.includes('/privacy-policy') || pathname.includes('/terms-and-condition') ||
                      pathname.includes('/admin') || pathname.includes('/shop');
 
+  // Determine if we should hide mobile logo for legal pages
+  const hideMobileLogo = pageType === 'legal' || 
+                         pathname.includes('/privacy-policy') || 
+                         pathname.includes('/terms-and-condition');
+
   // Debug logging
   console.log('Current pathname:', pathname);
   console.log('useDarkNav:', useDarkNav);
+  console.log('hideMobileLogo:', hideMobileLogo);
   console.log('Logo src:', useDarkNav ? "/mobileLogoBlue.png" : "/mobileLogo.png");
 
   // Function to close mobile menu
@@ -101,19 +107,21 @@ export default function Navbar({ pageType = 'default' }) {
         <Link href="/whatwedo" className={useDarkNav ? '' : 'text-white'} style={useDarkNav ? { color: '#2e2e2e' } : {}}>HIGHLIGHTS</Link>
       </div>
 
-      {/* Mobile Logo (<1060px only) */}
-      <Link
-        href="/"
-        className="flex-1 flex justify-center [@media(min-width:1060px)]:hidden"
-      >
-        <Image
-          src={useDarkNav ? "/mobileLogoBlue.png" : "/mobileLogo.png"}
-          alt="Eklektik Mama"
-          width={60}
-          height={60}
-          className="h-16 w-auto"
-        />
-      </Link>
+      {/* Mobile Logo (<1060px only) - Hidden for legal pages */}
+      {!hideMobileLogo && (
+        <Link
+          href="/"
+          className="flex-1 flex justify-center [@media(min-width:1060px)]:hidden"
+        >
+          <Image
+            src={useDarkNav ? "/mobileLogoBlue.png" : "/mobileLogo.png"}
+            alt="Eklektik Mama"
+            width={60}
+            height={60}
+            className="h-16 w-auto"
+          />
+        </Link>
+      )}
 
       {/* Right container */}
       <div className="flex-1 flex justify-end items-center gap-4 py-4">
@@ -128,7 +136,8 @@ export default function Navbar({ pageType = 'default' }) {
 
         {/* Mobile Menu Trigger (<1060px only) */}
         <button
-          className="[@media(min-width:1060px)]:hidden text-white"
+          className={`[@media(min-width:1060px)]:hidden ${useDarkNav ? '' : 'text-white'}`}
+          style={useDarkNav ? { color: '#2e2e2e' } : {}}
           onClick={() => {
             console.log('Opening menu, current state:', isOpen);
             setIsOpen(true);

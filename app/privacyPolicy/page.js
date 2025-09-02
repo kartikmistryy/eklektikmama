@@ -5,167 +5,125 @@ export default function PrivacyPolicy() {
   return (
     <div className="container mx-auto px-4 py-8 max-w-4x mt-[10em]">
       <Navbar pageType="legal" />
-      <h1 className="text-3xl font-bold mb-6">Privacy Policy</h1>
+      <h1 className="text-3xl font-bold mb-6">PRIVACY POLICY</h1>
       
       <p className="text-sm text-gray-600 mb-8">Last Updated: August 30, 2025</p>
 
       <section className="mb-8">
         <h2 className="text-2xl font-semibold mb-4">1. Introduction</h2>
         <p className="mb-4">
-          1.1 This Privacy Policy (&quot;Policy&quot;) sets out the manner in which Eklektik Mama Event Management – L.L.C. – S.P.C. (&quot;Eklektik Mama&quot;, &quot;Company&quot;, &quot;we&quot;, &quot;us&quot;, or &quot;our&quot;) collects, processes, stores, shares and protects Personal Data in connection with the operation of the website located at <a href="https://eklektikmama.com" className="hover:underline" style={{ color: '#2e2e2e' }}>https://eklektikmama.com</a> (the &quot;Platform&quot;), together with all associated membership services, digital downloads, merchandise sales, community groups, and events, including but not limited to those branded as BYOBaby® (collectively, the &quot;Services&quot;).
-        </p>
-        <p className="mb-4">
-          1.2 This Policy is issued in compliance with Federal Decree-Law No. 45 of 2021 on the Protection of Personal Data (PDPL), the Consumer Protection Law (Federal Law No. 15 of 2020), Cabinet Decision No. 66 of 2023 (Executive Regulations), and applicable international standards.
+          This Privacy Policy ("Policy") sets out how Eklektik Mama Event Management – L.L.C. – S.P.C. ("Company", "we", "us", "our") collects, uses, stores, shares, and protects personal data in connection with the website https://eklektikmama.com (the "Platform"), and associated services including membership, events (including BYOBaby®), community groups, merchandise sales, and digital downloads.
         </p>
         <p>
-          1.3 Use of the Platform is also subject to our <Link href="/terms-of-service" className="hover:underline" style={{ color: '#2e2e2e' }}>Terms and Conditions</Link>, which must be read in conjunction with this Policy.
+          This Policy complies with Federal Decree-Law No. 45 of 2021 on the Protection of Personal Data (PDPL), the Consumer Protection Law (Federal Law No. 15 of 2020), and applicable international standards. Use of the Platform is also subject to our Terms and Conditions.
         </p>
       </section>
 
       <section className="mb-8">
-        <h2 className="text-2xl font-semibold mb-4">2. Data Controller and Corporate Information</h2>
-        <ul className="list-disc pl-6 space-y-2">
-          <li><span className="font-semibold">Controller:</span> Eklektik Mama Event Management – L.L.C. – S.P.C.</li>
-          <li><span className="font-semibold">Licensing Authority:</span> Abu Dhabi Department of Economic Development (ADDED)</li>
-          <li><span className="font-semibold">Trade Licence No.:</span> CN-5428275</li>
-          <li><span className="font-semibold">Registered Address:</span> Office 1530, Darussalam Tower, Al Danah E5, Abu Dhabi, United Arab Emirates</li>
-          <li><span className="font-semibold">VAT TRN:</span> Not applicable at present</li>
-          <li><span className="font-semibold">Privacy Contact:</span> Simone Anahid Mazloumian – <a href="mailto:hello@eklektikmama.com" className="hover:underline" style={{ color: '#2e2e2e' }}>hello@eklektikmama.com</a></li>
-        </ul>
+        <h2 className="text-2xl font-semibold mb-4">2. Corporate Information and Eligibility</h2>
+        <p className="mb-2">Controller: Eklektik Mama Event Management – L.L.C. – S.P.C.</p>
+        <p className="mb-2">Licensing Authority: Abu Dhabi Department of Economic Development (ADDED)</p>
+        <p className="mb-2">Trade Licence No.: CN-5428275</p>
+        <p className="mb-2">VAT TRN: Not applicable</p>
+        <p className="mb-2">Registered Address: Office 1530, Darussalam Tower, Al Danah E5, Abu Dhabi, UAE</p>
+        <p className="mb-4">Privacy Contact: Simone Anahid Mazloumian – hello@eklektikmama.com</p>
+        <p>The Services are intended for users 21 lunar years of age or older. Where minors access Services, guardian consent and responsibility is required.</p>
       </section>
 
       <section className="mb-8">
-        <h2 className="text-2xl font-semibold mb-4">3. Definitions</h2>
-        <p className="mb-4">For the purposes of this Policy:</p>
-        <dl className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <dt className="font-semibold">Personal Data</dt>
-            <dd className="mb-3">means any information relating to an identified or identifiable natural person.</dd>
-            
-            <dt className="font-semibold">Membership</dt>
-            <dd className="mb-3">means any free or paid subscription to the Services.</dd>
-            
-            <dt className="font-semibold">Events</dt>
-            <dd className="mb-3">includes all in-person and virtual events organised or hosted by the Company.</dd>
-          </div>
-          <div>
-            <dt className="font-semibold">Digital Downloads</dt>
-            <dd className="mb-3">means electronic content purchased or accessed via the Platform.</dd>
-            
-            <dt className="font-semibold">Merchandise</dt>
-            <dd className="mb-3">means physical goods offered for sale on the Platform.</dd>
-            
-            <dt className="font-semibold">Community</dt>
-            <dd className="mb-3">means forums, WhatsApp groups, or similar communication channels administered by the Company.</dd>
-          </div>
-          <div>
-            <dt className="font-semibold">Visitor</dt>
-            <dd className="mb-3">means any individual accessing the Platform without registration.</dd>
-            
-            <dt className="font-semibold">Registered User</dt>
-            <dd className="mb-3">means any individual who has created an account or subscribed.</dd>
-          </div>
-          <div>
-            <dt className="font-semibold">Wordmarks</dt>
-            <dd>refers to the registered and/or protected marks Eklektik Mama® and BYOBaby®.</dd>
-          </div>
-        </dl>
+        <h2 className="text-2xl font-semibold mb-4">3. Categories of Data Collected</h2>
+        <p className="mb-2">Registration/Membership: name, email, password, contact number.</p>
+        <p className="mb-2">Events: attendee details; limited child data (initials, age, allergies/medical information) provided by a parent or guardian.</p>
+        <p className="mb-2">Merchandise: billing/shipping address, order details.</p>
+        <p className="mb-2">Digital Downloads: billing data, device/IP logs.</p>
+        <p className="mb-2">Community: messages, reports, moderation logs.</p>
+        <p className="mb-2">Communications: email, customer service correspondence.</p>
+        <p className="mb-2">Payments: billing data processed via Stripe (we do not store full card details).</p>
+        <p className="mb-2">Photography/Video: images and recordings of events, subject to opt-out consent.</p>
+        <p>Automatic Data: IP, browser, device identifiers, cookies, and analytics data.</p>
       </section>
 
       <section className="mb-8">
-        <h2 className="text-2xl font-semibold mb-4">4. Categories of Personal Data Collected</h2>
-        <h3 className="text-xl font-medium mb-3">4.1 Direct Collection:</h3>
-        <ol className="list-decimal pl-6 mb-6 space-y-3">
-          <li><span className="font-medium">Registration/Membership:</span> name, email address, password (encrypted), telephone number, subscription status, and profile details.</li>
-          <li><span className="font-medium">Events:</span> attendee details (name, email, telephone number); for family events, limited child data (first name/initials, age band, and allergy or medical information) provided by a parent or guardian.</li>
-          <li><span className="font-medium">Merchandise:</span> billing and shipping addresses, order history.</li>
-          <li><span className="font-medium">Digital Downloads:</span> billing data, IP address, download tokens/logs.</li>
-          <li><span className="font-medium">Communications and Community:</span> messages, reports, uploaded content, moderation data.</li>
-          <li><span className="font-medium">Photography/Video:</span> images and recordings taken at events, subject to consent obtained at registration.</li>
-        </ol>
-        <h3 className="text-xl font-medium mb-3">4.2 Automatic Collection:</h3>
-        <p>IP address, browser type, operating system, device identifiers, usage data, cookies and analytics information.</p>
+        <h2 className="text-2xl font-semibold mb-4">4. Purposes and Legal Bases</h2>
+        <p className="mb-4">Personal data is processed for:</p>
+        <p className="mb-2">Contractual necessity (delivery of Services, fulfilment of orders).</p>
+        <p className="mb-2">Legal obligation (consumer law, accounting, taxation).</p>
+        <p className="mb-2">Legitimate interests (security, community enforcement, IP protection, service improvement).</p>
+        <p className="mb-2">Vital interests (health and safety at events).</p>
+        <p className="mb-4">Consent (marketing communications, non-essential cookies, photography/recordings).</p>
+        <p>We may process user data to investigate, suspend, or terminate accounts for violations of our Terms and Conditions, including abuse of Community channels, harassment, or infringement of intellectual property rights.</p>
       </section>
 
       <section className="mb-8">
-        <h2 className="text-2xl font-semibold mb-4">5. Purposes and Legal Bases of Processing</h2>
-        <p className="mb-4">5.1 We process Personal Data for the following purposes:</p>
-        <ol className="list-disc pl-6 space-y-2">
-          <li><span className="font-medium">Contractual Necessity:</span> provision of Membership, Events, Merchandise, Digital Downloads and customer support.</li>
-          <li><span className="font-medium">Legal Obligation:</span> compliance with accounting, tax, consumer protection, and other statutory requirements.</li>
-          <li><span className="font-medium">Legitimate Interests:</span> maintaining Platform security, preventing fraud, enforcing intellectual property rights, investigating misuse, and improving Services.</li>
-          <li><span className="font-medium">Vital Interests:</span> protection of the health and safety of event participants.</li>
-          <li><span className="font-medium">Consent:</span> marketing communications, non-essential cookies, and photography/video at events.</li>
-        </ol>
+        <h2 className="text-2xl font-semibold mb-4">5. Children's Data</h2>
+        <p>We only collect limited child data necessary for Events. Parents/guardians remain legally responsible for their children at all times, even when childcare or sitters are present.</p>
       </section>
 
       <section className="mb-8">
-        <h2 className="text-2xl font-semibold mb-4">6. Children&apos;s Data</h2>
-        <p className="mb-4">6.1 The Services are primarily intended for adults. Where child data is collected for event purposes, such data is limited, strictly necessary, and supplied by a parent or guardian.</p>
-        <p>6.2 Parents/guardians retain full legal responsibility for their children, even when childcare or sitters are present at events.</p>
+        <h2 className="text-2xl font-semibold mb-4">6. Disclosures and Transfers</h2>
+        <p className="mb-4">Personal data may be shared with:</p>
+        <p className="mb-2">Service providers (Stripe, hosting, analytics, email).</p>
+        <p className="mb-2">Event partners and venues where required.</p>
+        <p className="mb-2">Other users in Community groups (contact number visibility).</p>
+        <p className="mb-4">Professional advisers and regulators where legally required.</p>
+        <p>Data may be transferred cross-border subject to safeguards.</p>
       </section>
 
       <section className="mb-8">
-        <h2 className="text-2xl font-semibold mb-4">7. Disclosures</h2>
-        <p className="mb-4">Personal Data may be disclosed to:</p>
-        <ol className="list-disc pl-6 space-y-2">
-          <li>third-party processors (including Stripe, hosting and analytics providers, mailing platforms);</li>
-          <li>event venues and partners, where registration requires;</li>
-          <li>community participants in WhatsApp/Facebook groups (your contact number may be visible);</li>
-          <li>professional advisers and government authorities as legally required.</li>
-        </ol>
+        <h2 className="text-2xl font-semibold mb-4">7. Retention</h2>
+        <p className="mb-2">Membership data: account duration plus two years.</p>
+        <p className="mb-2">Financial/order records: seven years.</p>
+        <p className="mb-2">Event safety records: two years or longer if required.</p>
+        <p className="mb-2">Marketing data: until withdrawal of consent or 24 months of inactivity.</p>
+        <p className="mb-2">Community/moderation data: as long as reasonably necessary.</p>
+        <p>Returns: processed in accordance with our seven (7) day defective-goods notification window.</p>
       </section>
 
       <section className="mb-8">
-        <h2 className="text-2xl font-semibold mb-4">8. International Transfers</h2>
-        <p>Cross-border transfers may occur. Where such transfers take place, appropriate safeguards (e.g. contractual clauses, technical protections) are implemented.</p>
+        <h2 className="text-2xl font-semibold mb-4">8. Cookies and Payments</h2>
+        <p className="mb-4">Essential cookies are required for functionality. Optional cookies (Google Analytics, Meta Pixel) are used only with consent.</p>
+        <p>Payments are processed via authorised providers. Multiple transactions may result in multiple postings to the cardholder's statement. Users are responsible for any bank or issuer fees.</p>
       </section>
 
       <section className="mb-8">
-        <h2 className="text-2xl font-semibold mb-4">9. Data Retention</h2>
-        <ol className="list-disc pl-6 space-y-2">
-          <li><span className="font-medium">Membership:</span> duration of account plus two (2) years.</li>
-          <li><span className="font-medium">Orders/Finance:</span> seven (7) years.</li>
-          <li><span className="font-medium">Event safety records:</span> two (2) years, unless longer retention required.</li>
-          <li><span className="font-medium">Marketing:</span> until consent withdrawn or twenty-four (24) months of inactivity.</li>
-          <li><span className="font-medium">Community records:</span> retained as necessary for enforcement and moderation.</li>
-        </ol>
+        <h2 className="text-2xl font-semibold mb-4">9. Security</h2>
+        <p>We implement technical and organisational safeguards, including encryption and access controls. No system is entirely secure.</p>
       </section>
 
       <section className="mb-8">
-        <h2 className="text-2xl font-semibold mb-4">10. Cookies</h2>
-        <p>Essential cookies are required for site operation. Non-essential cookies (e.g. Google Analytics, Meta Pixel) are used only with consent. See our separate Cookie Notice.</p>
+        <h2 className="text-2xl font-semibold mb-4">10. Intellectual Property and Enforcement</h2>
+        <p>We may process data to investigate harassment, abuse, community misuse, or infringement of our protected marks Eklektik Mama® and BYOBaby®.</p>
       </section>
 
       <section className="mb-8">
-        <h2 className="text-2xl font-semibold mb-4">11. Security</h2>
-        <p>Appropriate administrative, technical, and organisational safeguards are applied, including encryption and access controls. No system is infallible.</p>
+        <h2 className="text-2xl font-semibold mb-4">11. Rights of Data Subjects</h2>
+        <p>You may exercise rights under the PDPL including access, rectification, erasure, restriction, portability, objection, and withdrawal of consent. Requests should be sent to hello@eklektikmama.com. You may also lodge complaints with the UAE Data Office.</p>
       </section>
 
       <section className="mb-8">
-        <h2 className="text-2xl font-semibold mb-4">12. Rights of Data Subjects</h2>
-        <p>Under PDPL, you may request access, rectification, erasure, restriction, portability, objection, and withdrawal of consent. Complaints may be filed with the UAE Data Office. Requests should be directed to <a href="mailto:hello@eklektikmama.com" className="text-blue-600 hover:underline">hello@eklektikmama.com</a>.</p>
+        <h2 className="text-2xl font-semibold mb-4">12. Event Photography and Recordings</h2>
+        <p>Consent for photography and video is collected via an opt-out checkbox at registration. Users may also opt out by email or on arrival.</p>
       </section>
 
       <section className="mb-8">
-        <h2 className="text-2xl font-semibold mb-4">13. Event Photography/Video</h2>
-        <p>Consent is collected at registration via a checkbox. Attendees who decline consent will be excluded from marketing imagery. Opt-out requests may also be made by email or upon arrival at the event.</p>
+        <h2 className="text-2xl font-semibold mb-4">13. Breach Notification</h2>
+        <p>We will notify the UAE Data Office and affected individuals without undue delay of any data breach likely to impact rights and freedoms.</p>
       </section>
 
       <section className="mb-8">
-        <h2 className="text-2xl font-semibold mb-4">14. Breach Notification</h2>
-        <p>Any personal data breach that may affect rights or freedoms will be reported to the UAE Data Office and affected individuals without undue delay.</p>
+        <h2 className="text-2xl font-semibold mb-4">14. Liability</h2>
+        <p>Nothing in this Policy limits or excludes liability as set out in our Terms and Conditions. Users remain responsible for lawful use of Services and indemnifying the Company against misuse.</p>
       </section>
 
       <section className="mb-8">
-        <h2 className="text-2xl font-semibold mb-4">15. Amendments</h2>
-        <p>This Policy may be updated periodically. Continued use of the Platform following publication constitutes acceptance of the revised Policy.</p>
+        <h2 className="text-2xl font-semibold mb-4">15. Governing Law</h2>
+        <p>This Policy shall be governed by and construed in accordance with the laws of the United Arab Emirates. Disputes shall be resolved in accordance with the Terms and Conditions.</p>
       </section>
 
-      <section className="mb-8">
-        <h2 className="text-2xl font-semibold mb-4">16. Contact</h2>
-        <p className="font-semibold">Eklektik Mama Event Management – L.L.C. – S.P.C.</p>
-        <p>Office 1530, Darussalam Tower, Al Danah E5, Abu Dhabi, UAE</p>
+      <section className="mt-12 pt-8 border-t border-gray-200">
+        <h2 className="text-xl font-semibold mb-4">Contact:</h2>
+        <p className="mb-2">Eklektik Mama Event Management – L.L.C. – S.P.C.</p>
+        <p className="mb-2">Office 1530, Darussalam Tower, Al Danah E5, Abu Dhabi, UAE</p>
         <p>Email: <a href="mailto:hello@eklektikmama.com" className="text-blue-600 hover:underline">hello@eklektikmama.com</a></p>
       </section>
     </div>
