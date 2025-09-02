@@ -27,6 +27,11 @@ export default function DebugPanel() {
       description: "Test Stripe API connection"
     },
     {
+      name: "Stripe Detailed Test",
+      route: "/api/debug-stripe-detailed",
+      description: "Detailed Stripe diagnostics and troubleshooting"
+    },
+    {
       name: "Database Connection",
       route: "/api/test-db",
       description: "Test general database connection"
