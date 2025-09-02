@@ -8,7 +8,9 @@ export default function AdminEventsPage() {
     description: "",
     coverImage: "",
     date: "",
+    startTime: "",
     endDate: "",
+    endTime: "",
     price: "",
     location: "",
     segment: "cinemaMorning",
@@ -168,10 +170,37 @@ export default function AdminEventsPage() {
       return;
     }
 
+    // Combine date and time into proper datetime objects
+    let eventData = { ...form };
+    
+    console.log('Original form data:', form);
+    
+    if (form.date && form.startTime) {
+      // Combine start date and time
+      const startDateTime = new Date(`${form.date}T${form.startTime}`);
+      eventData.date = startDateTime.toISOString();
+      console.log('Combined start datetime:', startDateTime, 'ISO:', startDateTime.toISOString());
+    }
+    
+    if (form.endDate && form.endTime) {
+      // Combine end date and time
+      const endDateTime = new Date(`${form.endDate}T${form.endTime}`);
+      eventData.endDate = endDateTime.toISOString();
+      console.log('Combined end datetime:', endDateTime, 'ISO:', endDateTime.toISOString());
+    } else if (form.date && form.startTime && !form.endDate) {
+      // If no end date/time, set end time to start time + 2 hours (default)
+      const startDateTime = new Date(`${form.date}T${form.startTime}`);
+      const endDateTime = new Date(startDateTime.getTime() + (2 * 60 * 60 * 1000)); // +2 hours
+      eventData.endDate = endDateTime.toISOString();
+      console.log('Auto-generated end datetime:', endDateTime, 'ISO:', endDateTime.toISOString());
+    }
+
+    console.log('Final event data to submit:', eventData);
+
     const res = await fetch("/api/events", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(form),
+      body: JSON.stringify(eventData),
     });
     
     if (res.ok) {
@@ -181,7 +210,9 @@ export default function AdminEventsPage() {
         description: "",
         coverImage: "",
         date: "",
+        startTime: "",
         endDate: "",
+        endTime: "",
         price: "",
         location: "",
         segment: "cinemaMorning",

@@ -31,14 +31,20 @@ export default function EventsCalendar({ events = [] }) {
     // Process events when they change
     if (events && events.length > 0) {
       const processed = events.map((event) => {
-        const startDate = new Date(event.start);
-        const endDate = new Date(event.end || event.start);
-        console.log('Processing event:', {
+        // Use the original dates if available, otherwise parse the dates
+        const startDate = event.originalStart ? new Date(event.originalStart) : new Date(event.start);
+        const endDate = event.originalEnd ? new Date(event.originalEnd) : new Date(event.end || event.start);
+        
+        console.log('Processing event in EventsCalendar:', {
           title: event.title,
-          originalStart: event.start,
+          originalStart: event.originalStart,
+          originalEnd: event.originalEnd,
           startDate: startDate,
-          endDate: endDate
+          endDate: endDate,
+          startLocalTime: startDate.toLocaleTimeString(),
+          timezoneOffset: startDate.getTimezoneOffset()
         });
+        
         return {
           id: event.id || event._id || 'unknown',
           title: event.title,
@@ -50,6 +56,9 @@ export default function EventsCalendar({ events = [] }) {
           location: event.location,
           price: event.price,
           segment: event.segment,
+          // Preserve original dates for timezone handling
+          originalStart: event.originalStart,
+          originalEnd: event.originalEnd
         };
       });
       console.log('Processed events:', processed);

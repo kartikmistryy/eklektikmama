@@ -95,16 +95,36 @@ export default function Events() {
       const res = await fetch("/api/events");
       const data = await res.json();
 
-      const mapped = data.map((event) => ({
-        id: event._id,
-        title: event.title,
-        start: new Date(event.date),
-        end: new Date(event.endDate || event.date),
-        coverImage: event.coverImage,
-        description: event.description,
-        location: event.location,
-        price: event.price,
-      }));
+      const mapped = data.map((event) => {
+        // Parse the date string and preserve the original time
+        const startDate = new Date(event.date);
+        const endDate = event.endDate ? new Date(event.endDate) : new Date(event.date);
+        
+        console.log('Event date mapping:', {
+          title: event.title,
+          originalDate: event.date,
+          parsedStart: startDate,
+          parsedEnd: endDate,
+          startISO: startDate.toISOString(),
+          startLocal: startDate.toString(),
+          startLocalTime: startDate.toLocaleTimeString(),
+          timezoneOffset: startDate.getTimezoneOffset()
+        });
+        
+        return {
+          id: event._id,
+          title: event.title,
+          start: startDate,
+          end: endDate,
+          coverImage: event.coverImage,
+          description: event.description,
+          location: event.location,
+          price: event.price,
+          // Store original date strings for proper timezone handling
+          originalStart: event.date,
+          originalEnd: event.endDate
+        };
+      });
       setEvents(mapped);
     }
     fetchEvents();
@@ -213,11 +233,6 @@ export default function Events() {
           variants={fadeIn}
           transition={{ delay: 0.2 }}
         >
-          {/* Debug info */}
-          <div className="px-5 lg:px-14 mb-4 text-sm text-gray-500">
-            <p>Events count: {events.length}</p>
-            <p>Events state: {JSON.stringify(events.map(e => ({ id: e.id, title: e.title, date: e.start })))}</p>
-          </div>
           
           {events.length > 0 ? (
             <EventsCalendar events={events} />
@@ -249,11 +264,17 @@ export default function Events() {
               )}
               <h2 className="text-2xl font-bold mb-2">{selectedEvent.title}</h2>
               <p className="text-gray-600 mb-2">
-                📅 {moment(selectedEvent.start).format("MMMM Do YYYY, h:mm A")}
-                {selectedEvent.end &&
+                📅 {moment(selectedEvent.originalStart || selectedEvent.start).format("MMMM Do YYYY, h:mm A")}
+                {selectedEvent.originalEnd && (
+                  ` - ${moment(selectedEvent.originalEnd).format(
+                    "MMMM Do YYYY, h:mm A"
+                  )}`
+                )}
+                {!selectedEvent.originalEnd && selectedEvent.end && (
                   ` - ${moment(selectedEvent.end).format(
                     "MMMM Do YYYY, h:mm A"
-                  )}`}
+                  )}`
+                )}
               </p>
               {selectedEvent.location && (
                 <p className="text-gray-600 mb-2">

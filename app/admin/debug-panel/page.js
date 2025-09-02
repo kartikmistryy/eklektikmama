@@ -50,6 +50,16 @@ export default function DebugPanel() {
       name: "Webhook Test",
       route: "/api/test-webhook",
       description: "Test webhook functionality"
+    },
+    {
+      name: "Simple Date Debug",
+      route: "/api/debug-dates",
+      description: "Quick check of how dates are stored and processed"
+    },
+    {
+      name: "Simple Test",
+      route: "/api/test-simple",
+      description: "Basic API functionality test"
     }
   ];
 

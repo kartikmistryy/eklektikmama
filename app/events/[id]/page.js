@@ -29,7 +29,7 @@ export default async function EventDetailPage({ params }) {
       )}
 
       <div className="max-w-[1400px] mx-auto px-5 lg:px-0 py-6">
-        <div className="flex items-start justify-between gap-4">
+        <div className="flex items-start justify-between gap-4 lg:px-0 px-5">
           <h1 className="text-3xl md:text-5xl font-poppins text-[#093166] uppercase">
             {event.title}
           </h1>
