@@ -555,7 +555,7 @@ const Parnterwithus = () => {
         </motion.div>
       </section>
 
-      <section ref={franchiseRef} className="flex lg:flex-row flex-col-reverse w-full h-full items-stretch">
+      <section id="franchise" ref={franchiseRef} className="flex lg:flex-row flex-col-reverse w-full h-full items-stretch">
         <motion.div 
           className="lg:w-1/2 w-full h-full flex flex-col justify-start items-start basis-full lg:pl-14 px-5 text-[#093166] py-10 lg:basis-1/2"
           initial="hidden"

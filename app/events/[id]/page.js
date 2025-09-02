@@ -30,7 +30,7 @@ export default async function EventDetailPage({ params }) {
 
       <div className="max-w-[1400px] mx-auto px-5 lg:px-0 py-6">
         <div className="flex items-start justify-between gap-4">
-          <h1 className="text-3xl md:text-5xl font-antonio text-[#093166] uppercase">
+          <h1 className="text-3xl md:text-5xl font-poppins text-[#093166] uppercase">
             {event.title}
           </h1>
           <a href={`/events/${event._id}/book`}>
@@ -41,14 +41,14 @@ export default async function EventDetailPage({ params }) {
         </div>
 
         <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="md:col-span-2">
+          <div className="md:col-span-2 ">
             {event.description && (
               <div className="space-y-4">
                 {event.description
                   .split(/\s{2,}/) // Split on 2 or more spaces
                   .filter(paragraph => paragraph.trim()) // Remove empty paragraphs
                   .map((paragraph, index) => (
-                    <p key={index} className="text-base text-gray-800 leading-relaxed">
+                    <p key={index} className="text-base font-quicksand text-gray-800 leading-relaxed">
                       {paragraph.trim()}
                     </p>
                   ))}

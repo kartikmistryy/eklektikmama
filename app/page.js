@@ -315,7 +315,7 @@ export default function Home() {
             initial={{ opacity: 0, y: "40px" }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ type: "keyframes", duration: 0.6 }}
-            className="max-w-[700px] mx-auto font-quicksand lg:mt-14 md:mt-24 mt-5 px-4 text-center text-white lg:text-lg md:text-base text-sm"
+            className="max-w-[750px] mx-auto font-quicksand lg:mt-14 md:mt-24 mt-5 px-4 text-center text-white lg:text-lg md:text-base text-sm"
           >
            Call it rebellion, call it culture — we call it Eklektik Mama™️. A platform where modern mums connect through events, stories and spaces that challenge clichés and celebrate chaos. We’re raising hell and humans — and doing it loud AF.
           </motion.p>
@@ -729,10 +729,10 @@ export default function Home() {
                       vibe check - hard.
                     </p>
                     <span className="w-full h-fit mt-auto flex flex-row items-center justify-between pr-2">
-                      <button className="text-sm bg-white rounded-full font-medium font-poppins flex flex-row uppercase items-center justify-start gap-5 px-3 py-1.5 ">
+                      <Link href="/partner" className="text-sm bg-white rounded-full font-medium font-poppins flex flex-row uppercase items-center justify-start gap-5 px-3 py-1.5 ">
                         explore our partners
                         <BsArrowRight className="text-lg font-bold" />
-                      </button>
+                      </Link>
                       <button className="bg-white rounded-full p-1 text-2xl font-bold">
                         <BsPlus />
                       </button>
@@ -908,10 +908,10 @@ export default function Home() {
                     they passed the vibe check.
                   </p>
                   <div className="mt-auto flex flex-row items-center justify-between">
-                    <button className="text-sm bg-white rounded-full font-medium font-poppins flex flex-row uppercase items-center gap-3 px-3 py-1.5">
+                    <Link href="/partner" className="text-sm bg-white rounded-full font-medium font-poppins flex flex-row uppercase items-center gap-3 px-3 py-1.5">
                       explore our partners{" "}
                       <BsArrowRight className="text-lg font-bold" />
-                    </button>
+                    </Link>
                     <button className="bg-white rounded-full p-1 text-2xl font-bold">
                       <BsPlus />
                     </button>

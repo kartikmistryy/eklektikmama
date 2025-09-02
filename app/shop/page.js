@@ -7,7 +7,7 @@ import { BsArrowRight, BsShop } from 'react-icons/bs';
 
 export default function ShopPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-pink-50 to-purple-50" style={{ paddingTop: '10em' }}>
+    <div className="min-h-screen bg-gradient-to-br font-quicksand from-pink-50 to-purple-50" style={{ paddingTop: '10em' }}>
       <div className="container mx-auto px-4 py-12">
         {/* Header Section */}
         <motion.div

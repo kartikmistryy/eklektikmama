@@ -187,8 +187,8 @@ const Page = () => {
           variants={fadeInUp}
         >
           <h1 className="w-fit md:text-[90px] text-[40px] font-bold uppercase text-[#f6f6f6] leading-[130%] text-center font-anton">
-            Eklektik Mama <br />
-            <b className="md:text-[130px] text-[60px]">Loves</b>
+            PARTNERSHIP <br />
+            <b className="md:text-[130px] text-[60px]">PROGRAM</b>
           </h1>
         </motion.div>
         <Marquee />

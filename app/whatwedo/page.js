@@ -147,13 +147,13 @@ const Page = () => {
                 repeatType: "reverse",
                 delay: 0
               }}
-              className="absolute top-26 md:-left-[200px] left-32 md:w-full md:h-full w-[200px] h-[250px] md:max-w-[260px] md:max-h-[340px]"
+              className="absolute top-26 md:-left-[200px] left-32 md:w-full md:h-full w-[200px] h-[250px] md:max-w-[260px] md:max-h-[340px] overflow-hidden rounded-md"
             >
               <Image
                 src="/highlights/s1.webp"
                 height={500}
                 width={400}
-                className="w-full h-full object-contain"
+                className="w-full h-full object-cover rounded-md"
                 alt="image"
               />
             </motion.div>
@@ -170,13 +170,13 @@ const Page = () => {
                 repeatType: "reverse",
                 delay: 1
               }}
-              className="absolute top-[70px] md:left-[0] left-[-50px] md:w-full md:h-full w-[200px] h-[250px] md:max-w-[260px] md:max-h-[340px]"
+              className="absolute top-[70px] md:left-[0] left-[-50px] md:w-full md:h-full w-[200px] h-[250px] md:max-w-[260px] md:max-h-[340px] overflow-hidden rounded-md"
             >
               <Image
                 src="/highlights/s2.webp"
                 height={500}
                 width={400}
-                className="w-full h-full object-contain"
+                className="w-full h-full object-cover rounded-md"
                 alt="image"
               />
             </motion.div>
@@ -194,13 +194,13 @@ const Page = () => {
                 repeatType: "reverse",
                 delay: 2
               }}
-              className="absolute top-[50px] md:left-[160px] left-0 md:w-full md:h-full w-[200px] h-[250px] md:max-w-[260px] md:max-h-[340px]"
+              className="absolute top-[50px] md:left-[160px] left-0 md:w-full md:h-full w-[200px] h-[250px] md:max-w-[260px] md:max-h-[340px] overflow-hidden rounded-md"
             >
               <Image
                 src="/highlights/s3.webp"
                 height={500}
                 width={400}
-                className="w-full h-full object-contain"
+                className="w-full h-full object-cover rounded-md"
                 alt="image"
               />
             </motion.div>
@@ -219,13 +219,13 @@ const Page = () => {
                 repeatType: "reverse",
                 delay: 3
               }}
-              className="absolute md:top-[0%] top-[30%] md:right-[-40%] right-[-35%] md:w-[100px] md:h-[100px] w-[80px] h-[80px]"
+              className="absolute md:top-[0%] top-[30%] md:right-[-40%] right-[-35%] md:w-[100px] md:h-[100px] w-[80px] h-[80px] overflow-hidden rounded-full"
             >
               <Image
                 src="/highlights/sun.webp"
                 height={500}
                 width={400}
-                className="w-full h-full object-contain"
+                className="w-full h-full object-cover rounded-full"
                 alt="image"
               />
             </motion.div>
@@ -233,7 +233,7 @@ const Page = () => {
         </motion.div>
       </section>
 
-      <section ref={pastEventsRef} className="w-full h-full flex flex-col py-10 lg:gap-0 gap-10">
+      {/* <section ref={pastEventsRef} className="w-full h-full flex flex-col py-10 lg:gap-0 gap-10">
         <motion.div 
           className="w-full h-full flex flex-col text-[#093166] md:pr-0 lg:px-10 px-5"
           initial="hidden"
@@ -278,7 +278,7 @@ const Page = () => {
           ))}
         </motion.div>
 
-        {/* <motion.div 
+        <motion.div 
           className="w-full h-full flex md:flex-row flex-col flex-wrap gap-4 justify-start lg:px-10 px-5 py-5"
           initial="hidden"
           animate={pastEventsInView ? "visible" : "hidden"}
@@ -309,10 +309,10 @@ const Page = () => {
               </span>
             </motion.div>
           ))}
-        </motion.div> */}
-      </section>
+        </motion.div>
+      </section> */}
 
-      <section ref={previousEventsRef} className="w-full flex flex-col gap-5 mt-10 mb-10">
+      {/* <section ref={previousEventsRef} className="w-full flex flex-col gap-5 mt-10 mb-10">
         <motion.div 
           className="px-5 lg:px-10 text-[#093166]"
           initial="hidden"
@@ -331,9 +331,7 @@ const Page = () => {
           variants={staggerContainer}
           transition={{ delay: 0.2 }}
         >
-          {/* 4-Column Grid for Previous Events */}
           <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 lg:px-10 px-5 py-5">
-            {/* Event 1 */}
             <motion.a
               href="https://photos.google.com/share/AF1QipMZROP7KoDG762HCpU592F7sDpR_o8Z5nOu1lBxFyOegXJPF4CFkjpdkOWj1JLQog?key=STdtbzZLeDdrVkJwanNaTXcwbDA3QWlfdjVtM1d3"
               variants={carouselItem}
@@ -355,7 +353,6 @@ const Page = () => {
               </span>
             </motion.a>
 
-            {/* Event 2 */}
             <motion.a
             href="https://photos.google.com/share/AF1QipOI-jSZEmq9DypBWyPbF6fnP3O2qv_KwM9PTgGIGPFsD-Qb14ylY0LrZbiyjBdLOA?key=YW1oZVFuNjNIZ3hMd2pBbXlYMGpkaC13ZjBGdDFn"
               variants={carouselItem}
@@ -377,7 +374,6 @@ const Page = () => {
               </span>
             </motion.a>
 
-            {/* Event 3 */}
             <motion.a
             href="https://photos.google.com/share/AF1QipPI3suUDjtRdSgACKcMdHMNpuE824azy2CRm0WnTmDBZB7ZzUD1MgnF0HwKzdJRxQ?key=SXh3SHhkZUhzOUZLSE9lU2lyd0NyT0RpUUtiT2xR"
               variants={carouselItem}
@@ -399,7 +395,6 @@ const Page = () => {
               </span>
             </motion.a>
 
-            {/* Event 4 */}
             <motion.a
               href="https://photos.google.com/share/AF1QipP7oseJVSQIHnHBPWepqwwz6Jq9R7gVyCokqpc6nVfUGtluWldHJo5KjIPEK7adag?key=OTNxcW53bFQtVlRfTjc4TC1GYW5qV2ItSWdvclJn"
               variants={carouselItem}
@@ -421,7 +416,6 @@ const Page = () => {
               </span>
             </motion.a>
 
-            {/* Event 5 */}
             <motion.a
             href="https://photos.google.com/share/AF1QipOFW-svjbHC17kBd4JdeFHHpdHwHpCuzkB7Zwjj7sg5EV6-RWtH8QgvQ59DOuROtQ?key=Mmpsd1I4bmswU1JOc0VjMVlCNEJnX2F6WW1UT25B"
               variants={carouselItem}
@@ -443,7 +437,6 @@ const Page = () => {
               </span>
             </motion.a>
 
-            {/* Event 6 */}
             <motion.a
             href="https://photos.google.com/share/AF1QipPiX6ewsLY5PI_lk4tmG0dFKiox5T77k0RSAddLS14A0fb_TRuHtOUEe9DAOyYIrw?key=TDFGRldRdFhEaUkyVTI2dnB0NmRLMnpuczctMlJB"
               variants={carouselItem}
@@ -465,7 +458,6 @@ const Page = () => {
               </span>
             </motion.a>
 
-            {/* Event 7 */}
             <motion.a
               href="https://photos.google.com/share/AF1QipMZROP7KoDG762HCpU592F7sDpR_o8Z5nOu1lBxFyOegXJPF4CFkjpdkOWj1JLQog?key=STdtbzZLeDdrVkJwanNaTXcwbDA3QWlfdjVtM1d3"
               variants={carouselItem}
@@ -487,7 +479,6 @@ const Page = () => {
               </span>
             </motion.a>
 
-            {/* Event 8 */}
             <motion.a
             href="https://photos.google.com/share/AF1QipOI-jSZEmq9DypBWyPbF6fnP3O2qv_KwM9PTgGIGPFsD-Qb14ylY0LrZbiyjBdLOA?key=YW1oZVFuNjNIZ3hMd2pBbXlYMGpkaC13ZjBGdDFn"
               variants={carouselItem}
@@ -510,15 +501,14 @@ const Page = () => {
             </motion.a>
           </div>
           
-          {/* View All Button */}
-          {/* <div className="flex justify-center mt-6">
+          <div className="flex justify-center mt-6">
             <Link href="/whatwedo" className="text-sm text-white rounded-full font-medium font-poppins flex flex-row items-center bg-[#093166] justify-start gap-5 px-6 py-2 hover:bg-[#072a4d] transition-colors duration-300">
               VIEW ALL
               <BsArrowRight className="text-lg font-bold" />
             </Link>
-          </div> */}
+          </div>
         </motion.div>
-      </section>
+      </section> */}
 
       <section ref={brandSectionRef} className="w-full h-full flex lg:flex-row flex-col-reverse items-center justify-start relative bg-white  lg:gap-0 gap-10">
         <motion.div 

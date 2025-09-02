@@ -33,8 +33,15 @@ export async function GET(req) {
       return NextResponse.redirect(new URL('/events?error=event_not_found', req.url));
     }
 
-    // Extract booking data from session metadata
+    // Check if booking already exists to prevent duplicates
     const transactionId = session.payment_intent || session.id;
+    const existingBooking = await Booking.findOne({ transactionId });
+    if (existingBooking) {
+      console.log('Booking already exists, redirecting to success page');
+      return NextResponse.redirect(new URL(`/events/${eventId}?success=already_booked`, req.url));
+    }
+
+    // Extract booking data from session metadata
     const guardianName = session.metadata.guardianName || '';
     const userEmail = session.metadata.email || '';
     const childName = session.metadata.childName || '';

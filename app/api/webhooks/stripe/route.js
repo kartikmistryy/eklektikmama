@@ -33,6 +33,15 @@ export async function POST(req) {
   if (event.type === 'checkout.session.completed') {
     console.log('Processing checkout.session.completed event');
     const session = event.data.object;
+    
+    // Check if payment actually succeeded
+    if (session.payment_status !== 'paid') {
+      console.log('Payment not successful, skipping processing. Payment status:', session.payment_status);
+      return NextResponse.json({ received: true, message: 'Payment not successful, skipping processing' });
+    }
+    
+    console.log('Payment successful, processing booking...');
+    
     try {
       await connectDB();
       const eventId = session.metadata?.eventId;
@@ -48,6 +57,13 @@ export async function POST(req) {
       const childName = session.metadata?.childName || '';
       const phone = session.metadata?.phone || '';
       const numberOfTickets = parseInt(session.metadata?.numberOfTickets) || 1;
+
+      // Check if booking already exists to prevent duplicates
+      const existingBooking = await Booking.findOne({ transactionId });
+      if (existingBooking) {
+        console.log('Booking already exists, skipping duplicate processing');
+        return NextResponse.json({ received: true, message: 'Booking already exists' });
+      }
 
       console.log('Extracted booking data:', {
         guardianName,

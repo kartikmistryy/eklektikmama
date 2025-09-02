@@ -267,7 +267,7 @@ export default function Footer() {
                   </a>
                 </li>
                 <li>
-                  <a href="#" className="hover:underline">
+                  <a href="/partner#franchise" className="hover:underline">
                     Start Eklektik Mama In Your City
                   </a>
                 </li>
@@ -280,7 +280,7 @@ export default function Footer() {
               <ul className="space-y-2 uppercase text-left">
                 <li>
                   <a href="/perks" className="hover:underline">
-                  Partner with us 
+                    Partnership Program
                   </a>
                 </li>
                 {/* <li>
@@ -290,12 +290,12 @@ export default function Footer() {
                 </li> */}
                 <li>
                   <a href="#" className="hover:underline">
-                    UAE Mum Survival Guide
+                    UAE Mum Survival Guide(coming soon)
                   </a>
                 </li>
                 <li>
                   <a href="#" className="hover:underline">
-                    The Useless Partner Guide
+                    The Useless Partner Guide(coming soon)
                   </a>
                 </li>
               </ul>
