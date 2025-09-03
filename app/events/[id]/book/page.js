@@ -64,6 +64,15 @@ export default function BookingPage({ params }) {
         ...formData
       };
 
+      // Debug logging for form submission
+      console.log('=== FORM SUBMISSION DEBUG ===');
+      console.log('Original formData:', formData);
+      console.log('Mapped data:', mappedData);
+      console.log('Event segment:', event.segment);
+      console.log('Choice I:', formData.choiceI);
+      console.log('Choice II:', formData.choiceII);
+      console.log('Choice III:', formData.choiceIII);
+
       // Proceed directly to payment - data will be saved after successful payment
       const response = await fetch('/api/checkout', {
         method: 'POST',
@@ -159,7 +168,10 @@ export default function BookingPage({ params }) {
                     <div className="flex items-center text-gray-700">
                       <span className="mr-3 text-xl">🕐</span>
                       <span className="text-lg font-semibold text-[#093166]">
-                        Start Time: {event.startTime}
+                        {event.endTime && event.endTime !== event.startTime
+                          ? `Time: ${moment(`2000-01-01T${event.startTime}`).format("h:mm A")} - ${moment(`2000-01-01T${event.endTime}`).format("h:mm A")}`
+                          : `Start Time: ${moment(`2000-01-01T${event.startTime}`).format("h:mm A")}`
+                        }
                       </span>
                     </div>
                   )}
@@ -169,15 +181,6 @@ export default function BookingPage({ params }) {
                       <span className="mr-3 text-xl">📅</span>
                       <span className="text-lg">
                         End: {moment(event.endDate).format("dddd, MMMM Do YYYY")}
-                      </span>
-                    </div>
-                  )}
-                  
-                  {event.endTime && event.endTime !== event.startTime && (
-                    <div className="flex items-center text-gray-700">
-                      <span className="mr-3 text-xl">🕐</span>
-                      <span className="text-lg font-semibold text-[#093166]">
-                        End Time: {event.endTime}
                       </span>
                     </div>
                   )}

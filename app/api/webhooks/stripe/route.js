@@ -101,6 +101,9 @@ export async function POST(req) {
       console.log('GOOGLE_SHEETS_PRIVATE_KEY:', !!process.env.GOOGLE_SHEETS_PRIVATE_KEY);
       console.log('GOOGLE_SHEETS_SPREADSHEET_ID:', !!process.env.GOOGLE_SHEETS_SPREADSHEET_ID);
       
+      // Commenting out Google Sheets integration in webhook to avoid conflicts
+      // Google Sheets integration is handled in the checkout success route
+      /*
       if (
         process.env.GOOGLE_SHEETS_CLIENT_EMAIL &&
         process.env.GOOGLE_SHEETS_PRIVATE_KEY &&
@@ -179,21 +182,10 @@ export async function POST(req) {
           }
         } catch (sheetsError) {
           console.error('Google Sheets Error:', sheetsError);
-          console.error('Error details:', {
-            message: sheetsError.message,
-            code: sheetsError.code,
-            status: sheetsError.status
-          });
           // Don't fail the webhook if Google Sheets fails
         }
-      } else {
-        console.log('Google Sheets not configured - skipping sheet update');
-        console.log('Missing environment variables:', {
-          clientEmail: !process.env.GOOGLE_SHEETS_CLIENT_EMAIL,
-          privateKey: !process.env.GOOGLE_SHEETS_PRIVATE_KEY,
-          spreadsheetId: !process.env.GOOGLE_SHEETS_SPREADSHEET_ID
-        });
       }
+      */
     } catch (e) {
       console.error('Error processing webhook:', e);
       return NextResponse.json({ received: true, error: e.message }, { status: 200 });

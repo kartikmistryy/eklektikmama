@@ -21,6 +21,14 @@ export async function POST(req) {
 
     const { eventId, guardianName, childName, email, phone, numberOfTickets, eventSegment, ...otherFormData } = body;
     
+    // Debug logging for form data
+    console.log('=== FORM DATA DEBUG ===');
+    console.log('Event segment:', eventSegment);
+    console.log('Other form data:', otherFormData);
+    console.log('Choice I:', otherFormData.choiceI);
+    console.log('Choice II:', otherFormData.choiceII);
+    console.log('Choice III:', otherFormData.choiceIII);
+    
     // Validate required fields
     if (!eventId) {
       console.error('Missing eventId');
@@ -89,7 +97,27 @@ export async function POST(req) {
         email: email || '',
         phone: phone || '',
         numberOfTickets: String(numberOfTickets || 1),
-        additionalData: JSON.stringify(otherFormData)
+        // Store dropdown choices directly in metadata to avoid size issues
+        choiceI: otherFormData.choiceI || '',
+        choiceII: otherFormData.choiceII || '',
+        choiceIII: otherFormData.choiceIII || '',
+        // Store other form data as JSON (but limit size)
+        additionalData: JSON.stringify({
+          emergencyName: otherFormData.emergencyName || '',
+          emergencyPhone: otherFormData.emergencyPhone || '',
+          childDob: otherFormData.childDob || '',
+          childAge: otherFormData.childAge || '',
+          allergies: otherFormData.allergies || [],
+          notes: otherFormData.notes || '',
+          pregnant: otherFormData.pregnant || '',
+          postpartum: otherFormData.postpartum || '',
+          postpartumDuration: otherFormData.postpartumDuration || '',
+          medicalConditions: otherFormData.medicalConditions || '',
+          conditionDetails: otherFormData.conditionDetails || '',
+          cookingExperience: otherFormData.cookingExperience || '',
+          foodAllergies: otherFormData.foodAllergies || '',
+          favoriteFoods: otherFormData.favoriteFoods || ''
+        })
       },
     };
     

@@ -317,7 +317,7 @@ export default function Home() {
             transition={{ type: "keyframes", duration: 0.6 }}
             className="max-w-[750px] mx-auto font-quicksand lg:mt-14 md:mt-24 mt-5 px-4 text-center text-white lg:text-lg md:text-base text-sm"
           >
-           Call it rebellion, call it culture — we call it Eklektik Mama™️. A platform where modern mums connect through events, stories and spaces that challenge clichés and celebrate chaos. We’re raising hell and humans — and doing it loud AF.
+           Call it rebellion, call it culture — we call it Eklektik Mama™. A platform where modern mums connect through events, stories and spaces that challenge clichés and celebrate chaos. We’re raising hell and humans — and doing it loud AF.
           </motion.p>
 
           <motion.a
@@ -382,7 +382,7 @@ export default function Home() {
               animate={{ opacity: 1 }}
               transition={{ duration: 0.3 }}
             >
-             Eklektik Mama™️ isn’t a playdate. It’s a platform. Born from the sleepless hours and the side-eye at sugar-coated advice, we exist to disrupt the clichés of motherhood and build something bolder. We create spaces that feel more like culture than coffee mornings — where mums come to connect, be challenged, laugh too loud, and feel seen in all their contradictions. This is where modern motherhood takes up space, unapologetically.
+             Eklektik Mama™ isn’t a playdate. It’s a platform. Born from the sleepless hours and the side-eye at sugar-coated advice, we exist to disrupt the clichés of motherhood and build something bolder. We create spaces that feel more like culture than coffee mornings — where mums come to connect, be challenged, laugh too loud, and feel seen in all their contradictions. This is where modern motherhood takes up space, unapologetically.
             </motion.p>
             <motion.div
               initial={{ opacity: 0, height: 0 }}
@@ -777,10 +777,10 @@ export default function Home() {
                     50/month.
                   </p>
                   <div className="mt-auto flex flex-row items-center justify-between">
-                    <button className="text-sm bg-white rounded-full font-medium font-poppins flex flex-row items-center justify-start gap-3 px-3 py-1.5">
+                    <Link href="/eklektikmamaMembership"  className="text-sm bg-white rounded-full font-medium font-poppins flex flex-row items-center justify-start gap-3 px-3 py-1.5">
                       JOIN THE MEMBERSHIP{" "}
                       <BsArrowRight className="text-lg font-bold" />
-                    </button>
+                    </Link>
                     <button className="bg-white rounded-full p-1 text-2xl font-bold">
                       <BsPlus />
                     </button>
@@ -808,10 +808,10 @@ export default function Home() {
                     convos. View this month’s line-up or miss out.
                   </p>
                   <div className="mt-auto flex flex-row items-center justify-between">
-                    <button className="text-sm text-white rounded-full font-medium font-poppins flex flex-row items-center bg-[#093166] gap-3 px-3 py-1.5">
+                    <Link href="/events" className="text-sm text-white rounded-full font-medium font-poppins flex flex-row items-center bg-[#093166] gap-3 px-3 py-1.5">
                       SEE THE LINEUP{" "}
                       <BsArrowRight className="text-lg font-bold" />
-                    </button>
+                    </Link>
                     <button className="bg-white rounded-full p-1 text-2xl font-bold border border-[#093166] text-[#093166]">
                       <BsPlus />
                     </button>
@@ -845,10 +845,10 @@ export default function Home() {
                     Our blog. Therapy-adjacent. Censorship-free.
                   </p>
                   <div className="mt-auto flex flex-row items-center justify-between">
-                    <button className="text-sm bg-[#093166] text-white rounded-full font-medium font-poppins flex flex-row items-center gap-3 px-3 py-1.5">
+                    <Link href="/blogs" className="text-sm bg-[#093166] text-white rounded-full font-medium font-poppins flex flex-row items-center gap-3 px-3 py-1.5">
                       READ THE BLOG{" "}
                       <BsArrowRight className="text-lg font-bold" />
-                    </button>
+                    </Link>
                     <button className="rounded-full p-1 text-2xl font-bold border border-[#093166] text-[#093166]">
                       <BsPlus />
                     </button>
@@ -877,8 +877,9 @@ export default function Home() {
                   </p>
                   <div className="mt-auto flex flex-row items-center justify-between">
                     <button className="text-sm text-white rounded-full font-medium font-poppins flex flex-row items-center bg-[#093166] gap-3 px-3 py-1.5 border border-white">
-                      SHOP THE DROP{" "}
-                      <BsArrowRight className="text-lg font-bold" />
+                      {/* SHOP THE DROP{" "} */}
+                      coming soon
+                      {/* <BsArrowRight className="text-lg font-bold" /> */}
                     </button>
                     <button className="rounded-full p-1 text-2xl font-bold border border-white text-white">
                       <BsPlus />

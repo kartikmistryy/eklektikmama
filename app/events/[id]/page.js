@@ -70,7 +70,11 @@ export default async function EventDetailPage({ params }) {
             {event.date && (
               <p className="text-sm text-gray-700">
                 📅 {moment(event.date).format("MMMM Do YYYY")}
-                {event.startTime && `, ${event.startTime}`}
+                {event.startTime && (
+                  event.endTime && event.endTime !== event.startTime
+                    ? `, ${moment(`2000-01-01T${event.startTime}`).format("h:mm A")} - ${moment(`2000-01-01T${event.endTime}`).format("h:mm A")}`
+                    : `, ${moment(`2000-01-01T${event.startTime}`).format("h:mm A")}`
+                )}
               </p>
             )}
             {event.location && (

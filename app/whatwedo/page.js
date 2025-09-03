@@ -4,7 +4,8 @@ import Link from "next/link";
 import { BsArrowRight } from "react-icons/bs";
 import Marquee from "../components/Marquee";
 import { motion, useInView } from "framer-motion";
-import { useRef } from "react";
+import { useRef, useState, useEffect } from "react";
+import HighlightsCarousel from "../components/HighlightsCarousel";
 
 const Page = () => {
   // Refs for animations
@@ -20,6 +21,30 @@ const Page = () => {
   const pastEventsInView = useInView(pastEventsRef, { once: true, amount: 0.2 });
   const previousEventsInView = useInView(previousEventsRef, { once: true, amount: 0.2 });
   const brandSectionInView = useInView(brandSectionRef, { once: true, amount: 0.3 });
+
+  // Highlights state
+  const [highlights, setHighlights] = useState([]);
+  const [highlightsLoading, setHighlightsLoading] = useState(true);
+
+  // Fetch highlights
+  useEffect(() => {
+    const fetchHighlights = async () => {
+      try {
+        const response = await fetch('/api/admin/highlights');
+        if (response.ok) {
+          const data = await response.json();
+          // Take only the first 4 highlights
+          setHighlights(data.slice(0, 4));
+        }
+      } catch (error) {
+        console.error('Error fetching highlights:', error);
+      } finally {
+        setHighlightsLoading(false);
+      }
+    };
+
+    fetchHighlights();
+  }, []);
 
   // Animation variants
   const fadeInUp = {
@@ -325,189 +350,21 @@ const Page = () => {
           </h2>
         </motion.div>
 
-        <motion.div
-          initial="hidden"
-          animate={previousEventsInView ? "visible" : "hidden"}
-          variants={staggerContainer}
-          transition={{ delay: 0.2 }}
-        >
-          <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 lg:px-10 px-5 py-5">
-            {/* <motion.a
-              href="https://photos.google.com/share/AF1QipMZROP7KoDG762HCpU592F7sDpR_o8Z5nOu1lBxFyOegXJPF4CFkjpdkOWj1JLQog?key=STdtbzZLeDdrVkJwanNaTXcwbDA3QWlfdjVtM1d3"
-              variants={carouselItem}
-              className="w-full h-[400px] flex flex-col p-3 rounded-sm border-2 border-[#093166] hover:shadow-lg transition-shadow duration-300"
-            >
-              <div className="w-full h-[240px] flex-shrink-0">
-                <Image
-                  src="/eventsPic/bateen.jpg"
-                  width={500}
-                  height={300}
-                  alt="BYOB - Al Bateen Ladies Club"
-                  className="rounded-md w-full h-full object-cover"
-                />
-              </div>
-              <span className="py-4 w-full flex-1 flex flex-col justify-start items-start">
-                <h4 className="uppercase font-poppins font-bold lg:text-xl text-lg text-[#093166] leading-tight">
-                  BYOB - Al Bateen Ladies Club
-                </h4>
-              </span>
-            </motion.a> */}
 
-            <motion.a
-            href="https://photos.google.com/share/AF1QipOI-jSZEmq9DypBWyPbF6fnP3O2qv_KwM9PTgGIGPFsD-Qb14ylY0LrZbiyjBdLOA?key=YW1oZVFuNjNIZ3hMd2pBbXlYMGpkaC13ZjBGdDFn"
-              variants={carouselItem}
-              className="w-full h-[400px] flex flex-col p-3 rounded-sm border-2 border-[#093166] hover:shadow-lg transition-shadow duration-300"
-            >
-              <div className="w-full h-[240px] flex-shrink-0">
-                <Image
-                  src="/eventsPic/cocktails.jpg"
-                  width={500}
-                  height={300}
-                  alt="Eklektik Mama Cocktail Masterclass"
-                  className="rounded-md w-full h-full object-cover"
-                />
-              </div>
-              <span className="py-4 w-full flex-1 flex flex-col justify-start items-start">
-                <h4 className="uppercase font-poppins font-bold lg:text-xl text-lg text-[#093166] leading-tight">
-                  Eklektik Mama Cocktail Masterclass
-                </h4>
-              </span>
-            </motion.a>
-
-            <motion.a
-            href="https://photos.google.com/share/AF1QipPI3suUDjtRdSgACKcMdHMNpuE824azy2CRm0WnTmDBZB7ZzUD1MgnF0HwKzdJRxQ?key=SXh3SHhkZUhzOUZLSE9lU2lyd0NyT0RpUUtiT2xR"
-              variants={carouselItem}
-              className="w-full h-[400px] flex flex-col p-3 rounded-sm border-2 border-[#093166] hover:shadow-lg transition-shadow duration-300"
-            >
-              <div className="w-full h-[240px] flex-shrink-0">
-                <Image
-                  src="/eventsPic/entepreneur.jpg"
-                  width={500}
-                  height={300}
-                  alt="Entrepreneur Morning"
-                  className="rounded-md w-full h-full object-cover"
-                />
-              </div>
-              <span className="py-4 w-full flex-1 flex flex-col justify-start items-start">
-                <h4 className="uppercase font-poppins font-bold lg:text-xl text-lg text-[#093166] leading-tight">
-                  Entrepreneur Morning
-                </h4>
-              </span>
-            </motion.a>
-
-            <motion.a
-              href="https://photos.google.com/share/AF1QipP7oseJVSQIHnHBPWepqwwz6Jq9R7gVyCokqpc6nVfUGtluWldHJo5KjIPEK7adag?key=OTNxcW53bFQtVlRfTjc4TC1GYW5qV2ItSWdvclJn"
-              variants={carouselItem}
-              className="w-full h-[400px] flex flex-col p-3 rounded-sm border-2 border-[#093166] hover:shadow-lg transition-shadow duration-300"
-            >
-              <div className="w-full h-[240px] flex-shrink-0">
-                <Image
-                  src="/eventsPic/mamafit.jpg"
-                  width={500}
-                  height={300}
-                  alt="MaMA Fit"
-                  className="rounded-md w-full h-full object-cover"
-                />
-              </div>
-              <span className="py-4 w-full flex-1 flex flex-col justify-start items-start">
-                <h4 className="uppercase font-poppins font-bold lg:text-xl text-lg text-[#093166] leading-tight">
-                MaMA Fit
-                </h4>
-              </span>
-            </motion.a>
-
-            <motion.a
-            href="https://photos.google.com/share/AF1QipOFW-svjbHC17kBd4JdeFHHpdHwHpCuzkB7Zwjj7sg5EV6-RWtH8QgvQ59DOuROtQ?key=Mmpsd1I4bmswU1JOc0VjMVlCNEJnX2F6WW1UT25B"
-              variants={carouselItem}
-              className="w-full h-[400px] flex flex-col p-3 rounded-sm border-2 border-[#093166] hover:shadow-lg transition-shadow duration-300"
-            >
-              <div className="w-full h-[240px] flex-shrink-0">
-                <Image
-                  src="/eventsPic/byobmamabreakfast.jpg"
-                  width={500}
-                  height={300}
-                  alt="BYOBaby Mama Breakfasts"
-                  className="rounded-md w-full h-full object-cover"
-                />
-              </div>
-              <span className="py-4 w-full flex-1 flex flex-col justify-start items-start">
-                <h4 className="uppercase font-poppins font-bold lg:text-xl text-lg text-[#093166] leading-tight">
-                BYOBaby Mama Breakfasts
-                </h4>
-              </span>
-            </motion.a>
-
-            <motion.a
-            href="https://photos.google.com/share/AF1QipPiX6ewsLY5PI_lk4tmG0dFKiox5T77k0RSAddLS14A0fb_TRuHtOUEe9DAOyYIrw?key=TDFGRldRdFhEaUkyVTI2dnB0NmRLMnpuczctMlJB"
-              variants={carouselItem}
-              className="w-full h-[400px] flex flex-col p-3 rounded-sm border-2 border-[#093166] hover:shadow-lg transition-shadow duration-300"
-            >
-              <div className="w-full h-[240px] flex-shrink-0">
-                <Image
-                  src="/eventsPic/eklektikmamaBreakfast.jpg"
-                  width={500}
-                  height={300}
-                  alt="Eklektik mama breakfast 8"
-                  className="rounded-md w-full h-full object-cover"
-                />
-              </div>
-              <span className="py-4 w-full flex-1 flex flex-col justify-start items-start">
-                <h4 className="uppercase font-poppins font-bold lg:text-xl text-lg text-[#093166] leading-tight">
-                Eklektik mama breakfast 8
-                </h4>
-              </span>
-            </motion.a>
-
-            <motion.a
-              href="https://photos.google.com/share/AF1QipMZROP7KoDG762HCpU592F7sDpR_o8Z5nOu1lBxFyOegXJPF4CFkjpdkOWj1JLQog?key=STdtbzZLeDdrVkJwanNaTXcwbDA3QWlfdjVtM1d3"
-              variants={carouselItem}
-              className="w-full h-[400px] flex flex-col p-3 rounded-sm border-2 border-[#093166] hover:shadow-lg transition-shadow duration-300"
-            >
-              <div className="w-full h-[240px] flex-shrink-0">
-                <Image
-                  src="/eventsPic/bateen.jpg"
-                  width={500}
-                  height={300}
-                  alt="BYOB - Al Bateen Ladies Club"
-                  className="rounded-md w-full h-full object-cover"
-                />
-              </div>
-              <span className="py-4 w-full flex-1 flex flex-col justify-start items-start">
-                <h4 className="uppercase font-poppins font-bold lg:text-xl text-lg text-[#093166] leading-tight">
-                  BYOB - Al Bateen Ladies Club
-                </h4>
-              </span>
-            </motion.a>
-
-            <motion.a
-            href="https://photos.google.com/share/AF1QipOI-jSZEmq9DypBWyPbF6fnP3O2qv_KwM9PTgGIGPFsD-Qb14ylY0LrZbiyjBdLOA?key=YW1oZVFuNjNIZ3hMd2pBbXlYMGpkaC13ZjBGdDFn"
-              variants={carouselItem}
-              className="w-full h-[400px] flex flex-col p-3 rounded-sm border-2 border-[#093166] hover:shadow-lg transition-shadow duration-300"
-            >
-              <div className="w-full h-[240px] flex-shrink-0">
-                <Image
-                  src="/eventsPic/cocktails.jpg"
-                  width={500}
-                  height={300}
-                  alt="Eklektik Mama Cocktail Masterclass"
-                  className="rounded-md w-full h-full object-cover"
-                />
-              </div>
-              <span className="py-4 w-full flex-1 flex flex-col justify-start items-start">
-                <h4 className="uppercase font-poppins font-bold lg:text-xl text-lg text-[#093166] leading-tight">
-                  Eklektik Mama Cocktail Masterclass
-                </h4>
-              </span>
-            </motion.a>
-          </div>
-          
-          <div className="flex justify-center mt-6">
-            <Link href="/whatwedo" className="text-sm text-white rounded-full font-medium font-poppins flex flex-row items-center bg-[#093166] justify-start gap-5 px-6 py-2 hover:bg-[#072a4d] transition-colors duration-300">
-              VIEW ALL
-              <BsArrowRight className="text-lg font-bold" />
-            </Link>
-          </div>
-        </motion.div>
+{/* After here, have dynamic rendering for the events */}
+        
+        {/* Highlights Section */}
+        {!highlightsLoading && highlights.length > 0 && (
+          <motion.div
+            initial="hidden"
+            animate={previousEventsInView ? "visible" : "hidden"}
+            variants={fadeInUp}
+            transition={{ delay: 0.3 }}
+            className="mb-10"
+          >
+            <HighlightsCarousel highlights={highlights} />
+          </motion.div>
+        )}
       </section>
 
       <section ref={brandSectionRef} className="w-full h-full flex lg:flex-row flex-col-reverse items-center justify-start relative bg-white  lg:gap-0 gap-10">

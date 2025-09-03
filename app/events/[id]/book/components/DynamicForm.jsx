@@ -19,10 +19,23 @@ const DynamicForm = ({ formConfig, onSubmit, submitting, event }) => {
       }
     });
     setFormData(initialData);
+    
+    // Debug logging for form initialization
+    console.log('=== FORM INITIALIZATION DEBUG ===');
+    console.log('Form config:', formConfig);
+    console.log('Initial data:', initialData);
+    console.log('Fields with names:', formConfig.fields.map(f => ({ name: f.name, type: f.type })));
   }, [formConfig]);
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
+    
+    // Debug logging for input changes
+    console.log('=== INPUT CHANGE DEBUG ===');
+    console.log('Field name:', name);
+    console.log('Field value:', value);
+    console.log('Field type:', type);
+    console.log('Current form data:', formData);
     
     if (type === 'checkbox') {
       const currentValues = formData[name] || [];
@@ -56,6 +69,15 @@ const DynamicForm = ({ formConfig, onSubmit, submitting, event }) => {
       alert('Please accept the waiver to continue.');
       return;
     }
+    
+    // Debug logging for form submission
+    console.log('=== FORM SUBMISSION DEBUG ===');
+    console.log('Form data being submitted:', formData);
+    console.log('Choice I:', formData.choiceI);
+    console.log('Choice II:', formData.choiceII);
+    console.log('Choice III:', formData.choiceIII);
+    console.log('Form config fields:', formConfig.fields);
+    
     onSubmit(formData);
   };
 

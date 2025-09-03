@@ -11,6 +11,13 @@ export default function AdminPage() {
       color: "bg-blue-500"
     },
     {
+      title: "Highlights",
+      description: "Create and manage event highlights",
+      href: "/admin/highlights",
+      icon: "⭐",
+      color: "bg-yellow-500"
+    },
+    {
       title: "Bookings",
       description: "View and manage event bookings",
       href: "/admin/bookings",
@@ -44,6 +51,13 @@ export default function AdminPage() {
       href: "/admin/debug-panel",
       icon: "🔍",
       color: "bg-indigo-500"
+    },
+    {
+      title: "Delete Panel",
+      description: "Delete events and highlights",
+      href: "/admin/delete-panel",
+      icon: "🗑️",
+      color: "bg-red-500"
     }
   ];
 

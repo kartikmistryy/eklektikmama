@@ -7,6 +7,22 @@ import QRCode from "qrcode";
 import { google } from "googleapis";
 import { sendBookingConfirmationEmail } from "@/lib/mailchimp";
 
+/**
+ * Google Sheets Column Structure:
+ * 
+ * Common Columns (1-11): Booking Date/Time, Event Title, Event Date, Guardian Name, 
+ * Child Name, Email, Phone, Tickets, Transaction ID, Payment Status, Timestamp
+ * 
+ * Event-Specific Columns:
+ * - Cinema Morning: 6 additional fields (12-17)
+ * - Mama Breakfast: 9 additional fields (12-20) 
+ * - MamaFit: 4 additional fields (12-15)
+ * - Eklektik Edit: 1 additional field (12)
+ * - Hello Chef: 8 additional fields (12-19)
+ * 
+ * IMPORTANT: All fields are included even if empty to maintain column alignment
+ */
+
 // Success handler that processes the payment and saves data
 export async function GET(req) {
   try {
@@ -49,6 +65,11 @@ export async function GET(req) {
     const numberOfTickets = parseInt(session.metadata.numberOfTickets) || 1;
     const eventSegment = session.metadata.eventSegment || '';
     const additionalData = session.metadata.additionalData ? JSON.parse(session.metadata.additionalData) : {};
+    
+    // Extract dropdown choices directly from metadata
+    const choiceI = session.metadata.choiceI || '';
+    const choiceII = session.metadata.choiceII || '';
+    const choiceIII = session.metadata.choiceIII || '';
 
     // Generate QR code
     const qrPayload = JSON.stringify({
@@ -76,6 +97,18 @@ export async function GET(req) {
 
     // Save to Google Sheets based on event segment
     let sheetsResult = { success: false, error: 'Not configured' };
+    
+    console.log('=== GOOGLE SHEETS DEBUG ===');
+    console.log('Event segment:', eventSegment);
+    console.log('GOOGLE_SHEETS_CLIENT_EMAIL:', !!process.env.GOOGLE_SHEETS_CLIENT_EMAIL);
+    console.log('GOOGLE_SHEETS_PRIVATE_KEY:', !!process.env.GOOGLE_SHEETS_PRIVATE_KEY);
+    console.log('Additional data:', additionalData);
+    console.log('Choice I from additionalData:', additionalData.choiceI);
+    console.log('Choice II from additionalData:', additionalData.choiceII);
+    console.log('Choice III from additionalData:', additionalData.choiceIII);
+    console.log('Choice I from metadata:', choiceI);
+    console.log('Choice II from metadata:', choiceII);
+    console.log('Choice III from metadata:', choiceIII);
     
     if (eventSegment && process.env.GOOGLE_SHEETS_CLIENT_EMAIL && process.env.GOOGLE_SHEETS_PRIVATE_KEY) {
       try {
@@ -123,8 +156,9 @@ export async function GET(req) {
             new Date().toISOString() // Timestamp
           ];
 
-          // Add segment-specific fields
-          if (eventSegment === 'cinemaMorning' || eventSegment === 'mamaBreakfast') {
+          // Add segment-specific fields - ensure all fields are present to maintain column alignment
+          if (eventSegment === 'cinemaMorning') {
+            // Cinema Morning fields (6 fields)
             rowData.push(
               additionalData.emergencyName || '',
               additionalData.emergencyPhone || '',
@@ -133,7 +167,21 @@ export async function GET(req) {
               additionalData.allergies ? additionalData.allergies.join(', ') : '',
               additionalData.notes || ''
             );
+          } else if (eventSegment === 'mamaBreakfast') {
+            // Mama Breakfast fields (6 fields + 3 breakfast choices = 9 fields total)
+            rowData.push(
+              additionalData.emergencyName || '',
+              additionalData.emergencyPhone || '',
+              additionalData.childDob || '',
+              additionalData.childAge || '',
+              additionalData.allergies ? additionalData.allergies.join(', ') : '',
+              additionalData.notes || '',
+              choiceI || '',
+              choiceII || '',
+              choiceIII || ''
+            );
           } else if (eventSegment === 'mamaFit') {
+            // MamaFit fields (4 fields)
             rowData.push(
               additionalData.pregnant || '',
               additionalData.postpartum || '',
@@ -141,11 +189,44 @@ export async function GET(req) {
               additionalData.notes || ''
             );
           } else if (eventSegment === 'eklektikEdit') {
+            // Eklektik Edit fields (1 field)
             rowData.push(
+              additionalData.notes || ''
+            );
+          } else if (eventSegment === 'helloChef') {
+            // Hello Chef fields (6 fields)
+            rowData.push(
+              additionalData.emergencyName || '',
+              additionalData.emergencyPhone || '',
+              additionalData.childDob || '',
+              additionalData.childAge || '',
+              additionalData.cookingExperience || '',
+              additionalData.foodAllergies || '',
+              additionalData.favoriteFoods || '',
               additionalData.notes || ''
             );
           }
 
+          // Debug logging for Google Sheets data
+          console.log('=== GOOGLE SHEETS DATA DEBUG ===');
+          console.log('Event segment:', eventSegment);
+          console.log('Row data length:', rowData.length);
+          console.log('Row data:', rowData);
+          console.log('Column structure:');
+          rowData.forEach((value, index) => {
+            console.log(`Column ${index + 1}: ${value}`);
+          });
+          
+          // Ensure all values are strings and handle undefined/null values
+          rowData = rowData.map(value => {
+            if (value === undefined || value === null) {
+              return '';
+            }
+            return String(value);
+          });
+          
+          console.log('Processed row data:', rowData);
+          
           // First, get the current data to find the next available row
           const currentData = await sheets.spreadsheets.values.get({
             spreadsheetId,
