@@ -236,7 +236,7 @@ export default function AdminDeletePanel() {
               Are you sure you want to delete this {itemToDelete.type}? 
               <br />
               <strong className="text-gray-900">
-                "{itemToDelete.item.title || itemToDelete.item.name}"
+                {itemToDelete.item.title || itemToDelete.item.name}
               </strong>
               <br />
               This action cannot be undone.
