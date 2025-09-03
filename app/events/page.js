@@ -343,7 +343,7 @@ export default function Events() {
           {/* 3-Column Grid for Previous Events */}
           <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:px-10 px-5 py-5">
             {/* Event 1 */}
-            <motion.a
+            {/* <motion.a
               href="https://photos.google.com/share/AF1QipMZROP7KoDG762HCpU592F7sDpR_o8Z5nOu1lBxFyOegXJPF4CFkjpdkOWj1JLQog?key=STdtbzZLeDdrVkJwanNaTXcwbDA3QWlfdjVtM1d3"
               variants={carouselItem}
               className="w-full flex flex-col p-3 rounded-sm border-2 border-[#093166] hover:shadow-lg transition-shadow duration-300"
@@ -360,7 +360,7 @@ export default function Events() {
                   BYOB - Al Bateen Ladies Club
                 </h4>
               </span>
-            </motion.a>
+            </motion.a> */}
 
             {/* Event 2 */}
             <motion.a
