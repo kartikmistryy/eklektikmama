@@ -35,6 +35,16 @@ export async function POST(req) {
       return NextResponse.json({ error: 'Event ID is required' }, { status: 400 });
     }
 
+    if (!email) {
+      console.error('Missing email');
+      return NextResponse.json({ error: 'Email is required' }, { status: 400 });
+    }
+
+    if (!numberOfTickets || numberOfTickets < 1) {
+      console.error('Invalid number of tickets');
+      return NextResponse.json({ error: 'Valid number of tickets is required' }, { status: 400 });
+    }
+
     console.log('Connecting to database...');
     await connectDB();
     
@@ -46,6 +56,12 @@ export async function POST(req) {
     }
     
     console.log('Event found:', { title: event.title, price: event.price });
+
+    // Validate event price
+    if (!event.price || event.price <= 0) {
+      console.error('Invalid event price:', event.price);
+      return NextResponse.json({ error: 'Event price is invalid' }, { status: 400 });
+    }
 
     // Check Stripe configuration
     if (!process.env.STRIPE_SECRET_KEY) {
@@ -97,31 +113,33 @@ export async function POST(req) {
         email: email || '',
         phone: phone || '',
         numberOfTickets: String(numberOfTickets || 1),
-        // Store dropdown choices directly in metadata to avoid size issues
-        choiceI: otherFormData.choiceI || '',
-        choiceII: otherFormData.choiceII || '',
-        choiceIII: otherFormData.choiceIII || '',
-        // Store other form data as JSON (but limit size)
-        additionalData: JSON.stringify({
-          emergencyName: otherFormData.emergencyName || '',
-          emergencyPhone: otherFormData.emergencyPhone || '',
-          childDob: otherFormData.childDob || '',
-          childAge: otherFormData.childAge || '',
-          allergies: otherFormData.allergies || [],
-          notes: otherFormData.notes || '',
-          pregnant: otherFormData.pregnant || '',
-          postpartum: otherFormData.postpartum || '',
-          postpartumDuration: otherFormData.postpartumDuration || '',
-          medicalConditions: otherFormData.medicalConditions || '',
-          conditionDetails: otherFormData.conditionDetails || '',
-          cookingExperience: otherFormData.cookingExperience || '',
-          foodAllergies: otherFormData.foodAllergies || '',
-          favoriteFoods: otherFormData.favoriteFoods || ''
-        })
+        // Store essential choices directly in metadata
+        choiceI: (otherFormData.choiceI || '').substring(0, 100),
+        choiceII: (otherFormData.choiceII || '').substring(0, 100),
+        choiceIII: (otherFormData.choiceIII || '').substring(0, 100),
+        // Store critical form data (truncated to avoid Stripe limits)
+        emergencyName: (otherFormData.emergencyName || '').substring(0, 100),
+        emergencyPhone: (otherFormData.emergencyPhone || '').substring(0, 100),
+        childDob: otherFormData.childDob || '',
+        childAge: otherFormData.childAge || '',
+        allergies: Array.isArray(otherFormData.allergies) ? otherFormData.allergies.join(',').substring(0, 100) : '',
+        notes: (otherFormData.notes || '').substring(0, 100),
+        pregnant: otherFormData.pregnant || '',
+        postpartum: otherFormData.postpartum || '',
+        postpartumDuration: otherFormData.postpartumDuration || '',
+        medicalConditions: (otherFormData.medicalConditions || '').substring(0, 100),
+        conditionDetails: (otherFormData.conditionDetails || '').substring(0, 100),
+        cookingExperience: otherFormData.cookingExperience || '',
+        foodAllergies: (otherFormData.foodAllergies || '').substring(0, 100),
+        favoriteFoods: (otherFormData.favoriteFoods || '').substring(0, 100)
       },
     };
     
     console.log('Creating Stripe session with data:', sessionData);
+    console.log('Metadata size check:', {
+      totalKeys: Object.keys(sessionData.metadata).length,
+      metadataSize: JSON.stringify(sessionData.metadata).length
+    });
 
     const session = await stripe.checkout.sessions.create(sessionData);
     
