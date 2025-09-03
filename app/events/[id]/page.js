@@ -20,6 +20,17 @@ export default async function EventDetailPage({ params }) {
   const event = await fetchEvent(id);
   if (!event) return notFound();
 
+  // Temporary debugging - remove this after we see the data
+  console.log('Event data:', {
+    id: event._id,
+    title: event.title,
+    date: event.date,
+    startTime: event.startTime,
+    endDate: event.endDate,
+    endTime: event.endTime,
+    segment: event.segment
+  });
+
   return (
     <div className="w-full h-full">
       {event.coverImage && (
@@ -57,7 +68,10 @@ export default async function EventDetailPage({ params }) {
           </div>
           <div className="md:col-span-1 space-y-3">
             {event.date && (
-              <p className="text-sm text-gray-700">📅 {moment(event.date).format("MMMM Do YYYY, h:mm A")}</p>
+              <p className="text-sm text-gray-700">
+                📅 {moment(event.date).format("MMMM Do YYYY")}
+                {event.startTime && `, ${event.startTime}`}
+              </p>
             )}
             {event.location && (
               <p className="text-sm text-gray-700">📍 {event.location}</p>

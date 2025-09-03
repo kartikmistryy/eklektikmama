@@ -6,7 +6,9 @@ const EventSchema = new mongoose.Schema({
   description: String,
   coverImage: String, // URL to uploaded image
   date: { type: Date, required: true },
+  startTime: { type: String }, // Store time as string (HH:MM format)
   endDate: Date,
+  endTime: { type: String }, // Store time as string (HH:MM format)
   price: Number,
   location: String,
   segment: { 
