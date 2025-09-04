@@ -102,10 +102,14 @@ export async function POST(req) {
       mode: 'payment',
       success_url: `${origin}/api/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${origin}/events/${event._id}?canceled=true`,
-      payment_method_types: ['card'],
       customer_email: email,
       line_items: lineItems,
+      // Remove payment_method_types
+      // payment_method_types: ['card'],
+    
+      // Use your PMC config instead
       payment_method_configuration: 'pmc_1Q1LozRr8s6DbC7qUqs8HGlx',
+    
       metadata: {
         eventId: String(event._id),
         eventSegment: eventSegment || '',
@@ -114,11 +118,9 @@ export async function POST(req) {
         email: email || '',
         phone: phone || '',
         numberOfTickets: String(numberOfTickets || 1),
-        // Store essential choices directly in metadata
         choiceI: (otherFormData.choiceI || '').substring(0, 100),
         choiceII: (otherFormData.choiceII || '').substring(0, 100),
         choiceIII: (otherFormData.choiceIII || '').substring(0, 100),
-        // Store critical form data (truncated to avoid Stripe limits)
         emergencyName: (otherFormData.emergencyName || '').substring(0, 100),
         emergencyPhone: (otherFormData.emergencyPhone || '').substring(0, 100),
         childDob: otherFormData.childDob || '',
@@ -132,7 +134,7 @@ export async function POST(req) {
         conditionDetails: (otherFormData.conditionDetails || '').substring(0, 100),
         cookingExperience: otherFormData.cookingExperience || '',
         foodAllergies: (otherFormData.foodAllergies || '').substring(0, 100),
-        favoriteFoods: (otherFormData.favoriteFoods || '').substring(0, 100)
+        favoriteFoods: (otherFormData.favoriteFoods || '').substring(0, 100),
       },
     };
     
