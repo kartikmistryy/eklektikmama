@@ -105,6 +105,7 @@ export async function POST(req) {
       payment_method_types: ['card'],
       customer_email: email,
       line_items: lineItems,
+      configuration_id: 'pmc_1Q1LozRr8s6DbC7qUqs8HGlx',
       metadata: {
         eventId: String(event._id),
         eventSegment: eventSegment || '',

@@ -28,6 +28,7 @@ export async function POST(req) {
         cancel_url: `${origin}/events/${event._id}?canceled=true`,
       payment_method_types: ['card'],
       customer_email: 'test@example.com',
+      configuration_id: 'pmc_1Q1LozRr8s6DbC7qUqs8HGlx',
       line_items: [
         {
           price_data: {
