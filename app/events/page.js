@@ -90,23 +90,17 @@ export default function Events() {
   };
 
   useEffect(() => {
-    console.log('Events page mounted - fetching events once');
     async function fetchEvents() {
       try {
-        console.log('Fetching events from API...');
         const res = await fetch("/api/events");
-        console.log('API response status:', res.status);
         
         if (!res.ok) {
           throw new Error(`HTTP error! status: ${res.status}`);
         }
         
         const data = await res.json();
-        console.log('API response data:', data);
-        console.log('Number of events received:', data.length);
 
         if (data.length === 0) {
-          console.log('No events found in database');
           setEvents([]);
           return;
         }
@@ -116,16 +110,6 @@ export default function Events() {
           const startDate = new Date(event.date);
           const endDate = event.endDate ? new Date(event.endDate) : new Date(event.date);
           
-          console.log('Event date mapping:', {
-            title: event.title,
-            originalDate: event.date,
-            parsedStart: startDate,
-            parsedEnd: endDate,
-            startISO: startDate.toISOString(),
-            startLocal: startDate.toString(),
-            startLocalTime: startDate.toLocaleTimeString(),
-            timezoneOffset: startDate.getTimezoneOffset()
-          });
           
           return {
             id: event._id,
@@ -141,10 +125,8 @@ export default function Events() {
             originalEnd: event.endDate
           };
         });
-        console.log('Mapped events:', mapped);
         setEvents(mapped);
       } catch (error) {
-        console.error('Error fetching events:', error);
         setEvents([]);
       }
     }

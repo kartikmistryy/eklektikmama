@@ -6,8 +6,6 @@ import Event from "@/models/Event";
 
 export async function POST(req) {
   try {
-    console.log('Checkout request received');
-    
     const contentType = req.headers.get('content-type') || '';
     let body;
     if (contentType.includes('application/json')) {
@@ -17,60 +15,37 @@ export async function POST(req) {
       body = Object.fromEntries(formData.entries());
     }
 
-    console.log('Request body:', body);
-
     const { eventId, guardianName, childName, email, phone, numberOfTickets, eventSegment, ...otherFormData } = body;
-    
-    // Debug logging for form data
-    console.log('=== FORM DATA DEBUG ===');
-    console.log('Event segment:', eventSegment);
-    console.log('Other form data:', otherFormData);
-    console.log('Choice I:', otherFormData.choiceI);
-    console.log('Choice II:', otherFormData.choiceII);
-    console.log('Choice III:', otherFormData.choiceIII);
     
     // Validate required fields
     if (!eventId) {
-      console.error('Missing eventId');
       return NextResponse.json({ error: 'Event ID is required' }, { status: 400 });
     }
 
     if (!email) {
-      console.error('Missing email');
       return NextResponse.json({ error: 'Email is required' }, { status: 400 });
     }
 
-    if (!numberOfTickets || numberOfTickets < 1) {
-      console.error('Invalid number of tickets');
-      return NextResponse.json({ error: 'Valid number of tickets is required' }, { status: 400 });
+    if (!numberOfTickets || numberOfTickets < 1 || numberOfTickets > 15) {
+      return NextResponse.json({ error: 'Number of tickets must be between 1 and 15' }, { status: 400 });
     }
 
-    console.log('Connecting to database...');
     await connectDB();
     
-    console.log('Finding event with ID:', eventId);
     const event = await Event.findById(eventId);
     if (!event) {
-      console.error('Event not found:', eventId);
       return NextResponse.json({ error: 'Event not found' }, { status: 404 });
     }
     
-    console.log('Event found:', { title: event.title, price: event.price });
-
     // Validate event price
     if (!event.price || event.price <= 0) {
-      console.error('Invalid event price:', event.price);
       return NextResponse.json({ error: 'Event price is invalid' }, { status: 400 });
     }
 
     // Check Stripe configuration
     if (!process.env.STRIPE_SECRET_KEY) {
-      console.error('Stripe secret key not configured');
       return NextResponse.json({ error: 'Stripe not configured' }, { status: 500 });
     }
-    
-    console.log('Stripe secret key exists, length:', process.env.STRIPE_SECRET_KEY.length);
-    console.log('Stripe secret key starts with:', process.env.STRIPE_SECRET_KEY.substring(0, 7));
     
     const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
@@ -80,8 +55,6 @@ export async function POST(req) {
     const protocol = (hdrs.get('x-forwarded-proto') || 'http') + '://';
     const origin = process.env.NEXT_PUBLIC_BASE_URL || (host ? `${protocol}${host}` : 'http://localhost:3000');
     
-    console.log('Origin URL:', origin);
-
     const lineItems = [
       {
         price_data: {
@@ -96,8 +69,6 @@ export async function POST(req) {
       },
     ];
     
-    console.log('Line items:', lineItems);
-
     const sessionData = {
       mode: 'payment',
       success_url: `${origin}/api/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
@@ -135,27 +106,14 @@ export async function POST(req) {
         cookingExperience: otherFormData.cookingExperience || '',
         foodAllergies: (otherFormData.foodAllergies || '').substring(0, 100),
         favoriteFoods: (otherFormData.favoriteFoods || '').substring(0, 100),
+        photographyConsent: otherFormData.photographyConsent ? 'Yes' : 'No',
       },
     };
     
-    console.log('Creating Stripe session with data:', sessionData);
-    console.log('Metadata size check:', {
-      totalKeys: Object.keys(sessionData.metadata).length,
-      metadataSize: JSON.stringify(sessionData.metadata).length
-    });
-
     const session = await stripe.checkout.sessions.create(sessionData);
-    
-    console.log('Stripe session created successfully:', session.id);
 
     return NextResponse.json({ id: session.id, url: session.url });
   } catch (err) {
-    console.error('Error creating checkout session:', err);
-    console.error('Error details:', {
-      message: err.message,
-      stack: err.stack,
-      name: err.name
-    });
     return NextResponse.json({ error: err.message }, { status: 500 });
   }
 }

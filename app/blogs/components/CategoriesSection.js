@@ -65,9 +65,6 @@ const CategoriesSection = ({ allPosts }) => {
 
   const latestPosts = getLatestPosts();
 
-  console.log('Latest posts:', latestPosts);
-  console.log('Active tag:', activeTag);
-  console.log('Available tags:', tags);
 
   // Try different possible image field names
   const getImageUrl = (post) => {

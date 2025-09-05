@@ -27,9 +27,6 @@ const FeaturedSection = ({ featuredPosts }) => {
 
   const featuredPost = featuredPosts[0];
 
-  // Debug logging
-  console.log('FeaturedSection featuredPosts:', featuredPosts);
-  console.log('FeaturedSection featuredPost:', featuredPost);
 
   // Try different possible image field names
   const getImageUrl = (post) => {

@@ -14,11 +14,11 @@ import { sendBookingConfirmationEmail } from "@/lib/mailchimp";
  * Child Name, Email, Phone, Tickets, Transaction ID, Payment Status, Timestamp
  * 
  * Event-Specific Columns:
- * - Cinema Morning: 6 additional fields (12-17)
- * - Mama Breakfast: 9 additional fields (12-20) 
- * - MamaFit: 4 additional fields (12-15)
- * - Eklektik Edit: 1 additional field (12)
- * - Hello Chef: 8 additional fields (12-19)
+ * - Cinema Morning: 7 additional fields (12-18)
+ * - Mama Breakfast: 10 additional fields (12-21) 
+ * - MamaFit: 5 additional fields (12-16)
+ * - Eklektik Edit: 2 additional fields (12-13)
+ * - Hello Chef: 9 additional fields (12-20)
  * 
  * IMPORTANT: All fields are included even if empty to maintain column alignment
  */
@@ -53,7 +53,6 @@ export async function GET(req) {
     const transactionId = session.payment_intent || session.id;
     const existingBooking = await Booking.findOne({ transactionId });
     if (existingBooking) {
-      console.log('Booking already exists, redirecting to success page');
       return NextResponse.redirect(new URL(`/events/${eventId}?success=already_booked`, req.url));
     }
 
@@ -65,6 +64,7 @@ export async function GET(req) {
     const numberOfTickets = parseInt(session.metadata.numberOfTickets) || 1;
     const eventSegment = session.metadata.eventSegment || '';
     const additionalData = session.metadata.additionalData ? JSON.parse(session.metadata.additionalData) : {};
+    const photographyConsent = session.metadata.photographyConsent || 'No';
     
     // Extract dropdown choices directly from metadata
     const choiceI = session.metadata.choiceI || '';
@@ -90,25 +90,12 @@ export async function GET(req) {
       transactionId,
       qrCodeDataUrl,
       paymentStatus: 'paid',
+      photographyConsent,
       additionalData
     });
 
-    console.log('Booking created in database:', booking._id);
-
     // Save to Google Sheets based on event segment
     let sheetsResult = { success: false, error: 'Not configured' };
-    
-    console.log('=== GOOGLE SHEETS DEBUG ===');
-    console.log('Event segment:', eventSegment);
-    console.log('GOOGLE_SHEETS_CLIENT_EMAIL:', !!process.env.GOOGLE_SHEETS_CLIENT_EMAIL);
-    console.log('GOOGLE_SHEETS_PRIVATE_KEY:', !!process.env.GOOGLE_SHEETS_PRIVATE_KEY);
-    console.log('Additional data:', additionalData);
-    console.log('Choice I from additionalData:', additionalData.choiceI);
-    console.log('Choice II from additionalData:', additionalData.choiceII);
-    console.log('Choice III from additionalData:', additionalData.choiceIII);
-    console.log('Choice I from metadata:', choiceI);
-    console.log('Choice II from metadata:', choiceII);
-    console.log('Choice III from metadata:', choiceIII);
     
     if (eventSegment && process.env.GOOGLE_SHEETS_CLIENT_EMAIL && process.env.GOOGLE_SHEETS_PRIVATE_KEY) {
       try {
@@ -158,17 +145,18 @@ export async function GET(req) {
 
           // Add segment-specific fields - ensure all fields are present to maintain column alignment
           if (eventSegment === 'cinemaMorning') {
-            // Cinema Morning fields (6 fields)
+            // Cinema Morning fields (6 fields + photography consent)
             rowData.push(
               additionalData.emergencyName || '',
               additionalData.emergencyPhone || '',
               additionalData.childDob || '',
               additionalData.childAge || '',
               additionalData.allergies ? additionalData.allergies.join(', ') : '',
-              additionalData.notes || ''
+              additionalData.notes || '',
+              photographyConsent
             );
           } else if (eventSegment === 'mamaBreakfast') {
-            // Mama Breakfast fields (6 fields + 3 breakfast choices = 9 fields total)
+            // Mama Breakfast fields (6 fields + 3 breakfast choices + photography consent = 10 fields total)
             rowData.push(
               additionalData.emergencyName || '',
               additionalData.emergencyPhone || '',
@@ -178,23 +166,26 @@ export async function GET(req) {
               additionalData.notes || '',
               choiceI || '',
               choiceII || '',
-              choiceIII || ''
+              choiceIII || '',
+              photographyConsent
             );
           } else if (eventSegment === 'mamaFit') {
-            // MamaFit fields (4 fields)
+            // MamaFit fields (4 fields + photography consent)
             rowData.push(
               additionalData.pregnant || '',
               additionalData.postpartum || '',
               additionalData.medicalConditions || '',
-              additionalData.notes || ''
+              additionalData.notes || '',
+              photographyConsent
             );
           } else if (eventSegment === 'eklektikEdit') {
-            // Eklektik Edit fields (1 field)
+            // Eklektik Edit fields (1 field + photography consent)
             rowData.push(
-              additionalData.notes || ''
+              additionalData.notes || '',
+              photographyConsent
             );
           } else if (eventSegment === 'helloChef') {
-            // Hello Chef fields (6 fields)
+            // Hello Chef fields (6 fields + photography consent)
             rowData.push(
               additionalData.emergencyName || '',
               additionalData.emergencyPhone || '',
@@ -203,20 +194,11 @@ export async function GET(req) {
               additionalData.cookingExperience || '',
               additionalData.foodAllergies || '',
               additionalData.favoriteFoods || '',
-              additionalData.notes || ''
+              additionalData.notes || '',
+              photographyConsent
             );
           }
 
-          // Debug logging for Google Sheets data
-          console.log('=== GOOGLE SHEETS DATA DEBUG ===');
-          console.log('Event segment:', eventSegment);
-          console.log('Row data length:', rowData.length);
-          console.log('Row data:', rowData);
-          console.log('Column structure:');
-          rowData.forEach((value, index) => {
-            console.log(`Column ${index + 1}: ${value}`);
-          });
-          
           // Ensure all values are strings and handle undefined/null values
           rowData = rowData.map(value => {
             if (value === undefined || value === null) {
@@ -224,8 +206,6 @@ export async function GET(req) {
             }
             return String(value);
           });
-          
-          console.log('Processed row data:', rowData);
           
           // First, get the current data to find the next available row
           const currentData = await sheets.spreadsheets.values.get({
@@ -247,11 +227,9 @@ export async function GET(req) {
           });
           
           sheetsResult = { success: true, response: response.data };
-          console.log('Successfully added booking to Google Sheets');
           
           // Send booking confirmation email after successful Google Sheets update
           try {
-            console.log('Sending booking confirmation email...');
             const emailResult = await sendBookingConfirmationEmail(
               {
                 userEmail,
@@ -270,18 +248,12 @@ export async function GET(req) {
               }
             );
             
-            if (emailResult.success) {
-              console.log('Booking confirmation email sent successfully');
-            } else {
-              console.error('Failed to send booking confirmation email:', emailResult.error);
-            }
+            // Don't fail the process if email fails
           } catch (emailError) {
-            console.error('Error sending booking confirmation email:', emailError);
             // Don't fail the process if email fails
           }
         }
       } catch (sheetsError) {
-        console.error('Google Sheets Error:', sheetsError);
         sheetsResult = { success: false, error: sheetsError.message };
       }
     }
@@ -291,7 +263,6 @@ export async function GET(req) {
     return NextResponse.redirect(successUrl);
 
   } catch (error) {
-    console.error('Error processing payment success:', error);
     return NextResponse.redirect(new URL('/events?error=processing_failed', req.url));
   }
 }

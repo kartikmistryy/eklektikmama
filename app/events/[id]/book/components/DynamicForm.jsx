@@ -18,37 +18,35 @@ const DynamicForm = ({ formConfig, onSubmit, submitting, event }) => {
         initialData[field.name] = '';
       }
     });
+    // Initialize photography consent as false
+    initialData.photographyConsent = false;
     setFormData(initialData);
-    
-    // Debug logging for form initialization
-    console.log('=== FORM INITIALIZATION DEBUG ===');
-    console.log('Form config:', formConfig);
-    console.log('Initial data:', initialData);
-    console.log('Fields with names:', formConfig.fields.map(f => ({ name: f.name, type: f.type })));
   }, [formConfig]);
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
     
-    // Debug logging for input changes
-    console.log('=== INPUT CHANGE DEBUG ===');
-    console.log('Field name:', name);
-    console.log('Field value:', value);
-    console.log('Field type:', type);
-    console.log('Current form data:', formData);
-    
     if (type === 'checkbox') {
-      const currentValues = formData[name] || [];
-      if (checked) {
+      // Special handling for photography consent checkbox
+      if (name === 'photographyConsent') {
         setFormData(prev => ({
           ...prev,
-          [name]: [...currentValues, value]
+          [name]: checked
         }));
       } else {
-        setFormData(prev => ({
-          ...prev,
-          [name]: currentValues.filter(v => v !== value)
-        }));
+        // Regular checkbox handling for multi-select checkboxes
+        const currentValues = formData[name] || [];
+        if (checked) {
+          setFormData(prev => ({
+            ...prev,
+            [name]: [...currentValues, value]
+          }));
+        } else {
+          setFormData(prev => ({
+            ...prev,
+            [name]: currentValues.filter(v => v !== value)
+          }));
+        }
       }
     } else if (type === 'radio') {
       setFormData(prev => ({
@@ -69,14 +67,6 @@ const DynamicForm = ({ formConfig, onSubmit, submitting, event }) => {
       alert('Please accept the waiver to continue.');
       return;
     }
-    
-    // Debug logging for form submission
-    console.log('=== FORM SUBMISSION DEBUG ===');
-    console.log('Form data being submitted:', formData);
-    console.log('Choice I:', formData.choiceI);
-    console.log('Choice II:', formData.choiceII);
-    console.log('Choice III:', formData.choiceIII);
-    console.log('Form config fields:', formConfig.fields);
     
     onSubmit(formData);
   };
@@ -224,7 +214,7 @@ const DynamicForm = ({ formConfig, onSubmit, submitting, event }) => {
           required
           className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#093166] focus:border-transparent"
         >
-          {[1, 2, 3, 4, 5].map(num => (
+          {Array.from({ length: 15 }, (_, i) => i + 1).map(num => (
             <option key={num} value={num}>{num} {num === 1 ? 'ticket' : 'tickets'}</option>
           ))}
         </select>
@@ -241,6 +231,22 @@ const DynamicForm = ({ formConfig, onSubmit, submitting, event }) => {
           </div>
         </div>
       )}
+
+      {/* Photography Consent */}
+      <div className="bg-blue-50 p-4 rounded-lg">
+        <label className="flex items-center">
+          <input
+            type="checkbox"
+            name="photographyConsent"
+            checked={formData.photographyConsent || false}
+            onChange={handleInputChange}
+            className="mr-3 text-[#093166] focus:ring-[#093166] border-gray-300 rounded"
+          />
+          <span className="text-sm text-gray-700">
+            Consent to photography - I consent to being photographed during the event for promotional purposes
+          </span>
+        </label>
+      </div>
 
       {/* Waiver */}
       <div className="bg-gray-50 p-4 rounded-lg">

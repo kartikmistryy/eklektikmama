@@ -10,6 +10,7 @@ const BookingSchema = new mongoose.Schema({
   transactionId: String,
   qrCodeDataUrl: String,
   paymentStatus: { type: String, enum: ["pending", "paid"], default: "pending" },
+  photographyConsent: { type: String, enum: ["Yes", "No"], default: "No" },
 }, { timestamps: true });
 
 export default mongoose.models.Booking || mongoose.model("Booking", BookingSchema);

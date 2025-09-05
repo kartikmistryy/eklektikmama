@@ -20,18 +20,19 @@ This document outlines the exact column structure for each event segment to ensu
 ## Event-Specific Columns
 
 ### Cinema Morning Events
-**Additional Columns 12-17:**
+**Additional Columns 12-18:**
 12. **Emergency Contact Name**
 13. **Emergency Contact Phone**
 14. **Child Date of Birth**
 15. **Child Age**
 16. **Allergies** (comma-separated if multiple)
 17. **Additional Notes**
+18. **Photography Consent** (Yes/No)
 
-**Total Columns: 17**
+**Total Columns: 18**
 
 ### Mama Breakfast Events
-**Additional Columns 12-20:**
+**Additional Columns 12-21:**
 12. **Emergency Contact Name**
 13. **Emergency Contact Phone**
 14. **Child Date of Birth**
@@ -41,26 +42,29 @@ This document outlines the exact column structure for each event segment to ensu
 18. **Choice I - Bread Selection**
 19. **Choice II - Main Course**
 20. **Choice III - Protein Selection**
+21. **Photography Consent** (Yes/No)
 
-**Total Columns: 20**
+**Total Columns: 21**
 
 ### MamaFit Events
-**Additional Columns 12-15:**
+**Additional Columns 12-16:**
 12. **Pregnant Status** (Yes/No)
 13. **Postpartum Status** (Yes/No)
 14. **Medical Conditions** (Yes/No)
 15. **Additional Notes**
+16. **Photography Consent** (Yes/No)
 
-**Total Columns: 15**
+**Total Columns: 16**
 
 ### Eklektik Edit Events
-**Additional Columns 12:**
+**Additional Columns 12-13:**
 12. **Additional Notes**
+13. **Photography Consent** (Yes/No)
 
-**Total Columns: 12**
+**Total Columns: 13**
 
 ### Hello Chef Events
-**Additional Columns 12-19:**
+**Additional Columns 12-20:**
 12. **Emergency Contact Name**
 13. **Emergency Contact Phone**
 14. **Child Date of Birth**
@@ -69,8 +73,9 @@ This document outlines the exact column structure for each event segment to ensu
 17. **Food Allergies/Restrictions**
 18. **Favorite Foods**
 19. **Additional Notes**
+20. **Photography Consent** (Yes/No)
 
-**Total Columns: 19**
+**Total Columns: 20**
 
 ## Important Notes
 

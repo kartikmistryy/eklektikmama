@@ -14,42 +14,29 @@ export async function POST(req) {
   const payload = await req.text();
   const sig = req.headers.get('stripe-signature');
 
-  console.log('Webhook received:', { 
-    hasSecret: !!secret, 
-    hasPayload: !!payload, 
-    hasSignature: !!sig 
-  });
 
   let event;
   try {
     const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "");
     event = stripe.webhooks.constructEvent(payload, sig, secret);
-    console.log('Webhook event type:', event.type);
   } catch (err) {
-    console.error('Webhook signature verification failed:', err.message);
     return new NextResponse(`Webhook Error: ${err.message}`, { status: 400 });
   }
 
   if (event.type === 'checkout.session.completed') {
-    console.log('Processing checkout.session.completed event');
     const session = event.data.object;
     
     // Check if payment actually succeeded
     if (session.payment_status !== 'paid') {
-      console.log('Payment not successful, skipping processing. Payment status:', session.payment_status);
       return NextResponse.json({ received: true, message: 'Payment not successful, skipping processing' });
     }
-    
-    console.log('Payment successful, processing booking...');
     
     try {
       await connectDB();
       const eventId = session.metadata?.eventId;
-      console.log('Event ID from metadata:', eventId);
       
       const paidEvent = await Event.findById(eventId);
       if (!paidEvent) throw new Error('Event not found for booking');
-      console.log('Found event:', paidEvent.title);
 
       const transactionId = session.payment_intent || session.id;
       const guardianName = session.metadata?.guardianName || session.customer_details?.name || '';
@@ -57,22 +44,14 @@ export async function POST(req) {
       const childName = session.metadata?.childName || '';
       const phone = session.metadata?.phone || '';
       const numberOfTickets = parseInt(session.metadata?.numberOfTickets) || 1;
+      const photographyConsent = session.metadata?.photographyConsent || 'No';
 
       // Check if booking already exists to prevent duplicates
       const existingBooking = await Booking.findOne({ transactionId });
       if (existingBooking) {
-        console.log('Booking already exists, skipping duplicate processing');
         return NextResponse.json({ received: true, message: 'Booking already exists' });
       }
 
-      console.log('Extracted booking data:', {
-        guardianName,
-        childName,
-        userEmail,
-        phone,
-        numberOfTickets,
-        transactionId
-      });
 
       const qrPayload = JSON.stringify({
         eventId,
@@ -91,15 +70,11 @@ export async function POST(req) {
         transactionId,
         qrCodeDataUrl,
         paymentStatus: 'paid',
+        photographyConsent,
       });
 
-      console.log('Booking created in database:', booking._id);
 
       // Append to Google Sheet if configured
-      console.log('Checking Google Sheets configuration...');
-      console.log('GOOGLE_SHEETS_CLIENT_EMAIL:', !!process.env.GOOGLE_SHEETS_CLIENT_EMAIL);
-      console.log('GOOGLE_SHEETS_PRIVATE_KEY:', !!process.env.GOOGLE_SHEETS_PRIVATE_KEY);
-      console.log('GOOGLE_SHEETS_SPREADSHEET_ID:', !!process.env.GOOGLE_SHEETS_SPREADSHEET_ID);
       
       // Commenting out Google Sheets integration in webhook to avoid conflicts
       // Google Sheets integration is handled in the checkout success route
@@ -110,7 +85,6 @@ export async function POST(req) {
         process.env.GOOGLE_SHEETS_SPREADSHEET_ID
       ) {
         try {
-          console.log('Attempting to add to Google Sheets...');
           const auth = new google.auth.JWT(
             process.env.GOOGLE_SHEETS_CLIENT_EMAIL,
             undefined,
@@ -135,7 +109,6 @@ export async function POST(req) {
             new Date().toISOString() // Timestamp for reference
           ];
           
-          console.log('Row data to add:', rowData);
           
           const response = await sheets.spreadsheets.values.append({
             spreadsheetId: process.env.GOOGLE_SHEETS_SPREADSHEET_ID,
@@ -147,12 +120,9 @@ export async function POST(req) {
             },
           });
           
-          console.log('Google Sheets response:', response.data);
-          console.log('Successfully added booking to Google Sheets');
           
           // Send booking confirmation email after successful Google Sheets update
           try {
-            console.log('Sending booking confirmation email...');
             const emailResult = await sendBookingConfirmationEmail(
               {
                 userEmail,
@@ -172,22 +142,17 @@ export async function POST(req) {
             );
             
             if (emailResult.success) {
-              console.log('Booking confirmation email sent successfully');
             } else {
-              console.error('Failed to send booking confirmation email:', emailResult.error);
             }
           } catch (emailError) {
-            console.error('Error sending booking confirmation email:', emailError);
             // Don't fail the webhook if email fails
           }
         } catch (sheetsError) {
-          console.error('Google Sheets Error:', sheetsError);
           // Don't fail the webhook if Google Sheets fails
         }
       }
       */
     } catch (e) {
-      console.error('Error processing webhook:', e);
       return NextResponse.json({ received: true, error: e.message }, { status: 200 });
     }
   }

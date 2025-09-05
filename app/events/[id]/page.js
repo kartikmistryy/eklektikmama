@@ -20,16 +20,6 @@ export default async function EventDetailPage({ params }) {
   const event = await fetchEvent(id);
   if (!event) return notFound();
 
-  // Temporary debugging - remove this after we see the data
-  console.log('Event data:', {
-    id: event._id,
-    title: event.title,
-    date: event.date,
-    startTime: event.startTime,
-    endDate: event.endDate,
-    endTime: event.endTime,
-    segment: event.segment
-  });
 
   return (
     <div className="w-full h-full">
@@ -39,7 +29,7 @@ export default async function EventDetailPage({ params }) {
         </div>
       )}
 
-      <div className="max-w-[1400px] mx-auto px-5 lg:px-0 py-6">
+      <div className="max-w-[1400px] mx-auto px-5 py-6">
         <div className="flex items-start justify-between gap-4 lg:px-0 px-5">
           <h1 className="text-3xl md:text-5xl font-poppins text-[#093166] uppercase">
             {event.title}

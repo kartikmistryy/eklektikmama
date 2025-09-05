@@ -7,15 +7,12 @@ import { notFound } from 'next/navigation';
 
 // Helper function to render embedded assets
 const renderEmbeddedAsset = (node) => {
-  console.log('renderEmbeddedAsset called with:', node);
   
   if (!node.data || !node.data.target) {
-    console.error('No target data found in node:', node);
     return null;
   }
 
   const target = node.data.target;
-  console.log('Asset target:', target);
   
   // Extract image data from the correct structure
   let imageUrl = null;
@@ -28,10 +25,6 @@ const renderEmbeddedAsset = (node) => {
     const { url, details } = target.fields.file;
     const { title, description } = target.fields;
     
-    console.log('File URL found:', url);
-    console.log('File details:', details);
-    console.log('Title:', title);
-    console.log('Description:', description);
     
     if (url) {
       imageUrl = `https:${url}`;
