@@ -5,7 +5,8 @@ import Event from "@/models/Event";
 export async function GET(_req, { params }) {
   try {
     await connectDB();
-    const event = await Event.findById(params.id);
+    const { id } = await params;
+    const event = await Event.findById(id);
     if (!event) {
       return NextResponse.json({ error: 'Not found' }, { status: 404 });
     }

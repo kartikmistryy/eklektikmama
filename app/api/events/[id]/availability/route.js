@@ -11,9 +11,18 @@ const SEGMENT_CAPACITY = {
   helloChef: 10
 };
 
+// Display capacity for UI (different from actual booking limit)
+const DISPLAY_CAPACITY = {
+  cinemaMorning: 10,
+  mamaBreakfast: 15, // Display as 15 in UI, but actual limit is 9
+  mamaFit: 10,
+  eklektikEdit: 10,
+  helloChef: 10
+};
+
 export async function GET(req, { params }) {
   try {
-    const { id } = params;
+    const { id } = await params;
     
     // First, get the event to determine its segment
     const base = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
@@ -32,7 +41,8 @@ export async function GET(req, { params }) {
       return NextResponse.json({ 
         available: true, 
         remaining: SEGMENT_CAPACITY.cinemaMorning,
-        total: SEGMENT_CAPACITY.cinemaMorning,
+        total: DISPLAY_CAPACITY.cinemaMorning,
+        actualTotal: SEGMENT_CAPACITY.cinemaMorning,
         message: 'Event segment not specified'
       });
     }
@@ -42,7 +52,8 @@ export async function GET(req, { params }) {
       return NextResponse.json({ 
         available: true, 
         remaining: SEGMENT_CAPACITY[eventSegment] || 10,
-        total: SEGMENT_CAPACITY[eventSegment] || 10,
+        total: DISPLAY_CAPACITY[eventSegment] || 10,
+        actualTotal: SEGMENT_CAPACITY[eventSegment] || 10,
         message: 'Google Sheets not configured, assuming available'
       });
     }
@@ -70,7 +81,8 @@ export async function GET(req, { params }) {
       return NextResponse.json({ 
         available: true, 
         remaining: SEGMENT_CAPACITY[eventSegment] || 10,
-        total: SEGMENT_CAPACITY[eventSegment] || 10,
+        total: DISPLAY_CAPACITY[eventSegment] || 10,
+        actualTotal: SEGMENT_CAPACITY[eventSegment] || 10,
         message: 'Spreadsheet not configured for this segment'
       });
     }
@@ -98,13 +110,15 @@ export async function GET(req, { params }) {
     const existingBookings = Math.max(0, values.length - 1); // Subtract 1 for header row
     
     const totalCapacity = SEGMENT_CAPACITY[eventSegment] || 10;
+    const displayCapacity = DISPLAY_CAPACITY[eventSegment] || 10;
     const remaining = Math.max(0, totalCapacity - existingBookings);
     const available = remaining > 0;
     
     return NextResponse.json({
       available,
       remaining,
-      total: totalCapacity,
+      total: displayCapacity, // Use display capacity for UI
+      actualTotal: totalCapacity, // Keep actual capacity for reference
       existing: existingBookings,
       segment: eventSegment,
       message: available 
@@ -118,6 +132,7 @@ export async function GET(req, { params }) {
       available: true, 
       remaining: 10,
       total: 10,
+      actualTotal: 10,
       message: 'Error checking availability, assuming available',
       error: error.message
     }, { status: 500 });

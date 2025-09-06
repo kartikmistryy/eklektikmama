@@ -25,11 +25,14 @@ async function fetchAvailability(id) {
 }
 
 export default async function EventDetailPage({ params }) {
-  const { id } = params;
+  const { id } = await params;
   const event = await fetchEvent(id);
   if (!event) return notFound();
   
   const availability = await fetchAvailability(id);
+  
+  // Check if event date has passed
+  const isEventPast = event.date ? moment(event.date).isBefore(moment(), 'day') : false;
 
 
   return (
@@ -48,7 +51,11 @@ export default async function EventDetailPage({ params }) {
           <div className="flex flex-col items-end gap-2">
             {/* Availability Status */}
             <div className="text-right">
-              {availability.available ? (
+              {isEventPast ? (
+                <div className="text-sm text-gray-500 font-medium">
+                  Event has passed
+                </div>
+              ) : availability.available ? (
                 <div className="text-sm text-green-600 font-medium">
                   {availability.remaining} tickets left
                 </div>
@@ -60,7 +67,14 @@ export default async function EventDetailPage({ params }) {
             </div>
             
             {/* Book Now Button */}
-            {availability.available ? (
+            {isEventPast ? (
+              <button 
+                disabled 
+                className="px-4 py-2 bg-gray-400 text-white rounded-md cursor-not-allowed whitespace-nowrap"
+              >
+                Event Passed
+              </button>
+            ) : availability.available ? (
               <a href={`/events/${event._id}/book`}>
                 <button className="px-4 py-2 bg-[#093166] text-white rounded-md hover:bg-[#093166]/90 whitespace-nowrap">
                   Book Now
@@ -110,7 +124,11 @@ export default async function EventDetailPage({ params }) {
               <p className="text-sm text-gray-700">🎟️ AED {event.price}</p>
             )}
             <div className="text-sm text-gray-700">
-              <span className="font-medium">Availability:</span> {availability.remaining} of {availability.total} tickets remaining
+              <span className="font-medium">Availability:</span> {
+                isEventPast 
+                  ? "Event has passed" 
+                  : `${availability.remaining} of ${availability.total} tickets remaining`
+              }
             </div>
             {event.location && (
               <iframe

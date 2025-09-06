@@ -16,7 +16,16 @@ export default function RootLayout({ children }) {
       className={`${anton.variable} ${antonio.variable} ${poppins.variable} ${quicksand.variable}`}
     >
       <head>
-        <link rel="icon" href="./favicon.png" />
+        {/* Favicon for all browsers including Safari */}
+        <link rel="icon" href="/favicon.ico" sizes="any" />
+        <link rel="icon" href="/favicon-16x16.png" type="image/png" sizes="16x16" />
+        <link rel="icon" href="/favicon-32x32.png" type="image/png" sizes="32x32" />
+        <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180" />
+        <link rel="shortcut icon" href="/favicon.ico" />
+        <meta name="msapplication-TileColor" content="#093166" />
+        <meta name="theme-color" content="#093166" />
+        
+        {/* Additional meta tags */}
         <meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex" />
         <meta name="referrer" content="no-referrer" />
         <meta httpEquiv="X-Frame-Options" content="DENY" />
