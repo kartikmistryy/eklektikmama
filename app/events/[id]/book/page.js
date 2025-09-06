@@ -15,6 +15,7 @@ export default function BookingPage({ params }) {
   const [submitting, setSubmitting] = useState(false);
   const [formData, setFormData] = useState({});
   const [formConfig, setFormConfig] = useState(null);
+  const [availability, setAvailability] = useState(null);
 
   // Fetch event data on component mount
   useEffect(() => {
@@ -31,6 +32,13 @@ export default function BookingPage({ params }) {
             setFormConfig(config);
           }
         }
+        
+        // Fetch availability
+        const availabilityRes = await fetch(`/api/events/${params.id}/availability`);
+        if (availabilityRes.ok) {
+          const availabilityData = await availabilityRes.json();
+          setAvailability(availabilityData);
+        }
       } catch (error) {
         console.error('Error fetching event:', error);
       } finally {
@@ -46,6 +54,12 @@ export default function BookingPage({ params }) {
     setSubmitting(true);
 
     try {
+      // Check if event is still available
+      if (availability && !availability.available) {
+        alert('Sorry, this event is now fully booked. Please try another event.');
+        setSubmitting(false);
+        return;
+      }
       // Map form field names to API expected field names
       const mappedData = {
         eventId: params.id,
@@ -125,6 +139,40 @@ export default function BookingPage({ params }) {
     );
   }
 
+  // Check if event is fully booked
+  if (availability && !availability.available) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center max-w-md mx-auto p-6">
+          <div className="bg-red-50 border border-red-200 rounded-lg p-6">
+            <div className="text-red-600 text-6xl mb-4">🚫</div>
+            <h1 className="text-2xl font-bold text-gray-800 mb-2">Event Fully Booked</h1>
+            <p className="text-gray-600 mb-4">
+              Sorry, {event.title} has reached its maximum capacity of {availability.total} tickets.
+            </p>
+            <p className="text-sm text-gray-500 mb-6">
+              Please check back later or explore other available events.
+            </p>
+            <div className="space-y-3">
+              <button 
+                onClick={() => router.push('/events')} 
+                className="w-full px-4 py-2 bg-[#093166] text-white rounded-md hover:bg-[#093166]/90"
+              >
+                View Other Events
+              </button>
+              <button 
+                onClick={() => router.back()} 
+                className="w-full px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300"
+              >
+                Go Back
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gray-50 py-8" style={{ paddingTop: '10em' }}>
       <div className="max-w-4xl mx-auto px-4">
@@ -133,6 +181,11 @@ export default function BookingPage({ params }) {
           <div className="bg-[#093166] text-white p-6">
             <h1 className="text-2xl md:text-3xl font-antonio uppercase">Book Your Tickets</h1>
             <p className="text-blue-100 mt-2">Complete your booking for {event.title}</p>
+            {availability && (
+              <div className="mt-3 text-sm text-blue-200">
+                {availability.remaining} of {availability.total} tickets remaining
+              </div>
+            )}
           </div>
 
           <div className="p-6 space-y-8">
