@@ -103,7 +103,7 @@ export default function Navbar({ pageType = 'default' }) {
           />
         </Link>
 
-        <Link href="/partner" className={useDarkNav ? '' : 'text-white'} style={useDarkNav ? { color: '#2e2e2e' } : {}}>WORK WITH US</Link>
+        <Link href="/contactus" className={useDarkNav ? '' : 'text-white'} style={useDarkNav ? { color: '#2e2e2e' } : {}}>WORK WITH US</Link>
         <Link href="/whatwedo" className={useDarkNav ? '' : 'text-white'} style={useDarkNav ? { color: '#2e2e2e' } : {}}>HIGHLIGHTS</Link>
       </div>
 
@@ -174,7 +174,7 @@ export default function Navbar({ pageType = 'default' }) {
           </button>
           <button onClick={() => handleNavigation('/events')} className="bg-transparent border-none text-white">EVENTS</button>
           <button onClick={() => handleNavigation('/blogs')} className="bg-transparent border-none text-white">UNFILTERED AF BLOG</button>
-          <button onClick={() => handleNavigation('/partner')} className="bg-transparent border-none text-white">WORK WITH US</button>
+          <button onClick={() => handleNavigation('/contactus')} className="bg-transparent border-none text-white">WORK WITH US</button>
           <button onClick={() => handleNavigation('/whatwedo')}  className="bg-transparent border-none text-white">HIGHLIGHTS</button>
         </div>
       </div>

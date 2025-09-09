@@ -250,7 +250,7 @@ export default function Footer() {
                   </a>
                 </li>
                 <li>
-                  <a href="/partner#contact" className="hover:underline">
+                  <a href="/contactus#contact" className="hover:underline">
                     Contact Us
                   </a>
                 </li>
@@ -262,12 +262,12 @@ export default function Footer() {
               <h3 className="font-bold mb-6">WORK WITH US</h3>
               <ul className="space-y-2 uppercase text-left">
                 <li>
-                  <a href="/partner" className="hover:underline">
+                  <a href="/contactus" className="hover:underline">
                     Pitch Us Something Wild
                   </a>
                 </li>
                 <li>
-                  <a href="/partner#franchise" className="hover:underline">
+                  <a href="/contactus#franchise" className="hover:underline">
                     Start Eklektik Mama In Your City
                   </a>
                 </li>
@@ -279,7 +279,7 @@ export default function Footer() {
               <h3 className="font-bold mb-6">EXTRAS / RESOURCES</h3>
               <ul className="space-y-2 uppercase text-left">
                 <li>
-                  <a href="/perks" className="hover:underline">
+                  <a href="/partnershipprogram" className="hover:underline">
                     Partnership Program
                   </a>
                 </li>

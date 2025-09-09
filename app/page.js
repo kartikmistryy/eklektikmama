@@ -729,7 +729,7 @@ export default function Home() {
                       vibe check - hard.
                     </p>
                     <span className="w-full h-fit mt-auto flex flex-row items-center justify-between pr-2">
-                      <Link href="/partner" className="text-sm bg-white rounded-full font-medium font-poppins flex flex-row uppercase items-center justify-start gap-5 px-3 py-1.5 ">
+                      <Link href="/contactus" className="text-sm bg-white rounded-full font-medium font-poppins flex flex-row uppercase items-center justify-start gap-5 px-3 py-1.5 ">
                         explore our partners
                         <BsArrowRight className="text-lg font-bold" />
                       </Link>
@@ -909,7 +909,7 @@ export default function Home() {
                     they passed the vibe check.
                   </p>
                   <div className="mt-auto flex flex-row items-center justify-between">
-                    <Link href="/partner" className="text-sm bg-white rounded-full font-medium font-poppins flex flex-row uppercase items-center gap-3 px-3 py-1.5">
+                    <Link href="/contactus" className="text-sm bg-white rounded-full font-medium font-poppins flex flex-row uppercase items-center gap-3 px-3 py-1.5">
                       explore our partners{" "}
                       <BsArrowRight className="text-lg font-bold" />
                     </Link>

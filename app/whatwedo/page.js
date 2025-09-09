@@ -389,7 +389,7 @@ const Page = () => {
             all the right reasons.
           </p>
           <Link
-            href="/perks#form"
+            href="/partnershipprogram#form"
             className="w-fit md:h-[45px] h-[40px] md:px-6 px-3 md:text-base text-sm flex items-center justify-center uppercase text-[#093166] hover:text-white rounded-[20px] my-6 border-2 border-[#bf378b] bg-transparent hover:bg-[#bf378b] transition-colors duration-500 ease-in-out scale-100"
           >
             WORK WITH US <BsArrowRight className="ml-2 md:text-2xl text-lg" />
