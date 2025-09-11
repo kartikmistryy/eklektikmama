@@ -24,11 +24,24 @@ export async function POST(req) {
 
     const session = await stripe.checkout.sessions.create({
       mode: 'payment',
-              success_url: `${origin}/events/${event._id}?success=true`,
-        cancel_url: `${origin}/events/${event._id}?canceled=true`,
-      payment_method_types: ['card'],
+      success_url: `${origin}/events/${event._id}?success=true`,
+      cancel_url: `${origin}/events/${event._id}?canceled=true`,
+      currency: 'aed',
+      payment_method_types: ['card', 'apple_pay', 'google_pay'],
       customer_email: 'test@example.com',
-      payment_method_configuration: 'pmc_1Q1LozRr8s6DbC7qUqs8HGlx',
+      
+      // Additional configuration to force AED
+      payment_method_options: {
+        apple_pay: {
+          currency: 'aed'
+        },
+        google_pay: {
+          currency: 'aed'
+        }
+      },
+      
+      // Remove PMC config to avoid currency conflicts
+      // payment_method_configuration: 'pmc_1Q1LozRr8s6DbC7qUqs8HGlx',
       line_items: [
         {
           price_data: {
