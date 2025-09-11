@@ -1,6 +1,8 @@
 "use client";
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
+import Navbar from '../components/Navbar';
 
 export default function AdminLayout({ children }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -46,26 +48,30 @@ export default function AdminLayout({ children }) {
   }
 
   if (!isAuthenticated) {
-    return <LoginForm onLogin={handleLogin} />;
+    return (
+      <>
+        <Navbar pageType="admin" />
+        <LoginForm onLogin={handleLogin} />
+      </>
+    );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 mt-20">
+    <>
+      <Navbar pageType="admin" />
+      <div className="min-h-screen bg-gray-50 mt-20">
       {/* Admin Header */}
       <div className="bg-white shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-3">
-              <img
-                src="/footer/logo.webp"
+              <Image
+                src="/mobileLogoBlue.png"
                 alt="Eklektik Mama Logo"
                 width={40}
                 height={40}
                 className="object-contain"
-                onError={(e) => {
-                  console.error('Logo failed to load:', e.target.src);
-                  e.target.style.display = 'none';
-                }}
+                priority
               />
               <div>
                 <h1 className="text-xl font-semibold text-gray-900">Admin Dashboard</h1>
@@ -89,7 +95,8 @@ export default function AdminLayout({ children }) {
       <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
         {children}
       </main>
-    </div>
+      </div>
+    </>
   );
 }
 
@@ -113,16 +120,13 @@ function LoginForm({ onLogin }) {
       <div className="max-w-md w-full space-y-8">
         <div>
           <div className="mx-auto h-16 w-16 flex items-center justify-center">
-            <img
-              src="/footer/logo.webp"
+            <Image
+              src="/mobileLogoBlue.png"
               alt="Eklektik Mama Logo"
               width={64}
               height={64}
               className="object-contain"
-              onError={(e) => {
-                console.error('Login logo failed to load:', e.target.src);
-                e.target.style.display = 'none';
-              }}
+              priority
             />
           </div>
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
