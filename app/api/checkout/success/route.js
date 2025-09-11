@@ -71,7 +71,7 @@ export async function GET(req) {
     const choiceII = session.metadata.choiceII || '';
     const choiceIII = session.metadata.choiceIII || '';
 
-    // Generate QR code
+    // Generate QR code (will be updated with ticket number after Google Sheets integration)
     const qrPayload = JSON.stringify({
       eventId,
       transactionId,
@@ -216,6 +216,9 @@ export async function GET(req) {
           // Find the next available row (start from row 2)
           const nextRow = Math.max(2, (currentData.data.values ? currentData.data.values.length : 1) + 1);
           
+          // Calculate ticket number (row number - 1, since row 1 is header)
+          const ticketNumber = nextRow - 1;
+          
           // Update the specific row starting from row 2
           const response = await sheets.spreadsheets.values.update({
             spreadsheetId,
@@ -226,7 +229,30 @@ export async function GET(req) {
             },
           });
           
-          sheetsResult = { success: true, response: response.data };
+          // Generate updated QR code with ticket number and ticket URL
+          const ticketUrl = `${process.env.NEXT_PUBLIC_BASE_URL || 'https://eklektikmama.com'}/ticket/${booking._id}`;
+          const updatedQrPayload = JSON.stringify({
+            eventId,
+            transactionId,
+            email: userEmail,
+            ticketNumber,
+            guardianName,
+            childName,
+            numberOfTickets,
+            eventTitle: event.title,
+            eventDate: event.date,
+            ticketUrl,
+            bookingId: booking._id
+          });
+          const updatedQrCodeDataUrl = await QRCode.toDataURL(updatedQrPayload);
+          
+          // Update booking with ticket number and new QR code
+          await Booking.findByIdAndUpdate(booking._id, {
+            ticketNumber,
+            qrCodeDataUrl: updatedQrCodeDataUrl
+          });
+          
+          sheetsResult = { success: true, response: response.data, ticketNumber };
           
           // Send booking confirmation email after successful Google Sheets update
           try {
@@ -237,7 +263,8 @@ export async function GET(req) {
                 childName,
                 numberOfTickets,
                 transactionId,
-                qrCodeDataUrl
+                qrCodeDataUrl: updatedQrCodeDataUrl,
+                ticketNumber
               },
               {
                 title: event.title,
