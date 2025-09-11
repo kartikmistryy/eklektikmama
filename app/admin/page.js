@@ -130,7 +130,7 @@ export default function AdminPage() {
               </p>
             </div>
           </div> */}
-        </div>
+        {/* </div> */}
       </div>
     </div>
   );
