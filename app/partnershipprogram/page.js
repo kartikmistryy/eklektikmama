@@ -441,7 +441,7 @@ const Page = () => {
           variants={fadeIn}
           transition={{ delay: 0.2 }}
         >
-          <form id="design" onSubmit={handleSubmit} className="w-full h-full lg:px-14 px-5 lg:py-5 py-6 border-2 border-[#db4e9f] max-w-[600px] rounded-lg flex flex-col gap-5 font-poppins relative">
+          <form id="design" onSubmit={handleSubmit} className="w-full h-full lg:px-14 px-3 sm:px-5 lg:py-5 py-6 border-2 border-[#db4e9f] max-w-[600px] rounded-lg flex flex-col gap-5 font-poppins relative">
             <Image
                   src="/partner/star.webp"
                   height={100}
@@ -449,11 +449,11 @@ const Page = () => {
                   alt="Logo"
                   className="absolute lg:bottom-[10px] lg:right-[-70px] right-[-10px] bottom-[-20px]"
                 />
-            <div id="form" className="w-full h-full flex flex-row items-start justify-start gap-5 text-[#093166]">
+            <div id="form" className="w-full h-full flex flex-row items-start justify-start gap-3 sm:gap-5 text-[#093166]">
               <span className="border-2 border-[#db4e9f] h-7 w-7 rounded-full flex justify-center items-center text-xs font-semibold flex-shrink-0">
                 1
               </span>
-              <div className="w-full h-full flex flex-col gap-5 max-w-[350px] mt-2">
+              <div className="w-full h-full flex flex-col gap-5 min-w-0 flex-1 mt-2">
                 <h4 className="font-medium uppercase text-sm">QUICK INTRO</h4>
                 <div>
                   <input
@@ -462,7 +462,7 @@ const Page = () => {
                     placeholder="NAME*"
                     value={formData.name}
                     onChange={(e) => handleInputChange('name', e.target.value)}
-                    className={`text-sm border-2 px-5 py-1 rounded-xl ${errors.name ? 'border-red-500' : 'border-[#db4e9f]'}`}
+                    className={`text-sm border-2 px-3 sm:px-5 py-1 rounded-xl w-full ${errors.name ? 'border-red-500' : 'border-[#db4e9f]'}`}
                   />
                   {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name}</p>}
                 </div>
@@ -473,7 +473,7 @@ const Page = () => {
                     placeholder="EMAIL*"
                     value={formData.email}
                     onChange={(e) => handleInputChange('email', e.target.value)}
-                    className={`text-sm border-2 px-5 py-1 rounded-xl ${errors.email ? 'border-red-500' : 'border-[#db4e9f]'}`}
+                    className={`text-sm border-2 px-3 sm:px-5 py-1 rounded-xl w-full ${errors.email ? 'border-red-500' : 'border-[#db4e9f]'}`}
                   />
                   {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email}</p>}
                 </div>
@@ -484,18 +484,18 @@ const Page = () => {
                     placeholder="Website"
                     value={formData.website}
                     onChange={(e) => handleInputChange('website', e.target.value)}
-                    className={`text-sm border-2 px-5 py-1 rounded-xl ${errors.website ? 'border-red-500' : 'border-[#db4e9f]'}`}
+                    className={`text-sm border-2 px-3 sm:px-5 py-1 rounded-xl w-full ${errors.website ? 'border-red-500' : 'border-[#db4e9f]'}`}
                   />
                   {errors.website && <p className="text-red-500 text-xs mt-1">{errors.website}</p>}
                 </div>
               </div>
             </div>
 
-            <div className="w-full h-full flex flex-row items-start justify-start gap-5 text-[#093166]">
+            <div className="w-full h-full flex flex-row items-start justify-start gap-3 sm:gap-5 text-[#093166]">
               <span className="border-2 border-[#db4e9f] h-7 w-7 rounded-full flex justify-center items-center text-xs font-semibold flex-shrink-0">
                 2
               </span>
-              <div className="w-full h-full flex flex-col gap-3 max-w-[350px] mt-2">
+              <div className="w-full h-full flex flex-col gap-3 min-w-0 flex-1 mt-2">
                 <h4 className="font-medium uppercase text-sm">What kind of partnership are you looking for</h4>
                 <div className="w-full h-full flex flex-col gap-3 mt-1">
                   {[
@@ -506,7 +506,7 @@ const Page = () => {
                     "Affiliate/Referral (Earn through referrals)",
                     "Other (Please specify)",
                   ].map((label) => (
-                    <label key={label} className="flex items-center gap-3 uppercase text-sm">
+                    <label key={label} className="flex items-center gap-2 sm:gap-3 uppercase text-xs sm:text-sm">
                       <input
                         type="radio"
                         name="partnershipType"
@@ -528,7 +528,7 @@ const Page = () => {
                 <div>
                   <textarea
                     placeholder="Please specify"
-                    className={`text-sm border-2 px-5 py-2 min-h-[100px] rounded-xl ${errors.otherDetails ? 'border-red-500' : 'border-[#db4e9f]'}`}
+                    className={`text-sm border-2 px-3 sm:px-5 py-2 min-h-[100px] rounded-xl w-full resize-none ${errors.otherDetails ? 'border-red-500' : 'border-[#db4e9f]'}`}
                     disabled={partnershipType !== "Other (Please specify)"}
                     value={otherDetails}
                     onChange={(e) => {
@@ -543,18 +543,18 @@ const Page = () => {
               </div>
             </div>
 
-            <div className="w-full h-full flex flex-row items-start justify-start gap-5 text-[#093166] mt-4">
+            <div className="w-full h-full flex flex-row items-start justify-start gap-3 sm:gap-5 text-[#093166] mt-4">
               <span className="border-2 border-[#db4e9f] h-7 w-7 rounded-full flex justify-center items-center text-xs font-semibold flex-shrink-0">
                 3
               </span>
-              <div className="w-full h-full flex flex-col gap-2">
+              <div className="w-full h-full flex flex-col gap-2 min-w-0 flex-1">
                 <h4 className="font-semibold">What Brings You Here?</h4>
-                <div className="w-full h-full flex lg:flex-row flex-col gap-5 mt-3">
-                  <label className="uppercase w-full">
+                <div className="w-full h-full flex lg:flex-row flex-col gap-3 sm:gap-5 mt-3">
+                  <label className="uppercase w-full text-sm sm:text-base">
                     Are you a brand?{" "}
                   </label>
-                  <div className="w-full max-w-[150px] h-fit flex flex-row gap-5">
-                    <span className="w-fit h-full flex flex-row gap-2 uppercase">
+                  <div className="w-full sm:max-w-[150px] h-fit flex flex-row gap-3 sm:gap-5">
+                    <span className="w-fit h-full flex flex-row gap-1 sm:gap-2 uppercase text-sm sm:text-base">
                       <input 
                         type="radio" 
                         name="isBrand" 
@@ -564,7 +564,7 @@ const Page = () => {
                       />
                       <label>Yes</label>
                     </span>
-                    <span className="w-fit h-full flex flex-row gap-2 uppercase">
+                    <span className="w-fit h-full flex flex-row gap-1 sm:gap-2 uppercase text-sm sm:text-base">
                       <input 
                         type="radio" 
                         name="isBrand" 
@@ -579,11 +579,11 @@ const Page = () => {
                 {errors.isBrand && <p className="text-red-500 text-xs mt-1">{errors.isBrand}</p>}
 
                 <div className="w-full h-full flex lg:flex-row flex-col gap-3 mt-3">
-                  <label className="uppercase w-full text-base">
+                  <label className="uppercase w-full text-sm sm:text-base">
                     Are you interested in running Eklektik Mama in your city?
                   </label>
-                  <div className="w-full max-w-[150px] h-fit flex flex-row gap-5">
-                    <span className="w-fit h-full flex flex-row gap-2 uppercase">
+                  <div className="w-full sm:max-w-[150px] h-fit flex flex-row gap-3 sm:gap-5">
+                    <span className="w-fit h-full flex flex-row gap-1 sm:gap-2 uppercase text-sm sm:text-base">
                       <input 
                         type="radio" 
                         name="interestedInFranchise" 
@@ -593,7 +593,7 @@ const Page = () => {
                       />
                       <label>Yes</label>
                     </span>
-                    <span className="w-fit h-full flex flex-row gap-2 uppercase">
+                    <span className="w-fit h-full flex flex-row gap-1 sm:gap-2 uppercase text-sm sm:text-base">
                       <input 
                         type="radio" 
                         name="interestedInFranchise" 

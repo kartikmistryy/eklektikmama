@@ -120,7 +120,7 @@ export default function Footer() {
         </span>
         {/* Fix here */}
         {/* Mobile-only footer images */}
-        <div className="md:hidden w-full flex flex-row items-center justify-center gap-0 py-4">
+        <div className="md:hidden w-full flex flex-row items-center justify-center gap-0 py-4 overflow-x-hidden">
           <Image
             src="/footer/1.png"
             alt="footer icon 1"

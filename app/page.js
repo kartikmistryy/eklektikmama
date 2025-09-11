@@ -758,7 +758,7 @@ export default function Home() {
             <CarouselContent>
               {/* Page 1: Get Eklektik AF */}
               <CarouselItem className="basis-full">
-                <div className="bg-pink-400 w-full min-h-[420px] p-4 rounded-sm flex flex-col gap-3">
+                <div className="bg-pink-400 w-full min-h-[500px] p-4 rounded-sm flex flex-col gap-3">
                   <div className="w-full h-[220px] sm:h-[250px]">
                     <Image
                       src="/homepage/party.webp"
@@ -777,7 +777,7 @@ export default function Home() {
                     50/month.
                   </p>
                   <div className="mt-auto flex flex-row items-center justify-between">
-                    <Link href="/eklektikmamaMembership"  className="text-sm bg-white rounded-full font-medium font-poppins flex flex-row items-center justify-start gap-3 px-3 py-1.5">
+                    <Link href="/eklektikmamaMembership"  className="text-xs bg-white rounded-full font-medium font-poppins flex flex-row items-center justify-start gap-3 px-3 py-1.5">
                       JOIN THE MEMBERSHIP{" "}
                       <BsArrowRight className="text-lg font-bold" />
                     </Link>
@@ -790,7 +790,7 @@ export default function Home() {
 
               {/* Page 2: What’s On */}
               <CarouselItem className="basis-full">
-                <div className="bg-white w-full min-h-[420px] p-4 rounded-sm flex flex-col gap-3 border-2 border-[#093166]">
+                <div className="bg-white w-full min-h-[500px] p-4 rounded-sm flex flex-col gap-3 border-2 border-[#093166]">
                   <div className="w-full h-[220px] sm:h-[250px]">
                     <Image
                       src="/homepage/mum.webp"
@@ -821,7 +821,7 @@ export default function Home() {
 
               {/* Page 3: Unfiltered Blogs */}
               <CarouselItem className="basis-full">
-                <div className="bg-white w-full min-h-[420px] p-4 rounded-sm flex flex-col gap-3 border-2 border-[#093166]">
+                <div className="bg-white w-full min-h-[500px] p-4 rounded-sm flex flex-col gap-3 border-2 border-[#093166]">
                   <div className="w-full h-[220px] sm:h-[250px] flex gap-2">
                     <Image
                       src="/homepage/vibes.webp"
@@ -858,7 +858,7 @@ export default function Home() {
 
               {/* Page 4: Shop Drops */}
               <CarouselItem className="basis-full">
-                <div className="bg-[#093166] w-full min-h-[420px] p-4 rounded-sm flex flex-col gap-3">
+                <div className="bg-[#093166] w-full min-h-[500px] p-4 rounded-sm flex flex-col gap-3">
                   <div className="w-full h-[220px] sm:h-[250px]">
                     <Image
                       src="/homepage/bag.webp"
@@ -909,7 +909,7 @@ export default function Home() {
                     they passed the vibe check.
                   </p>
                   <div className="mt-auto flex flex-row items-center justify-between">
-                    <Link href="/contactus" className="text-sm bg-white rounded-full font-medium font-poppins flex flex-row uppercase items-center gap-3 px-3 py-1.5">
+                    <Link href="/contactus" className="text-xs bg-white rounded-full font-medium font-poppins flex flex-row uppercase items-center gap-3 px-3 py-1.5">
                       explore our partners{" "}
                       <BsArrowRight className="text-lg font-bold" />
                     </Link>
