@@ -2,7 +2,6 @@ import { NextResponse } from "next/server";
 import { connectDB } from "@/lib/db";
 import Event from "@/models/Event";
 import Booking from "@/models/Booking";
-import QRCode from "qrcode";
 import { google } from "googleapis";
 
 export async function POST(req) {
@@ -63,12 +62,7 @@ export async function POST(req) {
       eventSegment
     });
 
-    const qrPayload = JSON.stringify({
-      eventId: testEvent._id,
-      transactionId,
-      email: userEmail,
-    });
-    const qrCodeDataUrl = await QRCode.toDataURL(qrPayload);
+    // QR code generation removed as requested
 
     const booking = await Booking.create({
       eventId: testEvent._id,
@@ -78,7 +72,6 @@ export async function POST(req) {
       phone,
       numberOfTickets,
       transactionId,
-      qrCodeDataUrl,
       paymentStatus: 'paid',
       additionalData
     });

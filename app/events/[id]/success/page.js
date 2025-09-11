@@ -131,9 +131,9 @@ export default function BookingSuccessPage({ params }) {
               <p className="text-sm text-gray-600">Check your email for booking confirmation</p>
             </div>
             <div className="text-center">
-              <div className="text-green-500 text-4xl mb-2">📱</div>
-              <h3 className="font-semibold text-gray-800 mb-1">Save QR Code</h3>
-              <p className="text-sm text-gray-600">Screenshot this QR code for easy access</p>
+              <div className="text-green-500 text-4xl mb-2">🎫</div>
+              <h3 className="font-semibold text-gray-800 mb-1">Entry Information</h3>
+              <p className="text-sm text-gray-600">Bring your booking details for event entry</p>
             </div>
             <div className="text-center">
               <div className="text-purple-500 text-4xl mb-2">🎉</div>

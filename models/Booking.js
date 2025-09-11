@@ -8,7 +8,6 @@ const BookingSchema = new mongoose.Schema({
   phone: String,
   numberOfTickets: { type: Number, default: 1 },
   transactionId: String,
-  qrCodeDataUrl: String,
   ticketNumber: { type: Number, default: null }, // Ticket number based on Google Sheets row position
   paymentStatus: { type: String, enum: ["pending", "paid"], default: "pending" },
   photographyConsent: { type: String, enum: ["Yes", "No"], default: "No" },

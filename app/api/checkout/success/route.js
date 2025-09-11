@@ -3,7 +3,6 @@ import Stripe from "stripe";
 import { connectDB } from "@/lib/db";
 import Event from "@/models/Event";
 import Booking from "@/models/Booking";
-import QRCode from "qrcode";
 import { google } from "googleapis";
 import { sendBookingConfirmationEmail } from "@/lib/mailchimp";
 
@@ -71,13 +70,7 @@ export async function GET(req) {
     const choiceII = session.metadata.choiceII || '';
     const choiceIII = session.metadata.choiceIII || '';
 
-    // Generate QR code (will be updated with ticket number after Google Sheets integration)
-    const qrPayload = JSON.stringify({
-      eventId,
-      transactionId,
-      email: userEmail,
-    });
-    const qrCodeDataUrl = await QRCode.toDataURL(qrPayload);
+    // QR code generation removed as requested
 
     // Save to database
     const booking = await Booking.create({
@@ -88,7 +81,6 @@ export async function GET(req) {
       phone,
       numberOfTickets,
       transactionId,
-      qrCodeDataUrl,
       paymentStatus: 'paid',
       photographyConsent,
       additionalData
@@ -229,56 +221,16 @@ export async function GET(req) {
             },
           });
           
-          // Generate updated QR code with ticket number and ticket URL
-          const ticketUrl = `${process.env.NEXT_PUBLIC_BASE_URL || 'https://eklektikmama.com'}/ticket/${booking._id}`;
-          const updatedQrPayload = JSON.stringify({
-            eventId,
-            transactionId,
-            email: userEmail,
-            ticketNumber,
-            guardianName,
-            childName,
-            numberOfTickets,
-            eventTitle: event.title,
-            eventDate: event.date,
-            ticketUrl,
-            bookingId: booking._id
-          });
-          
-          // Generate QR code with better settings for email compatibility
-          let updatedQrCodeDataUrl;
-          try {
-            updatedQrCodeDataUrl = await QRCode.toDataURL(updatedQrPayload, {
-              errorCorrectionLevel: 'H',
-              type: 'image/png',
-              quality: 1.0,
-              margin: 4,
-              color: {
-                dark: '#000000',
-                light: '#FFFFFF'
-              },
-              width: 300,
-              scale: 4
-            });
-            console.log('QR code generated successfully, length:', updatedQrCodeDataUrl.length);
-          } catch (qrError) {
-            console.error('QR code generation failed:', qrError);
-            updatedQrCodeDataUrl = null;
-          }
-          
-          // Update booking with ticket number and new QR code
+          // Update booking with ticket number
           await Booking.findByIdAndUpdate(booking._id, {
-            ticketNumber,
-            qrCodeDataUrl: updatedQrCodeDataUrl
+            ticketNumber
           });
           
           sheetsResult = { success: true, response: response.data, ticketNumber };
           
           // Send booking confirmation email after successful Google Sheets update
           try {
-            console.log('Sending email with QR code:', {
-              hasQrCode: !!updatedQrCodeDataUrl,
-              qrCodeLength: updatedQrCodeDataUrl ? updatedQrCodeDataUrl.length : 0,
+            console.log('Sending email:', {
               ticketNumber,
               transactionId
             });
@@ -290,7 +242,6 @@ export async function GET(req) {
                 childName,
                 numberOfTickets,
                 transactionId,
-                qrCodeDataUrl: updatedQrCodeDataUrl,
                 ticketNumber
               },
               {

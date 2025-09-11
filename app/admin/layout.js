@@ -55,8 +55,22 @@ export default function AdminLayout({ children }) {
       <div className="bg-white shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
-            <div className="flex items-center">
-              <h1 className="text-xl font-semibold text-gray-900">Admin Dashboard</h1>
+            <div className="flex items-center space-x-3">
+              <img
+                src="/footer/logo.webp"
+                alt="Eklektik Mama Logo"
+                width={40}
+                height={40}
+                className="object-contain"
+                onError={(e) => {
+                  console.error('Logo failed to load:', e.target.src);
+                  e.target.style.display = 'none';
+                }}
+              />
+              <div>
+                <h1 className="text-xl font-semibold text-gray-900">Admin Dashboard</h1>
+                <p className="text-sm text-gray-500">Eklektik Mama</p>
+              </div>
             </div>
             <div className="flex items-center space-x-4">
               <span className="text-sm text-gray-500">Welcome, Admin</span>
@@ -98,14 +112,25 @@ function LoginForm({ onLogin }) {
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
         <div>
-          <div className="mx-auto h-12 w-12 bg-blue-600 rounded-full flex items-center justify-center">
-            <svg className="h-8 w-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-            </svg>
+          <div className="mx-auto h-16 w-16 flex items-center justify-center">
+            <img
+              src="/footer/logo.webp"
+              alt="Eklektik Mama Logo"
+              width={64}
+              height={64}
+              className="object-contain"
+              onError={(e) => {
+                console.error('Login logo failed to load:', e.target.src);
+                e.target.style.display = 'none';
+              }}
+            />
           </div>
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            Admin Access
+            Eklektik Mama
           </h2>
+          <p className="mt-2 text-center text-lg font-medium text-[#db4e9f]">
+            Admin Access
+          </p>
           <p className="mt-2 text-center text-sm text-gray-600">
             Enter your credentials to access the admin dashboard
           </p>
@@ -120,7 +145,7 @@ function LoginForm({ onLogin }) {
                 name="username"
                 type="text"
                 required
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
+                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-[#db4e9f] focus:border-[#db4e9f] focus:z-10 sm:text-sm"
                 placeholder="Username"
                 value={credentials.username}
                 onChange={(e) => setCredentials({ ...credentials, username: e.target.value })}
@@ -133,7 +158,7 @@ function LoginForm({ onLogin }) {
                 name="password"
                 type="password"
                 required
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
+                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-[#db4e9f] focus:border-[#db4e9f] focus:z-10 sm:text-sm"
                 placeholder="Password"
                 value={credentials.password}
                 onChange={(e) => setCredentials({ ...credentials, password: e.target.value })}
@@ -145,7 +170,7 @@ function LoginForm({ onLogin }) {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-[#db4e9f] hover:bg-[#bf378b] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#db4e9f] disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isSubmitting ? (
                 <>

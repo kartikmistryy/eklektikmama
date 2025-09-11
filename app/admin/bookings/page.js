@@ -56,7 +56,7 @@ export default async function BookingsPage() {
                     Ticket #
                   </th>
                   <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    QR Code
+                    Entry Info
                   </th>
                   <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Status
@@ -100,26 +100,16 @@ export default async function BookingsPage() {
                       )}
                     </td>
                     <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {booking.qrCodeDataUrl ? (
-                        <div className="flex items-center space-x-2">
-                          <Image 
-                            src={booking.qrCodeDataUrl} 
-                            alt="QR Code" 
-                            width={32}
-                            height={32}
-                            className="rounded border"
-                          />
-                          <a 
-                            href={`/ticket/${booking._id}`}
-                            target="_blank"
-                            className="text-[#db4e9f] hover:text-[#bf378b] text-xs underline"
-                          >
-                            View
-                          </a>
-                        </div>
-                      ) : (
-                        <span className="text-gray-400">-</span>
-                      )}
+                      <div className="flex items-center space-x-2">
+                        <span className="text-green-600 text-xs">🎫</span>
+                        <a 
+                          href={`/ticket/${booking._id}`}
+                          target="_blank"
+                          className="text-[#db4e9f] hover:text-[#bf378b] text-xs underline"
+                        >
+                          View
+                        </a>
+                      </div>
                     </td>
                     <td className="px-4 py-4 whitespace-nowrap">
                       <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${

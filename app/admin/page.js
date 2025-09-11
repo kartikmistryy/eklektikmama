@@ -121,7 +121,7 @@ export default function AdminPage() {
         </div>
 
         {/* Environment Variables Status */}
-        <div className="mt-8 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+        {/* <div className="mt-8 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
           <div className="flex items-center">
             <div className="text-yellow-800">
               <p className="font-medium">⚠️ Environment Variables Required</p>
@@ -129,7 +129,7 @@ export default function AdminPage() {
                 Make sure to set <code className="bg-yellow-100 px-1 rounded">NEXT_PUBLIC_ADMIN_USERNAME</code> and <code className="bg-yellow-100 px-1 rounded">NEXT_PUBLIC_ADMIN_PASSWORD</code> in your environment variables for admin access.
               </p>
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

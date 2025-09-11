@@ -87,18 +87,13 @@ const TicketDisplayPage = () => {
 
           {/* Ticket Content */}
           <div className="p-6">
-            {/* QR Code */}
+            {/* Entry Information */}
             <div className="text-center mb-6">
-              <div className="inline-block p-4 bg-gray-50 rounded-xl">
-                <Image
-                  src={ticketData.qrCodeDataUrl}
-                  alt="Ticket QR Code"
-                  width={200}
-                  height={200}
-                  className="mx-auto"
-                />
+              <div className="inline-block p-4 bg-green-50 rounded-xl border border-green-200">
+                <div className="text-green-600 text-4xl mb-2">🎫</div>
+                <p className="text-sm text-green-700 font-medium">Entry Information</p>
+                <p className="text-xs text-green-600 mt-1">Please bring your booking details for entry</p>
               </div>
-              <p className="text-sm text-gray-600 mt-2">Scan this QR code for entry</p>
             </div>
 
             {/* Ticket Information */}
@@ -172,7 +167,7 @@ const TicketDisplayPage = () => {
             {/* Footer */}
             <div className="mt-6 pt-4 border-t border-gray-200 text-center">
               <p className="text-sm text-gray-600">
-                This is your official event ticket. Please keep it safe and present it at the event entrance.
+                This is your official event ticket. Please keep it safe and present your booking details at the event entrance.
               </p>
               <p className="text-xs text-gray-500 mt-2">
                 For any questions, contact us at info@eklektikmama.com

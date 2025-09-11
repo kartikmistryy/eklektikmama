@@ -29,7 +29,6 @@ export async function GET(req, { params }) {
       userEmail: booking.userEmail,
       phone: booking.phone,
       numberOfTickets: booking.numberOfTickets,
-      qrCodeDataUrl: booking.qrCodeDataUrl,
       paymentStatus: booking.paymentStatus,
       photographyConsent: booking.photographyConsent,
       eventTitle: booking.eventId?.title || "Event",

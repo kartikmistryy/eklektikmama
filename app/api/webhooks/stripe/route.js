@@ -3,7 +3,6 @@ import Stripe from "stripe";
 import { connectDB } from "@/lib/db";
 import Event from "@/models/Event";
 import Booking from "@/models/Booking";
-import QRCode from "qrcode";
 import { google } from "googleapis";
 import { sendBookingConfirmationEmail } from "@/lib/mailchimp";
 
@@ -53,12 +52,7 @@ export async function POST(req) {
       }
 
 
-      const qrPayload = JSON.stringify({
-        eventId,
-        transactionId,
-        email: userEmail,
-      });
-      const qrCodeDataUrl = await QRCode.toDataURL(qrPayload);
+      // QR code generation removed as requested
 
       const booking = await Booking.create({
         eventId,
@@ -68,7 +62,6 @@ export async function POST(req) {
         phone,
         numberOfTickets,
         transactionId,
-        qrCodeDataUrl,
         paymentStatus: 'paid',
         photographyConsent,
       });

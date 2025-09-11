@@ -704,6 +704,7 @@ export default function Home() {
                   </span>
                 </div>
               </CarouselItem>
+
               <CarouselItem
                 id="3"
                 className="w-full self-stretch gap-5 basis-[75%]"
@@ -890,7 +891,7 @@ export default function Home() {
 
               {/* Page 5: Eklektik Mama Loves */}
               <CarouselItem className="basis-full">
-                <div className="bg-pink-400 w-full min-h-[420px] p-4 rounded-sm flex flex-col gap-3">
+                <div className="bg-pink-400 w-full min-h-[500px] p-4 rounded-sm flex flex-col gap-3">
                   <div className="w-full h-[220px] sm:h-[250px]">
                     <Image
                       src="/homepage/package.webp"

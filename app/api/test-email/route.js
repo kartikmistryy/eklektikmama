@@ -17,7 +17,6 @@ export async function POST(req) {
       childName: childName || 'Test Child',
       numberOfTickets: numberOfTickets || 1,
       transactionId: transactionId || 'TEST-' + Date.now(),
-      qrCodeDataUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg=='
     };
 
     const eventData = {
