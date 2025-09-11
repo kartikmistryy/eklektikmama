@@ -244,7 +244,27 @@ export async function GET(req) {
             ticketUrl,
             bookingId: booking._id
           });
-          const updatedQrCodeDataUrl = await QRCode.toDataURL(updatedQrPayload);
+          
+          // Generate QR code with better settings for email compatibility
+          let updatedQrCodeDataUrl;
+          try {
+            updatedQrCodeDataUrl = await QRCode.toDataURL(updatedQrPayload, {
+              errorCorrectionLevel: 'H',
+              type: 'image/png',
+              quality: 1.0,
+              margin: 4,
+              color: {
+                dark: '#000000',
+                light: '#FFFFFF'
+              },
+              width: 300,
+              scale: 4
+            });
+            console.log('QR code generated successfully, length:', updatedQrCodeDataUrl.length);
+          } catch (qrError) {
+            console.error('QR code generation failed:', qrError);
+            updatedQrCodeDataUrl = null;
+          }
           
           // Update booking with ticket number and new QR code
           await Booking.findByIdAndUpdate(booking._id, {
@@ -256,6 +276,13 @@ export async function GET(req) {
           
           // Send booking confirmation email after successful Google Sheets update
           try {
+            console.log('Sending email with QR code:', {
+              hasQrCode: !!updatedQrCodeDataUrl,
+              qrCodeLength: updatedQrCodeDataUrl ? updatedQrCodeDataUrl.length : 0,
+              ticketNumber,
+              transactionId
+            });
+            
             const emailResult = await sendBookingConfirmationEmail(
               {
                 userEmail,
@@ -275,8 +302,10 @@ export async function GET(req) {
               }
             );
             
+            console.log('Email sent successfully:', emailResult);
             // Don't fail the process if email fails
           } catch (emailError) {
+            console.error('Email sending failed:', emailError);
             // Don't fail the process if email fails
           }
         }
