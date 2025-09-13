@@ -17,18 +17,14 @@ export default function Navbar({ pageType = 'default' }) {
                      pathname.includes('/events/') && pathname.includes('/book') ||
                      pathname.includes('/events/') && pathname.includes('/success') ||
                      pathname.includes('/privacy-policy') || pathname.includes('/terms-and-condition') ||
-                     pathname.includes('/admin') || pathname.includes('/shop');
+                     pathname.includes('/admin') || pathname.includes('/shop') ||
+                     pathname.includes('/ticket/') || pathname.includes('/ticket-qr/');
 
   // Determine if we should hide mobile logo for legal pages
   const hideMobileLogo = pageType === 'legal' || 
                          pathname.includes('/privacy-policy') || 
                          pathname.includes('/terms-and-condition');
 
-  // Debug logging
-  console.log('Current pathname:', pathname);
-  console.log('useDarkNav:', useDarkNav);
-  console.log('hideMobileLogo:', hideMobileLogo);
-  console.log('Logo src:', useDarkNav ? "/mobileLogoBlue.png" : "/mobileLogo.png");
 
   // Function to close mobile menu
   const closeMobileMenu = () => {
@@ -37,9 +33,7 @@ export default function Navbar({ pageType = 'default' }) {
 
   // Function to handle navigation with menu close
   const handleNavigation = (href) => {
-    console.log('Closing menu and navigating to:', href);
     setIsOpen(false);
-    console.log('Menu state after setting to false:', false);
     // Small delay to ensure state updates before navigation
     setTimeout(() => {
       window.location.href = href;
@@ -48,9 +42,7 @@ export default function Navbar({ pageType = 'default' }) {
 
   // Force close menu function
   const forceCloseMenu = () => {
-    console.log('Force closing menu');
     setIsOpen(false);
-    console.log('Menu state after force close:', false);
   };
 
   // Close menu when pathname changes
@@ -139,9 +131,7 @@ export default function Navbar({ pageType = 'default' }) {
           className={`[@media(min-width:1060px)]:hidden ${useDarkNav ? '' : 'text-white'}`}
           style={useDarkNav ? { color: '#2e2e2e' } : {}}
           onClick={() => {
-            console.log('Opening menu, current state:', isOpen);
             setIsOpen(true);
-            console.log('Menu state after setting to true:', true);
           }}
         >
           <FiMenu className="w-6 h-6" />
@@ -149,7 +139,6 @@ export default function Navbar({ pageType = 'default' }) {
       </div>
 
       {/* Mobile Fullscreen Overlay Menu */}
-      {console.log('Current isOpen state:', isOpen)}
       <div 
         ref={menuRef}
         className="fixed inset-0 bg-[#231f20] flex flex-col items-end text-white font-medium text-lg z-[999] transform transition-transform duration-300 ease-in-out"

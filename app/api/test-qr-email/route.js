@@ -10,33 +10,37 @@ export async function POST(req) {
       return NextResponse.json({ error: 'Email is required' }, { status: 400 });
     }
 
-    // Test data
+    // Test data with ticket numbers
     const bookingData = {
       userEmail: email,
       guardianName: guardianName || 'Test User',
       childName: childName || 'Test Child',
-      numberOfTickets: numberOfTickets || 1,
+      numberOfTickets: numberOfTickets || 2,
       transactionId: transactionId || 'TEST-' + Date.now(),
+      ticketNumbers: [1, 2] // Test with multiple tickets
     };
 
     const eventData = {
-      title: 'Test Event - Eklektik Edit',
+      title: 'Test Event - QR Code Demo',
       date: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days from now
-      location: 'Online Meeting',
-      description: 'This is a test event to verify email functionality with eklektikEdit features.',
-      price: 150,
-      segment: 'eklektikEdit',
-      message: 'Welcome to our Eklektik Edit session! Please prepare your questions and join us for an interactive discussion.',
-      meetingLink: 'https://zoom.us/j/123456789?pwd=test123'
+      location: 'Test Location, Dubai',
+      description: 'This is a test event to verify QR code functionality in emails.',
+      price: 150
     };
 
+    console.log('Testing QR code email functionality...');
     const result = await sendBookingConfirmationEmail(bookingData, eventData);
 
     if (result.success) {
       return NextResponse.json({ 
         success: true, 
-        message: 'Test email sent successfully',
-        campaignId: result.campaignId 
+        message: 'Test email with QR code sent successfully',
+        messageId: result.messageId,
+        bookingData: {
+          transactionId: bookingData.transactionId,
+          ticketNumbers: bookingData.ticketNumbers,
+          numberOfTickets: bookingData.numberOfTickets
+        }
       });
     } else {
       return NextResponse.json({ 
@@ -46,7 +50,7 @@ export async function POST(req) {
     }
 
   } catch (error) {
-    console.error('Test email error:', error);
+    console.error('Test QR email error:', error);
     return NextResponse.json({ 
       success: false, 
       error: error.message 
@@ -56,6 +60,14 @@ export async function POST(req) {
 
 export async function GET() {
   return NextResponse.json({ 
-    message: 'Test email endpoint. Use POST with email, guardianName, childName, numberOfTickets, transactionId' 
+    message: 'Test QR code email endpoint. Use POST with email, guardianName, childName, numberOfTickets, transactionId',
+    example: {
+      email: 'test@example.com',
+      guardianName: 'John Doe',
+      childName: 'Jane Doe',
+      numberOfTickets: 2,
+      transactionId: 'TEST-123456'
+    }
   });
 }
+

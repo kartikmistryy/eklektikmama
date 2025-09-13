@@ -4,14 +4,10 @@ import Booking from "@/models/Booking";
 
 export async function GET() {
   try {
-    console.log('🧪 Testing database connection...');
-    
     // Test 1: Connect to database
     await connectDB();
-    console.log('✅ Database connected successfully');
     
     // Test 2: Try to create a test booking object
-    console.log('📝 Testing Booking model...');
     const testBooking = new Booking({
       eventId: 'test123',
       motherName: 'Test Mother',
@@ -20,11 +16,7 @@ export async function GET() {
       paymentStatus: 'pending',
       createdAt: new Date()
     });
-    console.log('✅ Booking object created successfully');
-    console.log('📋 Test booking data:', JSON.stringify(testBooking, null, 2));
-    
     // Test 3: Try to save (but don't actually save it)
-    console.log('💾 Testing save operation (will not actually save)...');
     // We'll just validate the object without saving
     
     return NextResponse.json({

@@ -42,7 +42,6 @@ export async function GET() {
 
     // Test 1: Basic connection
     try {
-      console.log('Testing basic Stripe connection...');
       const account = await stripe.accounts.retrieve();
       tests.push({
         test: 'Account Retrieval',
@@ -66,7 +65,6 @@ export async function GET() {
 
     // Test 2: Simple API call
     try {
-      console.log('Testing simple API call...');
       const balance = await stripe.balance.retrieve();
       tests.push({
         test: 'Balance Retrieval',
@@ -85,7 +83,6 @@ export async function GET() {
 
     // Test 3: Check if we can create a simple object
     try {
-      console.log('Testing object creation...');
       const customer = await stripe.customers.create({
         email: 'test@example.com',
         description: 'Test customer for connection test'
@@ -110,7 +107,6 @@ export async function GET() {
 
     // Test 4: Network connectivity test
     try {
-      console.log('Testing network connectivity...');
       const response = await fetch('https://api.stripe.com/v1/account', {
         headers: {
           'Authorization': `Bearer ${stripeSecretKey}`,

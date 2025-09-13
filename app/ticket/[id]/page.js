@@ -35,7 +35,7 @@ const TicketDisplayPage = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-[#f6f6f6] to-[#e8e8e8] flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-[#f6f6f6] to-[#e8e8e8] flex items-center justify-center mt-20">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#db4e9f] mx-auto mb-4"></div>
           <p className="text-[#093166] font-medium">Loading ticket information...</p>
@@ -71,7 +71,7 @@ const TicketDisplayPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#f6f6f6] to-[#e8e8e8] py-8">
+    <div className="min-h-screen bg-gradient-to-br from-[#f6f6f6] to-[#e8e8e8] py-8 pt-20">
       <div className="max-w-2xl mx-auto px-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}

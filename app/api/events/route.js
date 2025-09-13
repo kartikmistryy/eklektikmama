@@ -19,6 +19,8 @@ export async function POST(req) {
       price: body.price,
       location: body.location,
       segment: body.segment,
+      message: body.message,
+      meetingLink: body.meetingLink,
     });
 
     return NextResponse.json(newEvent, { status: 201 });

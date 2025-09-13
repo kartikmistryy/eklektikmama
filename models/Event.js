@@ -17,6 +17,8 @@ const EventSchema = new mongoose.Schema({
     enum: ['cinemaMorning', 'mamaBreakfast', 'mamaFit', 'eklektikEdit'],
     default: 'cinemaMorning'
   },
+  message: String, // Custom message for eklektik edit events
+  meetingLink: String, // Meeting link for eklektik edit events
   createdAt: { type: Date, default: Date.now },
 });
 

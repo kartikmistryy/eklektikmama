@@ -230,10 +230,6 @@ export async function GET(req) {
           
           // Send booking confirmation email after successful Google Sheets update
           try {
-            console.log('Sending email:', {
-              ticketNumber,
-              transactionId
-            });
             
             const emailResult = await sendBookingConfirmationEmail(
               {
@@ -253,7 +249,6 @@ export async function GET(req) {
               }
             );
             
-            console.log('Email sent successfully:', emailResult);
             // Don't fail the process if email fails
           } catch (emailError) {
             console.error('Email sending failed:', emailError);

@@ -40,8 +40,6 @@ export async function POST(req) {
       id: 'cs_test_' + Date.now()
     };
 
-    console.log('Simulating webhook with event:', testEvent.title);
-    console.log('Event segment:', mockSession.metadata.eventSegment);
 
     const transactionId = mockSession.payment_intent || mockSession.id;
     const guardianName = mockSession.metadata?.guardianName || '';
@@ -52,15 +50,6 @@ export async function POST(req) {
     const eventSegment = mockSession.metadata?.eventSegment || '';
     const additionalData = mockSession.metadata?.additionalData ? JSON.parse(mockSession.metadata.additionalData) : {};
 
-    console.log('Extracted booking data:', {
-      guardianName,
-      childName,
-      userEmail,
-      phone,
-      numberOfTickets,
-      transactionId,
-      eventSegment
-    });
 
     // QR code generation removed as requested
 
@@ -76,15 +65,11 @@ export async function POST(req) {
       additionalData
     });
 
-    console.log('Booking created in database:', booking._id);
-
     // Append to Google Sheet if configured
-    console.log('Checking Google Sheets configuration...');
     let sheetsResult = null;
     
     if (eventSegment && process.env.GOOGLE_SHEETS_CLIENT_EMAIL && process.env.GOOGLE_SHEETS_PRIVATE_KEY) {
       try {
-        console.log('Attempting to add to Google Sheets for segment:', eventSegment);
         const auth = new google.auth.JWT(
           process.env.GOOGLE_SHEETS_CLIENT_EMAIL,
           undefined,
@@ -113,7 +98,6 @@ export async function POST(req) {
             spreadsheetId = null;
         }
 
-        console.log('Using spreadsheet ID:', spreadsheetId);
 
         if (spreadsheetId) {
           // Prepare the row data based on event segment
@@ -154,7 +138,6 @@ export async function POST(req) {
             );
           }
 
-          console.log('Row data to add:', rowData);
           
           // First, get the current data to find the next available row
           const currentData = await sheets.spreadsheets.values.get({
@@ -175,12 +158,10 @@ export async function POST(req) {
             },
           });
           
-          console.log('Google Sheets response:', response.data);
           sheetsResult = {
             success: true,
             response: response.data
           };
-          console.log('Successfully added booking to Google Sheets');
         } else {
           sheetsResult = {
             success: false,
@@ -196,7 +177,6 @@ export async function POST(req) {
         };
       }
     } else {
-      console.log('Google Sheets not configured - skipping sheet update');
       sheetsResult = {
         success: false,
         error: 'Google Sheets not configured'

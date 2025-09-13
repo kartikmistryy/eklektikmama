@@ -52,7 +52,11 @@ export async function POST(req) {
       }
 
 
-      // QR code generation removed as requested
+      // Generate ticket number for each ticket
+      const ticketNumbers = [];
+      for (let i = 1; i <= numberOfTickets; i++) {
+        ticketNumbers.push(i);
+      }
 
       const booking = await Booking.create({
         eventId,
@@ -64,6 +68,7 @@ export async function POST(req) {
         transactionId,
         paymentStatus: 'paid',
         photographyConsent,
+        ticketNumbers, // Store array of ticket numbers
       });
 
 
@@ -123,7 +128,7 @@ export async function POST(req) {
                 childName,
                 numberOfTickets,
                 transactionId,
-                qrCodeDataUrl
+                ticketNumbers: ticketNumbers // Pass ticket numbers array
               },
               {
                 title: paidEvent.title,

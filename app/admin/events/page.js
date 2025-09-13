@@ -14,6 +14,8 @@ export default function AdminEventsPage() {
     price: "",
     location: "",
     segment: "cinemaMorning",
+    message: "",
+    meetingLink: "",
   });
 
   const [imageFile, setImageFile] = useState(null);
@@ -210,6 +212,8 @@ export default function AdminEventsPage() {
         price: "",
         location: "",
         segment: "cinemaMorning",
+        message: "",
+        meetingLink: "",
       });
       setImageFile(null);
       setImagePreview("");
@@ -270,6 +274,34 @@ export default function AdminEventsPage() {
             className="w-full border border-gray-300 rounded-md p-3 focus:ring-2 focus:ring-blue-500 focus:border-transparent" 
           />
         </div>
+
+        {/* Eklektik Edit specific fields */}
+        {form.segment === "eklektikEdit" && (
+          <>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Custom Message</label>
+              <textarea 
+                name="message" 
+                value={form.message} 
+                onChange={handleChange} 
+                placeholder="Enter a custom message for participants (optional)" 
+                rows={3}
+                className="w-full border border-gray-300 rounded-md p-3 focus:ring-2 focus:ring-blue-500 focus:border-transparent" 
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Meeting Link</label>
+              <input 
+                name="meetingLink" 
+                value={form.meetingLink} 
+                onChange={handleChange} 
+                placeholder="Enter meeting link (e.g., Zoom, Google Meet, etc.)" 
+                className="w-full border border-gray-300 rounded-md p-3 focus:ring-2 focus:ring-blue-500 focus:border-transparent" 
+              />
+            </div>
+          </>
+        )}
 
         {/* Image Upload Section */}
         <div>

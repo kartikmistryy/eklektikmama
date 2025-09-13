@@ -27,7 +27,6 @@ export default function EventsCalendar({ events = [] }) {
   }, []);
 
   useEffect(() => {
-    console.log('EventsCalendar received events:', events);
     // Process events when they change
     if (events && events.length > 0) {
       const processed = events.map((event) => {
@@ -35,15 +34,6 @@ export default function EventsCalendar({ events = [] }) {
         const startDate = event.originalStart ? new Date(event.originalStart) : new Date(event.start);
         const endDate = event.originalEnd ? new Date(event.originalEnd) : new Date(event.end || event.start);
         
-        console.log('Processing event in EventsCalendar:', {
-          title: event.title,
-          originalStart: event.originalStart,
-          originalEnd: event.originalEnd,
-          startDate: startDate,
-          endDate: endDate,
-          startLocalTime: startDate.toLocaleTimeString(),
-          timezoneOffset: startDate.getTimezoneOffset()
-        });
         
         return {
           id: event.id || event._id || 'unknown',
@@ -61,7 +51,6 @@ export default function EventsCalendar({ events = [] }) {
           originalEnd: event.originalEnd
         };
       });
-      console.log('Processed events:', processed);
       setLocalEvents(processed);
       
       // Set current date to the first event's month if it's in the future
@@ -69,12 +58,10 @@ export default function EventsCalendar({ events = [] }) {
         const firstEventDate = new Date(processed[0].start);
         const now = new Date();
         if (firstEventDate > now) {
-          console.log('Setting current date to first event month:', firstEventDate);
           setCurrentDate(firstEventDate);
         }
       }
     } else {
-      console.log('No events provided or empty array');
       setLocalEvents([]);
     }
   }, [events]);
@@ -132,21 +119,18 @@ export default function EventsCalendar({ events = [] }) {
   // Custom toolbar to show month navigation
   const CustomToolbar = (toolbar) => {
     const goToBack = () => {
-      console.log('Going to previous month');
       const newDate = moment(currentDate).subtract(1, 'month').toDate();
       setCurrentDate(newDate);
       toolbar.onNavigate('PREV');
     };
 
     const goToNext = () => {
-      console.log('Going to next month');
       const newDate = moment(currentDate).add(1, 'month').toDate();
       setCurrentDate(newDate);
       toolbar.onNavigate('NEXT');
     };
 
     const goToCurrent = () => {
-      console.log('Going to current month');
       const newDate = new Date();
       setCurrentDate(newDate);
       toolbar.onNavigate('TODAY');
@@ -243,7 +227,7 @@ export default function EventsCalendar({ events = [] }) {
                   <a
                     href={`/events/${event.id}`}
                     className="text-[#DB4E9F] text-sm font-semibold hover:underline"
-                    onClick={() => console.log('Event link clicked:', { eventId: event.id, eventTitle: event.title, fullEvent: event })}
+                    onClick={() => {}}
                   >
                     Know more 
                   </a>
@@ -337,7 +321,6 @@ export default function EventsCalendar({ events = [] }) {
                     setSelectedEvent(found || null);
                   }}
                   onNavigate={(newDate, view, action) => {
-                    console.log('Calendar navigation:', { newDate, view, action });
                     setCurrentDate(newDate);
                   }}
                 />
