@@ -2,6 +2,7 @@ import "./globals.css";
 import { Anton, Antonio, Poppins, Quicksand } from "next/font/google";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
+import GoogleAnalytics from "../components/GoogleAnalytics";
 
 
 const anton = Anton({ subsets: ["latin"], weight: "400", variable: "--font-anton" });
@@ -61,6 +62,7 @@ export default function RootLayout({ children }) {
         <meta httpEquiv="X-Content-Type-Options" content="nosniff" />
       </head>
       <body>
+      <GoogleAnalytics />
       <Navbar/>
         {children}
       <Footer/>

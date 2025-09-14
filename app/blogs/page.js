@@ -6,6 +6,41 @@ import CategoriesSection from "./components/CategoriesSection";
 import AllStoriesSection from "./components/AllStoriesSection";
 import Pagination from "./components/Pagination";
 
+export const metadata = {
+  title: "Honest Motherhood Blog | Unfiltered AF",
+  description:
+    "Unfiltered, honest stories about motherhood. Read raw experiences, parenting challenges, and rebel mum voices from Abu Dhabi & UAE.",
+  keywords: [
+    "honest motherhood blog", "unfiltered mom blog", "raw mum blog abu dhabi",
+    "rebel mum blog", "motherhood mental health uae", "abu dhabi mom voices",
+    "raw motherhood stories abu dhabi", "best mum blog abu dhabi"
+  ],
+  openGraph: {
+    title: "Honest Motherhood Blog | Unfiltered AF",
+    description:
+      "Unfiltered, honest stories about motherhood. Read raw experiences, parenting challenges, and rebel mum voices from Abu Dhabi & UAE.",
+    url: "https://eklektikmama.com/blogs",
+    siteName: "Eklektik Mama",
+    images: [
+      {
+        url: "/og/blog.jpg",
+        width: 1200,
+        height: 630,
+        alt: "Eklektik Mama Blog",
+      },
+    ],
+    locale: "en_US",
+    type: "article",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Honest Motherhood Blog | Unfiltered AF",
+    description:
+      "Unfiltered, honest stories about motherhood. Read raw experiences, parenting challenges, and rebel mum voices from Abu Dhabi & UAE.",
+    images: ["/og/blog.jpg"],
+  },
+};
+
 // Make this a server component to fetch data
 async function getBlogData(searchParams) {
   try {
