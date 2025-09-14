@@ -42,8 +42,8 @@ export default async function TicketQRPage({ params, searchParams }) {
         </p>
       </div>
       
-      {/* QR Code Section */}
-      {qrCodeDataUrl && (
+      {/* QR Code Section - Only show for non-Eklektik Edit events */}
+      {qrCodeDataUrl && eventSegment !== 'eklektikEdit' && (
         <div style={{ 
           background: 'white', 
           padding: '30px', 
@@ -149,10 +149,22 @@ export default async function TicketQRPage({ params, searchParams }) {
       }}>
         <h4 style={{ margin: '0 0 10px 0', color: '#155724' }}>📱 How to Use Your Ticket</h4>
         <p style={{ margin: 0, fontSize: '14px', color: '#155724' }}>
-          <strong>Option 1:</strong> Show the QR code above at the entrance<br/>
-          <strong>Option 2:</strong> Show your booking ID: <strong>{transactionId}</strong><br/>
-          {ticketNumber && <><strong>Option 3:</strong> Show your ticket number: <strong>#{ticketNumber}</strong><br/></>}
-          <strong>Option 4:</strong> Show your email address at the entrance
+          {eventSegment === 'eklektikEdit' ? (
+            <>
+              <strong>For Eklektik Edit Events:</strong><br/>
+              <strong>Option 1:</strong> Use the meeting link above to join the session<br/>
+              <strong>Option 2:</strong> Show your booking ID: <strong>{transactionId}</strong><br/>
+              {ticketNumber && <><strong>Option 3:</strong> Show your ticket number: <strong>#{ticketNumber}</strong><br/></>}
+              <strong>Option 4:</strong> Show your email address
+            </>
+          ) : (
+            <>
+              <strong>Option 1:</strong> Show the QR code above at the entrance<br/>
+              <strong>Option 2:</strong> Show your booking ID: <strong>{transactionId}</strong><br/>
+              {ticketNumber && <><strong>Option 3:</strong> Show your ticket number: <strong>#{ticketNumber}</strong><br/></>}
+              <strong>Option 4:</strong> Show your email address at the entrance
+            </>
+          )}
         </p>
       </div>
       
