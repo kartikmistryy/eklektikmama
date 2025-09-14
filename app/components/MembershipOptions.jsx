@@ -3,14 +3,22 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import { BsArrowDown, BsArrowRight } from "react-icons/bs";
+import { useRouter } from "next/navigation";
 
 export default function MembershipOptions() {
   const [openIndex, setOpenIndex] = useState(null);
+  const router = useRouter();
+
+  const handleJoinNow = (membershipType) => {
+    // Navigate to membership signup page with the selected plan
+    router.push(`/eklektikmamaMembership?plan=${membershipType}`);
+  };
 
   const memberships = [
     {
       title: "JOIN MONTHLY",
       price: "AED 50",
+      membershipType: "monthly",
       perks: [
         {
           icon: "/membership/whiteIcons/1.webp",
@@ -37,6 +45,7 @@ export default function MembershipOptions() {
     {
       title: "JOIN YEARLY",
       price: "AED 450",
+      membershipType: "annual",
       perks: [
         {
           icon: "/membership/whiteIcons/1.webp",
@@ -152,8 +161,11 @@ export default function MembershipOptions() {
                     </li>
                   ))}
                 </ul>
-                <button className="mt-6 flex items-center border border-white rounded-full px-6 py-1 text-white uppercase opacity-75 cursor-not-allowed ml-auto">
-                  coming soon
+                <button 
+                  onClick={() => handleJoinNow(plan.membershipType)}
+                  className="mt-6 flex items-center border border-white rounded-full px-6 py-2 text-white uppercase hover:bg-white hover:text-[#db4e9f] transition-colors duration-300 ml-auto"
+                >
+                  JOIN NOW
                 </button>
               </motion.div>
             )}

@@ -3,6 +3,8 @@ import { headers } from "next/headers";
 import Stripe from "stripe";
 import { connectDB } from "@/lib/db";
 import Event from "@/models/Event";
+import Membership from "@/models/Membership";
+import { updateMemberSavings } from "@/lib/googleSheets";
 
 export async function POST(req) {
   try {
@@ -42,6 +44,28 @@ export async function POST(req) {
       return NextResponse.json({ error: 'Event price is invalid' }, { status: 400 });
     }
 
+    // Check if user is a member and calculate discount
+    let memberDiscount = 0;
+    let memberSavings = 0;
+    let isMember = false;
+    
+    try {
+      const membership = await Membership.findOne({
+        email: email.toLowerCase(),
+        status: { $in: ['active', 'past_due'] }
+      });
+
+      if (membership && membership.isActive()) {
+        isMember = true;
+        memberDiscount = membership.discountPercentage || 10; // 10% default discount
+        const originalTotal = event.price * numberOfTickets;
+        memberSavings = Math.round((originalTotal * memberDiscount / 100) * 100) / 100; // Round to 2 decimal places
+      }
+    } catch (membershipError) {
+      console.error('Error checking membership:', membershipError);
+      // Continue without discount if membership check fails
+    }
+
     // Check Stripe configuration
     if (!process.env.STRIPE_SECRET_KEY) {
       return NextResponse.json({ error: 'Stripe not configured' }, { status: 500 });
@@ -55,11 +79,15 @@ export async function POST(req) {
     const protocol = (hdrs.get('x-forwarded-proto') || 'http') + '://';
     const origin = process.env.NEXT_PUBLIC_BASE_URL || (host ? `${protocol}${host}` : 'http://localhost:3000');
     
+    // Calculate final price after member discount
+    const originalPrice = event.price;
+    const discountedPrice = isMember ? originalPrice * (1 - memberDiscount / 100) : originalPrice;
+    
     const lineItems = [
       {
         price_data: {
           currency: 'aed',
-          unit_amount: Math.max(0, Math.round((event.price || 0) * 100)),
+          unit_amount: Math.max(0, Math.round(discountedPrice * 100)),
           product_data: {
             name: event.title,
             images: event.coverImage ? [event.coverImage] : undefined,
@@ -68,6 +96,20 @@ export async function POST(req) {
         quantity: parseInt(numberOfTickets) || 1,
       },
     ];
+
+    // Add discount line item if member
+    if (isMember && memberSavings > 0) {
+      lineItems.push({
+        price_data: {
+          currency: 'aed',
+          unit_amount: -Math.round(memberSavings * 100), // Negative amount for discount
+          product_data: {
+            name: `Member Discount (${memberDiscount}%)`,
+          },
+        },
+        quantity: 1,
+      });
+    }
     
     const sessionData = {
       mode: 'payment',
@@ -89,6 +131,11 @@ export async function POST(req) {
         email: email || '',
         phone: phone || '',
         numberOfTickets: String(numberOfTickets || 1),
+        isMember: isMember ? 'true' : 'false',
+        memberDiscount: String(memberDiscount),
+        memberSavings: String(memberSavings),
+        originalPrice: String(originalPrice),
+        finalPrice: String(discountedPrice),
         choiceI: (otherFormData.choiceI || '').substring(0, 100),
         choiceII: (otherFormData.choiceII || '').substring(0, 100),
         choiceIII: (otherFormData.choiceIII || '').substring(0, 100),

@@ -3,8 +3,10 @@ import Stripe from "stripe";
 import { connectDB } from "@/lib/db";
 import Event from "@/models/Event";
 import Booking from "@/models/Booking";
+import Membership from "@/models/Membership";
 import { google } from "googleapis";
 import { sendBookingConfirmationEmail } from "@/lib/mailchimp";
+import { updateMemberSavings } from "@/lib/googleSheets";
 
 /**
  * Google Sheets Column Structure:
@@ -85,6 +87,28 @@ export async function GET(req) {
       photographyConsent,
       additionalData
     });
+
+    // Track member savings if applicable
+    const isMember = session.metadata.isMember === 'true';
+    const memberSavings = parseFloat(session.metadata.memberSavings || '0');
+    
+    if (isMember && memberSavings > 0) {
+      try {
+        // Update member's total savings in database
+        await Membership.findOneAndUpdate(
+          { email: userEmail.toLowerCase() },
+          { $inc: { totalSavings: memberSavings } }
+        );
+        
+        // Update member's total savings in Google Sheets
+        await updateMemberSavings(userEmail, memberSavings);
+        
+        console.log(`Member ${userEmail} saved ${memberSavings} AED on event booking`);
+      } catch (savingsError) {
+        console.error('Error tracking member savings:', savingsError);
+        // Don't fail the process if savings tracking fails
+      }
+    }
 
     // Save to Google Sheets based on event segment
     let sheetsResult = { success: false, error: 'Not configured' };
