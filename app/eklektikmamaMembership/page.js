@@ -200,7 +200,7 @@ function MembershipContent() {
           >
             <p className="font-quicksand font-semibold text-base uppercase">Membership</p>
             <h2 className="md:text-[80px] text-5xl uppercase font-antonio font-medium tracking-tighter leading-[100%]">
-              <b className="font-anton tracking-normal font-semibold">AED 50</b>
+              <b className="font-anton tracking-normal font-semibold">AED 49</b>
               / Month.
               <br />
               EARLY. CHEAPER.<b className="font-bold"> LOUDER</b>
@@ -460,7 +460,7 @@ function MembershipContent() {
                   JOIN EKLEKTIK AF
                 </h2>
                 <p className="text-lg text-[#093166] font-quicksand mt-2">
-                  {formData.membershipType === 'monthly' ? 'Monthly Plan - AED 3.6/month' : 'Annual Plan - AED 36/year'}
+                  {formData.membershipType === 'monthly' ? 'Monthly Plan - AED 49/month' : 'Annual Plan - AED 450/year'}
                 </p>
               </div>
               <button

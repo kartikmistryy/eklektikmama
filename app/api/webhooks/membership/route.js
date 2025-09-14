@@ -86,29 +86,43 @@ async function handleCheckoutCompleted(session) {
     
     // Check if payment was successful
     if (session.payment_status !== 'paid') {
-      console.log('Payment not successful, skipping membership activation');
+      console.log('Payment not successful, skipping membership creation');
       return;
     }
 
-    // Get membership from metadata
-    const membershipId = session.metadata?.membershipId;
-    if (!membershipId) {
-      console.log('No membership ID in session metadata');
+    // Get membership data from session metadata
+    const { membershipType, email, firstName, lastName, phone } = session.metadata;
+    
+    if (!membershipType || !email || !firstName || !lastName) {
+      console.log('Missing required membership data in session metadata');
       return;
     }
 
-    const membership = await Membership.findById(membershipId);
-    if (!membership) {
-      console.log('Membership not found:', membershipId);
+    // Check if membership already exists (prevent duplicates)
+    const existingMembership = await Membership.findOne({
+      email: email,
+      status: { $in: ['active', 'past_due'] }
+    });
+
+    if (existingMembership) {
+      console.log('Active membership already exists for:', email);
       return;
     }
 
-    // Update membership status to active
-    membership.status = 'active';
-    membership.currentPeriodStart = new Date();
+    // Create new membership record
+    const membership = new Membership({
+      email,
+      firstName,
+      lastName,
+      phone,
+      membershipType,
+      stripeCustomerId: session.customer,
+      status: 'active',
+      currentPeriodStart: new Date()
+    });
     
     // Set period end based on membership type
-    if (membership.membershipType === 'monthly') {
+    if (membershipType === 'monthly') {
       membership.currentPeriodEnd = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000); // 30 days
       membership.nextPaymentDate = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
     } else {
@@ -118,18 +132,18 @@ async function handleCheckoutCompleted(session) {
 
     await membership.save();
 
-    // Update Google Sheets
-    await updateMemberInSheet(membership.email, {
-      'Status': 'active',
-      'Current Period Start': membership.currentPeriodStart.toISOString().split('T')[0],
-      'Current Period End': membership.currentPeriodEnd.toISOString().split('T')[0],
-      'Next Payment Date': membership.nextPaymentDate.toISOString().split('T')[0]
-    });
+    // Add member to Google Sheets
+    await addMemberToSheet(membership);
 
     // Send welcome email
-    await sendMemberWelcomeEmail(membership.email, membership.firstName, membership.membershipType);
+    await sendMemberWelcomeEmail({
+      email: membership.email,
+      firstName: membership.firstName,
+      lastName: membership.lastName,
+      membershipType: membership.membershipType
+    });
 
-    console.log('Membership activated successfully:', membership.email);
+    console.log('Membership created and activated successfully:', membership.email);
     
   } catch (error) {
     console.error('Error handling checkout completion:', error);

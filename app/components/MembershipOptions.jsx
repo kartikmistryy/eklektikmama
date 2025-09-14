@@ -17,7 +17,7 @@ export default function MembershipOptions() {
   const memberships = [
     {
       title: "JOIN MONTHLY",
-      price: "AED 3.6",
+      price: "AED 49",
       membershipType: "monthly",
       perks: [
         {
@@ -44,7 +44,7 @@ export default function MembershipOptions() {
     },
     {
       title: "JOIN YEARLY",
-      price: "AED 36",
+      price: "AED 450",
       membershipType: "annual",
       perks: [
         {
@@ -84,7 +84,7 @@ export default function MembershipOptions() {
     {
       question: "How much does it cost?",
       answer:
-        "AED 50/month or AED 450/year. Yearly memberships save you AED 150.",
+        "AED 49/month or AED 450/year. Yearly memberships save you AED 138.",
     },
     {
       question: "How do I get my discounts?",

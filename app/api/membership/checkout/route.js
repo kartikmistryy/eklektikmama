@@ -86,25 +86,9 @@ export async function POST(req) {
       });
     }
 
-    // For Stripe Checkout, we don't create the subscription upfront
-    // The subscription will be created after successful payment via webhook
-    // We'll just create a pending membership record
-    const now = new Date();
-    
-    // Create pending membership record in database
-    // Required fields will be set via webhook after successful payment
-    const membership = new Membership({
-      email,
-      firstName,
-      lastName,
-      phone,
-      membershipType,
-      stripeCustomerId: customer.id,
-      stripePriceId: MEMBERSHIP_PRICES[membershipType].priceId,
-      status: 'pending' // Will be updated to 'active' via webhook
-    });
-
-    await membership.save();
+    // For Stripe Checkout, we don't create the membership record upfront
+    // The membership will be created after successful payment via webhook
+    // This prevents blocking users from retrying if payment fails
 
     // Create Stripe checkout session for payment (compatible with Stripe Link)
     const session = await stripe.checkout.sessions.create({
@@ -123,22 +107,20 @@ export async function POST(req) {
           quantity: 1,
         },
       ],
-      success_url: `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/membership-success?session_id={CHECKOUT_SESSION_ID}&membership_id=${membership._id}`,
+      success_url: `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/membership-success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/eklektikmamaMembership?canceled=true`,
       metadata: {
         membershipType,
         email,
         firstName,
         lastName,
-        phone,
-        membershipId: membership._id.toString()
+        phone
       }
     });
 
     return NextResponse.json({
       id: session.id,
-      url: session.url,
-      membershipId: membership._id.toString() // Include membership ID for fallback
+      url: session.url
     });
 
   } catch (error) {

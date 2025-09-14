@@ -14,21 +14,20 @@ function MembershipSuccessContent() {
     const verifyPayment = async () => {
       try {
         const sessionId = searchParams.get('session_id');
-        const membershipId = searchParams.get('membership_id');
         
-        if (!sessionId || !membershipId) {
+        if (!sessionId) {
           setError('Missing payment information');
           setLoading(false);
           return;
         }
 
-        // Verify payment and activate membership
+        // Verify payment and get membership details
         const response = await fetch('/api/membership/verify-payment', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ sessionId, membershipId }),
+          body: JSON.stringify({ sessionId }),
         });
 
         const data = await response.json();
