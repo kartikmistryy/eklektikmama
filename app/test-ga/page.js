@@ -1,20 +1,11 @@
 'use client';
 
 import { trackEvent, GA_TRACKING_ID } from '../../lib/gtag';
-import { useEffect } from 'react';
 
 export default function TestGAPage() {
-  useEffect(() => {
-    console.log('Test GA Page loaded');
-    console.log('GA_TRACKING_ID from gtag:', GA_TRACKING_ID);
-    console.log('window.gtag available:', typeof window !== 'undefined' && typeof window.gtag !== 'undefined');
-    console.log('window.dataLayer available:', typeof window !== 'undefined' && typeof window.dataLayer !== 'undefined');
-  }, []);
-
   const handleTestEvent = () => {
-    console.log('Testing button click event...');
     trackEvent.buttonClick('Test Button', 'GA Test Page');
-    alert('Event tracked! Check your Google Analytics dashboard and browser console.');
+    alert('Event tracked! Check your Google Analytics dashboard.');
   };
 
   const handleTestFormSubmit = () => {
@@ -42,21 +33,7 @@ export default function TestGAPage() {
             <div className="text-blue-800 space-y-2">
               <p><strong>GA Tracking ID:</strong> <code className="bg-blue-100 px-1 rounded">{GA_TRACKING_ID || 'Not set'}</code></p>
               <p><strong>Environment:</strong> <code className="bg-blue-100 px-1 rounded">{process.env.NODE_ENV}</code></p>
-              <p><strong>Check browser console for debug logs</strong></p>
             </div>
-          </div>
-
-          <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-            <h2 className="text-lg font-semibold text-green-900 mb-2">
-              Debugging Steps
-            </h2>
-            <ol className="list-decimal list-inside text-green-800 space-y-1">
-              <li>Open browser Developer Tools (F12)</li>
-              <li>Check the <strong>Console</strong> tab for GA debug messages</li>
-              <li>Check the <strong>Network</strong> tab for requests to googletagmanager.com</li>
-              <li>Look for any error messages in red</li>
-              <li>Test the buttons below and watch console output</li>
-            </ol>
           </div>
 
           <div className="space-y-4">
@@ -96,19 +73,6 @@ export default function TestGAPage() {
               <li>Click the test buttons above</li>
               <li>You should see events appear in the realtime report</li>
               <li>Check <strong>Events</strong> section for custom events</li>
-            </ul>
-          </div>
-
-          <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">
-              Browser Developer Tools
-            </h3>
-            <p className="text-gray-700">
-              Open Developer Tools (F12) and check the <strong>Network</strong> tab for requests to:
-            </p>
-            <ul className="list-disc list-inside text-gray-600 mt-2 space-y-1">
-              <li><code>googletagmanager.com</code></li>
-              <li><code>google-analytics.com</code></li>
             </ul>
           </div>
         </div>
