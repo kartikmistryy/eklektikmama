@@ -9,8 +9,18 @@ export async function GET(req, { params }) {
     
     const bookingId = params.id;
     
-    // Find the booking by ID
-    const booking = await Booking.findById(bookingId).populate('eventId');
+    // Try to find booking by MongoDB ObjectId first, then by transactionId
+    let booking;
+    
+    // Check if it's a valid MongoDB ObjectId format
+    if (bookingId.match(/^[0-9a-fA-F]{24}$/)) {
+      booking = await Booking.findById(bookingId).populate('eventId');
+    }
+    
+    // If not found by ObjectId, try by transactionId (Stripe payment intent ID)
+    if (!booking) {
+      booking = await Booking.findOne({ transactionId: bookingId }).populate('eventId');
+    }
     
     if (!booking) {
       return NextResponse.json({

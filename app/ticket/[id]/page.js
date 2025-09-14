@@ -71,7 +71,7 @@ const TicketDisplayPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#f6f6f6] to-[#e8e8e8] py-8 pt-20">
+    <div className="min-h-screen bg-gradient-to-br from-[#f6f6f6] to-[#e8e8e8] py-8 pt-[150px]">
       <div className="max-w-2xl mx-auto px-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
