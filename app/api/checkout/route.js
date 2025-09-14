@@ -83,6 +83,15 @@ export async function POST(req) {
     const originalPrice = event.price;
     const discountedPrice = isMember ? originalPrice * (1 - memberDiscount / 100) : originalPrice;
     
+    // Debug logging
+    console.log('Event checkout debug:', {
+      originalPrice,
+      discountedPrice,
+      isMember,
+      memberDiscount,
+      memberSavings: isMember ? originalPrice - discountedPrice : 0
+    });
+    
     const lineItems = [
       {
         price_data: {
@@ -99,16 +108,19 @@ export async function POST(req) {
 
     // Add discount line item if member
     if (isMember && memberSavings > 0) {
-      lineItems.push({
-        price_data: {
-          currency: 'usd',
-          unit_amount: -Math.round(memberSavings * 100), // Negative amount for discount
-          product_data: {
-            name: `Member Discount (${memberDiscount}%)`,
+      const discountAmount = Math.abs(Math.round(memberSavings * 100)); // Ensure positive integer
+      if (discountAmount > 0) {
+        lineItems.push({
+          price_data: {
+            currency: 'usd',
+            unit_amount: -discountAmount, // Negative amount for discount
+            product_data: {
+              name: `Member Discount (${memberDiscount}%)`,
+            },
           },
-        },
-        quantity: 1,
-      });
+          quantity: 1,
+        });
+      }
     }
     
     const sessionData = {
