@@ -129,8 +129,10 @@ export async function POST(req) {
       // Remove payment_method_types
       // payment_method_types: ['card'],
     
-      // Use your PMC config instead
-      payment_method_configuration: 'pmc_1Q1LozRr8s6DbC7qUqs8HGlx',
+      // Use PMC config only in live mode (test mode uses defaults)
+      ...(process.env.STRIPE_SECRET_KEY?.startsWith('sk_live_') ? {
+        payment_method_configuration: 'pmc_1Q1LozRr8s6DbC7qUqs8HGlx'
+      } : {}),
     
       metadata: {
         eventId: String(event._id),
