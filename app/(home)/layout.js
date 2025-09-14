@@ -7,6 +7,9 @@ export const metadata = {
     "modern motherhood community", "mum support group abu dhabi", "parenting community uae",
     "best mum group abu dhabi", "how to meet other moms in abu dhabi"
   ],
+  alternates: {
+    canonical: "https://eklektikmama.com"
+  },
   openGraph: {
     title: "Abu Dhabi Mum Community | Eklektik Mama",
     description:

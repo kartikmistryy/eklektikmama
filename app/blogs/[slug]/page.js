@@ -183,6 +183,9 @@ export async function generateMetadata({ params }) {
   return {
     title: post.fields.title,
     description: post.fields.excerpt || post.fields.title,
+    alternates: {
+      canonical: `https://eklektikmama.com/blogs/${params.slug}`
+    },
     openGraph: {
       title: post.fields.title,
       description: post.fields.excerpt || post.fields.title,

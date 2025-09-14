@@ -7,6 +7,9 @@ export const metadata = {
     "brand activations for mums uae", "sponsor mummy events abu dhabi", "partner activations abu dhabi",
     "past mum events abu dhabi", "best family brands abu dhabi"
   ],
+  alternates: {
+    canonical: "https://eklektikmama.com/whatwedo"
+  },
   openGraph: {
     title: "Abu Dhabi Mum Event Highlights | Eklektik Mama",
     description:

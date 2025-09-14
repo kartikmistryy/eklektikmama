@@ -6,6 +6,9 @@ export const metadata = {
     "eklektik mama partnership", "brand collaboration abu dhabi", "sponsor mum events uae",
     "mum community brand partnerships", "family brand activations abu dhabi", "partnership with eklektik mama"
   ],
+  alternates: {
+    canonical: "https://eklektikmama.com/partnershipprogram"
+  },
   openGraph: {
     title: "Partner With Eklektik Mama | Brand Collaborations UAE",
     description:

@@ -15,6 +15,9 @@ export const metadata = {
     "rebel mum blog", "motherhood mental health uae", "abu dhabi mom voices",
     "raw motherhood stories abu dhabi", "best mum blog abu dhabi"
   ],
+  alternates: {
+    canonical: "https://eklektikmama.com/blogs"
+  },
   openGraph: {
     title: "Honest Motherhood Blog | Unfiltered AF",
     description:

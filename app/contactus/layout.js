@@ -6,6 +6,9 @@ export const metadata = {
     "contact eklektik mama", "abu dhabi mum community contact", "mom group uae contact",
     "connect with mums abu dhabi", "motherhood support abu dhabi", "eklektik mama inquiries"
   ],
+  alternates: {
+    canonical: "https://eklektikmama.com/contactus"
+  },
   openGraph: {
     title: "Contact Eklektik Mama | Abu Dhabi Mum Community",
     description:

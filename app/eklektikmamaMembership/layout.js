@@ -7,6 +7,9 @@ export const metadata = {
     "motherhood membership uae", "mum community subscription uae", "mom network abu dhabi",
     "how to join a mums whatsapp group in abu dhabi", "exclusive moms membership abu dhabi"
   ],
+  alternates: {
+    canonical: "https://eklektikmama.com/eklektikmamaMembership"
+  },
   openGraph: {
     title: "Abu Dhabi Mum Membership | Eklektik AF",
     description:

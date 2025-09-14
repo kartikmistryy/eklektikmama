@@ -1,0 +1,20 @@
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://eklektikmama.com/sitemap.xml
+
+# Disallow admin and debug pages
+Disallow: /admin/
+Disallow: /api/
+Disallow: /test-*
+Disallow: /debug-*
+
+# Allow important pages
+Allow: /
+Allow: /events
+Allow: /whatwedo
+Allow: /blogs
+Allow: /contactus
+Allow: /partnershipprogram
+Allow: /eklektikmamaMembership

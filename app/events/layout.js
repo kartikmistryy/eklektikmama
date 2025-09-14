@@ -7,6 +7,9 @@ export const metadata = {
     "mummy coffee mornings abu dhabi", "mom coffee mornings abu dhabi", "playdate events uae",
     "best mums events abu dhabi", "where to find moms events abu dhabi"
   ],
+  alternates: {
+    canonical: "https://eklektikmama.com/events"
+  },
   openGraph: {
     title: "Abu Dhabi Mum Events | BYOBaby™ Gatherings",
     description:
