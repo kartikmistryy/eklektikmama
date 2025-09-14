@@ -92,36 +92,33 @@ export async function POST(req) {
       memberSavings: isMember ? originalPrice - discountedPrice : 0
     });
     
+    // Create line item with discounted price (simpler approach)
+    const finalPrice = Math.max(0, Math.round(discountedPrice * 100));
+    const productName = isMember ? 
+      `${event.title} (Member Price - ${memberDiscount}% off)` : 
+      event.title;
+    
+    console.log('Final pricing:', {
+      originalPrice,
+      discountedPrice,
+      finalPrice,
+      isMember,
+      memberDiscount
+    });
+    
     const lineItems = [
       {
         price_data: {
           currency: 'usd',
-          unit_amount: Math.max(0, Math.round(discountedPrice * 100)),
+          unit_amount: finalPrice,
           product_data: {
-            name: event.title,
+            name: productName,
             images: event.coverImage ? [event.coverImage] : undefined,
           },
         },
         quantity: parseInt(numberOfTickets) || 1,
       },
     ];
-
-    // Add discount line item if member
-    if (isMember && memberSavings > 0) {
-      const discountAmount = Math.abs(Math.round(memberSavings * 100)); // Ensure positive integer
-      if (discountAmount > 0) {
-        lineItems.push({
-          price_data: {
-            currency: 'usd',
-            unit_amount: -discountAmount, // Negative amount for discount
-            product_data: {
-              name: `Member Discount (${memberDiscount}%)`,
-            },
-          },
-          quantity: 1,
-        });
-      }
-    }
     
     const sessionData = {
       mode: 'payment',
