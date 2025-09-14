@@ -245,7 +245,10 @@ export async function GET(req) {
                 date: event.date,
                 location: event.location,
                 description: event.description,
-                price: event.price
+                price: event.price,
+                segment: event.segment,
+                message: event.message,
+                meetingLink: event.meetingLink
               }
             );
             
