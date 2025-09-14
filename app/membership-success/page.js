@@ -1,9 +1,9 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 
-export default function MembershipSuccess() {
+function MembershipSuccessContent() {
   const [loading, setLoading] = useState(true);
   const [result, setResult] = useState(null);
   const [error, setError] = useState('');
@@ -127,5 +127,26 @@ export default function MembershipSuccess() {
         </div>
       </div>
     </div>
+  );
+}
+
+// Loading component for Suspense fallback
+function MembershipSuccessLoading() {
+  return (
+    <div className="min-h-screen bg-white flex items-center justify-center">
+      <div className="text-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#db4e9f] mx-auto mb-4"></div>
+        <p className="text-[#093166] font-quicksand">Loading...</p>
+      </div>
+    </div>
+  );
+}
+
+// Main export with Suspense wrapper
+export default function MembershipSuccess() {
+  return (
+    <Suspense fallback={<MembershipSuccessLoading />}>
+      <MembershipSuccessContent />
+    </Suspense>
   );
 }
