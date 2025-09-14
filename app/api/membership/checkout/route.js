@@ -106,9 +106,9 @@ export async function POST(req) {
 
     await membership.save();
 
-    // Create Stripe checkout session for subscription (proper recurring billing)
+    // Create Stripe checkout session for payment (compatible with Stripe Link)
     const session = await stripe.checkout.sessions.create({
-      mode: 'subscription',
+      mode: 'payment',
       customer: customer.id,
       line_items: [
         {
@@ -118,10 +118,7 @@ export async function POST(req) {
               name: `Eklektik AF ${membershipType === 'monthly' ? 'Monthly' : 'Annual'} Membership`,
               description: `${membershipType === 'monthly' ? 'Monthly' : 'Annual'} membership with 10% event discounts`
             },
-            unit_amount: MEMBERSHIP_PRICES[membershipType].amount * 100, // Convert to fils
-            recurring: {
-              interval: MEMBERSHIP_PRICES[membershipType].interval
-            }
+            unit_amount: MEMBERSHIP_PRICES[membershipType].amount * 100 // Convert to fils
           },
           quantity: 1,
         },

@@ -28,6 +28,10 @@ export async function POST(req) {
     await connectDB();
 
     switch (event.type) {
+      case 'checkout.session.completed':
+        await handleCheckoutCompleted(event.data.object);
+        break;
+      
       case 'customer.subscription.created':
         await handleSubscriptionCreated(event.data.object);
         break;
