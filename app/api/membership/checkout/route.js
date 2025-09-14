@@ -123,7 +123,7 @@ export async function POST(req) {
           quantity: 1,
         },
       ],
-      success_url: `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/member-dashboard?success=true`,
+      success_url: `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/membership-success?session_id={CHECKOUT_SESSION_ID}&membership_id=${membership._id}`,
       cancel_url: `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/eklektikmamaMembership?canceled=true`,
       metadata: {
         membershipType,
@@ -137,7 +137,8 @@ export async function POST(req) {
 
     return NextResponse.json({
       id: session.id,
-      url: session.url
+      url: session.url,
+      membershipId: membership._id.toString() // Include membership ID for fallback
     });
 
   } catch (error) {
