@@ -225,7 +225,7 @@ export default function MemberDashboard() {
             <div className="bg-blue-50 rounded-lg p-4 mb-6">
               <h3 className="text-lg font-semibold text-gray-900 mb-2">Your Savings</h3>
               <p className="text-blue-700">
-                You've saved <span className="font-bold">{membership.totalSavings || 0} AED</span> so far with your member discounts!
+                You&apos;ve saved <span className="font-bold">{membership.totalSavings || 0} AED</span> so far with your member discounts!
               </p>
             </div>
 
