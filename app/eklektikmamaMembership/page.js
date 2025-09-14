@@ -3,7 +3,7 @@ import Image from "next/image";
 import { FaShopLock } from "react-icons/fa6";
 import { BsArrowRight, BsPlus } from "react-icons/bs";
 import { motion, useInView } from "framer-motion";
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { loadStripe } from '@stripe/stripe-js';
 
@@ -17,7 +17,7 @@ import {
 import MembershipOptions from "../components/MembershipOptions";
 import Marquee from "../components/Marquee";
 
-export default function MembershipPage() {
+function MembershipContent() {
   // URL params and state
   const searchParams = useSearchParams();
   const selectedPlan = searchParams.get('plan');
@@ -574,5 +574,26 @@ export default function MembershipPage() {
         </div>
       )}
     </div>
+  );
+}
+
+// Loading component for Suspense fallback
+function MembershipLoading() {
+  return (
+    <div className="min-h-screen bg-white flex items-center justify-center">
+      <div className="text-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#db4e9f] mx-auto mb-4"></div>
+        <p className="text-[#093166] font-quicksand">Loading membership page...</p>
+      </div>
+    </div>
+  );
+}
+
+// Main export with Suspense wrapper
+export default function MembershipPage() {
+  return (
+    <Suspense fallback={<MembershipLoading />}>
+      <MembershipContent />
+    </Suspense>
   );
 }

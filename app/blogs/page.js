@@ -84,7 +84,7 @@ async function getBlogData(searchParams) {
 }
 
 // Main page component
-const Page = async ({ searchParams }) => {
+export default async function BlogsPage({ searchParams }) {
   const { 
     featuredPosts, 
     eklektikPosts, 
@@ -129,6 +129,4 @@ const Page = async ({ searchParams }) => {
       )}
     </div>
   );
-};
-
-export default Page;
+}
