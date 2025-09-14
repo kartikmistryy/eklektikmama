@@ -75,18 +75,78 @@ export async function POST(req) {
   }
 }
 
+// Handle checkout session completed
+async function handleCheckoutCompleted(session) {
+  try {
+    console.log('Checkout session completed:', session.id);
+    
+    // Check if payment was successful
+    if (session.payment_status !== 'paid') {
+      console.log('Payment not successful, skipping membership activation');
+      return;
+    }
+
+    // Get membership from metadata
+    const membershipId = session.metadata?.membershipId;
+    if (!membershipId) {
+      console.log('No membership ID in session metadata');
+      return;
+    }
+
+    const membership = await Membership.findById(membershipId);
+    if (!membership) {
+      console.log('Membership not found:', membershipId);
+      return;
+    }
+
+    // Update membership status to active
+    membership.status = 'active';
+    membership.currentPeriodStart = new Date();
+    
+    // Set period end based on membership type
+    if (membership.membershipType === 'monthly') {
+      membership.currentPeriodEnd = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000); // 30 days
+      membership.nextPaymentDate = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
+    } else {
+      membership.currentPeriodEnd = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000); // 1 year
+      membership.nextPaymentDate = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000);
+    }
+
+    await membership.save();
+
+    // Update Google Sheets
+    await updateMemberInSheet(membership.email, {
+      'Status': 'active',
+      'Current Period Start': membership.currentPeriodStart.toISOString().split('T')[0],
+      'Current Period End': membership.currentPeriodEnd.toISOString().split('T')[0],
+      'Next Payment Date': membership.nextPaymentDate.toISOString().split('T')[0]
+    });
+
+    // Send welcome email
+    await sendMemberWelcomeEmail(membership.email, membership.firstName, membership.membershipType);
+
+    console.log('Membership activated successfully:', membership.email);
+    
+  } catch (error) {
+    console.error('Error handling checkout completion:', error);
+  }
+}
+
 // Handle subscription created
 async function handleSubscriptionCreated(subscription) {
   try {
     console.log('Subscription created:', subscription.id);
     
+    // Find membership by customer ID (since subscription ID isn't set yet)
     const membership = await Membership.findOne({
-      stripeSubscriptionId: subscription.id
+      stripeCustomerId: subscription.customer,
+      status: 'pending'
     });
 
     if (membership) {
-      // Update membership status
+      // Update membership status and subscription ID
       membership.status = 'active';
+      membership.stripeSubscriptionId = subscription.id;
       membership.currentPeriodStart = new Date(subscription.current_period_start * 1000);
       membership.currentPeriodEnd = new Date(subscription.current_period_end * 1000);
       membership.nextPaymentDate = new Date(subscription.current_period_end * 1000);
@@ -99,6 +159,13 @@ async function handleSubscriptionCreated(subscription) {
         'Current Period End': membership.currentPeriodEnd.toISOString().split('T')[0],
         'Next Payment Date': membership.nextPaymentDate.toISOString().split('T')[0]
       });
+
+      // Send welcome email
+      await sendMemberWelcomeEmail(membership.email, membership.firstName, membership.membershipType);
+
+      console.log('Membership activated successfully:', membership.email);
+    } else {
+      console.log('No pending membership found for customer:', subscription.customer);
     }
   } catch (error) {
     console.error('Error handling subscription created:', error);

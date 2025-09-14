@@ -113,8 +113,8 @@ NEXT_PUBLIC_BASE_URL=https://yourdomain.com
 
 ### **2. Stripe Dashboard Setup (10 minutes)**
 1. **Create Products:**
-   - Monthly Membership: $50/month
-   - Annual Membership: $500/year
+   - Monthly Membership: AED 50/month
+   - Annual Membership: AED 450/year
 2. **Set Up Webhook:**
    - URL: `https://yourdomain.com/api/webhooks/membership`
    - Events: All subscription and invoice events
@@ -139,12 +139,12 @@ npm install @stripe/stripe-js
 ## 💰 **Pricing Structure:**
 
 ### **Membership Fees:**
-- **Monthly:** $50/month (recurring)
-- **Annual:** $500/year (recurring, 2 months free)
+- **Monthly:** AED 50/month (recurring)
+- **Annual:** AED 450/year (recurring, 2 months free)
 
 ### **Stripe Processing Fees:**
-- **Monthly:** $50 × 2.9% = $1.45 per month
-- **Annual:** $500 × 2.9% = $14.50 per year
+- **Monthly:** AED 50 × 2.9% = AED 1.45 per month
+- **Annual:** AED 450 × 2.9% = AED 13.05 per year
 
 ### **Member Benefits:**
 - **10% discount** on all event tickets

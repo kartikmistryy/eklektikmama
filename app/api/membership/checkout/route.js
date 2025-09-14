@@ -11,12 +11,12 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 const MEMBERSHIP_PRICES = {
   monthly: {
     priceId: process.env.STRIPE_MONTHLY_MEMBERSHIP_PRICE_ID,
-    amount: 50, // $50 per month
+    amount: 3.6, // AED 3.6 per month (testing)
     interval: 'month'
   },
   annual: {
     priceId: process.env.STRIPE_ANNUAL_MEMBERSHIP_PRICE_ID,
-    amount: 500, // $500 per year (2 months free)
+    amount: 36, // AED 36 per year (testing)
     interval: 'year'
   }
 };
@@ -106,13 +106,23 @@ export async function POST(req) {
 
     await membership.save();
 
-    // Create Stripe checkout session for subscription
+    // Create Stripe checkout session for subscription (proper recurring billing)
     const session = await stripe.checkout.sessions.create({
       mode: 'subscription',
       customer: customer.id,
       line_items: [
         {
-          price: MEMBERSHIP_PRICES[membershipType].priceId,
+          price_data: {
+            currency: 'aed',
+            product_data: {
+              name: `Eklektik AF ${membershipType === 'monthly' ? 'Monthly' : 'Annual'} Membership`,
+              description: `${membershipType === 'monthly' ? 'Monthly' : 'Annual'} membership with 10% event discounts`
+            },
+            unit_amount: MEMBERSHIP_PRICES[membershipType].amount * 100, // Convert to fils
+            recurring: {
+              interval: MEMBERSHIP_PRICES[membershipType].interval
+            }
+          },
           quantity: 1,
         },
       ],

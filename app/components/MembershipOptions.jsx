@@ -17,7 +17,7 @@ export default function MembershipOptions() {
   const memberships = [
     {
       title: "JOIN MONTHLY",
-      price: "AED 50",
+      price: "AED 3.6",
       membershipType: "monthly",
       perks: [
         {
@@ -44,7 +44,7 @@ export default function MembershipOptions() {
     },
     {
       title: "JOIN YEARLY",
-      price: "AED 450",
+      price: "AED 36",
       membershipType: "annual",
       perks: [
         {
