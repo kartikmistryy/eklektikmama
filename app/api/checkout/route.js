@@ -109,7 +109,7 @@ export async function POST(req) {
     const lineItems = [
       {
         price_data: {
-          currency: 'usd',
+          currency: 'aed',
           unit_amount: finalPrice,
           product_data: {
             name: productName,
