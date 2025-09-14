@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
 import { connectDB } from '../../../../lib/db';
 import Membership from '../../../../models/Membership';
-import { updateMemberInSheet } from '../../../../lib/googleSheets';
+import { updateMemberInSheet, addMemberToSheet } from '../../../../lib/googleSheets';
 import { sendMemberWelcomeEmail, sendPaymentConfirmationEmail, sendRenewalReminderEmail } from '../../../../lib/memberEmails';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
@@ -152,16 +152,11 @@ async function handleSubscriptionCreated(subscription) {
       membership.nextPaymentDate = new Date(subscription.current_period_end * 1000);
       await membership.save();
 
-      // Update Google Sheets
-      await updateMemberInSheet(membership.email, {
-        'Status': 'active',
-        'Current Period Start': membership.currentPeriodStart.toISOString().split('T')[0],
-        'Current Period End': membership.currentPeriodEnd.toISOString().split('T')[0],
-        'Next Payment Date': membership.nextPaymentDate.toISOString().split('T')[0]
-      });
+      // Add member to Google Sheets
+      await addMemberToSheet(membership);
 
       // Send welcome email
-      await sendMemberWelcomeEmail(membership.email, membership.firstName, membership.membershipType);
+      await sendMemberWelcomeEmail(membership);
 
       console.log('Membership activated successfully:', membership.email);
     } else {

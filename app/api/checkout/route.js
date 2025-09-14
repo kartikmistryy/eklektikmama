@@ -86,7 +86,7 @@ export async function POST(req) {
     const lineItems = [
       {
         price_data: {
-          currency: 'aed',
+          currency: 'usd',
           unit_amount: Math.max(0, Math.round(discountedPrice * 100)),
           product_data: {
             name: event.title,
@@ -101,7 +101,7 @@ export async function POST(req) {
     if (isMember && memberSavings > 0) {
       lineItems.push({
         price_data: {
-          currency: 'aed',
+          currency: 'usd',
           unit_amount: -Math.round(memberSavings * 100), // Negative amount for discount
           product_data: {
             name: `Member Discount (${memberDiscount}%)`,

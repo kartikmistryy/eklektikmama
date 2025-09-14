@@ -48,8 +48,7 @@ const MembershipSchema = new mongoose.Schema({
   
 }, { timestamps: true });
 
-// Index for efficient queries
-MembershipSchema.index({ email: 1 });
+// Index for efficient queries (email index is already created by unique: true)
 MembershipSchema.index({ stripeCustomerId: 1 });
 MembershipSchema.index({ stripeSubscriptionId: 1 });
 MembershipSchema.index({ status: 1 });
