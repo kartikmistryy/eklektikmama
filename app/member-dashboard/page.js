@@ -118,7 +118,16 @@ export default function MemberDashboard() {
         // Refresh membership data
         checkMembership();
       } else {
-        setError(data.error || 'Failed to verify cancellation code');
+        const errorMessage = data.error || 'Failed to verify cancellation code';
+        setError(errorMessage);
+        console.error('Cancellation error:', errorMessage);
+        
+        // Show more specific error message
+        if (errorMessage.includes('No Stripe subscription')) {
+          alert('There seems to be an issue with your membership subscription. Please contact support for assistance.');
+        } else {
+          alert(errorMessage);
+        }
       }
     } catch (err) {
       setError('Network error. Please try again.');
@@ -295,7 +304,7 @@ export default function MemberDashboard() {
                 Browse Events
               </button>
               <button
-                onClick={() => router.push('/contactus')}
+                onClick={() => window.open('https://api.whatsapp.com/send?phone=971505615408', '_blank', 'noopener,noreferrer')}
                 className="flex-1 px-6 py-3 bg-gray-600 text-white rounded-md hover:bg-gray-700 transition-colors"
               >
                 Contact Support

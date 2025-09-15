@@ -62,30 +62,46 @@ export async function POST(req) {
       );
     }
 
-    // Check if Stripe subscription ID exists
-    if (!membership.stripeSubscriptionId) {
-      return NextResponse.json(
-        { error: 'No Stripe subscription found for this membership' },
-        { status: 400 }
-      );
-    }
-
     console.log('Verifying cancellation code for membership:', membership.email);
     console.log('Stripe subscription ID:', membership.stripeSubscriptionId);
+    console.log('Stripe customer ID:', membership.stripeCustomerId);
 
-    // Cancel the subscription in Stripe (at period end)
-    const subscription = await stripe.subscriptions.update(membership.stripeSubscriptionId, {
-      cancel_at_period_end: true
-    });
+    let subscription = null;
 
-    console.log('Stripe subscription updated successfully:', subscription.id);
+    // Handle different types of memberships
+    if (membership.stripeSubscriptionId && !membership.stripeSubscriptionId.startsWith('manual_')) {
+      // Real Stripe subscription - cancel it
+      try {
+        subscription = await stripe.subscriptions.update(membership.stripeSubscriptionId, {
+          cancel_at_period_end: true
+        });
+        console.log('Stripe subscription updated successfully:', subscription.id);
+      } catch (stripeError) {
+        console.error('Error updating Stripe subscription:', stripeError);
+        return NextResponse.json(
+          { error: 'Failed to cancel Stripe subscription. Please contact support.' },
+          { status: 500 }
+        );
+      }
+    } else {
+      // Manual membership or no Stripe subscription - just mark as cancelled
+      console.log('Manual membership or no Stripe subscription - marking as cancelled at period end');
+      subscription = {
+        id: membership.stripeSubscriptionId || 'manual',
+        cancel_at_period_end: true,
+        current_period_end: Math.floor(membership.currentPeriodEnd.getTime() / 1000)
+      };
+    }
 
     // Update membership in database
     membership.cancelAtPeriodEnd = true;
     membership.cancelledAt = new Date();
     membership.cancellationCode = null; // Clear the code after use
     membership.cancellationCodeExpires = null;
+    
+    console.log('Updating membership in database...');
     await membership.save();
+    console.log('Membership updated successfully in database');
 
     // Update Google Sheets
     try {
