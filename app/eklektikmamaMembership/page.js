@@ -183,8 +183,8 @@ function MembershipContent() {
         >
           <h1 className="w-fit md:text-[85px] text-[45px] font-bold uppercase text-[#f6f6f6] leading-[130%] text-center font-anton">
             GET
-            <br />
-            <b className="md:text-[100px] text-[60px]">Eklektik AF</b>
+           Eklektik AF <br/>  <b className="md:text-[100px] text-[60px]">(COMING SOON) </b>
+            
           </h1>
         </motion.div>
         <Marquee />

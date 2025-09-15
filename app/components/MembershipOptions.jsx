@@ -84,7 +84,7 @@ export default function MembershipOptions() {
     {
       question: "How much does it cost?",
       answer:
-        "AED 49/month or AED 450/year. Yearly memberships save you AED 138.",
+        "AED 49/month or AED 490/year. Yearly memberships save you AED 110.",
     },
     {
       question: "How do I get my discounts?",
@@ -162,10 +162,10 @@ export default function MembershipOptions() {
                   ))}
                 </ul>
                 <button 
-                  onClick={() => handleJoinNow(plan.membershipType)}
-                  className="mt-6 flex items-center border border-white rounded-full px-6 py-2 text-white uppercase hover:bg-white hover:text-[#db4e9f] transition-colors duration-300 ml-auto"
+                  disabled
+                  className="mt-6 flex items-center border border-white rounded-full px-6 py-2 text-white uppercase opacity-50 cursor-not-allowed ml-auto"
                 >
-                  JOIN NOW
+                  COMING SOON
                 </button>
               </motion.div>
             )}
