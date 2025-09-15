@@ -3,7 +3,6 @@ import Stripe from 'stripe';
 import { connectDB } from '../../../../lib/db';
 import Membership from '../../../../models/Membership';
 import { updateMemberInSheet } from '../../../../lib/googleSheets';
-import { sendCancellationConfirmationEmail } from '../../../../lib/memberEmails';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
@@ -23,60 +22,57 @@ export async function POST(req) {
     // Find the membership
     const membership = await Membership.findOne({
       email: email.toLowerCase(),
-      status: { $in: ['active', 'past_due'] }
+      status: { $in: ['active', 'past_due'] },
+      cancelAtPeriodEnd: true
     });
 
     if (!membership) {
       return NextResponse.json(
-        { error: 'No active membership found' },
+        { error: 'No cancelled membership found to reactivate' },
         { status: 404 }
       );
     }
 
-    // Cancel the subscription in Stripe
+    if (!membership.stripeSubscriptionId) {
+      return NextResponse.json(
+        { error: 'No Stripe subscription found' },
+        { status: 400 }
+      );
+    }
+
+    // Reactivate the subscription in Stripe
     const subscription = await stripe.subscriptions.update(membership.stripeSubscriptionId, {
-      cancel_at_period_end: true
+      cancel_at_period_end: false
     });
 
     // Update membership in database
-    membership.cancelAtPeriodEnd = true;
-    membership.cancelledAt = new Date();
+    membership.cancelAtPeriodEnd = false;
+    membership.cancelledAt = null;
+    membership.status = 'active';
     await membership.save();
 
     // Update Google Sheets
     try {
       await updateMemberInSheet(email, {
-        'Status': 'cancelled_at_period_end'
+        'Status': 'active',
+        'Cancel At Period End': 'false'
       });
     } catch (sheetError) {
       console.error('Error updating Google Sheets:', sheetError);
       // Don't fail the process if Google Sheets update fails
     }
 
-    // Send cancellation confirmation email
-    try {
-      await sendCancellationConfirmationEmail({
-        firstName: membership.firstName,
-        email: membership.email,
-        membershipType: membership.membershipType,
-        currentPeriodEnd: subscription.current_period_end * 1000 // Convert to milliseconds
-      });
-    } catch (emailError) {
-      console.error('Error sending cancellation confirmation email:', emailError);
-      // Don't fail the process if email fails
-    }
-
     return NextResponse.json({
       success: true,
-      message: 'Membership will be cancelled at the end of the current billing period',
+      message: 'Membership has been reactivated successfully',
       cancelAtPeriodEnd: subscription.cancel_at_period_end,
       currentPeriodEnd: subscription.current_period_end
     });
 
   } catch (error) {
-    console.error('Membership cancellation error:', error);
+    console.error('Membership reactivation error:', error);
     return NextResponse.json(
-      { error: 'Failed to cancel membership' },
+      { error: 'Failed to reactivate membership' },
       { status: 500 }
     );
   }

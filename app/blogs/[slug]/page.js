@@ -64,11 +64,6 @@ const renderEmbeddedAsset = (node) => {
         className="w-full h-auto rounded-lg shadow-lg"
         style={{ maxWidth: '100%' }}
       />
-      {imageAlt && imageAlt !== 'Blog content image' && (
-        <p className="text-sm text-gray-500 mt-2 text-center italic">
-          {imageAlt}
-        </p>
-      )}
     </div>
   );
 };

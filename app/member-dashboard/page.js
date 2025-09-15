@@ -51,13 +51,13 @@ export default function MemberDashboard() {
     if (!membership) return;
 
     const confirmed = window.confirm(
-      'Are you sure you want to cancel your membership? You will lose access to all member benefits at the end of your current billing period.'
+      `Are you sure you want to cancel your membership?\n\nYou will lose access to all member benefits at the end of your current billing period (${formatDate(membership.currentPeriodEnd)}).\n\nYou can reactivate your membership anytime before the end of your current period.\n\nFor security, we'll send a verification email to confirm this request.`
     );
 
     if (!confirmed) return;
 
     try {
-      const response = await fetch('/api/membership/cancel', {
+      const response = await fetch('/api/membership/request-cancellation', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -68,40 +68,47 @@ export default function MemberDashboard() {
       const data = await response.json();
 
       if (response.ok) {
-        alert('Your membership has been cancelled. You will retain access until the end of your current billing period.');
+        alert('A verification email has been sent to your email address. Please check your inbox and click the verification link to confirm your cancellation request.');
+      } else {
+        alert(data.error || 'Failed to process cancellation request');
+      }
+    } catch (err) {
+      alert('Network error. Please try again.');
+    }
+  };
+
+  const handleReactivateMembership = async () => {
+    if (!membership) return;
+
+    const confirmed = window.confirm(
+      'Are you sure you want to reactivate your membership? Your subscription will continue as normal.'
+    );
+
+    if (!confirmed) return;
+
+    try {
+      const response = await fetch('/api/membership/reactivate', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email: membership.email }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        alert('Your membership has been reactivated successfully!');
         // Refresh membership data
         checkMembership();
       } else {
-        alert(data.error || 'Failed to cancel membership');
+        alert(data.error || 'Failed to reactivate membership');
       }
     } catch (err) {
       alert('Network error. Please try again.');
     }
   };
 
-  const handleManageSubscription = async () => {
-    if (!membership) return;
-
-    try {
-      const response = await fetch('/api/membership/portal', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email: membership.email }),
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        window.location.href = data.url;
-      } else {
-        alert(data.error || 'Failed to open subscription management');
-      }
-    } catch (err) {
-      alert('Network error. Please try again.');
-    }
-  };
 
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString('en-US', {
@@ -238,18 +245,54 @@ export default function MemberDashboard() {
                 Browse Events
               </button>
               <button
-                onClick={handleManageSubscription}
-                className="flex-1 px-6 py-3 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors"
-              >
-                Manage Subscription
-              </button>
-              <button
                 onClick={() => router.push('/contactus')}
                 className="flex-1 px-6 py-3 bg-gray-600 text-white rounded-md hover:bg-gray-700 transition-colors"
               >
                 Contact Support
               </button>
             </div>
+
+            {/* Cancellation/Reactivation Section */}
+            {membership.cancelAtPeriodEnd ? (
+              <div className="mt-6 bg-orange-50 border border-orange-200 rounded-lg p-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h3 className="text-lg font-semibold text-orange-800 mb-2">
+                      Membership Cancelled
+                    </h3>
+                    <p className="text-orange-700 mb-4">
+                      Your membership will end on {formatDate(membership.currentPeriodEnd)}. 
+                      You can reactivate it anytime before then to continue enjoying all benefits.
+                    </p>
+                  </div>
+                  <button
+                    onClick={handleReactivateMembership}
+                    className="px-6 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors whitespace-nowrap"
+                  >
+                    Reactivate Membership
+                  </button>
+                </div>
+              </div>
+            ) : membership.status === 'active' ? (
+              <div className="mt-6 bg-red-50 border border-red-200 rounded-lg p-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h3 className="text-lg font-semibold text-red-800 mb-2">
+                      Cancel Membership
+                    </h3>
+                    <p className="text-red-700">
+                      Need to cancel? You'll retain access until the end of your current billing period.
+                    </p>
+                  </div>
+                  <button
+                    onClick={handleCancelMembership}
+                    className="px-6 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors whitespace-nowrap"
+                  >
+                    Cancel Membership
+                  </button>
+                </div>
+              </div>
+            ) : null}
 
             {/* Expiration Warning */}
             {membership.expiresSoon && (
