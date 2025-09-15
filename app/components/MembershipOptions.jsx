@@ -44,7 +44,7 @@ export default function MembershipOptions() {
     },
     {
       title: "JOIN YEARLY",
-      price: "AED 450",
+      price: "AED 490",
       membershipType: "annual",
       perks: [
         {

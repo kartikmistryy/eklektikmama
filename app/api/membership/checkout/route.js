@@ -16,7 +16,7 @@ const MEMBERSHIP_PRICES = {
   },
   annual: {
     priceId: process.env.STRIPE_ANNUAL_MEMBERSHIP_PRICE_ID,
-    amount: 450, // AED 450 per year
+    amount: 490, // AED 490 per year
     interval: 'year'
   }
 };

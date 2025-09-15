@@ -460,7 +460,7 @@ function MembershipContent() {
                   JOIN EKLEKTIK AF
                 </h2>
                 <p className="text-lg text-[#093166] font-quicksand mt-2">
-                  {formData.membershipType === 'monthly' ? 'Monthly Plan - AED 49/month' : 'Annual Plan - AED 450/year'}
+                  {formData.membershipType === 'monthly' ? 'Monthly Plan - AED 49/month' : 'Annual Plan - AED 490/year'}
                 </p>
               </div>
               <button

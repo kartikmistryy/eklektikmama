@@ -70,7 +70,7 @@ EMAIL_FROM=hello@eklektikmama.com
 3. **Create Annual Membership Product:**
    - Name: "Eklektik AF Annual Membership"
    - Description: "Annual membership with 10% event discounts"
-   - Price: AED 450 (or your preferred amount)
+   - Price: AED 490 (or your preferred amount)
    - Billing: Recurring yearly
    - Copy the Price ID to `STRIPE_ANNUAL_MEMBERSHIP_PRICE_ID`
 
