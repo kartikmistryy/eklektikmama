@@ -4,6 +4,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { BsArrowLeft } from 'react-icons/bs';
 import { notFound } from 'next/navigation';
+import SocialShare from '../components/SocialShare';
 
 // Helper function to render embedded assets
 const renderEmbeddedAsset = (node) => {
@@ -433,6 +434,13 @@ const BlogPost = async ({ params }) => {
               </div>
             )}
           </article>
+
+          {/* Social Sharing */}
+          <SocialShare 
+            title={title}
+            url={`${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/blogs/${params.slug}`}
+            description={excerpt || `Read "${title}" on Eklektik Mama`}
+          />
 
           {/* Back to Blogs Button */}
           <div className="mt-16 pt-8 border-t border-gray-200">

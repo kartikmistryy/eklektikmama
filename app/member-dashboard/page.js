@@ -8,6 +8,9 @@ export default function MemberDashboard() {
   const [membership, setMembership] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [cancellationCode, setCancellationCode] = useState('');
+  const [showCodeInput, setShowCodeInput] = useState(false);
+  const [codeLoading, setCodeLoading] = useState(false);
   const router = useRouter();
 
   const checkMembership = async () => {
@@ -47,17 +50,20 @@ export default function MemberDashboard() {
     }
   };
 
-  const handleCancelMembership = async () => {
+  const handleRequestCancellationCode = async () => {
     if (!membership) return;
 
     const confirmed = window.confirm(
-      `Are you sure you want to cancel your membership?\n\nYou will lose access to all member benefits at the end of your current billing period (${formatDate(membership.currentPeriodEnd)}).\n\nYou can reactivate your membership anytime before the end of your current period.\n\nFor security, we'll send a verification email to confirm this request.`
+      `Are you sure you want to cancel your membership?\n\nYou will retain access to all member benefits until ${formatDate(membership.currentPeriodEnd)}.\n\nYou can reactivate your membership anytime before the end of your current period.\n\nWe'll send a 6-digit code to your email to confirm this request.`
     );
 
     if (!confirmed) return;
 
+    setCodeLoading(true);
+    setError('');
+
     try {
-      const response = await fetch('/api/membership/request-cancellation', {
+      const response = await fetch('/api/membership/request-cancellation-code', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -68,12 +74,56 @@ export default function MemberDashboard() {
       const data = await response.json();
 
       if (response.ok) {
-        alert('A verification email has been sent to your email address. Please check your inbox and click the verification link to confirm your cancellation request.');
+        setShowCodeInput(true);
+        alert('A 6-digit cancellation code has been sent to your email address. Please enter it below to confirm cancellation.');
       } else {
-        alert(data.error || 'Failed to process cancellation request');
+        setError(data.error || 'Failed to send cancellation code');
       }
     } catch (err) {
-      alert('Network error. Please try again.');
+      setError('Network error. Please try again.');
+    } finally {
+      setCodeLoading(false);
+    }
+  };
+
+  const handleVerifyCancellationCode = async () => {
+    if (!membership || !cancellationCode) return;
+
+    if (cancellationCode.length !== 6) {
+      setError('Please enter a valid 6-digit code');
+      return;
+    }
+
+    setCodeLoading(true);
+    setError('');
+
+    try {
+      const response = await fetch('/api/membership/verify-cancellation-code', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ 
+          email: membership.email,
+          code: cancellationCode
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        alert(`Your membership has been successfully cancelled. You will retain access until ${data.accessUntil}. A confirmation email has been sent to you.`);
+        setShowCodeInput(false);
+        setCancellationCode('');
+        // Refresh membership data
+        checkMembership();
+      } else {
+        setError(data.error || 'Failed to verify cancellation code');
+      }
+    } catch (err) {
+      setError('Network error. Please try again.');
+    } finally {
+      setCodeLoading(false);
     }
   };
 
@@ -252,6 +302,50 @@ export default function MemberDashboard() {
               </button>
             </div>
 
+            {/* Cancellation Code Input Section */}
+            {showCodeInput && (
+              <div className="mt-6 bg-blue-50 border border-blue-200 rounded-lg p-4">
+                <h3 className="text-lg font-semibold text-blue-800 mb-4">
+                  Enter Cancellation Code
+                </h3>
+                <p className="text-blue-700 mb-4">
+                  Please enter the 6-digit code sent to your email address.
+                </p>
+                <div className="flex gap-4 items-end">
+                  <div className="flex-1">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Cancellation Code
+                    </label>
+                    <input
+                      type="text"
+                      value={cancellationCode}
+                      onChange={(e) => setCancellationCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
+                      placeholder="123456"
+                      className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent text-center text-2xl font-mono tracking-widest"
+                      maxLength={6}
+                    />
+                  </div>
+                  <button
+                    onClick={handleVerifyCancellationCode}
+                    disabled={codeLoading || cancellationCode.length !== 6}
+                    className="px-6 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  >
+                    {codeLoading ? 'Verifying...' : 'Confirm Cancellation'}
+                  </button>
+                </div>
+                <button
+                  onClick={() => {
+                    setShowCodeInput(false);
+                    setCancellationCode('');
+                    setError('');
+                  }}
+                  className="mt-3 text-sm text-blue-600 hover:text-blue-800 underline"
+                >
+                  Cancel
+                </button>
+              </div>
+            )}
+
             {/* Cancellation/Reactivation Section */}
             {membership.cancelAtPeriodEnd ? (
               <div className="mt-6 bg-orange-50 border border-orange-200 rounded-lg p-4">
@@ -273,7 +367,7 @@ export default function MemberDashboard() {
                   </button>
                 </div>
               </div>
-            ) : membership.status === 'active' ? (
+            ) : membership.status === 'active' && !showCodeInput ? (
               <div className="mt-6 bg-red-50 border border-red-200 rounded-lg p-4">
                 <div className="flex items-center justify-between">
                   <div>
@@ -285,10 +379,11 @@ export default function MemberDashboard() {
                     </p>
                   </div>
                   <button
-                    onClick={handleCancelMembership}
-                    className="px-6 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors whitespace-nowrap"
+                    onClick={handleRequestCancellationCode}
+                    disabled={codeLoading}
+                    className="px-6 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors whitespace-nowrap"
                   >
-                    Cancel Membership
+                    {codeLoading ? 'Sending Code...' : 'Cancel Membership'}
                   </button>
                 </div>
               </div>

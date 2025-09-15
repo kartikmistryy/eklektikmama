@@ -46,6 +46,10 @@ const MembershipSchema = new mongoose.Schema({
   notes: String,
   source: { type: String, default: "website" }, // How they signed up
   
+  // Cancellation Code (for 6-digit verification)
+  cancellationCode: String,
+  cancellationCodeExpires: Date,
+  
 }, { timestamps: true });
 
 // Index for efficient queries (email index is already created by unique: true)
