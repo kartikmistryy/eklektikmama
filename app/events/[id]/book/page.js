@@ -17,6 +17,7 @@ export default function BookingPage({ params }) {
   const [formConfig, setFormConfig] = useState(null);
   const [availability, setAvailability] = useState(null);
   const [isEventPast, setIsEventPast] = useState(false);
+  const [isBookingDeadlinePassed, setIsBookingDeadlinePassed] = useState(false);
 
   // Fetch event data on component mount
   useEffect(() => {
@@ -30,6 +31,10 @@ export default function BookingPage({ params }) {
           // Check if event date has passed
           const past = eventData.date ? moment(eventData.date).isBefore(moment(), 'day') : false;
           setIsEventPast(past);
+          
+          // Check if booking deadline has passed
+          const deadlinePassed = eventData.bookingDeadline ? moment(eventData.bookingDeadline).isBefore(moment()) : false;
+          setIsBookingDeadlinePassed(deadlinePassed);
           
           // Set form configuration based on event segment
           if (eventData.segment) {
@@ -62,6 +67,13 @@ export default function BookingPage({ params }) {
       // Check if event has passed
       if (isEventPast) {
         alert('Sorry, this event has already passed and bookings are no longer available.');
+        setSubmitting(false);
+        return;
+      }
+      
+      // Check if booking deadline has passed
+      if (isBookingDeadlinePassed) {
+        alert('Sorry, the booking deadline for this event has passed. Bookings are no longer available.');
         setSubmitting(false);
         return;
       }
@@ -164,6 +176,40 @@ export default function BookingPage({ params }) {
             </p>
             <p className="text-sm text-gray-500 mb-6">
               Please check out our upcoming events for future bookings.
+            </p>
+            <div className="space-y-3">
+              <button 
+                onClick={() => router.push('/events')} 
+                className="w-full px-4 py-2 bg-[#093166] text-white rounded-md hover:bg-[#093166]/90"
+              >
+                View Other Events
+              </button>
+              <button 
+                onClick={() => router.back()} 
+                className="w-full px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300"
+              >
+                Go Back
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Check if booking deadline has passed
+  if (isBookingDeadlinePassed) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center max-w-md mx-auto p-6">
+          <div className="bg-orange-50 border border-orange-200 rounded-lg p-6">
+            <div className="text-orange-500 text-6xl mb-4">⏰</div>
+            <h1 className="text-2xl font-bold text-gray-800 mb-2">Booking Deadline Passed</h1>
+            <p className="text-gray-600 mb-4">
+              Sorry, the booking deadline for {event.title} has passed and bookings are no longer available.
+            </p>
+            <p className="text-sm text-gray-500 mb-6">
+              Please check out our other events for future bookings.
             </p>
             <div className="space-y-3">
               <button 

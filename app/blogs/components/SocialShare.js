@@ -1,7 +1,18 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { BsShare, BsInstagram, BsFacebook, BsTwitter, BsLink45Deg } from 'react-icons/bs';
+import { BsShare, BsInstagram, BsFacebook, BsLink45Deg } from 'react-icons/bs';
+
+// Custom X (Twitter) icon component
+const XIcon = ({ className }) => (
+  <svg 
+    viewBox="0 0 24 24" 
+    className={className}
+    fill="currentColor"
+  >
+    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+  </svg>
+);
 
 const SocialShare = ({ title, url, description, showFloating = true }) => {
   const [copied, setCopied] = useState(false);
@@ -33,13 +44,18 @@ const SocialShare = ({ title, url, description, showFloating = true }) => {
   const shareUrls = {
     facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`,
     instagram: `https://www.instagram.com/`, // Instagram doesn't support direct URL sharing
-    twitter: `https://twitter.com/intent/tweet?text=${encodeURIComponent(title)}&url=${encodeURIComponent(url)}`,
+    twitter: `https://x.com/intent/tweet?text=${encodeURIComponent(title)}&url=${encodeURIComponent(url)}`,
   };
 
   const handleSocialShare = (platform) => {
     if (platform === 'instagram') {
       // Instagram doesn't support direct URL sharing, so we'll copy the link
       handleCopyLink();
+      
+      // Show Instagram sharing instructions
+      setTimeout(() => {
+        alert(`Link copied! 📱\n\nTo share on Instagram:\n1. Open Instagram app\n2. Create a new story\n3. Add the link as a sticker\n4. Or paste it in your caption\n\nTip: You can also screenshot this article and share it as an image!`);
+      }, 100);
       return;
     }
     
@@ -66,13 +82,13 @@ const SocialShare = ({ title, url, description, showFloating = true }) => {
         Instagram
       </button>
 
-      {/* Twitter Share */}
+      {/* X (Twitter) Share */}
       <button
         onClick={() => handleSocialShare('twitter')}
-        className="flex items-center px-4 py-2 bg-[#1DA1F2] text-white rounded-lg hover:bg-[#1A91DA] transition-colors duration-200"
+        className="flex items-center px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors duration-200"
       >
-        <BsTwitter className="mr-2" />
-        Twitter
+        <XIcon className="mr-2 w-4 h-4" />
+        X
       </button>
 
       {/* Copy Link */}
@@ -108,10 +124,15 @@ const SocialShare = ({ title, url, description, showFloating = true }) => {
           </p>
         )}
 
-        <div className="mt-4 p-3 bg-gray-50 rounded-lg">
-          <p className="text-sm text-gray-600">
-            <strong>Share on Instagram:</strong> Copy the link above and paste it in your Instagram story or post.
+        <div className="mt-4 p-3 bg-gradient-to-r from-pink-50 to-purple-50 border border-pink-200 rounded-lg">
+          <p className="text-sm text-gray-700">
+            <strong>📱 Share on Instagram:</strong> Click the Instagram button to copy the link, then:
           </p>
+          <ul className="text-xs text-gray-600 mt-2 ml-4 list-disc">
+            <li>Add as a link sticker in your story</li>
+            <li>Paste in your post caption</li>
+            <li>Screenshot and share as an image</li>
+          </ul>
         </div>
       </div>
 
@@ -152,10 +173,15 @@ const SocialShare = ({ title, url, description, showFloating = true }) => {
               </p>
             )}
 
-            <div className="mt-4 p-3 bg-gray-50 rounded-lg">
-              <p className="text-sm text-gray-600">
-                <strong>Share on Instagram:</strong> Copy the link and paste it in your Instagram story or post.
+            <div className="mt-4 p-3 bg-gradient-to-r from-pink-50 to-purple-50 border border-pink-200 rounded-lg">
+              <p className="text-sm text-gray-700">
+                <strong>📱 Share on Instagram:</strong> Click the Instagram button to copy the link, then:
               </p>
+              <ul className="text-xs text-gray-600 mt-2 ml-4 list-disc">
+                <li>Add as a link sticker in your story</li>
+                <li>Paste in your post caption</li>
+                <li>Screenshot and share as an image</li>
+              </ul>
             </div>
           </div>
         </div>

@@ -19,6 +19,7 @@ const EventSchema = new mongoose.Schema({
   },
   message: String, // Custom message for eklektik edit events
   meetingLink: String, // Meeting link for eklektik edit events
+  bookingDeadline: Date, // Deadline for booking (after this date, Book Now button is disabled)
   createdAt: { type: Date, default: Date.now },
 });
 

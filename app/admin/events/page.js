@@ -16,6 +16,7 @@ export default function AdminEventsPage() {
     segment: "cinemaMorning",
     message: "",
     meetingLink: "",
+    bookingDeadline: "",
   });
 
   const [imageFile, setImageFile] = useState(null);
@@ -214,6 +215,7 @@ export default function AdminEventsPage() {
         segment: "cinemaMorning",
         message: "",
         meetingLink: "",
+        bookingDeadline: "",
       });
       setImageFile(null);
       setImagePreview("");
@@ -494,6 +496,24 @@ export default function AdminEventsPage() {
               className="w-full border border-gray-300 rounded-md p-3 focus:ring-2 focus:ring-blue-500 focus:border-transparent" 
             />
           </div>
+        </div>
+
+        {/* Booking Deadline */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Booking Deadline
+            <span className="text-gray-500 text-sm ml-1">(Optional - Book Now button will be disabled after this date)</span>
+          </label>
+          <input 
+            type="datetime-local" 
+            name="bookingDeadline" 
+            value={form.bookingDeadline} 
+            onChange={handleChange} 
+            className="w-full border border-gray-300 rounded-md p-3 focus:ring-2 focus:ring-blue-500 focus:border-transparent" 
+          />
+          <p className="text-sm text-gray-500 mt-1">
+            Leave empty to allow booking until the event date. Set a deadline to stop bookings earlier.
+          </p>
         </div>
 
         {/* Submit Button */}

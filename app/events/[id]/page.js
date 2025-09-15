@@ -33,6 +33,9 @@ export default async function EventDetailPage({ params }) {
   
   // Check if event date has passed
   const isEventPast = event.date ? moment(event.date).isBefore(moment(), 'day') : false;
+  
+  // Check if booking deadline has passed
+  const isBookingDeadlinePassed = event.bookingDeadline ? moment(event.bookingDeadline).isBefore(moment()) : false;
 
 
   return (
@@ -55,6 +58,10 @@ export default async function EventDetailPage({ params }) {
                 <div className="text-sm text-gray-500 font-medium">
                   Event has passed
                 </div>
+              ) : isBookingDeadlinePassed ? (
+                <div className="text-sm text-orange-600 font-medium">
+                  Booking deadline passed
+                </div>
               ) : availability.available ? (
                 <div className="text-sm text-green-600 font-medium">
                   {availability.remaining} tickets left
@@ -73,6 +80,13 @@ export default async function EventDetailPage({ params }) {
                 className="px-4 py-2 bg-gray-400 text-white rounded-md cursor-not-allowed whitespace-nowrap"
               >
                 Event Passed
+              </button>
+            ) : isBookingDeadlinePassed ? (
+              <button 
+                disabled 
+                className="px-4 py-2 bg-orange-400 text-white rounded-md cursor-not-allowed whitespace-nowrap"
+              >
+                Booking Closed
               </button>
             ) : availability.available ? (
               <a href={`/events/${event._id}/book`}>
