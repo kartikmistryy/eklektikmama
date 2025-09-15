@@ -573,7 +573,7 @@ const Parnterwithus = () => {
             We&apos;re opening up to a few bold women ready to lead. You bring the fire, we&apos;ll bring the framework — plus our Franchisee Onboarding Pack to set you up from day one.
           </p>
           <Link
-            href="/onboardingPack.pdf"
+            href={`${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/onboardingPack.pdf`}
             download="onboardingPack.pdf"
             className="w-fit md:h-[45px] h-[40px] md:px-12 px-6 md:text-base text-[10px] flex items-center justify-center uppercase text-[#093166] hover:text-white rounded-[20px] my-6 border-2 border-[#bf378b] bg-transparent hover:bg-[#bf378b] transition-colors duration-500 ease-in-out "
           >
