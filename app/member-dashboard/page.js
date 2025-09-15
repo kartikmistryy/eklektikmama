@@ -281,7 +281,7 @@ export default function MemberDashboard() {
                       Cancel Membership
                     </h3>
                     <p className="text-red-700">
-                      Need to cancel? You'll retain access until the end of your current billing period.
+                      Need to cancel? You&apos;ll retain access until the end of your current billing period.
                     </p>
                   </div>
                   <button
