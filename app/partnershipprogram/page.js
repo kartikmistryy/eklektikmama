@@ -215,7 +215,7 @@ const Page = () => {
             anyone who&hellip;?
           </p>
           <Link
-            href="/perks#design"
+            href="/partnershipprogram#form"
             className="w-fit md:h-[45px] h-[40px] md:px-12 px-6 md:text-base text-xs flex items-center justify-center uppercase text-[#093166] hover:text-white rounded-[20px] my-6 border-2 border-[#bf378b] bg-transparent hover:bg-[#bf378b] transition-colors duration-500 ease-in-out"
           >
             PARTNER WITH US <BsArrowRight className="ml-2 text-2xl" />

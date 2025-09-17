@@ -261,6 +261,11 @@ export default function Footer() {
             <div className="flex flex-col items-start text-white">
               <h3 className="font-bold mb-6">WORK WITH US</h3>
               <ul className="space-y-2 uppercase text-left">
+              <li>
+                  <a href="/partnershipprogram" className="hover:underline">
+                    Partnership Program
+                  </a>
+                </li>
                 <li>
                   <a href="/contactus" className="hover:underline">
                     Pitch Us Something Wild
@@ -276,11 +281,26 @@ export default function Footer() {
 
             {/* Extras / Resources */}
             <div className="flex flex-col items-start text-white">
-              <h3 className="font-bold mb-6">EXTRAS / RESOURCES</h3>
+              <h3 className="font-bold mb-6">EKLEKTIK FREEBIES</h3>
               <ul className="space-y-2 uppercase text-left">
                 <li>
-                  <a href="/partnershipprogram" className="hover:underline">
-                    Partnership Program
+                  <a href="/ramadanGuide.pdf" download className="hover:underline">
+                    RAMADAN GUIDE
+                  </a>
+                </li> 
+                <li>
+                  <a href="/visitUae.pdf" download className="hover:underline">
+                    PLACES TO VISIT IN ABU DHABI, UAE
+                  </a>
+                </li> 
+                <li>
+                  <a href="/partnerGuide.pdf" download className="hover:underline">
+                    PARTNER GUIDE 
+                  </a>
+                </li> 
+                <li>
+                  <a href="/partnerGuide.pdf" download className="hover:underline">
+                    HOSPITAL GUIDE
                   </a>
                 </li>
                 {/* <li>
@@ -288,7 +308,7 @@ export default function Footer() {
                     Eklektik AF Welcome Pack
                   </a>
                 </li> */}
-                <li>
+                {/* <li>
                   <a href="#" className="hover:underline">
                     UAE Mum Survival Guide(coming soon)
                   </a>
@@ -297,7 +317,8 @@ export default function Footer() {
                   <a href="#" className="hover:underline">
                     The Useless Partner Guide(coming soon)
                   </a>
-                </li>
+                </li> */}
+
               </ul>
             </div>
           </div>
