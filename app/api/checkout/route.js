@@ -39,6 +39,21 @@ export async function POST(req) {
       return NextResponse.json({ error: 'Event not found' }, { status: 404 });
     }
     
+    // Enforce booking cutoff on the server (defense-in-depth)
+    const now = new Date();
+    if (event.bookingDeadline) {
+      const bookingDeadline = new Date(event.bookingDeadline);
+      if (!isNaN(bookingDeadline.getTime()) && now > bookingDeadline) {
+        return NextResponse.json({ error: 'Booking has closed for this event.' }, { status: 403 });
+      }
+    }
+
+    // Prevent bookings after the event has passed (use endDate if provided, else date)
+    const eventEndDate = event.endDate ? new Date(event.endDate) : (event.date ? new Date(event.date) : null);
+    if (eventEndDate && !isNaN(eventEndDate.getTime()) && now > eventEndDate) {
+      return NextResponse.json({ error: 'This event has already passed.' }, { status: 403 });
+    }
+
     // Validate event price
     if (!event.price || event.price <= 0) {
       return NextResponse.json({ error: 'Event price is invalid' }, { status: 400 });

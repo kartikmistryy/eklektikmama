@@ -50,6 +50,21 @@ export async function GET(req) {
       return NextResponse.redirect(new URL('/events?error=event_not_found', req.url));
     }
 
+    // Enforce booking cutoff here as well in case payment completes after deadline
+    const now = new Date();
+    if (event.bookingDeadline) {
+      const bookingDeadline = new Date(event.bookingDeadline);
+      if (!isNaN(bookingDeadline.getTime()) && now > bookingDeadline) {
+        return NextResponse.redirect(new URL(`/events/${eventId}?error=booking_closed`, req.url));
+      }
+    }
+
+    // Also prevent recording bookings after the event has passed
+    const eventEndDate = event.endDate ? new Date(event.endDate) : (event.date ? new Date(event.date) : null);
+    if (eventEndDate && !isNaN(eventEndDate.getTime()) && now > eventEndDate) {
+      return NextResponse.redirect(new URL(`/events/${eventId}?error=event_passed`, req.url));
+    }
+
     // Check if booking already exists to prevent duplicates
     const transactionId = session.payment_intent || session.id;
     const existingBooking = await Booking.findOne({ transactionId });

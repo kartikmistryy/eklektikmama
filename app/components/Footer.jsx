@@ -293,7 +293,7 @@ export default function Footer() {
                     PLACES TO VISIT IN ABU DHABI, UAE
                   </a>
                 </li> 
-                <li>
+                {/* <li>
                   <a href="/partnerGuide.pdf" download className="hover:underline">
                     PARTNER GUIDE 
                   </a>
@@ -302,7 +302,7 @@ export default function Footer() {
                   <a href="/partnerGuide.pdf" download className="hover:underline">
                     HOSPITAL GUIDE
                   </a>
-                </li>
+                </li> */}
                 {/* <li>
                   <a href="#" className="hover:underline">
                     Eklektik AF Welcome Pack
