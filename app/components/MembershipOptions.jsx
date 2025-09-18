@@ -161,12 +161,12 @@ export default function MembershipOptions() {
                     </li>
                   ))}
                 </ul>
-                <button 
-                  disabled
-                  className="mt-6 flex items-center border border-white rounded-full px-6 py-2 text-white uppercase opacity-50 cursor-not-allowed ml-auto"
+                <a 
+                  href={`eklektikmamaMembership?plan=${plan.membershipType}`}
+                  className="mt-6 flex w-fit items-center border border-white rounded-full px-6 py-2 text-white uppercase  ml-auto"
                 >
-                  COMING SOON
-                </button>
+                  JOIN NOW
+                </a>
               </motion.div>
             )}
           </AnimatePresence>

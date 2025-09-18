@@ -21,6 +21,7 @@ export async function POST(req) {
       segment: body.segment,
       message: body.message,
       meetingLink: body.meetingLink,
+      bookingDeadline: body.bookingDeadline,
     });
 
     return NextResponse.json(newEvent, { status: 201 });

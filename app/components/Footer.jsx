@@ -79,7 +79,7 @@ export default function Footer() {
             Welcome to <b className="font-semibold">Eklektik Mama™</b>, where
             motherhood meets rebellion. A home for bold mums,{" "}
             <b className="font-semibold">BYOBaby™</b> events, unapologetic
-            blogs, and gear you didn't know you needed.
+            blogs, and gear you didn't know you needed. <br />Plus, get our free Places to Visit in Abu Dhabi, UAE guide straight to your email.
           </p>
           
           {/* Newsletter Form */}
@@ -284,12 +284,22 @@ export default function Footer() {
               <h3 className="font-bold mb-6">EKLEKTIK FREEBIES</h3>
               <ul className="space-y-2 uppercase text-left">
                 <li>
+                  <a target="_blank" 
+                  href="/https://linktr.ee/eklektikmama" className="hover:underline">
+                    LINKTREE
+                  </a>
+                </li> 
+                <li>
                   <a href="/ramadanGuide.pdf" download className="hover:underline">
                     RAMADAN GUIDE
                   </a>
                 </li> 
+                
                 <li>
-                  <a href="/visitUae.pdf" download className="hover:underline">
+                  <a 
+                  // href="/visitUae.pdf" 
+                  href="/https://linktr.ee/eklektikmama" 
+                  download className="hover:underline">
                     PLACES TO VISIT IN ABU DHABI, UAE
                   </a>
                 </li> 

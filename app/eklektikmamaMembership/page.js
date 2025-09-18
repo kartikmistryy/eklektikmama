@@ -107,7 +107,7 @@ function MembershipContent() {
 
   // InView hooks
   const heroInView = useInView(heroRef, { once: true, amount: 0.3 });
-  const introInView = useInView(introRef, { once: true, amount: 0.3 });
+  const introInView = useInView(benefitsRef, { once: true, amount: 0.1 });
   const benefitsInView = useInView(benefitsRef, { once: true, amount: 0.2 });
   const howItWorksInView = useInView(howItWorksRef, {
     once: true,
@@ -202,6 +202,9 @@ function MembershipContent() {
             initial="hidden"
             animate={introInView ? "visible" : "hidden"}
             variants={fadeInUp}
+            // initial={{opacity: 0, y: 50}}
+            // whileInView={{opacity: 1, y: 0}}
+            // transition={{type: "spring", duration: 0.4, ease: "easeIn" }}
           >
             <p className="font-quicksand font-semibold text-base uppercase">
               Membership
@@ -229,7 +232,7 @@ function MembershipContent() {
             initial="hidden"
             animate={introInView ? "visible" : "hidden"}
             variants={fadeInUp}
-            transition={{ delay: 0.3 }}
+            transition={{ delay: 0.1 }}
           >
             <Image
               src="/membership/ticket.webp"
@@ -525,7 +528,7 @@ function MembershipContent() {
               src="/membership/extra.webp"
               width={1000}
               height={1000}
-              className="w-full h-full max-h-[250px] object-cover object-top rounded-md"
+              className="w-full h-full max-h-[250px] object-cover object-top rounded-md border-[1px] border-[#093166]"
             />
             <span className="py-4 w-full h-full flex flex-col justify-start items-start relative">
               <h4 className="uppercase font-poppins font-bold lg:text-4xl text-2xl text-[#093166]">
@@ -539,7 +542,7 @@ function MembershipContent() {
                 </p>
                 <span className="w-full lg:max-w-[30%] h-full flex items-end  lg:justify-end mt-5 lg:mt-5 justify-start">
                 <Link
-                  href="/eklektikmamaMembership"
+                  href="/member-dashboard"
                   className="w-fit lg:h-[45px] h-[35px] lg:text-sm lg:px-12 px-8 text-xs flex items-center justify-center uppercase text-[#bf378b] hover:text-white rounded-[20px] border-2 border-[#bf378b] bg-transparent hover:bg-[#bf378b] transition-colors duration-500 ease-in-out scale-100"
                 >
                   CHECK NOW

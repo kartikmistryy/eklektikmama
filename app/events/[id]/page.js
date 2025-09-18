@@ -28,7 +28,7 @@ export default async function EventDetailPage({ params }) {
   const { id } = await params;
   const event = await fetchEvent(id);
   if (!event) return notFound();
-  
+  console.log(event)
   const availability = await fetchAvailability(id);
   
   // Check if event date has passed
@@ -136,6 +136,11 @@ export default async function EventDetailPage({ params }) {
             )}
             {event.price > 0 && (
               <p className="text-sm text-gray-700">🎟️ AED {event.price}</p>
+            )}
+            {event.bookingDeadline && (
+              <p className="text-sm text-gray-700">
+                ⏰ Booking closes: {moment(event.bookingDeadline).format("MMMM Do YYYY, h:mm A")}
+              </p>
             )}
             <div className="text-sm text-gray-700">
               <span className="font-medium">Availability:</span> {

@@ -193,6 +193,11 @@ export default function AdminEventsPage() {
       eventData.endDate = endDateTime.toISOString();
     }
 
+    // Process booking deadline
+    if (form.bookingDeadline) {
+      eventData.bookingDeadline = new Date(form.bookingDeadline).toISOString();
+    }
+
 
     const res = await fetch("/api/events", {
       method: "POST",
