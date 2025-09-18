@@ -284,13 +284,9 @@ export default function Footer() {
               <h3 className="font-bold mb-6">EKLEKTIK FREEBIES</h3>
               <ul className="space-y-2 uppercase text-left">
                 <li>
-                  <a target="_blank" 
-                  href="/https://linktr.ee/eklektikmama" className="hover:underline">
-                    LINKTREE
-                  </a>
-                </li> 
-                <li>
-                  <a href="/ramadanGuide.pdf" download className="hover:underline">
+                  <a 
+                  // href="/ramadanGuide.pdf" download 
+                  className="hover:underline">
                     RAMADAN GUIDE
                   </a>
                 </li> 
