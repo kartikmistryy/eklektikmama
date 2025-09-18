@@ -235,7 +235,7 @@ function MembershipContent() {
             transition={{ delay: 0.1 }}
           >
             <Image
-              src="/membership/ticket.webp"
+              src="/membership/ticket.png"
               height={500}
               width={500}
               className="w-fit h-fit"
