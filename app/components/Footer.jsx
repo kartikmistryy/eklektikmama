@@ -294,8 +294,9 @@ export default function Footer() {
                 <li>
                   <a 
                   // href="/visitUae.pdf" 
-                  href="/https://linktr.ee/eklektikmama" 
-                  download className="hover:underline">
+                  target="_blank"
+                  href="https://linktr.ee/eklektikmama" 
+                  className="hover:underline">
                     PLACES TO VISIT IN ABU DHABI, UAE
                   </a>
                 </li> 
