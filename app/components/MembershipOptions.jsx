@@ -48,28 +48,16 @@ export default function MembershipOptions() {
       membershipType: "annual",
       perks: [
         {
-          icon: "/membership/whiteIcons/1.webp",
-          text: "Early access to all event drops",
+          icon: "/membership/whiteIcons/6.webp",
+          text: "Save AED 98 a year (it’s like getting two months free)",
         },
         {
           icon: "/membership/whiteIcons/2.webp",
-          text: "Discounts on every BYOBaby™ ticket",
+          text: "The Eklektik Mama Guide to UAE Mum Life – our exclusive digital survival manual",
         },
         {
           icon: "/membership/whiteIcons/3.webp",
-          text: "Exclusive access to our members-only WhatsApp group",
-        },
-        {
-          icon: "/membership/whiteIcons/4.webp",
-          text: "Special perks on Shop Drops",
-        },
-        {
-          icon: "/membership/whiteIcons/5.webp",
-          text: "Surprise invites to Members-Only things we’re not supposed to talk about",
-        },
-        {
-          icon: "/membership/whiteIcons/6.webp",
-          text: "Save more with our yearly membership",
+          text: "A free Eklektik Mama tote bag – your badge of honour (and the perfect catch-all for snacks, wipes, and chaos)",
         },
       ],
     },
@@ -84,7 +72,7 @@ export default function MembershipOptions() {
     {
       question: "How much does it cost?",
       answer:
-        "AED 50/month or AED 450/year. Yearly memberships save you AED 150.",
+        "AED 50/month or AED 450/year. Yearly memberships save you AED 98.",
     },
     {
       question: "How do I get my discounts?",
@@ -144,6 +132,11 @@ export default function MembershipOptions() {
                 transition={{ duration: 0.3 }}
                 className="overflow-hidden bg-[#db4e9f] px-6 pb-6 md:pl-10"
               >
+                {plan.membershipType === "annual" && (
+                  <p className="text-white font-quicksand md:text-lg text-base font-semibold">
+                   All monthly membership perks — plus more below
+                  </p>
+                )}
                 <ul className="flex flex-col gap-4 mt-4">
                   {plan.perks.map((perk, i) => (
                     <li
@@ -163,9 +156,9 @@ export default function MembershipOptions() {
                 </ul>
                 <a 
                   href={`eklektikmamaMembership?plan=${plan.membershipType}`}
-                  className="mt-6 flex w-fit items-center border border-white rounded-full px-6 py-2 text-white uppercase  ml-auto"
+                  className="mt-6 flex w-fit items-center border border-white rounded-full px-6 py-2 text-white hover:bg-white hover:text-[#db4e9f] uppercase transition-all duration-300  ml-auto"
                 >
-                  JOIN NOW
+                  PAY VIA STRIPE <BsArrowRight className="ml-3" />
                 </a>
               </motion.div>
             )}
@@ -202,17 +195,28 @@ export default function MembershipOptions() {
               transition={{ duration: 0.3 }}
               className="overflow-hidden bg-[#db4e9f] px-6 pb-6 md:pl-10"
             >
-              <ul className="flex flex-col gap-6 mt-4">
-                {faqs.map((faq, i) => (
-                  <li
-                    key={i}
-                    className="flex flex-col gap-2 text-white font-quicksand"
-                  >
-                    <p className="font-semibold">{faq.question}</p>
-                    <p className="text-sm opacity-90">{faq.answer}</p>
-                  </li>
-                ))}
-              </ul>
+              <div className="text-white font-quicksand md:text-lg text-base">
+                <h3 className="font-semibold md:text-lg text-base mb-2">Every membership gives you:</h3>
+                <ul className="list-disc ml-6 mb-4 space-y-2">
+                  <li>Early access to event drops</li>
+                  <li>10% off BYOBaby™ events and merch</li>
+                  <li>Free members-only Coffee Catch Ups</li>
+                  <li>Mama Milestones Cards — a printable set to mark every messy, hilarious stage of motherhood</li>
+                  <li>Access to our private WhatsApp group for updates and connection</li>
+                </ul>
+                <h3 className="font-semibold md:text-lg text-base mb-2">Annual members also get:</h3>
+                <ul className="list-disc ml-6 mb-4 space-y-2">
+                  <li>The Eklektik Mama Guide to UAE Mum Life — your insider playbook for navigating mum life in the UAE</li>
+                  <li>A free Eklektik Mama tote bag — your badge of membership and catch-all for life’s chaos</li>
+                  <li>Two months free compared to paying monthly</li>
+                </ul>
+                <h3 className="font-semibold md:text-lg text-base mb-2">Pricing</h3>
+                <ul className="list-disc ml-6 mb-4 space-y-2">
+                  <li><span className="font-semibold">Monthly:</span> AED 49</li>
+                  <li><span className="font-semibold">Annual:</span> AED 490</li>
+                </ul>
+                <p className="mt-4">Annual gives you two months free, plus exclusive extras you won’t get with monthly.</p>
+              </div>
             </motion.div>
           )}
         </AnimatePresence>

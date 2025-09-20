@@ -245,7 +245,7 @@ function MembershipContent() {
               src="/membership/brandStamp.webp"
               height={300}
               width={300}
-              className="w-fit h-fit md:max-w-[180px] rotate-infinite md:max-h-[180px] max-w-[130px] max-h-[130px] absolute md:right-32 right-5 bottom-0"
+              className="w-fit h-fit md:max-w-[180px] rotate-infinite md:max-h-[180px] max-w-[130px] max-h-[130px] absolute md:right-20 right-5 -bottom-10"
               alt="Brand stamp"
             />
           </motion.span>
