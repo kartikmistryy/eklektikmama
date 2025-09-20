@@ -22,23 +22,23 @@ export default function MembershipOptions() {
       perks: [
         {
           icon: "/membership/whiteIcons/1.webp",
-          text: "Early access to all event drops",
+          text: "Exclusive WhatsApp group – your go-to hub for updates, banter, and mama solidarity",
         },
         {
           icon: "/membership/whiteIcons/2.webp",
-          text: "Discounts on every BYOBaby™ ticket",
+          text: "10% off every BYOBaby™ ticket – from breakfasts to cinema ",
         },
         {
           icon: "/membership/whiteIcons/3.webp",
-          text: "Exclusive access to our members-only WhatsApp group",
+          text: "10% off Shop Drops – because motherhood deserves better than boring merch",
         },
         {
           icon: "/membership/whiteIcons/4.webp",
-          text: "Special perks on Shop Drops",
+          text: "Access to members-only Coffee Catch Ups",
         },
         {
           icon: "/membership/whiteIcons/5.webp",
-          text: "Surprise invites to Members-Only things we’re not supposed to talk about",
+          text: "Mama Milestones Cards digital download to mark every messy, hilarious stage of mum life",
         },
       ],
     },
@@ -84,7 +84,7 @@ export default function MembershipOptions() {
     {
       question: "How much does it cost?",
       answer:
-        "AED 49/month or AED 490/year. Yearly memberships save you AED 110.",
+        "AED 50/month or AED 450/year. Yearly memberships save you AED 150.",
     },
     {
       question: "How do I get my discounts?",
@@ -142,7 +142,7 @@ export default function MembershipOptions() {
                 animate={{ height: "auto", opacity: 1 }}
                 exit={{ height: 0, opacity: 0 }}
                 transition={{ duration: 0.3 }}
-                className="overflow-hidden bg-[#db4e9f] px-6 pb-6"
+                className="overflow-hidden bg-[#db4e9f] px-6 pb-6 md:pl-10"
               >
                 <ul className="flex flex-col gap-4 mt-4">
                   {plan.perks.map((perk, i) => (
@@ -200,7 +200,7 @@ export default function MembershipOptions() {
               animate={{ height: "auto", opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
               transition={{ duration: 0.3 }}
-              className="overflow-hidden bg-[#db4e9f] px-6 pb-6"
+              className="overflow-hidden bg-[#db4e9f] px-6 pb-6 md:pl-10"
             >
               <ul className="flex flex-col gap-6 mt-4">
                 {faqs.map((faq, i) => (
