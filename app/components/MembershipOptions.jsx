@@ -195,27 +195,88 @@ export default function MembershipOptions() {
               transition={{ duration: 0.3 }}
               className="overflow-hidden bg-[#db4e9f] px-6 pb-6 md:pl-10"
             >
-              <div className="text-white font-quicksand md:text-lg text-base">
-                <h3 className="font-semibold md:text-lg text-base mb-2">Every membership gives you:</h3>
-                <ul className="list-disc ml-6 mb-4 space-y-2">
-                  <li>Early access to event drops</li>
-                  <li>10% off BYOBaby™ events and merch</li>
-                  <li>Free members-only Coffee Catch Ups</li>
-                  <li>Mama Milestones Cards — a printable set to mark every messy, hilarious stage of motherhood</li>
-                  <li>Access to our private WhatsApp group for updates and connection</li>
-                </ul>
-                <h3 className="font-semibold md:text-lg text-base mb-2">Annual members also get:</h3>
-                <ul className="list-disc ml-6 mb-4 space-y-2">
-                  <li>The Eklektik Mama Guide to UAE Mum Life — your insider playbook for navigating mum life in the UAE</li>
-                  <li>A free Eklektik Mama tote bag — your badge of membership and catch-all for life’s chaos</li>
-                  <li>Two months free compared to paying monthly</li>
-                </ul>
-                <h3 className="font-semibold md:text-lg text-base mb-2">Pricing</h3>
-                <ul className="list-disc ml-6 mb-4 space-y-2">
-                  <li><span className="font-semibold">Monthly:</span> AED 49</li>
-                  <li><span className="font-semibold">Annual:</span> AED 490</li>
-                </ul>
-                <p className="mt-4">Annual gives you two months free, plus exclusive extras you won’t get with monthly.</p>
+              <div className="text-white font-quicksand md:text-base text-sm space-y-6">
+                
+                {/* Core Benefits Section */}
+                <div className="bg-white/10 rounded-lg p-4">
+                  <h3 className="font-semibold text-lg mb-3 text-white">Every membership gives you:</h3>
+                  <ul className="list-disc ml-6 space-y-2">
+                    <li>Early access to event drops</li>
+                    <li>10% off BYOBaby™ events and merch</li>
+                    <li>Free members-only Coffee Catch Ups</li>
+                    <li>Mama Milestones Cards — a printable set to mark every messy, hilarious stage of motherhood</li>
+                    <li>Access to our private WhatsApp group for updates and connection</li>
+                  </ul>
+                </div>
+
+                {/* Annual Benefits Section */}
+                <div className="bg-white/10 rounded-lg p-4">
+                  <h3 className="font-semibold text-lg mb-3 text-white">Annual members also get:</h3>
+                  <ul className="list-disc ml-6 space-y-2">
+                    <li>The Eklektik Mama Guide to UAE Mum Life — your insider playbook for navigating mum life in the UAE</li>
+                    <li>A free Eklektik Mama tote bag — your badge of membership and catch-all for life's chaos</li>
+                    <li>Two months free compared to paying monthly</li>
+                  </ul>
+                </div>
+
+                {/* Pricing Section */}
+                <div className="bg-white/10 rounded-lg p-4">
+                  <h3 className="font-semibold text-lg mb-3 text-white">Pricing</h3>
+                  <ul className="list-disc ml-6 space-y-2">
+                    <li><span className="font-semibold">Monthly:</span> AED 49</li>
+                    <li><span className="font-semibold">Annual:</span> AED 490</li>
+                  </ul>
+                  <p className="mt-3 text-sm">Annual gives you two months free, plus exclusive extras you won't get with monthly.</p>
+                </div>
+
+                {/* FAQ Items */}
+                <div className="space-y-4">
+                  {faqs.map((faq, index) => (
+                    <div key={index} className="bg-white/10 rounded-lg p-4">
+                      <h4 className="font-semibold text-base mb-2 text-white">{faq.question}</h4>
+                      <p className="text-sm">{faq.answer}</p>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Additional Info Section */}
+                <div className="bg-white/10 rounded-lg p-4">
+                  <h3 className="font-semibold text-lg mb-3 text-white">Monthly vs. Annual</h3>
+                  <p className="text-sm mb-3">Both plans include the same core perks.</p>
+                  <p className="text-sm">Annual gives you more value, extra rewards, and fewer payments to manage.</p>
+                </div>
+
+                <div className="bg-white/10 rounded-lg p-4">
+                  <h3 className="font-semibold text-lg mb-3 text-white">Discounts</h3>
+                  <p className="text-sm">Use the same email you purchased your membership with, and your 10% discount will be applied automatically at checkout.</p>
+                </div>
+
+                <div className="bg-white/10 rounded-lg p-4">
+                  <h3 className="font-semibold text-lg mb-3 text-white">Cancellations</h3>
+                  <p className="text-sm mb-2">No contracts. Cancel anytime.</p>
+                  <ul className="list-disc ml-6 space-y-1">
+                    <li className="text-sm">Monthly stays active until the end of the month you've paid for.</li>
+                    <li className="text-sm">Annual stays active until the end of your paid year.</li>
+                  </ul>
+                </div>
+
+                <div className="bg-white/10 rounded-lg p-4">
+                  <h3 className="font-semibold text-lg mb-3 text-white">Renewals</h3>
+                  <p className="text-sm">Both plans renew automatically.</p>
+                  <p className="text-sm">We'll email you ahead of time so there are no surprises.</p>
+                </div>
+
+                <div className="bg-white/10 rounded-lg p-4">
+                  <h3 className="font-semibold text-lg mb-3 text-white">Refunds</h3>
+                  <p className="text-sm">Cancel within 7 days of joining to request a refund.</p>
+                  <p className="text-sm">Email <a href="mailto:hello@eklektikmama.com" className="underline hover:text-gray-200">hello@eklektikmama.com</a> and we'll help.</p>
+                </div>
+
+                <div className="bg-white/10 rounded-lg p-4">
+                  <h3 className="font-semibold text-lg mb-3 text-white">Collecting your tote (annual only)</h3>
+                  <p className="text-sm">Pick up your tote at any BYOBaby™ event — just show your membership confirmation at check-in.</p>
+                </div>
+
               </div>
             </motion.div>
           )}
