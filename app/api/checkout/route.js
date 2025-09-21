@@ -4,7 +4,7 @@ import Stripe from "stripe";
 import { connectDB } from "@/lib/db";
 import Event from "@/models/Event";
 import Membership from "@/models/Membership";
-import { updateMemberSavings } from "@/lib/googleSheets";
+import { updateMemberSavings, getEventBookingsCount } from "@/lib/googleSheets";
 
 export async function POST(req) {
   try {
@@ -57,6 +57,16 @@ export async function POST(req) {
     // Validate event price
     if (!event.price || event.price <= 0) {
       return NextResponse.json({ error: 'Event price is invalid' }, { status: 400 });
+    }
+
+    // Check seat availability
+    const currentBookings = await getEventBookingsCount(event);
+    const availableSeats = event.seats - currentBookings;
+    
+    if (availableSeats < numberOfTickets) {
+      return NextResponse.json({ 
+        error: `Only ${availableSeats} seats available. You requested ${numberOfTickets} tickets.` 
+      }, { status: 400 });
     }
 
     // Check if user is a member and calculate discount

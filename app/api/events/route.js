@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { connectDB } from "@/lib/db";
 import Event from "@/models/Event";
+import { createEventSheet } from "@/lib/googleSheets";
 
 // CREATE new event
 export async function POST(req) {
@@ -22,7 +23,17 @@ export async function POST(req) {
       message: body.message,
       meetingLink: body.meetingLink,
       bookingDeadline: body.bookingDeadline,
+      seats: body.seats,
     });
+
+    // Create event-specific Google Sheet
+    try {
+      const sheetInfo = await createEventSheet(newEvent);
+      console.log('Event sheet created:', sheetInfo);
+    } catch (sheetError) {
+      console.error('Error creating event sheet:', sheetError);
+      // Don't fail the event creation if sheet creation fails
+    }
 
     return NextResponse.json(newEvent, { status: 201 });
   } catch (err) {

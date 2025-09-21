@@ -6,7 +6,7 @@ import Booking from "@/models/Booking";
 import Membership from "@/models/Membership";
 import { google } from "googleapis";
 import { sendBookingConfirmationEmail } from "@/lib/mailchimp";
-import { updateMemberSavings } from "@/lib/googleSheets";
+import { updateMemberSavings, addBookingToEventSheet, getEventBookingsCount } from "@/lib/googleSheets";
 
 /**
  * Google Sheets Column Structure:
@@ -128,176 +128,93 @@ export async function GET(req) {
     // Save to Google Sheets based on event segment
     let sheetsResult = { success: false, error: 'Not configured' };
     
+    // Add booking to event-specific Google Sheet
     if (eventSegment && process.env.GOOGLE_SHEETS_CLIENT_EMAIL && process.env.GOOGLE_SHEETS_PRIVATE_KEY) {
       try {
-        const auth = new google.auth.JWT(
-          process.env.GOOGLE_SHEETS_CLIENT_EMAIL,
-          undefined,
-          process.env.GOOGLE_SHEETS_PRIVATE_KEY.replace(/\\n/g, '\n'),
-          ["https://www.googleapis.com/auth/spreadsheets"]
-        );
+        // Prepare booking data for the new event-specific sheet
+        const bookingData = {
+          guardianName,
+          childName,
+          email: userEmail,
+          phone,
+          numberOfTickets,
+          transactionId,
+          paymentStatus: 'paid',
+          photographyConsent,
+          // Add segment-specific data
+          ...(eventSegment === 'cinemaMorning' && {
+            emergencyContact: additionalData.emergencyName || '',
+            emergencyPhone: additionalData.emergencyPhone || '',
+            childAge: additionalData.childAge || '',
+            childGender: additionalData.childGender || '',
+            dietaryRequirements: additionalData.allergies ? additionalData.allergies.join(', ') : '',
+            medicalConditions: additionalData.medicalConditions || ''
+          }),
+          ...(eventSegment === 'mamaBreakfast' && {
+            emergencyContact: additionalData.emergencyName || '',
+            emergencyPhone: additionalData.emergencyPhone || '',
+            childAge: additionalData.childAge || '',
+            childGender: additionalData.childGender || '',
+            dietaryRequirements: additionalData.allergies ? additionalData.allergies.join(', ') : '',
+            medicalConditions: additionalData.medicalConditions || '',
+            specialRequests: additionalData.specialRequests || '',
+            tablePreferences: additionalData.tablePreferences || '',
+            additionalNotes: additionalData.notes || ''
+          }),
+          ...(eventSegment === 'mamaFit' && {
+            fitnessLevel: additionalData.fitnessLevel || '',
+            medicalConditions: additionalData.medicalConditions || '',
+            emergencyContact: additionalData.emergencyName || '',
+            emergencyPhone: additionalData.emergencyPhone || ''
+          }),
+          ...(eventSegment === 'eklektikEdit' && {
+            additionalNotes: additionalData.notes || ''
+          })
+        };
+
+        // Add booking to event-specific sheet
+        await addBookingToEventSheet(bookingData, event);
         
-        const sheets = google.sheets({ version: 'v4', auth });
+        // Get ticket number from the sheet (we'll calculate it based on row position)
+        const ticketNumber = await getEventBookingsCount(event);
         
-        // Get the correct spreadsheet ID based on event segment
-        let spreadsheetId;
-        switch (eventSegment) {
-          case 'cinemaMorning':
-            spreadsheetId = process.env.CINEMA_MORNING_SPREADSHEET_ID;
-            break;
-          case 'mamaBreakfast':
-            spreadsheetId = process.env.MAMA_BREAKFAST_SPREADSHEET_ID;
-            break;
-          case 'mamaFit':
-            spreadsheetId = process.env.MAMAFIT_SPREADSHEET_ID;
-            break;
-          case 'eklektikEdit':
-            spreadsheetId = process.env.EKLEKTIK_EDIT_SPREADSHEET_ID;
-            break;
-          default:
-            spreadsheetId = process.env.GOOGLE_SHEETS_SPREADSHEET_ID;
-        }
-
-        if (spreadsheetId) {
-          // Prepare the row data based on event segment
-          let rowData = [
-            new Date().toLocaleString('en-US', { timeZone: 'Asia/Dubai' }), // Booking Date/Time
-            event.title, // Event Title
-            new Date(event.date).toLocaleString('en-US', { timeZone: 'Asia/Dubai' }), // Event Date
-            guardianName, // Guardian Name
-            childName, // Child Name
-            userEmail, // Email
-            phone, // Phone
-            numberOfTickets, // Number of Tickets
-            transactionId, // Transaction ID
-            'Paid', // Payment Status
-            new Date().toISOString() // Timestamp
-          ];
-
-          // Add segment-specific fields - ensure all fields are present to maintain column alignment
-          if (eventSegment === 'cinemaMorning') {
-            // Cinema Morning fields (6 fields + photography consent)
-            rowData.push(
-              additionalData.emergencyName || '',
-              additionalData.emergencyPhone || '',
-              additionalData.childDob || '',
-              additionalData.childAge || '',
-              additionalData.allergies ? additionalData.allergies.join(', ') : '',
-              additionalData.notes || '',
-              photographyConsent
-            );
-          } else if (eventSegment === 'mamaBreakfast') {
-            // Mama Breakfast fields (6 fields + 3 breakfast choices + photography consent = 10 fields total)
-            rowData.push(
-              additionalData.emergencyName || '',
-              additionalData.emergencyPhone || '',
-              additionalData.childDob || '',
-              additionalData.childAge || '',
-              additionalData.allergies ? additionalData.allergies.join(', ') : '',
-              additionalData.notes || '',
-              choiceI || '',
-              choiceII || '',
-              choiceIII || '',
-              photographyConsent
-            );
-          } else if (eventSegment === 'mamaFit') {
-            // MamaFit fields (4 fields + photography consent)
-            rowData.push(
-              additionalData.pregnant || '',
-              additionalData.postpartum || '',
-              additionalData.medicalConditions || '',
-              additionalData.notes || '',
-              photographyConsent
-            );
-          } else if (eventSegment === 'eklektikEdit') {
-            // Eklektik Edit fields (1 field + photography consent)
-            rowData.push(
-              additionalData.notes || '',
-              photographyConsent
-            );
-          } else if (eventSegment === 'helloChef') {
-            // Hello Chef fields (6 fields + photography consent)
-            rowData.push(
-              additionalData.emergencyName || '',
-              additionalData.emergencyPhone || '',
-              additionalData.childDob || '',
-              additionalData.childAge || '',
-              additionalData.cookingExperience || '',
-              additionalData.foodAllergies || '',
-              additionalData.favoriteFoods || '',
-              additionalData.notes || '',
-              photographyConsent
-            );
-          }
-
-          // Ensure all values are strings and handle undefined/null values
-          rowData = rowData.map(value => {
-            if (value === undefined || value === null) {
-              return '';
-            }
-            return String(value);
-          });
-          
-          // First, get the current data to find the next available row
-          const currentData = await sheets.spreadsheets.values.get({
-            spreadsheetId,
-            range: 'Sheet1!A:A',
-          });
-          
-          // Find the next available row (start from row 2)
-          const nextRow = Math.max(2, (currentData.data.values ? currentData.data.values.length : 1) + 1);
-          
-          // Calculate ticket number (row number - 1, since row 1 is header)
-          const ticketNumber = nextRow - 1;
-          
-          // Update the specific row starting from row 2
-          const response = await sheets.spreadsheets.values.update({
-            spreadsheetId,
-            range: `Sheet1!A${nextRow}:Z${nextRow}`,
-            valueInputOption: 'USER_ENTERED',
-            requestBody: {
-              values: [rowData],
+        // Update booking with ticket number
+        await Booking.findByIdAndUpdate(booking._id, {
+          ticketNumber
+        });
+        
+        sheetsResult = { success: true, ticketNumber };
+        
+        // Send booking confirmation email after successful Google Sheets update
+        try {
+          const emailResult = await sendBookingConfirmationEmail(
+            {
+              userEmail,
+              guardianName,
+              childName,
+              numberOfTickets,
+              transactionId,
+              ticketNumber
             },
-          });
+            {
+              title: event.title,
+              date: event.date,
+              location: event.location,
+              description: event.description,
+              price: event.price,
+              segment: event.segment,
+              message: event.message,
+              meetingLink: event.meetingLink
+            }
+          );
           
-          // Update booking with ticket number
-          await Booking.findByIdAndUpdate(booking._id, {
-            ticketNumber
-          });
-          
-          sheetsResult = { success: true, response: response.data, ticketNumber };
-          
-          // Send booking confirmation email after successful Google Sheets update
-          try {
-            
-            const emailResult = await sendBookingConfirmationEmail(
-              {
-                userEmail,
-                guardianName,
-                childName,
-                numberOfTickets,
-                transactionId,
-                ticketNumber
-              },
-              {
-                title: event.title,
-                date: event.date,
-                location: event.location,
-                description: event.description,
-                price: event.price,
-                segment: event.segment,
-                message: event.message,
-                meetingLink: event.meetingLink
-              }
-            );
-            
-            // Don't fail the process if email fails
-          } catch (emailError) {
-            console.error('Email sending failed:', emailError);
-            // Don't fail the process if email fails
-          }
+          // Don't fail the process if email fails
+        } catch (emailError) {
+          console.error('Email sending failed:', emailError);
+          // Don't fail the process if email fails
         }
       } catch (sheetsError) {
+        console.error('Error adding booking to event sheet:', sheetsError);
         sheetsResult = { success: false, error: sheetsError.message };
       }
     }

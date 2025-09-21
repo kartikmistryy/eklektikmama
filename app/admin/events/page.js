@@ -17,6 +17,7 @@ export default function AdminEventsPage() {
     message: "",
     meetingLink: "",
     bookingDeadline: "",
+    seats: "",
   });
 
   const [imageFile, setImageFile] = useState(null);
@@ -221,6 +222,7 @@ export default function AdminEventsPage() {
         message: "",
         meetingLink: "",
         bookingDeadline: "",
+        seats: "",
       });
       setImageFile(null);
       setImagePreview("");
@@ -475,8 +477,8 @@ export default function AdminEventsPage() {
           </div>
         </div>
 
-        {/* Price and Location */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {/* Price, Seats, and Location */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Price (AED)</label>
             <input 
@@ -488,6 +490,20 @@ export default function AdminEventsPage() {
               step="0.01"
               min="0"
               className="w-full border border-gray-300 rounded-md p-3 focus:ring-2 focus:ring-blue-500 focus:border-transparent" 
+            />
+          </div>
+          
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Available Seats *</label>
+            <input 
+              type="number" 
+              name="seats" 
+              value={form.seats} 
+              onChange={handleChange} 
+              placeholder="50" 
+              min="1"
+              className="w-full border border-gray-300 rounded-md p-3 focus:ring-2 focus:ring-blue-500 focus:border-transparent" 
+              required
             />
           </div>
           
