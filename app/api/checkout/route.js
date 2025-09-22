@@ -59,14 +59,18 @@ export async function POST(req) {
       return NextResponse.json({ error: 'Event price is invalid' }, { status: 400 });
     }
 
-    // Check seat availability
-    const currentBookings = await getEventBookingsCount(event);
-    const availableSeats = event.seats - currentBookings;
-    
-    if (availableSeats < numberOfTickets) {
-      return NextResponse.json({ 
-        error: `Only ${availableSeats} seats available. You requested ${numberOfTickets} tickets.` 
-      }, { status: 400 });
+    // Check seat availability (only if seats are configured)
+    if (event.seats && event.seats > 0) {
+      const currentBookings = await getEventBookingsCount(event);
+      const availableSeats = event.seats - currentBookings;
+      
+      if (availableSeats < numberOfTickets) {
+        return NextResponse.json({ 
+          error: `Only ${availableSeats} seats available. You requested ${numberOfTickets} tickets.` 
+        }, { status: 400 });
+      }
+    } else {
+      console.log(`Event ${event.title} has no seat limit configured (seats: ${event.seats})`);
     }
 
     // Check if user is a member and calculate discount
