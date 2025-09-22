@@ -9,6 +9,13 @@ export async function POST(req) {
     await connectDB();
     const body = await req.json();
 
+    console.log('Creating event with data:', {
+      title: body.title,
+      segment: body.segment,
+      seats: body.seats,
+      date: body.date
+    });
+
     const newEvent = await Event.create({
       title: body.title,
       description: body.description,
@@ -26,6 +33,8 @@ export async function POST(req) {
       seats: body.seats,
     });
 
+    console.log('Event created successfully:', newEvent._id);
+
     // Create event-specific Google Sheet
     try {
       const sheetInfo = await createEventSheet(newEvent);
@@ -37,6 +46,12 @@ export async function POST(req) {
 
     return NextResponse.json(newEvent, { status: 201 });
   } catch (err) {
+    console.error('Error creating event:', err);
+    console.error('Error details:', {
+      message: err.message,
+      name: err.name,
+      stack: err.stack
+    });
     return NextResponse.json({ error: err.message }, { status: 500 });
   }
 }

@@ -27,8 +27,8 @@ const DynamicForm = ({ formConfig, onSubmit, submitting, event }) => {
     const { name, value, type, checked } = e.target;
     
     if (type === 'checkbox') {
-      // Special handling for photography consent checkbox
-      if (name === 'photographyConsent') {
+      // Special handling for consent checkboxes
+      if (name === 'photographyConsent' || name === 'waiverConsent') {
         setFormData(prev => ({
           ...prev,
           [name]: checked
@@ -186,6 +186,38 @@ const DynamicForm = ({ formConfig, onSubmit, submitting, event }) => {
                 <option key={option} value={option}>{option}</option>
               ))}
             </select>
+          </div>
+        );
+
+      case 'info':
+        return (
+          <div key={name} className="bg-blue-50 border border-blue-200 rounded-md p-3">
+            <label className="block text-sm font-medium text-blue-800 mb-1">
+              {label}
+            </label>
+            <p className="text-sm text-blue-700">{field.text}</p>
+          </div>
+        );
+
+      case 'checkbox':
+        return (
+          <div key={name} className="space-y-2">
+            <label className="flex items-start">
+              <input
+                type="checkbox"
+                name={name}
+                checked={formData[name] || false}
+                onChange={handleInputChange}
+                required={required}
+                className="mt-1 mr-3 text-[#093166] focus:ring-[#093166] border-gray-300 rounded"
+              />
+              <div>
+                <span className="text-sm font-medium text-gray-700">{label} {required && <span className="text-red-500">*</span>}</span>
+                {field.text && (
+                  <p className="text-xs text-gray-600 mt-1">{field.text}</p>
+                )}
+              </div>
+            </label>
           </div>
         );
 

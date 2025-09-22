@@ -94,6 +94,9 @@ export async function POST(req) {
           case 'eklektikEdit':
             spreadsheetId = process.env.EKLEKTIK_EDIT_SPREADSHEET_ID;
             break;
+          case 'familyDay':
+            spreadsheetId = process.env.FAMILY_DAY_SPREADSHEET_ID;
+            break;
           default:
             spreadsheetId = null;
         }

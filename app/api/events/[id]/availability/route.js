@@ -10,7 +10,8 @@ const LEGACY_SEGMENT_CAPACITY = {
   mamaBreakfast: 9, // Currently has 5 records, so 4 more can be added (5 + 4 = 9)
   mamaFit: 10,
   eklektikEdit: 10,
-  helloChef: 10
+  helloChef: 10,
+  familyDay: 10
 };
 
 export async function GET(req, { params }) {

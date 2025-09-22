@@ -14,7 +14,7 @@ const EventSchema = new mongoose.Schema({
   segment: { 
     type: String, 
     required: true,
-    enum: ['cinemaMorning', 'mamaBreakfast', 'mamaFit', 'eklektikEdit'],
+    enum: ['cinemaMorning', 'mamaBreakfast', 'mamaFit', 'eklektikEdit', 'familyDay'],
     default: 'cinemaMorning'
   },
   message: String, // Custom message for eklektik edit events

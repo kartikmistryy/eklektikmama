@@ -199,6 +199,15 @@ export default function AdminEventsPage() {
       eventData.bookingDeadline = new Date(form.bookingDeadline).toISOString();
     }
 
+    // Convert seats to number
+    if (form.seats) {
+      eventData.seats = parseInt(form.seats);
+    }
+
+    // Convert price to number
+    if (form.price) {
+      eventData.price = parseFloat(form.price);
+    }
 
     const res = await fetch("/api/events", {
       method: "POST",
@@ -268,6 +277,7 @@ export default function AdminEventsPage() {
               <option value="mamaBreakfast">Mama Breakfast</option>
               <option value="mamaFit">MamaFit</option>
               <option value="eklektikEdit">Eklektik Edit</option>
+              <option value="familyDay">Family Day</option>
             </select>
           </div>
         </div>
@@ -491,6 +501,19 @@ export default function AdminEventsPage() {
               min="0"
               className="w-full border border-gray-300 rounded-md p-3 focus:ring-2 focus:ring-blue-500 focus:border-transparent" 
             />
+            {form.segment === 'familyDay' && (
+              <div className="mt-2 p-3 bg-blue-50 border border-blue-200 rounded-md">
+                <p className="text-sm font-medium text-blue-800 mb-1">Family Day Pricing Tiers (Test Prices):</p>
+                <ul className="text-xs text-blue-700 space-y-1">
+                  <li>• Parents + 2 children: 3.6 AED</li>
+                  <li>• Parents + 3 children: 3.8 AED</li>
+                  <li>• Parents + 4 children: 4.0 AED</li>
+                </ul>
+                <p className="text-xs text-blue-600 mt-2">
+                  Note: Pricing is automatically calculated based on number of children selected during booking.
+                </p>
+              </div>
+            )}
           </div>
           
           <div>

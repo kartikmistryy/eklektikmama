@@ -88,14 +88,14 @@ export default function BookingPage({ params }) {
       const mappedData = {
         eventId: params.id,
         eventSegment: event.segment,
-        // Map motherName to guardianName
-        guardianName: formData.motherName || formData.name || '',
-        // Map motherEmail to email
-        email: formData.motherEmail || formData.email || '',
-        // Map motherPhone to phone
-        phone: formData.motherPhone || formData.contact || '',
-        // Keep childName as is
-        childName: formData.childName || '',
+        // Map parent names to guardianName (handle different form structures)
+        guardianName: formData.motherName || formData.parent1Name || formData.name || '',
+        // Map parent emails to email
+        email: formData.motherEmail || formData.parentEmail || formData.email || '',
+        // Map parent phones to phone
+        phone: formData.motherPhone || formData.parent1Phone || formData.contact || '',
+        // Keep childName as is (or use first child for family day)
+        childName: formData.childName || formData.child1Name || '',
         // Keep numberOfTickets as is
         numberOfTickets: formData.numberOfTickets || 1,
         // Pass all other form data as additionalData
@@ -343,7 +343,18 @@ export default function BookingPage({ params }) {
                   {event.price > 0 && (
                     <div className="flex items-center text-gray-700">
                       <span className="mr-3 text-xl">🎟️</span>
-                      <span className="text-xl font-semibold text-[#093166]">AED {event.price} per ticket</span>
+                      {event.segment === 'familyDay' ? (
+                        <div>
+                          <span className="text-xl font-semibold text-[#093166]">Family Day Pricing (Test):</span>
+                          <div className="mt-2 space-y-1 text-sm">
+                            <div>• Parents + 2 children: <span className="font-semibold text-[#093166]">3.6 AED</span></div>
+                            <div>• Parents + 3 children: <span className="font-semibold text-[#093166]">3.8 AED</span></div>
+                            <div>• Parents + 4 children: <span className="font-semibold text-[#093166]">4.0 AED</span></div>
+                          </div>
+                        </div>
+                      ) : (
+                        <span className="text-xl font-semibold text-[#093166]">AED {event.price} per ticket</span>
+                      )}
                     </div>
                   )}
                 </div>

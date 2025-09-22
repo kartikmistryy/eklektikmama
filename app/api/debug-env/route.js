@@ -11,6 +11,7 @@ export async function GET() {
       MAMA_BREAKFAST_SPREADSHEET_ID: process.env.MAMA_BREAKFAST_SPREADSHEET_ID ? 'Set' : 'Not Set',
       MAMAFIT_SPREADSHEET_ID: process.env.MAMAFIT_SPREADSHEET_ID ? 'Set' : 'Not Set',
       EKLEKTIK_EDIT_SPREADSHEET_ID: process.env.EKLEKTIK_EDIT_SPREADSHEET_ID ? 'Set' : 'Not Set',
+      FAMILY_DAY_SPREADSHEET_ID: process.env.FAMILY_DAY_SPREADSHEET_ID ? 'Set' : 'Not Set',
     };
 
     // Check spreadsheet IDs from the imported object
@@ -19,6 +20,7 @@ export async function GET() {
       mamaBreakfast: spreadsheetIds.mamaBreakfast ? 'Set' : 'Not Set',
       mamaFit: spreadsheetIds.mamaFit ? 'Set' : 'Not Set',
       eklektikEdit: spreadsheetIds.eklektikEdit ? 'Set' : 'Not Set',
+      familyDay: spreadsheetIds.familyDay ? 'Set' : 'Not Set',
     };
 
     return NextResponse.json({

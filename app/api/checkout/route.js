@@ -108,12 +108,30 @@ export async function POST(req) {
     const protocol = (hdrs.get('x-forwarded-proto') || 'http') + '://';
     const origin = process.env.NEXT_PUBLIC_BASE_URL || (host ? `${protocol}${host}` : 'http://localhost:3000');
     
-    // Calculate final price after member discount
-    const originalPrice = event.price;
+    // Calculate pricing based on event segment
+    let originalPrice = event.price;
+    
+    // Special pricing for Family Day events based on number of children
+    if (event.segment === 'familyDay') {
+      const numberOfChildren = parseInt(otherFormData.numberOfChildren) || 0;
+      if (numberOfChildren === 2) {
+        originalPrice = 3.6; // Parents + 2 children (test price)
+      } else if (numberOfChildren === 3) {
+        originalPrice = 3.8; // Parents + 3 children (test price)
+      } else if (numberOfChildren === 4) {
+        originalPrice = 4; // Parents + 4 children (test price)
+      } else {
+        // Default to 2 children pricing if invalid number
+        originalPrice = 3.6;
+      }
+    }
+    
     const discountedPrice = isMember ? originalPrice * (1 - memberDiscount / 100) : originalPrice;
     
     // Debug logging
     console.log('Event checkout debug:', {
+      eventSegment: event.segment,
+      numberOfChildren: event.segment === 'familyDay' ? (otherFormData.numberOfChildren || 'not provided') : 'N/A',
       originalPrice,
       discountedPrice,
       isMember,
@@ -123,9 +141,17 @@ export async function POST(req) {
     
     // Create line item with discounted price (simpler approach)
     const finalPrice = Math.max(0, Math.round(discountedPrice * 100));
-    const productName = isMember ? 
-      `${event.title} (Member Price - ${memberDiscount}% off)` : 
-      event.title;
+    
+    // Create product name based on event type
+    let productName = event.title;
+    if (event.segment === 'familyDay') {
+      const numberOfChildren = parseInt(otherFormData.numberOfChildren) || 2;
+      productName = `${event.title} (Parents + ${numberOfChildren} children)`;
+    }
+    
+    if (isMember) {
+      productName += ` (Member Price - ${memberDiscount}% off)`;
+    }
     
     console.log('Final pricing:', {
       originalPrice,
