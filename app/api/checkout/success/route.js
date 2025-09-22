@@ -169,6 +169,27 @@ export async function GET(req) {
           }),
           ...(eventSegment === 'eklektikEdit' && {
             additionalNotes: additionalData.notes || ''
+          }),
+          ...(eventSegment === 'familyDay' && {
+            parent1Name: additionalData.parent1Name || '',
+            parent2Name: additionalData.parent2Name || '',
+            parent1Phone: additionalData.parent1Phone || '',
+            parent2Phone: additionalData.parent2Phone || '',
+            child1Name: additionalData.child1Name || '',
+            child1Age: additionalData.child1Age || '',
+            child2Name: additionalData.child2Name || '',
+            child2Age: additionalData.child2Age || '',
+            child3Name: additionalData.child3Name || '',
+            child3Age: additionalData.child3Age || '',
+            child4Name: additionalData.child4Name || '',
+            child4Age: additionalData.child4Age || '',
+            numberOfChildren: additionalData.numberOfChildren || '',
+            emergencyName: additionalData.emergencyName || '',
+            emergencyPhone: additionalData.emergencyPhone || '',
+            medicalInfo: additionalData.medicalInfo || '',
+            howDidYouHear: additionalData.howDidYouHear || '',
+            waiverConsent: additionalData.waiverConsent || '',
+            photographyConsent: additionalData.photographyConsent || ''
           })
         };
 
