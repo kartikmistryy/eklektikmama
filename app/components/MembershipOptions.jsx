@@ -72,7 +72,7 @@ export default function MembershipOptions() {
     {
       question: "How much does it cost?",
       answer:
-        "AED 50/month or AED 450/year. Yearly memberships save you AED 98.",
+        "AED 49/month or AED 490/year. Yearly memberships save you AED 98.",
     },
     {
       question: "How do I get my discounts?",

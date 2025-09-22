@@ -64,11 +64,11 @@ export default function BookingPage({ params }) {
     if (event?.segment !== 'familyDay') return null;
     
     if (numberOfChildrenValue?.includes('2 children')) {
-      return 3.6;
+      return 270;
     } else if (numberOfChildrenValue?.includes('3 children')) {
-      return 3.8;
+      return 405;
     } else if (numberOfChildrenValue?.includes('4 children')) {
-      return 4.0;
+      return 540;
     }
     return null;
   };

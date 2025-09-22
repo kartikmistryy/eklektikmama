@@ -126,14 +126,14 @@ export async function POST(req) {
       }
       
       if (numberOfChildren === 2) {
-        originalPrice = 3.6; // Parents + 2 children (test price)
+        originalPrice = 270; // Parents + 2 children
       } else if (numberOfChildren === 3) {
-        originalPrice = 3.8; // Parents + 3 children (test price)
+        originalPrice = 405; // Parents + 3 children
       } else if (numberOfChildren === 4) {
-        originalPrice = 4; // Parents + 4 children (test price)
+        originalPrice = 540; // Parents + 4 children
       } else {
         // Default to 2 children pricing if invalid number
-        originalPrice = 3.6;
+        originalPrice = 270;
       }
     }
     
