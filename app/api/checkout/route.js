@@ -113,7 +113,18 @@ export async function POST(req) {
     
     // Special pricing for Family Day events based on number of children
     if (event.segment === 'familyDay') {
-      const numberOfChildren = parseInt(otherFormData.numberOfChildren) || 0;
+      const numberOfChildrenValue = otherFormData.numberOfChildren || '';
+      let numberOfChildren = 2; // Default to 2 children
+      
+      // Parse the number of children from the select option
+      if (numberOfChildrenValue.includes('2 children')) {
+        numberOfChildren = 2;
+      } else if (numberOfChildrenValue.includes('3 children')) {
+        numberOfChildren = 3;
+      } else if (numberOfChildrenValue.includes('4 children')) {
+        numberOfChildren = 4;
+      }
+      
       if (numberOfChildren === 2) {
         originalPrice = 3.6; // Parents + 2 children (test price)
       } else if (numberOfChildren === 3) {
@@ -145,7 +156,18 @@ export async function POST(req) {
     // Create product name based on event type
     let productName = event.title;
     if (event.segment === 'familyDay') {
-      const numberOfChildren = parseInt(otherFormData.numberOfChildren) || 2;
+      const numberOfChildrenValue = otherFormData.numberOfChildren || '';
+      let numberOfChildren = 2; // Default to 2 children
+      
+      // Parse the number of children from the select option
+      if (numberOfChildrenValue.includes('2 children')) {
+        numberOfChildren = 2;
+      } else if (numberOfChildrenValue.includes('3 children')) {
+        numberOfChildren = 3;
+      } else if (numberOfChildrenValue.includes('4 children')) {
+        numberOfChildren = 4;
+      }
+      
       productName = `${event.title} (Parents + ${numberOfChildren} children)`;
     }
     

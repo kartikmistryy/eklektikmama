@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 
-const DynamicForm = ({ formConfig, onSubmit, submitting, event }) => {
+const DynamicForm = ({ formConfig, onSubmit, submitting, event, onFormDataChange }) => {
   const [formData, setFormData] = useState({});
   const [waiverAccepted, setWaiverAccepted] = useState(false);
 
@@ -26,38 +26,49 @@ const DynamicForm = ({ formConfig, onSubmit, submitting, event }) => {
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
     
+    let newFormData;
+    
     if (type === 'checkbox') {
       // Special handling for consent checkboxes
       if (name === 'photographyConsent' || name === 'waiverConsent') {
-        setFormData(prev => ({
-          ...prev,
+        newFormData = {
+          ...formData,
           [name]: checked
-        }));
+        };
+        setFormData(newFormData);
       } else {
         // Regular checkbox handling for multi-select checkboxes
         const currentValues = formData[name] || [];
         if (checked) {
-          setFormData(prev => ({
-            ...prev,
+          newFormData = {
+            ...formData,
             [name]: [...currentValues, value]
-          }));
+          };
         } else {
-          setFormData(prev => ({
-            ...prev,
+          newFormData = {
+            ...formData,
             [name]: currentValues.filter(v => v !== value)
-          }));
+          };
         }
+        setFormData(newFormData);
       }
     } else if (type === 'radio') {
-      setFormData(prev => ({
-        ...prev,
+      newFormData = {
+        ...formData,
         [name]: value
-      }));
+      };
+      setFormData(newFormData);
     } else {
-      setFormData(prev => ({
-        ...prev,
+      newFormData = {
+        ...formData,
         [name]: value
-      }));
+      };
+      setFormData(newFormData);
+    }
+    
+    // Call onFormDataChange if provided
+    if (onFormDataChange && newFormData) {
+      onFormDataChange(newFormData);
     }
   };
 

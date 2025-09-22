@@ -18,6 +18,7 @@ export default function BookingPage({ params }) {
   const [availability, setAvailability] = useState(null);
   const [isEventPast, setIsEventPast] = useState(false);
   const [isBookingDeadlinePassed, setIsBookingDeadlinePassed] = useState(false);
+  const [selectedPrice, setSelectedPrice] = useState(null);
 
   // Fetch event data on component mount
   useEffect(() => {
@@ -58,7 +59,30 @@ export default function BookingPage({ params }) {
     fetchEvent();
   }, [params.id]);
 
+  // Calculate price based on number of children for Family Day events
+  const calculateFamilyDayPrice = (numberOfChildrenValue) => {
+    if (event?.segment !== 'familyDay') return null;
+    
+    if (numberOfChildrenValue?.includes('2 children')) {
+      return 3.6;
+    } else if (numberOfChildrenValue?.includes('3 children')) {
+      return 3.8;
+    } else if (numberOfChildrenValue?.includes('4 children')) {
+      return 4.0;
+    }
+    return null;
+  };
 
+  // Handle form data changes and update price
+  const handleFormDataChange = (newFormData) => {
+    setFormData(newFormData);
+    
+    // Update price for Family Day events
+    if (event?.segment === 'familyDay' && newFormData.numberOfChildren) {
+      const price = calculateFamilyDayPrice(newFormData.numberOfChildren);
+      setSelectedPrice(price);
+    }
+  };
 
   const handleFormSubmit = async (formData) => {
     setSubmitting(true);
@@ -340,21 +364,10 @@ export default function BookingPage({ params }) {
                     </div>
                   )}
                   
-                  {event.price > 0 && (
+                  {event.price > 0 && event.segment !== 'familyDay' && (
                     <div className="flex items-center text-gray-700">
                       <span className="mr-3 text-xl">🎟️</span>
-                      {event.segment === 'familyDay' ? (
-                        <div>
-                          <span className="text-xl font-semibold text-[#093166]">Family Day Pricing (Test):</span>
-                          <div className="mt-2 space-y-1 text-sm">
-                            <div>• Parents + 2 children: <span className="font-semibold text-[#093166]">3.6 AED</span></div>
-                            <div>• Parents + 3 children: <span className="font-semibold text-[#093166]">3.8 AED</span></div>
-                            <div>• Parents + 4 children: <span className="font-semibold text-[#093166]">4.0 AED</span></div>
-                          </div>
-                        </div>
-                      ) : (
-                        <span className="text-xl font-semibold text-[#093166]">AED {event.price} per ticket</span>
-                      )}
+                      <span className="text-xl font-semibold text-[#093166]">AED {event.price} per ticket</span>
                     </div>
                   )}
                 </div>
@@ -379,6 +392,7 @@ export default function BookingPage({ params }) {
                   onSubmit={handleFormSubmit}
                   submitting={submitting}
                   event={event}
+                  onFormDataChange={handleFormDataChange}
                 />
               ) : (
                 <div className="text-center py-8">
@@ -386,12 +400,25 @@ export default function BookingPage({ params }) {
                 </div>
               )}
 
-              <button
-                onClick={() => router.back()}
-                className="w-full bg-gray-200 text-gray-700 py-3 px-6 rounded-md hover:bg-gray-300 transition-colors font-medium"
-              >
-                Cancel
-              </button>
+              {/* Dynamic Pricing Display for Family Day */}
+              {event?.segment === 'familyDay' && selectedPrice && (
+                <div className="mt-6 p-4 bg-green-50 border border-green-200 rounded-md">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h3 className="text-lg font-semibold text-green-800">Selected Package</h3>
+                      <p className="text-sm text-green-600">
+                        {formData.numberOfChildren?.includes('2 children') && 'Parents + 2 children'}
+                        {formData.numberOfChildren?.includes('3 children') && 'Parents + 3 children'}
+                        {formData.numberOfChildren?.includes('4 children') && 'Parents + 4 children'}
+                      </p>
+                    </div>
+                    <div className="text-right">
+                      <div className="text-2xl font-bold text-green-800">AED {selectedPrice}</div>
+                      <div className="text-sm text-green-600">Total Amount</div>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>
