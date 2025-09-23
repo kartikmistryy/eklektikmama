@@ -7,6 +7,7 @@ function MembershipSuccessContent() {
   const [loading, setLoading] = useState(true);
   const [result, setResult] = useState(null);
   const [error, setError] = useState('');
+  const [processing, setProcessing] = useState(false);
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -33,8 +34,13 @@ function MembershipSuccessContent() {
         const data = await response.json();
 
         if (data.success) {
-          setResult(data);
+          if (data.processing) {
+            setProcessing(true);
+          } else {
+            setResult(data);
+          }
         } else {
+          console.error('Payment verification failed:', data);
           setError(data.error || 'Failed to verify payment');
         }
       } catch (err) {
@@ -77,22 +83,57 @@ function MembershipSuccessContent() {
     );
   }
 
+  if (processing) {
+    return (
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <div className="text-center max-w-md mx-auto p-6">
+          <div className="text-blue-500 text-6xl mb-4">⏳</div>
+          <h1 className="text-3xl font-bold text-[#093166] mb-4 font-antonio">Payment Successful!</h1>
+          <p className="text-[#093166] font-quicksand mb-6">
+            Your payment has been processed successfully. Your membership is being activated and you will receive a confirmation email shortly.
+          </p>
+          <div className="bg-gray-50 p-4 rounded-lg mb-6">
+            <p className="text-sm text-gray-600">
+              If you don't receive an email within 5 minutes, please contact us at hello@eklektikmama.com
+            </p>
+          </div>
+          <div className="space-y-3">
+            <button
+              onClick={() => router.push('/member-dashboard')}
+              className="w-full bg-[#db4e9f] text-white py-3 px-6 rounded-lg font-bold hover:bg-[#bf378b] transition-colors duration-300 font-antonio"
+            >
+              Check Membership Status
+            </button>
+            <button
+              onClick={() => router.push('/events')}
+              className="w-full bg-[#093166] text-white py-3 px-6 rounded-lg font-bold hover:bg-[#1e4a72] transition-colors duration-300 font-antonio"
+            >
+              Browse Events
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-white flex items-center justify-center">
       <div className="text-center max-w-md mx-auto p-6">
         <div className="text-green-500 text-6xl mb-4">✅</div>
         <h1 className="text-3xl font-bold text-[#093166] mb-4 font-antonio">Welcome to Eklektik AF!</h1>
         <p className="text-[#093166] font-quicksand mb-6">
-          Your {result.membership.membershipType} membership is now active!
+          Your {result?.membership?.membershipType || 'membership'} membership is now active!
         </p>
         
-        <div className="bg-gray-50 p-4 rounded-lg mb-6 text-left">
-          <h3 className="font-bold text-[#093166] mb-2">Membership Details:</h3>
-          <p><strong>Email:</strong> {result.membership.email}</p>
-          <p><strong>Type:</strong> {result.membership.membershipType}</p>
-          <p><strong>Status:</strong> {result.membership.status}</p>
-          <p><strong>Valid Until:</strong> {new Date(result.membership.currentPeriodEnd).toLocaleDateString()}</p>
-        </div>
+        {result?.membership && (
+          <div className="bg-gray-50 p-4 rounded-lg mb-6 text-left">
+            <h3 className="font-bold text-[#093166] mb-2">Membership Details:</h3>
+            <p><strong>Email:</strong> {result.membership.email}</p>
+            <p><strong>Type:</strong> {result.membership.membershipType}</p>
+            <p><strong>Status:</strong> {result.membership.status}</p>
+            <p><strong>Valid Until:</strong> {new Date(result.membership.currentPeriodEnd).toLocaleDateString()}</p>
+          </div>
+        )}
 
         {result.googleSheets && (
           <div className="mb-4">

@@ -147,19 +147,34 @@ async function testMembershipDashboard() {
   log('\n🧪 Testing Membership Dashboard...', 'cyan');
   
   try {
-    const response = await makeRequest(`${BASE_URL}/api/membership/dashboard`, {
+    // Test the member dashboard page (frontend)
+    const response = await makeRequest(`${BASE_URL}/member-dashboard`, {
       method: 'GET'
     });
 
     log(`Status: ${response.status}`, response.status === 200 ? 'green' : 'red');
     
     if (response.status === 200) {
-      log('✅ Membership dashboard working', 'green');
-      log(`   • Total members: ${response.data.totalMembers || 'N/A'}`, 'green');
-      log(`   • Active members: ${response.data.activeMembers || 'N/A'}`, 'green');
-      return true;
+      log('✅ Member dashboard page accessible', 'green');
+      
+      // Test the membership verify API
+      const verifyResponse = await makeRequest(`${BASE_URL}/api/membership/verify`, {
+        method: 'POST',
+        body: { email: 'real-test-1758655100022@example.com' }
+      });
+      
+      if (verifyResponse.status === 200 && verifyResponse.data.isMember) {
+        log('✅ Membership verification API working', 'green');
+        log(`   • Member: ${verifyResponse.data.membership.firstName} ${verifyResponse.data.membership.lastName}`, 'green');
+        log(`   • Type: ${verifyResponse.data.membership.membershipType}`, 'green');
+        log(`   • Status: ${verifyResponse.data.membership.status}`, 'green');
+        return true;
+      } else {
+        log('❌ Membership verification failed', 'red');
+        return false;
+      }
     } else {
-      log('❌ Membership dashboard failed', 'red');
+      log('❌ Member dashboard page failed', 'red');
       return false;
     }
   } catch (error) {

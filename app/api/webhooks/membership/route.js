@@ -117,6 +117,7 @@ async function handleCheckoutCompleted(session) {
       phone,
       membershipType,
       stripeCustomerId: session.customer,
+      stripePriceId: membershipType === 'monthly' ? process.env.STRIPE_MONTHLY_MEMBERSHIP_PRICE_ID : process.env.STRIPE_ANNUAL_MEMBERSHIP_PRICE_ID,
       status: 'active',
       currentPeriodStart: new Date()
     });
