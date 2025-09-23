@@ -94,7 +94,7 @@ function MembershipSuccessContent() {
           </p>
           <div className="bg-gray-50 p-4 rounded-lg mb-6">
             <p className="text-sm text-gray-600">
-              If you don't receive an email within 5 minutes, please contact us at hello@eklektikmama.com
+              If you don&apos;t receive an email within 5 minutes, please contact us at hello@eklektikmama.com
             </p>
           </div>
           <div className="space-y-3">
