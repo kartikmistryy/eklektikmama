@@ -68,7 +68,7 @@ export async function GET(req) {
         const recent = await Membership.find()
           .sort({ createdAt: -1 })
           .limit(5)
-          .select('email firstName lastName membershipType status createdAt');
+          .select('email firstName lastName membershipType status createdAt googleSheetsRowId');
         
         debug.recentMemberships = recent;
       }
