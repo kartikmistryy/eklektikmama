@@ -134,7 +134,15 @@ async function handleCheckoutCompleted(session) {
     await membership.save();
 
     // Add member to Google Sheets
-    await addMemberToSheet(membership);
+    try {
+      const googleSheetsRowId = await addMemberToSheet(membership);
+      membership.googleSheetsRowId = googleSheetsRowId;
+      await membership.save();
+      console.log('Member added to Google Sheets with row ID:', googleSheetsRowId);
+    } catch (error) {
+      console.error('Error adding member to Google Sheets:', error);
+      // Don't throw error - continue with email sending
+    }
 
     // Send welcome email
     await sendMemberWelcomeEmail({
