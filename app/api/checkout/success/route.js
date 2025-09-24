@@ -146,6 +146,13 @@ export async function GET(req) {
       waiverConsent: session.metadata.waiverConsent || additionalData.waiverConsent || ''
     };
 
+    // Check if booking already exists (prevent duplicates from webhook processing)
+    const existingBooking = await Booking.findOne({ transactionId });
+    if (existingBooking) {
+      console.log('Booking already exists, redirecting to ticket page');
+      return NextResponse.redirect(new URL(`/ticket?session_id=${sessionId}`, req.url));
+    }
+
     // Save to database with all additional data
     const booking = await Booking.create({
       eventId,
