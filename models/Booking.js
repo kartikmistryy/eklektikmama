@@ -12,6 +12,69 @@ const BookingSchema = new mongoose.Schema({
   ticketNumbers: [{ type: Number }], // Array of ticket numbers for multiple tickets
   paymentStatus: { type: String, enum: ["pending", "paid"], default: "pending" },
   photographyConsent: { type: String, enum: ["Yes", "No"], default: "No" },
+  
+  // Additional form data fields
+  additionalData: {
+    type: mongoose.Schema.Types.Mixed,
+    default: {}
+  },
+  
+  // Common additional fields
+  emergencyName: String,
+  emergencyPhone: String,
+  childAge: String,
+  childGender: String,
+  childDob: String,
+  dietaryRequirements: String,
+  foodAllergies: String,
+  allergies: String,
+  medicalConditions: String,
+  conditionDetails: String,
+  medicalInfo: String,
+  specialRequests: String,
+  tablePreferences: String,
+  additionalNotes: String,
+  notes: String,
+  
+  // Family Day specific fields
+  parent1Name: String,
+  parent2Name: String,
+  parent1Phone: String,
+  parent2Phone: String,
+  child1Name: String,
+  child1Age: String,
+  child2Name: String,
+  child2Age: String,
+  child3Name: String,
+  child3Age: String,
+  child4Name: String,
+  child4Age: String,
+  numberOfChildren: String,
+  medicalInfo: String,
+  howDidYouHear: String,
+  waiverConsent: String,
+  
+  // MamaFit specific fields
+  fitnessLevel: String,
+  pregnant: String,
+  postpartum: String,
+  postpartumDuration: String,
+  
+  // Hello Chef specific fields
+  cookingExperience: String,
+  favoriteFoods: String,
+  
+  // Event segment for reference
+  eventSegment: String,
+  
+  // Member information
+  isMember: { type: Boolean, default: false },
+  memberSavings: { type: Number, default: 0 },
+  
+  // Choice fields for dropdowns
+  choiceI: String,
+  choiceII: String,
+  choiceIII: String,
 }, { timestamps: true });
 
 export default mongoose.models.Booking || mongoose.model("Booking", BookingSchema);

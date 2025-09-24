@@ -6,7 +6,7 @@ import Booking from "@/models/Booking";
 import Membership from "@/models/Membership";
 import { google } from "googleapis";
 import { sendBookingConfirmationEmail } from "@/lib/mailchimp";
-import { updateMemberSavings, addBookingToEventSheet, getEventBookingsCount } from "@/lib/googleSheets";
+import { updateMemberSavings, addBookingToEventSheet, getEventBookingsCount, addBookingToGeneralSheet } from "@/lib/googleSheets";
 
 /**
  * Google Sheets Column Structure:
@@ -89,7 +89,64 @@ export async function GET(req) {
 
     // QR code generation removed as requested
 
-    // Save to database
+    // Extract all additional data from metadata
+    const extractedData = {
+      // Emergency contact information
+      emergencyName: session.metadata.emergencyName || additionalData.emergencyName || '',
+      emergencyPhone: session.metadata.emergencyPhone || additionalData.emergencyPhone || '',
+      
+      // Child information
+      childAge: session.metadata.childAge || additionalData.childAge || '',
+      childGender: session.metadata.childGender || additionalData.childGender || '',
+      childDob: session.metadata.childDob || additionalData.childDob || '',
+      
+      // Allergy and dietary information
+      dietaryRequirements: session.metadata.dietaryRequirements || (additionalData.allergies ? additionalData.allergies.join(', ') : '') || '',
+      foodAllergies: session.metadata.foodAllergies || additionalData.foodAllergies || '',
+      allergies: session.metadata.allergies || (Array.isArray(additionalData.allergies) ? additionalData.allergies.join(',') : additionalData.allergies) || '',
+      
+      // Medical information
+      medicalConditions: session.metadata.medicalConditions || additionalData.medicalConditions || '',
+      conditionDetails: session.metadata.conditionDetails || additionalData.conditionDetails || '',
+      medicalInfo: session.metadata.medicalInfo || additionalData.medicalInfo || '',
+      
+      // MamaFit specific fields
+      pregnant: session.metadata.pregnant || additionalData.pregnant || '',
+      postpartum: session.metadata.postpartum || additionalData.postpartum || '',
+      postpartumDuration: session.metadata.postpartumDuration || additionalData.postpartumDuration || '',
+      fitnessLevel: session.metadata.fitnessLevel || additionalData.fitnessLevel || '',
+      
+      // Hello Chef specific fields
+      cookingExperience: session.metadata.cookingExperience || additionalData.cookingExperience || '',
+      favoriteFoods: session.metadata.favoriteFoods || additionalData.favoriteFoods || '',
+      
+      // Family Day specific fields
+      parent1Name: session.metadata.parent1Name || additionalData.parent1Name || '',
+      parent2Name: session.metadata.parent2Name || additionalData.parent2Name || '',
+      parent1Phone: session.metadata.parent1Phone || additionalData.parent1Phone || '',
+      parent2Phone: session.metadata.parent2Phone || additionalData.parent2Phone || '',
+      child1Name: session.metadata.child1Name || additionalData.child1Name || '',
+      child1Age: session.metadata.child1Age || additionalData.child1Age || '',
+      child2Name: session.metadata.child2Name || additionalData.child2Name || '',
+      child2Age: session.metadata.child2Age || additionalData.child2Age || '',
+      child3Name: session.metadata.child3Name || additionalData.child3Name || '',
+      child3Age: session.metadata.child3Age || additionalData.child3Age || '',
+      child4Name: session.metadata.child4Name || additionalData.child4Name || '',
+      child4Age: session.metadata.child4Age || additionalData.child4Age || '',
+      numberOfChildren: session.metadata.numberOfChildren || additionalData.numberOfChildren || '',
+      howDidYouHear: session.metadata.howDidYouHear || additionalData.howDidYouHear || '',
+      
+      // Special requests and preferences
+      specialRequests: session.metadata.specialRequests || additionalData.specialRequests || '',
+      tablePreferences: session.metadata.tablePreferences || additionalData.tablePreferences || '',
+      additionalNotes: session.metadata.additionalNotes || additionalData.additionalNotes || '',
+      notes: session.metadata.notes || additionalData.notes || '',
+      
+      // Consent fields
+      waiverConsent: session.metadata.waiverConsent || additionalData.waiverConsent || ''
+    };
+
+    // Save to database with all additional data
     const booking = await Booking.create({
       eventId,
       guardianName,
@@ -100,25 +157,32 @@ export async function GET(req) {
       transactionId,
       paymentStatus: 'paid',
       photographyConsent,
-      additionalData
+      additionalData,
+      eventSegment,
+      isMember: isMember,
+      memberSavings: memberSavings,
+      choiceI,
+      choiceII,
+      choiceIII,
+      ...extractedData
     });
 
     // Track member savings if applicable
-    const isMember = session.metadata.isMember === 'true';
-    const memberSavings = parseFloat(session.metadata.memberSavings || '0');
+    const isMemberValue = session.metadata.isMember === 'true';
+    const memberSavingsValue = parseFloat(session.metadata.memberSavings || '0');
     
-    if (isMember && memberSavings > 0) {
+    if (isMemberValue && memberSavingsValue > 0) {
       try {
         // Update member's total savings in database
         await Membership.findOneAndUpdate(
           { email: userEmail.toLowerCase() },
-          { $inc: { totalSavings: memberSavings } }
+          { $inc: { totalSavings: memberSavingsValue } }
         );
         
         // Update member's total savings in Google Sheets
-        await updateMemberSavings(userEmail, memberSavings);
+        await updateMemberSavings(userEmail, memberSavingsValue);
         
-        console.log(`Member ${userEmail} saved ${memberSavings} AED on event booking`);
+        console.log(`Member ${userEmail} saved ${memberSavingsValue} AED on event booking`);
       } catch (savingsError) {
         console.error('Error tracking member savings:', savingsError);
         // Don't fail the process if savings tracking fails
@@ -141,6 +205,10 @@ export async function GET(req) {
           transactionId,
           paymentStatus: 'paid',
           photographyConsent,
+          // Add choice fields for all events
+          choiceI,
+          choiceII,
+          choiceIII,
           // Add segment-specific data
           ...(eventSegment === 'cinemaMorning' && {
             emergencyContact: additionalData.emergencyName || '',
@@ -206,6 +274,15 @@ export async function GET(req) {
         
         sheetsResult = { success: true, ticketNumber };
         
+        // Also add to general bookings sheet
+        try {
+          await addBookingToGeneralSheet(booking, event);
+          console.log('Booking added to general bookings sheet');
+        } catch (generalSheetError) {
+          console.error('Error adding booking to general sheet:', generalSheetError);
+          // Don't fail the process if general sheet fails
+        }
+        
         // Send booking confirmation email after successful Google Sheets update
         try {
           const emailResult = await sendBookingConfirmationEmail(
@@ -237,6 +314,16 @@ export async function GET(req) {
       } catch (sheetsError) {
         console.error('Error adding booking to event sheet:', sheetsError);
         sheetsResult = { success: false, error: sheetsError.message };
+      }
+    } else {
+      // If event-specific sheet fails, still try to add to general sheet
+      try {
+        await addBookingToGeneralSheet(booking, event);
+        console.log('Booking added to general bookings sheet (event-specific sheet not configured)');
+        sheetsResult = { success: true, ticketNumber: 0 };
+      } catch (generalSheetError) {
+        console.error('Error adding booking to general sheet:', generalSheetError);
+        sheetsResult = { success: false, error: generalSheetError.message };
       }
     }
 

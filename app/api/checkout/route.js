@@ -224,24 +224,69 @@ export async function POST(req) {
         memberSavings: String(memberSavings),
         originalPrice: String(originalPrice),
         finalPrice: String(discountedPrice),
+        
+        // Choice fields for all events
         choiceI: (otherFormData.choiceI || '').substring(0, 100),
         choiceII: (otherFormData.choiceII || '').substring(0, 100),
         choiceIII: (otherFormData.choiceIII || '').substring(0, 100),
+        
+        // Emergency contact information
         emergencyName: (otherFormData.emergencyName || '').substring(0, 100),
         emergencyPhone: (otherFormData.emergencyPhone || '').substring(0, 100),
+        
+        // Child information
         childDob: otherFormData.childDob || '',
         childAge: otherFormData.childAge || '',
-        allergies: Array.isArray(otherFormData.allergies) ? otherFormData.allergies.join(',').substring(0, 100) : '',
-        notes: (otherFormData.notes || '').substring(0, 100),
+        childGender: (otherFormData.childGender || '').substring(0, 50),
+        
+        // Allergy and dietary information
+        allergies: Array.isArray(otherFormData.allergies) ? otherFormData.allergies.join(',').substring(0, 200) : (otherFormData.allergies || ''),
+        dietaryRequirements: (otherFormData.dietaryRequirements || '').substring(0, 200),
+        foodAllergies: (otherFormData.foodAllergies || '').substring(0, 200),
+        
+        // Medical information
+        medicalConditions: (otherFormData.medicalConditions || '').substring(0, 200),
+        conditionDetails: (otherFormData.conditionDetails || '').substring(0, 200),
+        medicalInfo: (otherFormData.medicalInfo || '').substring(0, 200),
+        
+        // MamaFit specific fields
         pregnant: otherFormData.pregnant || '',
         postpartum: otherFormData.postpartum || '',
-        postpartumDuration: otherFormData.postpartumDuration || '',
-        medicalConditions: (otherFormData.medicalConditions || '').substring(0, 100),
-        conditionDetails: (otherFormData.conditionDetails || '').substring(0, 100),
+        postpartumDuration: (otherFormData.postpartumDuration || '').substring(0, 100),
+        fitnessLevel: (otherFormData.fitnessLevel || '').substring(0, 50),
+        
+        // Hello Chef specific fields
         cookingExperience: otherFormData.cookingExperience || '',
-        foodAllergies: (otherFormData.foodAllergies || '').substring(0, 100),
-        favoriteFoods: (otherFormData.favoriteFoods || '').substring(0, 100),
+        favoriteFoods: (otherFormData.favoriteFoods || '').substring(0, 200),
+        
+        // Family Day specific fields
+        parent1Name: (otherFormData.parent1Name || '').substring(0, 100),
+        parent2Name: (otherFormData.parent2Name || '').substring(0, 100),
+        parent1Phone: (otherFormData.parent1Phone || '').substring(0, 50),
+        parent2Phone: (otherFormData.parent2Phone || '').substring(0, 50),
+        child1Name: (otherFormData.child1Name || '').substring(0, 100),
+        child1Age: otherFormData.child1Age || '',
+        child2Name: (otherFormData.child2Name || '').substring(0, 100),
+        child2Age: otherFormData.child2Age || '',
+        child3Name: (otherFormData.child3Name || '').substring(0, 100),
+        child3Age: otherFormData.child3Age || '',
+        child4Name: (otherFormData.child4Name || '').substring(0, 100),
+        child4Age: otherFormData.child4Age || '',
+        numberOfChildren: (otherFormData.numberOfChildren || '').substring(0, 50),
+        howDidYouHear: (otherFormData.howDidYouHear || '').substring(0, 100),
+        
+        // Special requests and preferences
+        specialRequests: (otherFormData.specialRequests || '').substring(0, 200),
+        tablePreferences: (otherFormData.tablePreferences || '').substring(0, 200),
+        additionalNotes: (otherFormData.additionalNotes || '').substring(0, 200),
+        notes: (otherFormData.notes || '').substring(0, 200),
+        
+        // Consent fields
         photographyConsent: otherFormData.photographyConsent ? 'Yes' : 'No',
+        waiverConsent: otherFormData.waiverConsent ? 'Yes' : 'No',
+        
+        // Store all additional data as JSON for comprehensive storage
+        additionalData: JSON.stringify(otherFormData)
       },
     };
     
