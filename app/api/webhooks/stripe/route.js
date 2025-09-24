@@ -3,7 +3,7 @@ import Stripe from "stripe";
 import { connectDB } from "@/lib/db";
 import Event from "@/models/Event";
 import Booking from "@/models/Booking";
-import { addBookingToEventSheet, addBookingToGeneralSheet } from "@/lib/googleSheets";
+import { addBookingToEventSheet } from "@/lib/googleSheets";
 import { sendBookingConfirmationEmail } from "@/lib/mailchimp";
 
 export const dynamic = "force-dynamic";
@@ -143,8 +143,8 @@ export async function POST(req) {
         choiceII: session.metadata?.choiceII || additionalData.choiceII || '',
         choiceIII: session.metadata?.choiceIII || additionalData.choiceIII || '',
 
-        // Event segment for reference
-        eventSegment: session.metadata?.eventSegment || paidEvent.segment || '',
+      // Event segment for reference
+      eventSegment: paidEvent.segment || session.metadata?.eventSegment || '',
 
         // Member information
         isMember: session.metadata?.isMember === 'true' || false,
@@ -238,12 +238,8 @@ export async function POST(req) {
         };
 
         // Add to event-specific sheet
-        await addBookingToEventSheet(paidEvent, bookingData);
+        await addBookingToEventSheet(bookingData, paidEvent);
         console.log('Booking added to event-specific sheet');
-
-        // Add to general bookings sheet
-        await addBookingToGeneralSheet(bookingData);
-        console.log('Booking added to general bookings sheet');
 
       } catch (sheetsError) {
         console.error('Error adding booking to Google Sheets:', sheetsError);

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 
-const DynamicForm = ({ formConfig, onSubmit, submitting, event, onFormDataChange }) => {
+const DynamicForm = ({ formConfig, onSubmit, submitting, event, onFormDataChange, isBookingDeadlinePassed, isEventPast }) => {
   const [formData, setFormData] = useState({});
   const [waiverAccepted, setWaiverAccepted] = useState(false);
 
@@ -239,6 +239,47 @@ const DynamicForm = ({ formConfig, onSubmit, submitting, event, onFormDataChange
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
+      {/* Booking Status Messages */}
+      {isBookingDeadlinePassed && (
+        <div className="bg-red-50 border border-red-200 rounded-md p-4">
+          <div className="flex">
+            <div className="flex-shrink-0">
+              <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+              </svg>
+            </div>
+            <div className="ml-3">
+              <h3 className="text-sm font-medium text-red-800">
+                Booking Closed
+              </h3>
+              <div className="mt-2 text-sm text-red-700">
+                <p>The booking deadline for this event has passed. Bookings are no longer available.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+      
+      {isEventPast && (
+        <div className="bg-red-50 border border-red-200 rounded-md p-4">
+          <div className="flex">
+            <div className="flex-shrink-0">
+              <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+              </svg>
+            </div>
+            <div className="ml-3">
+              <h3 className="text-sm font-medium text-red-800">
+                Event Passed
+              </h3>
+              <div className="mt-2 text-sm text-red-700">
+                <p>This event has already taken place. Bookings are no longer available.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Form Fields */}
       <div className="space-y-4">
         {formConfig.fields.map(renderField)}
@@ -314,10 +355,13 @@ const DynamicForm = ({ formConfig, onSubmit, submitting, event, onFormDataChange
       {/* Submit Button */}
       <button
         type="submit"
-        disabled={submitting || !waiverAccepted}
+        disabled={submitting || !waiverAccepted || isBookingDeadlinePassed || isEventPast}
         className="w-full bg-[#093166] text-white py-3 px-6 rounded-md font-medium hover:bg-[#093166]/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
       >
-        {submitting ? 'Processing...' : 'Proceed to Payment'}
+        {submitting ? 'Processing...' : 
+         isBookingDeadlinePassed ? 'Booking Closed' :
+         isEventPast ? 'Event Passed' :
+         'Proceed to Payment'}
       </button>
     </form>
   );

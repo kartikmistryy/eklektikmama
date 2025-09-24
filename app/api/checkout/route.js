@@ -103,7 +103,7 @@ export async function POST(req) {
     const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
     // Build absolute URLs for redirects
-    const hdrs = headers();
+    const hdrs = await headers();
     const host = hdrs.get('x-forwarded-host') || hdrs.get('host');
     const protocol = (hdrs.get('x-forwarded-proto') || 'http') + '://';
     const origin = process.env.NEXT_PUBLIC_BASE_URL || (host ? `${protocol}${host}` : 'http://localhost:3000');

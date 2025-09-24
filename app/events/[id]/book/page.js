@@ -19,12 +19,24 @@ export default function BookingPage({ params }) {
   const [isEventPast, setIsEventPast] = useState(false);
   const [isBookingDeadlinePassed, setIsBookingDeadlinePassed] = useState(false);
   const [selectedPrice, setSelectedPrice] = useState(null);
+  const [eventId, setEventId] = useState(null);
+
+  // Handle async params
+  useEffect(() => {
+    async function getParams() {
+      const resolvedParams = await params;
+      setEventId(resolvedParams.id);
+    }
+    getParams();
+  }, [params]);
 
   // Fetch event data on component mount
   useEffect(() => {
+    if (!eventId) return;
+    
     async function fetchEvent() {
       try {
-        const res = await fetch(`/api/events/${params.id}`);
+        const res = await fetch(`/api/events/${eventId}`);
         if (res.ok) {
           const eventData = await res.json();
           setEvent(eventData);
@@ -57,7 +69,7 @@ export default function BookingPage({ params }) {
       }
     }
     fetchEvent();
-  }, [params.id]);
+  }, [eventId]);
 
   // Calculate price based on number of children for Family Day events
   const calculateFamilyDayPrice = (numberOfChildrenValue) => {
@@ -122,8 +134,8 @@ export default function BookingPage({ params }) {
         childName: formData.childName || formData.child1Name || '',
         // Keep numberOfTickets as is
         numberOfTickets: formData.numberOfTickets || 1,
-        // Pass all other form data as additionalData
-        ...formData
+        // Pass all form data as otherFormData for comprehensive storage
+        otherFormData: formData
       };
 
       // Debug logging for form submission
@@ -393,6 +405,8 @@ export default function BookingPage({ params }) {
                   submitting={submitting}
                   event={event}
                   onFormDataChange={handleFormDataChange}
+                  isBookingDeadlinePassed={isBookingDeadlinePassed}
+                  isEventPast={isEventPast}
                 />
               ) : (
                 <div className="text-center py-8">
