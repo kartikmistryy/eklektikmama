@@ -41,8 +41,22 @@ export async function POST(req) {
       await connectDB();
       const eventId = session.metadata?.eventId;
       
-      const paidEvent = await Event.findById(eventId);
-      if (!paidEvent) throw new Error('Event not found for booking');
+      let paidEvent = await Event.findById(eventId);
+      if (!paidEvent) {
+        console.log(`❌ Event not found for booking: ${eventId}`);
+        console.log('Available events:', await Event.find({}, '_id title segment').limit(5));
+        
+        // Try to find a similar event by segment
+        const eventSegment = session.metadata?.eventSegment || 'mamaBreakfast';
+        const fallbackEvent = await Event.findOne({ segment: eventSegment }).sort({ createdAt: -1 });
+        
+        if (fallbackEvent) {
+          console.log(`✅ Using fallback event: ${fallbackEvent.title} (${fallbackEvent._id})`);
+          paidEvent = fallbackEvent;
+        } else {
+          return NextResponse.json({ received: true, error: `Event not found: ${eventId}` });
+        }
+      }
 
       const transactionId = session.payment_intent || session.id;
       const guardianName = session.metadata?.guardianName || session.customer_details?.name || '';
