@@ -295,8 +295,45 @@ export async function GET(req) {
 
         // Add booking to event-specific sheet
         console.log('📊 Adding booking to Google Sheets...');
-        await addBookingToEventSheet(bookingData, event);
-        console.log('✅ Booking added to Google Sheets successfully');
+        console.log('Event data for Google Sheets:', {
+          eventId: event._id,
+          eventTitle: event.title,
+          eventSegment: event.segment,
+          eventDate: event.date
+        });
+        console.log('Booking data for Google Sheets:', {
+          guardianName: bookingData.guardianName,
+          childName: bookingData.childName,
+          numberOfTickets: bookingData.numberOfTickets,
+          parent1Name: bookingData.parent1Name,
+          child1Name: bookingData.child1Name
+        });
+        
+        console.log('Extracted data for family day:', {
+          parent1Name: extractedData.parent1Name,
+          parent2Name: extractedData.parent2Name,
+          child1Name: extractedData.child1Name,
+          child2Name: extractedData.child2Name,
+          numberOfChildren: extractedData.numberOfChildren,
+          howDidYouHear: extractedData.howDidYouHear
+        });
+        
+        console.log('Session metadata for family day:', {
+          parent1Name: session.metadata.parent1Name,
+          child1Name: session.metadata.child1Name,
+          numberOfChildren: session.metadata.numberOfChildren
+        });
+        
+        try {
+          await addBookingToEventSheet(bookingData, event);
+          console.log('✅ Booking added to Google Sheets successfully');
+        } catch (sheetsError) {
+          console.error('❌ Error adding booking to Google Sheets:', sheetsError);
+          console.error('Sheets error details:', {
+            message: sheetsError.message,
+            stack: sheetsError.stack
+          });
+        }
         
         // Get ticket number from the sheet (we'll calculate it based on row position)
         const ticketNumber = await getEventBookingsCount(event);

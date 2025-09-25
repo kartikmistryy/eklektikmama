@@ -19,6 +19,21 @@ export async function POST(req) {
 
     const { eventId, guardianName, childName, email, phone, numberOfTickets, eventSegment, ...otherFormData } = body;
     
+    // Debug logging for family day events
+    console.log('=== FAMILY DAY FORM DEBUG ===');
+    console.log('Event Segment:', eventSegment);
+    console.log('Full body received:', JSON.stringify(body, null, 2));
+    console.log('Extracted fields:');
+    console.log('- eventId:', eventId);
+    console.log('- guardianName:', guardianName);
+    console.log('- childName:', childName);
+    console.log('- email:', email);
+    console.log('- phone:', phone);
+    console.log('- numberOfTickets:', numberOfTickets);
+    console.log('- eventSegment:', eventSegment);
+    console.log('Other form data:', JSON.stringify(otherFormData, null, 2));
+    console.log('=== END DEBUG ===');
+    
     // Validate required fields
     if (!eventId) {
       return NextResponse.json({ error: 'Event ID is required' }, { status: 400 });
@@ -30,6 +45,30 @@ export async function POST(req) {
 
     if (!numberOfTickets || numberOfTickets < 1 || numberOfTickets > 15) {
       return NextResponse.json({ error: 'Number of tickets must be between 1 and 15' }, { status: 400 });
+    }
+
+    // For family day events, validate that we have the required parent/child information
+    if (eventSegment === 'familyDay') {
+      console.log('=== FAMILY DAY VALIDATION ===');
+      // Check if the data is nested in otherFormData.otherFormData
+      const formData = otherFormData.otherFormData || otherFormData;
+      console.log('Checking parent1Name:', formData.parent1Name);
+      console.log('Checking child1Name:', formData.child1Name);
+      console.log('Checking numberOfChildren:', formData.numberOfChildren);
+      
+      if (!formData.parent1Name) {
+        console.log('❌ Validation failed: parent1Name missing');
+        return NextResponse.json({ error: 'Parent/Guardian 1 name is required' }, { status: 400 });
+      }
+      if (!formData.child1Name) {
+        console.log('❌ Validation failed: child1Name missing');
+        return NextResponse.json({ error: 'At least one child name is required' }, { status: 400 });
+      }
+      if (!formData.numberOfChildren) {
+        console.log('❌ Validation failed: numberOfChildren missing');
+        return NextResponse.json({ error: 'Number of children selection is required' }, { status: 400 });
+      }
+      console.log('✅ Family day validation passed');
     }
 
     await connectDB();
@@ -113,7 +152,9 @@ export async function POST(req) {
     
     // Special pricing for Family Day events based on number of children
     if (event.segment === 'familyDay') {
-      const numberOfChildrenValue = otherFormData.numberOfChildren || '';
+      // Get the correct form data (handle nested structure)
+      const formData = otherFormData.otherFormData || otherFormData;
+      const numberOfChildrenValue = formData.numberOfChildren || '';
       let numberOfChildren = 2; // Default to 2 children
       
       // Parse the number of children from the select option
@@ -156,7 +197,9 @@ export async function POST(req) {
     // Create product name based on event type
     let productName = event.title;
     if (event.segment === 'familyDay') {
-      const numberOfChildrenValue = otherFormData.numberOfChildren || '';
+      // Get the correct form data (handle nested structure)
+      const formData = otherFormData.otherFormData || otherFormData;
+      const numberOfChildrenValue = formData.numberOfChildren || '';
       let numberOfChildren = 2; // Default to 2 children
       
       // Parse the number of children from the select option
@@ -214,10 +257,10 @@ export async function POST(req) {
       metadata: {
         eventId: String(event._id),
         eventSegment: eventSegment || '',
-        guardianName: guardianName || '',
-        childName: childName || '',
+        guardianName: guardianName || (otherFormData.otherFormData || otherFormData).parent1Name || '',
+        childName: childName || (otherFormData.otherFormData || otherFormData).child1Name || '',
         email: email || '',
-        phone: phone || '',
+        phone: phone || (otherFormData.otherFormData || otherFormData).parent1Phone || '',
         numberOfTickets: String(numberOfTickets || 1),
         isMember: isMember ? 'true' : 'false',
         memberDiscount: String(memberDiscount),
@@ -260,20 +303,20 @@ export async function POST(req) {
         favoriteFoods: (otherFormData.favoriteFoods || '').substring(0, 200),
         
         // Family Day specific fields
-        parent1Name: (otherFormData.parent1Name || '').substring(0, 100),
-        parent2Name: (otherFormData.parent2Name || '').substring(0, 100),
-        parent1Phone: (otherFormData.parent1Phone || '').substring(0, 50),
-        parent2Phone: (otherFormData.parent2Phone || '').substring(0, 50),
-        child1Name: (otherFormData.child1Name || '').substring(0, 100),
-        child1Age: otherFormData.child1Age || '',
-        child2Name: (otherFormData.child2Name || '').substring(0, 100),
-        child2Age: otherFormData.child2Age || '',
-        child3Name: (otherFormData.child3Name || '').substring(0, 100),
-        child3Age: otherFormData.child3Age || '',
-        child4Name: (otherFormData.child4Name || '').substring(0, 100),
-        child4Age: otherFormData.child4Age || '',
-        numberOfChildren: (otherFormData.numberOfChildren || '').substring(0, 50),
-        howDidYouHear: (otherFormData.howDidYouHear || '').substring(0, 100),
+        parent1Name: ((otherFormData.otherFormData || otherFormData).parent1Name || '').substring(0, 100),
+        parent2Name: ((otherFormData.otherFormData || otherFormData).parent2Name || '').substring(0, 100),
+        parent1Phone: ((otherFormData.otherFormData || otherFormData).parent1Phone || '').substring(0, 50),
+        parent2Phone: ((otherFormData.otherFormData || otherFormData).parent2Phone || '').substring(0, 50),
+        child1Name: ((otherFormData.otherFormData || otherFormData).child1Name || '').substring(0, 100),
+        child1Age: (otherFormData.otherFormData || otherFormData).child1Age || '',
+        child2Name: ((otherFormData.otherFormData || otherFormData).child2Name || '').substring(0, 100),
+        child2Age: (otherFormData.otherFormData || otherFormData).child2Age || '',
+        child3Name: ((otherFormData.otherFormData || otherFormData).child3Name || '').substring(0, 100),
+        child3Age: (otherFormData.otherFormData || otherFormData).child3Age || '',
+        child4Name: ((otherFormData.otherFormData || otherFormData).child4Name || '').substring(0, 100),
+        child4Age: (otherFormData.otherFormData || otherFormData).child4Age || '',
+        numberOfChildren: ((otherFormData.otherFormData || otherFormData).numberOfChildren || '').substring(0, 50),
+        howDidYouHear: ((otherFormData.otherFormData || otherFormData).howDidYouHear || '').substring(0, 100),
         
         // Special requests and preferences
         specialRequests: (otherFormData.specialRequests || '').substring(0, 200),
