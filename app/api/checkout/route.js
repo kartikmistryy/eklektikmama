@@ -19,20 +19,9 @@ export async function POST(req) {
 
     const { eventId, guardianName, childName, email, phone, numberOfTickets, eventSegment, ...otherFormData } = body;
     
-    // Debug logging for family day events
-    console.log('=== FAMILY DAY FORM DEBUG ===');
+    // Debug logging for family day events (simplified)
     console.log('Event Segment:', eventSegment);
-    console.log('Full body received:', JSON.stringify(body, null, 2));
-    console.log('Extracted fields:');
-    console.log('- eventId:', eventId);
-    console.log('- guardianName:', guardianName);
-    console.log('- childName:', childName);
-    console.log('- email:', email);
-    console.log('- phone:', phone);
-    console.log('- numberOfTickets:', numberOfTickets);
-    console.log('- eventSegment:', eventSegment);
-    console.log('Other form data:', JSON.stringify(otherFormData, null, 2));
-    console.log('=== END DEBUG ===');
+    console.log('Form data received for', eventSegment === 'familyDay' ? 'family day' : 'other event');
     
     // Validate required fields
     if (!eventId) {
@@ -49,26 +38,18 @@ export async function POST(req) {
 
     // For family day events, validate that we have the required parent/child information
     if (eventSegment === 'familyDay') {
-      console.log('=== FAMILY DAY VALIDATION ===');
       // Check if the data is nested in otherFormData.otherFormData
       const formData = otherFormData.otherFormData || otherFormData;
-      console.log('Checking parent1Name:', formData.parent1Name);
-      console.log('Checking child1Name:', formData.child1Name);
-      console.log('Checking numberOfChildren:', formData.numberOfChildren);
       
       if (!formData.parent1Name) {
-        console.log('❌ Validation failed: parent1Name missing');
         return NextResponse.json({ error: 'Parent/Guardian 1 name is required' }, { status: 400 });
       }
       if (!formData.child1Name) {
-        console.log('❌ Validation failed: child1Name missing');
         return NextResponse.json({ error: 'At least one child name is required' }, { status: 400 });
       }
       if (!formData.numberOfChildren) {
-        console.log('❌ Validation failed: numberOfChildren missing');
         return NextResponse.json({ error: 'Number of children selection is required' }, { status: 400 });
       }
-      console.log('✅ Family day validation passed');
     }
 
     await connectDB();
@@ -328,8 +309,17 @@ export async function POST(req) {
         photographyConsent: otherFormData.photographyConsent ? 'Yes' : 'No',
         waiverConsent: otherFormData.waiverConsent ? 'Yes' : 'No',
         
-        // Store all additional data as JSON for comprehensive storage
-        additionalData: JSON.stringify(otherFormData)
+        // Store essential additional data (optimized to fit Stripe's 500 char limit)
+        additionalData: JSON.stringify({
+          parent1Name: (otherFormData.otherFormData || otherFormData).parent1Name || '',
+          parent2Name: (otherFormData.otherFormData || otherFormData).parent2Name || '',
+          child1Name: (otherFormData.otherFormData || otherFormData).child1Name || '',
+          child2Name: (otherFormData.otherFormData || otherFormData).child2Name || '',
+          numberOfChildren: (otherFormData.otherFormData || otherFormData).numberOfChildren || '',
+          emergencyName: (otherFormData.otherFormData || otherFormData).emergencyName || '',
+          medicalInfo: (otherFormData.otherFormData || otherFormData).medicalInfo || '',
+          howDidYouHear: (otherFormData.otherFormData || otherFormData).howDidYouHear || ''
+        }).substring(0, 450)
       },
     };
     

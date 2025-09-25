@@ -110,8 +110,8 @@ export async function GET(req) {
     const additionalData = session.metadata.additionalData ? JSON.parse(session.metadata.additionalData) : {};
     const photographyConsent = session.metadata.photographyConsent || 'No';
     
-    // Extract otherFormData for comprehensive data extraction
-    const otherFormData = additionalData.otherFormData || {};
+    // Extract otherFormData for comprehensive data extraction (handle optimized structure)
+    const otherFormData = additionalData.otherFormData || additionalData || {};
     
     // Extract dropdown choices from metadata and otherFormData
     const choiceI = session.metadata.choiceI || otherFormData.choiceI || '';
