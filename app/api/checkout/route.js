@@ -255,8 +255,8 @@ export async function POST(req) {
         choiceIII: (otherFormData.choiceIII || '').substring(0, 100),
         
         // Emergency contact information
-        emergencyName: (otherFormData.emergencyName || '').substring(0, 100),
-        emergencyPhone: (otherFormData.emergencyPhone || '').substring(0, 100),
+        emergencyName: ((otherFormData.otherFormData || otherFormData).emergencyName || '').substring(0, 100),
+        emergencyPhone: ((otherFormData.otherFormData || otherFormData).emergencyPhone || '').substring(0, 100),
         
         // Child information
         childDob: otherFormData.childDob || '',
