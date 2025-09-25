@@ -199,48 +199,76 @@ async function handleSubscriptionUpdated(subscription) {
   try {
     console.log('Subscription updated:', subscription.id);
     
-    const membership = await Membership.findOne({
+    // Find all memberships with this subscription ID (could be multiple for upgrades)
+    const memberships = await Membership.find({
       stripeSubscriptionId: subscription.id
     });
 
-    if (membership) {
-      // Update membership details
-      membership.currentPeriodStart = new Date(subscription.current_period_start * 1000);
-      membership.currentPeriodEnd = new Date(subscription.current_period_end * 1000);
-      membership.nextPaymentDate = new Date(subscription.current_period_end * 1000);
-      membership.cancelAtPeriodEnd = subscription.cancel_at_period_end;
-      
-      if (subscription.cancel_at_period_end) {
-        membership.cancelledAt = new Date();
+    if (memberships.length > 0) {
+      // Get the current price ID from the subscription
+      const currentPriceId = subscription.items.data[0].price.id;
+      const isAnnual = currentPriceId === process.env.STRIPE_ANNUAL_MEMBERSHIP_PRICE_ID;
+      const newMembershipType = isAnnual ? 'annual' : 'monthly';
+
+      for (const membership of memberships) {
+        // Check if this is a plan change (upgrade/downgrade)
+        const isPlanChange = membership.membershipType !== newMembershipType;
+        
+        if (isPlanChange) {
+          console.log(`Plan change detected: ${membership.membershipType} -> ${newMembershipType}`);
+          
+          // Update membership type and price ID
+          membership.membershipType = newMembershipType;
+          membership.stripePriceId = currentPriceId;
+          
+          // If upgrading from monthly to annual, mark the old monthly as cancelled
+          if (membership.membershipType === 'monthly' && newMembershipType === 'annual') {
+            membership.status = 'cancelled';
+            membership.cancelAtPeriodEnd = true;
+            membership.cancelledAt = new Date();
+            membership.notes = `Upgraded to annual membership. Original monthly membership cancelled.`;
+          }
+        }
+
+        // Update membership details
+        membership.currentPeriodStart = new Date(subscription.current_period_start * 1000);
+        membership.currentPeriodEnd = new Date(subscription.current_period_end * 1000);
+        membership.nextPaymentDate = new Date(subscription.current_period_end * 1000);
+        membership.cancelAtPeriodEnd = subscription.cancel_at_period_end;
+        
+        if (subscription.cancel_at_period_end && !isPlanChange) {
+          membership.cancelledAt = new Date();
+        }
+
+        // Update status based on subscription status
+        switch (subscription.status) {
+          case 'active':
+            membership.status = 'active';
+            break;
+          case 'past_due':
+            membership.status = 'past_due';
+            break;
+          case 'canceled':
+            membership.status = 'cancelled';
+            break;
+          case 'unpaid':
+            membership.status = 'expired';
+            break;
+          default:
+            membership.status = 'active';
+        }
+
+        await membership.save();
+
+        // Update Google Sheets
+        await updateMemberInSheet(membership.email, {
+          'Status': membership.status,
+          'Membership Type': membership.membershipType,
+          'Current Period Start': membership.currentPeriodStart.toISOString().split('T')[0],
+          'Current Period End': membership.currentPeriodEnd.toISOString().split('T')[0],
+          'Next Payment Date': membership.nextPaymentDate.toISOString().split('T')[0]
+        });
       }
-
-      // Update status based on subscription status
-      switch (subscription.status) {
-        case 'active':
-          membership.status = 'active';
-          break;
-        case 'past_due':
-          membership.status = 'past_due';
-          break;
-        case 'canceled':
-          membership.status = 'cancelled';
-          break;
-        case 'unpaid':
-          membership.status = 'expired';
-          break;
-        default:
-          membership.status = 'active';
-      }
-
-      await membership.save();
-
-      // Update Google Sheets
-      await updateMemberInSheet(membership.email, {
-        'Status': membership.status,
-        'Current Period Start': membership.currentPeriodStart.toISOString().split('T')[0],
-        'Current Period End': membership.currentPeriodEnd.toISOString().split('T')[0],
-        'Next Payment Date': membership.nextPaymentDate.toISOString().split('T')[0]
-      });
     }
   } catch (error) {
     console.error('Error handling subscription updated:', error);

@@ -11,6 +11,7 @@ export default function MemberDashboard() {
   const [cancellationCode, setCancellationCode] = useState('');
   const [showCodeInput, setShowCodeInput] = useState(false);
   const [codeLoading, setCodeLoading] = useState(false);
+  const [upgradeLoading, setUpgradeLoading] = useState(false);
   const router = useRouter();
 
   const checkMembership = async () => {
@@ -168,6 +169,45 @@ export default function MemberDashboard() {
     }
   };
 
+  const handleUpgradeToAnnual = async () => {
+    if (!membership) return;
+
+    const confirmed = window.confirm(
+      `Upgrade to Annual Membership?\n\nYou'll save 2 months worth of membership fees!\n\nYour monthly membership will continue until ${formatDate(membership.currentPeriodEnd)}, then your annual membership will automatically begin.\n\nThis change will take effect immediately.`
+    );
+
+    if (!confirmed) return;
+
+    setUpgradeLoading(true);
+    setError('');
+
+    try {
+      const response = await fetch('/api/membership/upgrade', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email: membership.email }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        alert(`Upgrade successful! Your annual membership will begin on ${formatDate(data.annualStartDate)}. A confirmation email has been sent to you.`);
+        // Refresh membership data
+        checkMembership();
+      } else {
+        setError(data.error || 'Failed to upgrade membership');
+        alert(data.error || 'Failed to upgrade membership');
+      }
+    } catch (err) {
+      setError('Network error. Please try again.');
+      alert('Network error. Please try again.');
+    } finally {
+      setUpgradeLoading(false);
+    }
+  };
+
 
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString('en-US', {
@@ -294,6 +334,32 @@ export default function MemberDashboard() {
                 You&apos;ve saved <span className="font-bold">{membership.totalSavings || 0} AED</span> so far with your member discounts!
               </p>
             </div>
+
+            {/* Upgrade Section for Monthly Members */}
+            {membership.membershipType === 'monthly' && membership.status === 'active' && !membership.cancelAtPeriodEnd && (
+              <div className="bg-gradient-to-r from-purple-50 to-pink-50 border border-purple-200 rounded-lg p-6 mb-6">
+                <div className="flex items-center justify-between">
+                  <div className="flex-1">
+                    <h3 className="text-xl font-bold text-purple-800 mb-2">
+                      🎉 Upgrade to Annual & Save!
+                    </h3>
+                    <p className="text-purple-700 mb-4">
+                      Switch to annual membership and save 2 months worth of fees! Your monthly membership will continue until {formatDate(membership.currentPeriodEnd)}, then your annual membership automatically begins.
+                    </p>
+                    <div className="flex items-center text-sm text-purple-600">
+                      <span className="font-semibold">You'll save approximately 17% with annual membership!</span>
+                    </div>
+                  </div>
+                  <button
+                    onClick={handleUpgradeToAnnual}
+                    disabled={upgradeLoading}
+                    className="ml-4 px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-md hover:from-purple-700 hover:to-pink-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 font-semibold whitespace-nowrap"
+                  >
+                    {upgradeLoading ? 'Upgrading...' : 'Upgrade to Annual'}
+                  </button>
+                </div>
+              </div>
+            )}
 
             {/* Action Buttons */}
             <div className="flex flex-col sm:flex-row gap-4">
