@@ -347,7 +347,7 @@ export default function MemberDashboard() {
                       Switch to annual membership and save 2 months worth of fees! Your monthly membership will continue until {formatDate(membership.currentPeriodEnd)}, then your annual membership automatically begins.
                     </p>
                     <div className="flex items-center text-sm text-purple-600">
-                      <span className="font-semibold">You'll save approximately 17% with annual membership!</span>
+                      <span className="font-semibold">You&apos;ll save approximately 17% with annual membership!</span>
                     </div>
                   </div>
                   <button
