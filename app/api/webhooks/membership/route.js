@@ -27,12 +27,16 @@ export async function POST(req) {
 
     await connectDB();
 
+    console.log('🔔 Webhook Event Received:', event.type);
+    
     switch (event.type) {
       case 'checkout.session.completed':
+        console.log('📋 Processing checkout.session.completed');
         await handleCheckoutCompleted(event.data.object);
         break;
       
       case 'customer.subscription.created':
+        console.log('📋 Processing customer.subscription.created');
         await handleSubscriptionCreated(event.data.object);
         break;
       
@@ -82,7 +86,8 @@ export async function POST(req) {
 // Handle checkout session completed
 async function handleCheckoutCompleted(session) {
   try {
-    console.log('Checkout session completed:', session.id);
+    console.log('✅ Checkout session completed:', session.id);
+    console.log('📊 Session metadata:', session.metadata);
     
     // Check if this is a subscription checkout
     if (session.mode === 'subscription') {
@@ -119,8 +124,66 @@ async function handleCheckoutCompleted(session) {
     });
 
     if (existingMembership) {
-      console.log('Active membership already exists for:', email);
-      return;
+      // Check if this is an upgrade scenario
+      const isUpgrade = session.metadata.isUpgrade === 'true';
+      const previousMembershipType = session.metadata.previousMembershipType;
+      const upgradeType = session.metadata.upgradeType;
+      
+      console.log('🔍 Webhook Debug - Existing membership found:', {
+        email,
+        existingType: existingMembership.membershipType,
+        newType: membershipType,
+        isUpgrade,
+        previousMembershipType,
+        upgradeType,
+        metadata: session.metadata
+      });
+      
+      if (isUpgrade && upgradeType === 'membership_change' && previousMembershipType !== membershipType) {
+        console.log(`Processing membership upgrade: ${previousMembershipType} -> ${membershipType} for ${email}`);
+        
+        // Update existing membership instead of creating new one
+        existingMembership.membershipType = membershipType;
+        existingMembership.stripePriceId = membershipType === 'monthly' ? process.env.STRIPE_MONTHLY_MEMBERSHIP_PRICE_ID : process.env.STRIPE_ANNUAL_MEMBERSHIP_PRICE_ID;
+        existingMembership.stripeSubscriptionId = session.subscription;
+        
+        // Update period dates based on new membership type
+        if (membershipType === 'monthly') {
+          existingMembership.currentPeriodEnd = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000); // 30 days
+          existingMembership.nextPaymentDate = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
+        } else {
+          existingMembership.currentPeriodEnd = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000); // 1 year
+          existingMembership.nextPaymentDate = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000);
+        }
+        
+        // Add note about the upgrade
+        const existingNotes = existingMembership.notes || '';
+        existingMembership.notes = `${existingNotes}\nUpgraded from ${previousMembershipType} to ${membershipType} on ${new Date().toISOString()}`.trim();
+        
+        await existingMembership.save();
+        
+        console.log(`Membership upgraded successfully: ${email} from ${previousMembershipType} to ${membershipType}`);
+        
+        // Update Google Sheets if configured
+        try {
+          if (existingMembership.googleSheetsRowId) {
+            await updateMemberInSheet(email, {
+              'Membership Type': membershipType,
+              'Current Period End': existingMembership.currentPeriodEnd,
+              'Next Payment Date': existingMembership.nextPaymentDate,
+              'Notes': existingMembership.notes
+            });
+            console.log('Google Sheets updated for upgraded membership');
+          }
+        } catch (sheetError) {
+          console.error('Error updating Google Sheets for upgrade:', sheetError);
+        }
+        
+        return; // Exit early since we handled the upgrade
+      } else {
+        console.log('Active membership already exists for:', email, '- no upgrade detected');
+        return;
+      }
     }
 
     // Create new membership record
@@ -176,7 +239,12 @@ async function handleCheckoutCompleted(session) {
 // Handle subscription created
 async function handleSubscriptionCreated(subscription) {
   try {
-    console.log('Subscription created:', subscription.id);
+    console.log('✅ Subscription created:', subscription.id);
+    console.log('📊 Subscription details:', {
+      customer: subscription.customer,
+      status: subscription.status,
+      current_period_end: subscription.current_period_end
+    });
     
     // Get customer details from Stripe (with error handling)
     let customer;
@@ -210,8 +278,54 @@ async function handleSubscriptionCreated(subscription) {
     });
 
     if (existingMembership) {
-      console.log('Active membership already exists for customer:', subscription.customer);
-      return;
+      // Check if this is an upgrade scenario by comparing membership types
+      console.log('🔍 Subscription Created Debug - Existing membership found:', {
+        email: customer.email,
+        existingType: existingMembership.membershipType,
+        newType: membershipType,
+        subscriptionId: subscription.id
+      });
+      
+      if (existingMembership.membershipType !== membershipType) {
+        console.log(`Processing membership upgrade via subscription: ${existingMembership.membershipType} -> ${membershipType} for ${customer.email}`);
+        
+        // Update existing membership instead of creating new one
+        existingMembership.membershipType = membershipType;
+        existingMembership.stripeSubscriptionId = subscription.id;
+        existingMembership.stripePriceId = priceId;
+        existingMembership.currentPeriodStart = new Date(subscription.current_period_start * 1000);
+        existingMembership.currentPeriodEnd = new Date(subscription.current_period_end * 1000);
+        existingMembership.nextPaymentDate = new Date(subscription.current_period_end * 1000);
+        
+        // Add note about the upgrade
+        const existingNotes = existingMembership.notes || '';
+        existingMembership.notes = `${existingNotes}\nUpgraded from ${existingMembership.membershipType} to ${membershipType} via subscription ${subscription.id} on ${new Date().toISOString()}`.trim();
+        
+        await existingMembership.save();
+        
+        console.log(`Membership upgraded successfully via subscription: ${customer.email} from ${existingMembership.membershipType} to ${membershipType}`);
+        
+        // Update Google Sheets if configured
+        try {
+          if (existingMembership.googleSheetsRowId) {
+            await updateMemberInSheet(customer.email, {
+              'Membership Type': membershipType,
+              'Current Period Start': existingMembership.currentPeriodStart,
+              'Current Period End': existingMembership.currentPeriodEnd,
+              'Next Payment Date': existingMembership.nextPaymentDate,
+              'Notes': existingMembership.notes
+            });
+            console.log('Google Sheets updated for upgraded membership via subscription');
+          }
+        } catch (sheetError) {
+          console.error('Error updating Google Sheets for upgrade via subscription:', sheetError);
+        }
+        
+        return; // Exit early since we handled the upgrade
+      } else {
+        console.log('Active membership already exists for customer:', subscription.customer, '- same membership type');
+        return;
+      }
     }
 
     // Create new membership record

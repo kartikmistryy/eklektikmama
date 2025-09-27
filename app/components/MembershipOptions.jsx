@@ -77,17 +77,17 @@ export default function MembershipOptions() {
     {
       question: "How do I get my discounts?",
       answer:
-        "Log in before you shop or book events — your member discounts are applied automatically at checkout.",
+        "Use the same email you purchased your membership with, and your 10% discount will be applied automatically at checkout.",
     },
     {
       question: "Can I switch from monthly to yearly?",
       answer:
-        "Yes! You can upgrade anytime in your account settings to start saving more.",
+        "You can choose to upgrade to annual anytime from your Manage Membership dashboard.",
     },
     {
       question: "Is there a contract or can I cancel anytime?",
       answer:
-        "No contracts. You can cancel your membership anytime via your account dashboard. ",
+        "You can cancel anytime through your Manage Membership dashboard.",
     },
     {
       question: "How do I join the WhatsApp group?",
@@ -244,11 +244,6 @@ export default function MembershipOptions() {
                   <h3 className="font-semibold text-lg mb-3 text-white">Monthly vs. Annual</h3>
                   <p className="text-sm mb-3">Both plans include the same core perks.</p>
                   <p className="text-sm">Annual gives you more value, extra rewards, and fewer payments to manage.</p>
-                </div>
-
-                <div className="bg-white/10 rounded-lg p-4">
-                  <h3 className="font-semibold text-lg mb-3 text-white">Discounts</h3>
-                  <p className="text-sm">Use the same email you purchased your membership with, and your 10% discount will be applied automatically at checkout.</p>
                 </div>
 
                 <div className="bg-white/10 rounded-lg p-4">

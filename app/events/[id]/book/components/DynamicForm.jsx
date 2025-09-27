@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 
-const DynamicForm = ({ formConfig, onSubmit, submitting, event, onFormDataChange, isBookingDeadlinePassed, isEventPast }) => {
+const DynamicForm = ({ formConfig, onSubmit, submitting, event, onFormDataChange, isBookingDeadlinePassed, isEventPast, isMember, membershipChecked }) => {
   const [formData, setFormData] = useState({});
   const [waiverAccepted, setWaiverAccepted] = useState(false);
 
@@ -313,6 +313,21 @@ const DynamicForm = ({ formConfig, onSubmit, submitting, event, onFormDataChange
               AED {((event.price * (formData.numberOfTickets || 1)).toFixed(2))}
             </span>
           </div>
+        </div>
+      )}
+
+      {/* Membership Discount Message */}
+      {event?.price > 0 && (
+        <div className="bg-gradient-to-r from-pink-50 to-purple-50 border border-pink-200 rounded-lg p-4">
+          {isMember ? (
+            <p className="text-sm text-pink-800 font-medium">
+              Your exclusive 10% Eklektik Mama member discount will be applied at the Stripe checkout. Thank you for being part of EKLEKTIK AF! 💖
+            </p>
+          ) : (
+            <p className="text-sm text-purple-800 font-medium">
+              Did you know? Eklektik Mama members get an instant 10% discount on every order. Join today to save! <a href="/eklektikmamaMembership" className="text-purple-600 underline hover:text-purple-800">Join EKLEKTIK AF</a>
+            </p>
+          )}
         </div>
       )}
 

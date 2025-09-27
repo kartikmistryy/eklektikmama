@@ -86,6 +86,20 @@ function MembershipContent() {
       if (data.url) {
         // Redirect to Stripe Checkout
         window.location.href = data.url;
+      } else if (data.warning) {
+        // Handle warning responses with context
+        if (data.warning === 'downgrade_not_allowed') {
+          alert(`⚠️ ${data.message}\n\n${data.context}`);
+        } else if (data.warning === 'duplicate_membership') {
+          const endDate = new Date(data.membershipEndDate).toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+          });
+          alert(`ℹ️ ${data.message}\n\n${data.context}\n\nYour membership is active until ${endDate}.`);
+        } else {
+          alert(`⚠️ ${data.message}\n\n${data.context || ''}`);
+        }
       } else {
         throw new Error(data.error || "Failed to create checkout session");
       }

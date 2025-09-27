@@ -236,7 +236,7 @@ export default function MemberDashboard() {
   return (
     <div className="min-h-screen bg-gray-50 py-12">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-8">
+        <div className="text-center mb-8 pt-32">
           <h1 className="text-3xl font-bold text-gray-900 mb-4">
             Member Dashboard
           </h1>
@@ -309,26 +309,45 @@ export default function MemberDashboard() {
               <div>
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">Your Benefits</h3>
                 <div className="space-y-3">
+                  {/* Common benefits for both monthly and annual */}
                   <div className="flex items-center">
                     <span className="text-green-600 mr-2">✓</span>
-                    <span>10% discount on all event tickets</span>
+                    <span>Exclusive WhatsApp group – your go-to hub for updates, banter, and mama solidarity</span>
                   </div>
                   <div className="flex items-center">
                     <span className="text-green-600 mr-2">✓</span>
-                    <span>Exclusive access to member-only events</span>
+                    <span>10% off every BYOBaby™ ticket – from breakfasts to cinema</span>
                   </div>
                   <div className="flex items-center">
                     <span className="text-green-600 mr-2">✓</span>
-                    <span>Priority booking for popular events</span>
+                    <span>10% off Shop Drops – because motherhood deserves better than boring merch</span>
                   </div>
                   <div className="flex items-center">
                     <span className="text-green-600 mr-2">✓</span>
-                    <span>Private WhatsApp group access</span>
+                    <span>Access to members-only Coffee Catch Ups</span>
                   </div>
                   <div className="flex items-center">
                     <span className="text-green-600 mr-2">✓</span>
-                    <span>Special perks from partner brands</span>
+                    <span>Mama Milestones Cards digital download to mark every messy, hilarious stage of mum life</span>
                   </div>
+                  
+                  {/* Annual-only benefits */}
+                  {membership.membershipType === 'annual' && (
+                    <>
+                      <div className="flex items-center">
+                        <span className="text-green-600 mr-2">✓</span>
+                        <span>Save AED 98 a year (it&apos;s like getting two months free)</span>
+                      </div>
+                      <div className="flex items-center">
+                        <span className="text-green-600 mr-2">✓</span>
+                        <span>The Eklektik Mama Guide to UAE Mum Life – our exclusive digital survival manual</span>
+                      </div>
+                      <div className="flex items-center">
+                        <span className="text-green-600 mr-2">✓</span>
+                        <span>A free Eklektik Mama tote bag – your badge of honour (and the perfect catch-all for snacks, wipes, and chaos)</span>
+                      </div>
+                    </>
+                  )}
                 </div>
               </div>
             </div>
@@ -513,3 +532,4 @@ export default function MemberDashboard() {
     </div>
   );
 }
+

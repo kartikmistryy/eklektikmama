@@ -20,6 +20,8 @@ export default function BookingPage({ params }) {
   const [isBookingDeadlinePassed, setIsBookingDeadlinePassed] = useState(false);
   const [selectedPrice, setSelectedPrice] = useState(null);
   const [eventId, setEventId] = useState(null);
+  const [isMember, setIsMember] = useState(false);
+  const [membershipChecked, setMembershipChecked] = useState(false);
 
   // Handle async params
   useEffect(() => {
@@ -85,9 +87,47 @@ export default function BookingPage({ params }) {
     return null;
   };
 
+  // Check membership status when email is entered
+  const checkMembershipStatus = async (email) => {
+    if (!email || !email.includes('@')) return;
+    
+    try {
+      const response = await fetch('/api/membership/verify', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email }),
+      });
+      
+      const data = await response.json();
+      setIsMember(data.isMember || false);
+      setMembershipChecked(true);
+    } catch (error) {
+      console.error('Error checking membership:', error);
+      setIsMember(false);
+      setMembershipChecked(true);
+    }
+  };
+
   // Handle form data changes and update price
   const handleFormDataChange = (newFormData) => {
     setFormData(newFormData);
+    
+    // Check membership status when email changes - check multiple possible email field names
+    const emailFields = ['email', 'motherEmail', 'guardianEmail', 'userEmail'];
+    let emailToCheck = null;
+    
+    for (const field of emailFields) {
+      if (newFormData[field] && newFormData[field] !== formData[field]) {
+        emailToCheck = newFormData[field];
+        break;
+      }
+    }
+    
+    if (emailToCheck) {
+      checkMembershipStatus(emailToCheck);
+    }
     
     // Update price for Family Day events
     if (event?.segment === 'familyDay' && newFormData.numberOfChildren) {
@@ -407,6 +447,8 @@ export default function BookingPage({ params }) {
                   onFormDataChange={handleFormDataChange}
                   isBookingDeadlinePassed={isBookingDeadlinePassed}
                   isEventPast={isEventPast}
+                  isMember={isMember}
+                  membershipChecked={membershipChecked}
                 />
               ) : (
                 <div className="text-center py-8">

@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
 import { connectDB } from '../../../../lib/db';
 import Membership from '../../../../models/Membership';
-import { addMemberToSheet } from '../../../../lib/googleSheets';
+import { addMemberToSheet, updateMemberInSheet } from '../../../../lib/googleSheets';
 import { sendMemberWelcomeEmail } from '../../../../lib/memberEmails';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
@@ -41,6 +41,8 @@ export async function POST(req) {
     // Get membership data from session metadata
     const { membershipType, email, firstName, lastName, phone } = session.metadata;
     
+    console.log('📊 Verify Payment - Session metadata:', session.metadata);
+    
     if (!membershipType || !email || !firstName || !lastName) {
       return NextResponse.json(
         { error: 'Missing membership information' },
@@ -48,12 +50,77 @@ export async function POST(req) {
       );
     }
 
+    // Check if this is an upgrade scenario
+    const isUpgrade = session.metadata.isUpgrade === 'true';
+    const previousMembershipType = session.metadata.previousMembershipType;
+    const upgradeType = session.metadata.upgradeType;
+    
+    console.log('🔍 Verify Payment - Checking for upgrade:', {
+      email,
+      isUpgrade,
+      previousMembershipType,
+      upgradeType,
+      newMembershipType: membershipType
+    });
+
     // Find the membership record (should exist if webhook processed successfully)
     let membership = await Membership.findOne({
       email: email,
       stripeCustomerId: session.customer,
       status: 'active'
     });
+
+    // If no membership found, check for existing membership with same email (for upgrades)
+    if (!membership && isUpgrade) {
+      membership = await Membership.findOne({
+        email: email,
+        status: { $in: ['active', 'past_due'] }
+      });
+      
+      if (membership) {
+        console.log('🔄 Processing upgrade in verify-payment fallback:', {
+          existingType: membership.membershipType,
+          newType: membershipType
+        });
+        
+        // Update existing membership for upgrade
+        membership.membershipType = membershipType;
+        membership.stripeCustomerId = session.customer;
+        membership.stripeSubscriptionId = session.subscription;
+        membership.stripePriceId = membershipType === 'monthly' ? process.env.STRIPE_MONTHLY_MEMBERSHIP_PRICE_ID : process.env.STRIPE_ANNUAL_MEMBERSHIP_PRICE_ID;
+        
+        // Update period dates
+        if (membershipType === 'monthly') {
+          membership.currentPeriodEnd = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
+          membership.nextPaymentDate = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
+        } else {
+          membership.currentPeriodEnd = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000);
+          membership.nextPaymentDate = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000);
+        }
+        
+        // Add upgrade note
+        const existingNotes = membership.notes || '';
+        membership.notes = `${existingNotes}\nUpgraded from ${previousMembershipType} to ${membershipType} via verify-payment fallback on ${new Date().toISOString()}`.trim();
+        
+        await membership.save();
+        console.log('✅ Membership upgraded via verify-payment fallback:', membership.email);
+        
+        // Update Google Sheets if configured
+        try {
+          if (membership.googleSheetsRowId) {
+            await updateMemberInSheet(email, {
+              'Membership Type': membershipType,
+              'Current Period End': membership.currentPeriodEnd,
+              'Next Payment Date': membership.nextPaymentDate,
+              'Notes': membership.notes
+            });
+            console.log('✅ Google Sheets updated for upgraded membership via verify-payment');
+          }
+        } catch (sheetError) {
+          console.error('❌ Error updating Google Sheets for upgrade via verify-payment:', sheetError);
+        }
+      }
+    }
 
     if (!membership) {
       console.log('Membership not found, creating from checkout session:', email);

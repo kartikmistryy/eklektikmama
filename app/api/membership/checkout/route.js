@@ -78,10 +78,43 @@ export async function POST(req) {
     });
 
     if (existingMembership) {
-      return NextResponse.json(
-        { error: 'You already have an active membership' },
-        { status: 400 }
-      );
+      // Check if they're trying to upgrade to a different membership type
+      if (existingMembership.membershipType !== membershipType) {
+        // This is an upgrade/downgrade scenario
+        console.log(`Membership upgrade detected: ${existingMembership.membershipType} -> ${membershipType} for ${email}`);
+        
+        // Add upgrade metadata to track this
+        const isUpgrade = (existingMembership.membershipType === 'monthly' && membershipType === 'annual');
+        const isDowngrade = (existingMembership.membershipType === 'annual' && membershipType === 'monthly');
+        
+        if (isDowngrade) {
+          return NextResponse.json({
+            success: false,
+            warning: 'downgrade_not_allowed',
+            message: 'Downgrading from annual to monthly membership is not allowed. Please contact support if you need assistance.',
+            context: 'You currently have an annual membership. Downgrades are not permitted to maintain membership benefits.'
+          });
+        }
+        
+        // Continue with the checkout process for upgrades
+        console.log(`Processing ${isUpgrade ? 'upgrade' : 'membership change'} for ${email}`);
+        console.log('🔍 Checkout Debug - Upgrade detected:', {
+          email,
+          existingType: existingMembership.membershipType,
+          newType: membershipType,
+          isUpgrade,
+          isDowngrade
+        });
+      } else {
+        return NextResponse.json({
+          success: false,
+          warning: 'duplicate_membership',
+          message: 'You already have an active membership of this type.',
+          context: `You currently have an active ${existingMembership.membershipType} membership. No action needed.`,
+          currentMembershipType: existingMembership.membershipType,
+          membershipEndDate: existingMembership.currentPeriodEnd
+        });
+      }
     }
 
     // Create or retrieve Stripe customer
@@ -121,7 +154,10 @@ export async function POST(req) {
         email,
         firstName,
         lastName,
-        phone
+        phone,
+        isUpgrade: existingMembership ? 'true' : 'false',
+        previousMembershipType: existingMembership ? existingMembership.membershipType : '',
+        upgradeType: existingMembership && existingMembership.membershipType !== membershipType ? 'membership_change' : 'new_membership'
       }
     };
 
