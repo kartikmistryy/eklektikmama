@@ -7,6 +7,7 @@ export async function GET() {
     const envVars = {
       GOOGLE_SHEETS_CLIENT_EMAIL: process.env.GOOGLE_SHEETS_CLIENT_EMAIL ? 'Set' : 'Not Set',
       GOOGLE_SHEETS_PRIVATE_KEY: process.env.GOOGLE_SHEETS_PRIVATE_KEY ? 'Set' : 'Not Set',
+      MEMBERSHIP_SPREADSHEET: process.env.MEMBERSHIP_SPREADSHEET ? 'Set' : 'Not Set',
       CINEMA_MORNING_SPREADSHEET_ID: process.env.CINEMA_MORNING_SPREADSHEET_ID ? 'Set' : 'Not Set',
       MAMA_BREAKFAST_SPREADSHEET_ID: process.env.MAMA_BREAKFAST_SPREADSHEET_ID ? 'Set' : 'Not Set',
       MAMAFIT_SPREADSHEET_ID: process.env.MAMAFIT_SPREADSHEET_ID ? 'Set' : 'Not Set',

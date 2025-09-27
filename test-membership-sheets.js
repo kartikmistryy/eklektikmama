@@ -222,7 +222,7 @@ async function testEnvironmentVariables() {
         method: 'GET'
       });
 
-      if (response.status === 200 && response.data[varName]) {
+      if (response.status === 200 && response.data.environment && response.data.environment[varName] === 'Set') {
         log(`✅ ${varName}: Present`, 'green');
       } else {
         log(`❌ ${varName}: Missing`, 'red');

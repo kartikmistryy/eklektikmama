@@ -172,17 +172,12 @@ export default function MemberDashboard() {
   const handleUpgradeToAnnual = async () => {
     if (!membership) return;
 
-    const confirmed = window.confirm(
-      `Upgrade to Annual Membership?\n\nYou'll save 2 months worth of membership fees!\n\nYour monthly membership will continue until ${formatDate(membership.currentPeriodEnd)}, then your annual membership will automatically begin.\n\nThis change will take effect immediately.`
-    );
-
-    if (!confirmed) return;
-
     setUpgradeLoading(true);
     setError('');
 
     try {
-      const response = await fetch('/api/membership/upgrade', {
+      // First, get the upgrade cost
+      const response = await fetch('/api/membership/upgrade-payment', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -193,12 +188,23 @@ export default function MemberDashboard() {
       const data = await response.json();
 
       if (response.ok) {
-        alert(`Upgrade successful! Your annual membership will begin on ${formatDate(data.annualStartDate)}. A confirmation email has been sent to you.`);
-        // Refresh membership data
-        checkMembership();
+        // Show upgrade cost and confirm
+        const confirmed = window.confirm(
+          `Upgrade to Annual Membership?\n\n` +
+          `Upgrade Cost: ${data.upgradeCost.toFixed(2)} AED\n` +
+          `Annual Membership: 1000 AED\n` +
+          `Remaining Monthly Value: ${data.remainingMonthlyValue.toFixed(2)} AED\n\n` +
+          `You'll save 2 months worth of membership fees!\n\n` +
+          `This will redirect you to payment. Continue?`
+        );
+
+        if (confirmed) {
+          // Redirect to Stripe checkout
+          window.location.href = data.url;
+        }
       } else {
-        setError(data.error || 'Failed to upgrade membership');
-        alert(data.error || 'Failed to upgrade membership');
+        setError(data.error || 'Failed to calculate upgrade cost');
+        alert(data.error || 'Failed to calculate upgrade cost');
       }
     } catch (err) {
       setError('Network error. Please try again.');

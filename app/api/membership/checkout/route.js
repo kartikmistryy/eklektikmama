@@ -43,6 +43,26 @@ export async function POST(req) {
       );
     }
 
+    // Check if Stripe is configured
+    if (!process.env.STRIPE_SECRET_KEY) {
+      console.error('Stripe secret key not configured');
+      return NextResponse.json(
+        { error: 'Payment system not configured. Please contact support.' },
+        { status: 500 }
+      );
+    }
+
+    // Check if Price IDs are configured and valid (not live mode prices with test key)
+    const monthlyPriceId = process.env.STRIPE_MONTHLY_MEMBERSHIP_PRICE_ID;
+    const annualPriceId = process.env.STRIPE_ANNUAL_MEMBERSHIP_PRICE_ID;
+    const hasValidPriceIds = monthlyPriceId && annualPriceId && 
+                            monthlyPriceId.startsWith('price_test_') && 
+                            annualPriceId.startsWith('price_test_');
+    
+    if (!hasValidPriceIds) {
+      console.warn('Valid Stripe Price IDs not configured, using fallback pricing');
+    }
+
     // Validate membership type
     if (!MEMBERSHIP_PRICES[membershipType]) {
       return NextResponse.json(
@@ -90,23 +110,10 @@ export async function POST(req) {
     // The membership will be created after successful payment via webhook
     // This prevents blocking users from retrying if payment fails
 
-    // Create Stripe checkout session for payment (compatible with Stripe Link)
-    const session = await stripe.checkout.sessions.create({
-      mode: 'payment',
+    // Create Stripe checkout session for subscription (recurring membership)
+    const sessionConfig = {
+      mode: 'subscription',
       customer: customer.id,
-      line_items: [
-        {
-          price_data: {
-            currency: 'aed',
-            product_data: {
-              name: `Eklektik AF ${membershipType === 'monthly' ? 'Monthly' : 'Annual'} Membership`,
-              description: `${membershipType === 'monthly' ? 'Monthly' : 'Annual'} membership with 10% event discounts`
-            },
-            unit_amount: MEMBERSHIP_PRICES[membershipType].amount * 100 // Convert to fils
-          },
-          quantity: 1,
-        },
-      ],
       success_url: `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/membership-success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/eklektikmamaMembership?canceled=true`,
       metadata: {
@@ -116,7 +123,38 @@ export async function POST(req) {
         lastName,
         phone
       }
-    });
+    };
+
+    // Use Price IDs if available, otherwise use price_data
+    if (hasValidPriceIds) {
+      const priceId = membershipType === 'monthly' ? monthlyPriceId : annualPriceId;
+      sessionConfig.line_items = [
+        {
+          price: priceId,
+          quantity: 1,
+        },
+      ];
+    } else {
+      // Fallback to price_data for testing
+      sessionConfig.line_items = [
+        {
+          price_data: {
+            currency: 'aed',
+            product_data: {
+              name: `Eklektik AF ${membershipType === 'monthly' ? 'Monthly' : 'Annual'} Membership`,
+              description: `${membershipType === 'monthly' ? 'Monthly' : 'Annual'} membership with 10% event discounts`
+            },
+            unit_amount: MEMBERSHIP_PRICES[membershipType].amount * 100, // Convert to fils
+            recurring: {
+              interval: MEMBERSHIP_PRICES[membershipType].interval
+            }
+          },
+          quantity: 1,
+        },
+      ];
+    }
+
+    const session = await stripe.checkout.sessions.create(sessionConfig);
 
     return NextResponse.json({
       id: session.id,

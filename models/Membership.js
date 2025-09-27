@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 const MembershipSchema = new mongoose.Schema({
   // User Information
-  email: { type: String, required: true, unique: true },
+  email: { type: String, required: true },
   firstName: { type: String, required: true },
   lastName: { type: String, required: true },
   phone: String,
@@ -46,17 +46,32 @@ const MembershipSchema = new mongoose.Schema({
   notes: String,
   source: { type: String, default: "website" }, // How they signed up
   
+  // Email Notifications
+  lastReminderSent: Date, // Track when last renewal reminder was sent
+  
   // Cancellation Code (for 6-digit verification)
   cancellationCode: String,
   cancellationCodeExpires: Date,
   
 }, { timestamps: true });
 
-// Index for efficient queries (email index is already created by unique: true)
+// Indexes for efficient queries
+MembershipSchema.index({ email: 1 });
 MembershipSchema.index({ stripeCustomerId: 1 });
 MembershipSchema.index({ stripeSubscriptionId: 1 });
 MembershipSchema.index({ status: 1 });
 MembershipSchema.index({ currentPeriodEnd: 1 });
+
+// Composite unique index to ensure only one active membership per email
+MembershipSchema.index(
+  { email: 1, status: 1 }, 
+  { 
+    unique: true, 
+    partialFilterExpression: { 
+      status: { $in: ['active', 'past_due'] } 
+    } 
+  }
+);
 
 // Virtual for full name
 MembershipSchema.virtual('fullName').get(function() {
@@ -75,6 +90,22 @@ MembershipSchema.virtual('membershipDuration').get(function() {
 // Method to check if membership is active
 MembershipSchema.methods.isActive = function() {
   return this.status === 'active' && this.currentPeriodEnd > new Date();
+};
+
+// Method to check if membership has expired
+MembershipSchema.methods.hasExpired = function() {
+  return this.status === 'active' && this.currentPeriodEnd <= new Date();
+};
+
+// Method to automatically expire membership if needed
+MembershipSchema.methods.checkAndExpire = async function() {
+  if (this.hasExpired() && this.status === 'active') {
+    this.status = 'expired';
+    await this.save();
+    console.log(`Membership expired for ${this.email}`);
+    return true; // Membership was expired
+  }
+  return false; // Membership was not expired
 };
 
 // Method to check if membership expires soon (within 7 days)

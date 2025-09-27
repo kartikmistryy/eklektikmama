@@ -3,7 +3,7 @@ import Stripe from 'stripe';
 import { connectDB } from '../../../../lib/db';
 import Membership from '../../../../models/Membership';
 import { updateMemberInSheet, addMemberToSheet } from '../../../../lib/googleSheets';
-import { sendMemberWelcomeEmail, sendPaymentConfirmationEmail, sendRenewalReminderEmail } from '../../../../lib/memberEmails';
+import { sendMemberWelcomeEmail, sendPaymentConfirmationEmail, sendRenewalReminderEmail, sendMembershipUpgradeEmail, sendMembershipExpirationReminderEmail } from '../../../../lib/memberEmails';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 const webhookSecret = process.env.STRIPE_MEMBERSHIP_WEBHOOK_SECRET;
@@ -84,9 +84,23 @@ async function handleCheckoutCompleted(session) {
   try {
     console.log('Checkout session completed:', session.id);
     
-    // Check if payment was successful
+    // Check if this is a subscription checkout
+    if (session.mode === 'subscription') {
+      console.log('Subscription checkout completed, waiting for subscription.created event');
+      return; // Let the subscription.created event handle the membership creation
+    }
+    
+    // Check if payment was successful (for one-time payments)
     if (session.payment_status !== 'paid') {
       console.log('Payment not successful, skipping membership creation');
+      return;
+    }
+
+    // Check if this is an upgrade payment
+    const { type } = session.metadata;
+    if (type === 'membership_upgrade') {
+      console.log('Processing membership upgrade payment:', session.id);
+      await handleMembershipUpgrade(session);
       return;
     }
 
@@ -164,31 +178,87 @@ async function handleSubscriptionCreated(subscription) {
   try {
     console.log('Subscription created:', subscription.id);
     
-    // Find membership by customer ID (since subscription ID isn't set yet)
-    const membership = await Membership.findOne({
+    // Get customer details from Stripe (with error handling)
+    let customer;
+    try {
+      customer = await stripe.customers.retrieve(subscription.customer);
+    } catch (stripeError) {
+      console.error('Error retrieving customer from Stripe:', stripeError.message);
+      
+      // If customer doesn't exist in Stripe, create a fallback membership
+      // This can happen in test scenarios or if customer was deleted
+      const fallbackEmail = `subscription-${subscription.id}@stripe-customer.com`;
+      customer = {
+        email: fallbackEmail,
+        metadata: {
+          firstName: 'Stripe',
+          lastName: 'Customer'
+        },
+        phone: ''
+      };
+      console.log('Using fallback customer data for subscription:', subscription.id);
+    }
+    
+    // Determine membership type from price ID
+    const priceId = subscription.items.data[0].price.id;
+    const membershipType = priceId === process.env.STRIPE_MONTHLY_MEMBERSHIP_PRICE_ID ? 'monthly' : 'annual';
+    
+    // Check if membership already exists
+    const existingMembership = await Membership.findOne({
       stripeCustomerId: subscription.customer,
-      status: 'pending'
+      status: { $in: ['active', 'past_due'] }
     });
 
-    if (membership) {
-      // Update membership status and subscription ID
-      membership.status = 'active';
-      membership.stripeSubscriptionId = subscription.id;
-      membership.currentPeriodStart = new Date(subscription.current_period_start * 1000);
-      membership.currentPeriodEnd = new Date(subscription.current_period_end * 1000);
-      membership.nextPaymentDate = new Date(subscription.current_period_end * 1000);
-      await membership.save();
-
-      // Add member to Google Sheets
-      await addMemberToSheet(membership);
-
-      // Send welcome email
-      await sendMemberWelcomeEmail(membership);
-
-      console.log('Membership activated successfully:', membership.email);
-    } else {
-      console.log('No pending membership found for customer:', subscription.customer);
+    if (existingMembership) {
+      console.log('Active membership already exists for customer:', subscription.customer);
+      return;
     }
+
+    // Create new membership record
+    const membership = new Membership({
+      email: customer.email,
+      firstName: customer.metadata?.firstName || customer.name?.split(' ')[0] || 'Unknown',
+      lastName: customer.metadata?.lastName || customer.name?.split(' ').slice(1).join(' ') || 'User',
+      phone: customer.phone || '',
+      membershipType: membershipType,
+      stripeCustomerId: subscription.customer,
+      stripeSubscriptionId: subscription.id,
+      stripePriceId: priceId,
+      status: 'active',
+      currentPeriodStart: new Date(subscription.current_period_start * 1000),
+      currentPeriodEnd: new Date(subscription.current_period_end * 1000),
+      nextPaymentDate: new Date(subscription.current_period_end * 1000)
+    });
+
+    await membership.save();
+
+    // Add member to Google Sheets
+    try {
+      const googleSheetsRowId = await addMemberToSheet(membership);
+      membership.googleSheetsRowId = googleSheetsRowId;
+      await membership.save();
+      console.log('Member added to Google Sheets with row ID:', googleSheetsRowId);
+    } catch (error) {
+      console.error('Error adding member to Google Sheets:', error);
+      // Don't throw error - continue with email sending
+    }
+
+    // Send welcome email
+    try {
+      await sendMemberWelcomeEmail({
+        email: membership.email,
+        firstName: membership.firstName,
+        lastName: membership.lastName,
+        membershipType: membership.membershipType
+      });
+      console.log('Welcome email sent to:', membership.email);
+    } catch (error) {
+      console.error('Error sending welcome email:', error);
+      // Don't throw error - membership is still created
+    }
+
+    console.log('Membership created and activated successfully:', membership.email);
+    
   } catch (error) {
     console.error('Error handling subscription created:', error);
   }
@@ -221,13 +291,9 @@ async function handleSubscriptionUpdated(subscription) {
           membership.membershipType = newMembershipType;
           membership.stripePriceId = currentPriceId;
           
-          // If upgrading from monthly to annual, mark the old monthly as cancelled
-          if (membership.membershipType === 'monthly' && newMembershipType === 'annual') {
-            membership.status = 'cancelled';
-            membership.cancelAtPeriodEnd = true;
-            membership.cancelledAt = new Date();
-            membership.notes = `Upgraded to annual membership. Original monthly membership cancelled.`;
-          }
+          // Add note about the plan change
+          const existingNotes = membership.notes || '';
+          membership.notes = `${existingNotes}\nPlan changed to ${newMembershipType} on ${new Date().toISOString()}`.trim();
         }
 
         // Update membership details
@@ -415,7 +481,32 @@ async function handleInvoiceUpcoming(invoice) {
         stripeSubscriptionId: invoice.subscription
       });
 
-      if (membership) {
+      if (membership && membership.status === 'active') {
+        // Calculate days until expiration
+        const now = new Date();
+        const daysUntilExpiry = Math.ceil((new Date(membership.currentPeriodEnd) - now) / (1000 * 60 * 60 * 24));
+        
+        // Send expiration reminder if within 7 days
+        if (daysUntilExpiry <= 7 && daysUntilExpiry > 0) {
+          try {
+            await sendMembershipExpirationReminderEmail(
+              {
+                firstName: membership.firstName,
+                lastName: membership.lastName,
+                email: membership.email
+              },
+              {
+                membershipType: membership.membershipType,
+                currentPeriodEnd: membership.currentPeriodEnd,
+                daysUntilExpiry: daysUntilExpiry
+              }
+            );
+            console.log(`Expiration reminder sent to ${membership.email} via invoice.upcoming webhook (${daysUntilExpiry} days)`);
+          } catch (error) {
+            console.error(`Error sending expiration reminder to ${membership.email}:`, error);
+          }
+        }
+        
         // Send renewal reminder email
         try {
           await sendRenewalReminderEmail({
@@ -424,6 +515,7 @@ async function handleInvoiceUpcoming(invoice) {
             membershipType: membership.membershipType,
             currentPeriodEnd: membership.currentPeriodEnd
           });
+          console.log('Renewal reminder sent to:', membership.email);
         } catch (emailError) {
           console.error('Error sending renewal reminder:', emailError);
         }
@@ -479,3 +571,87 @@ async function handleSubscriptionResumed(subscription) {
     console.error('Error handling subscription resumed:', error);
   }
 }
+
+// Handle membership upgrade payment
+async function handleMembershipUpgrade(session) {
+  try {
+    console.log('Handling membership upgrade payment:', session.id);
+    
+    const { email, membershipId, upgradeCost, remainingMonthlyValue } = session.metadata;
+    
+    if (!email || !membershipId) {
+      console.error('Missing upgrade information in session metadata');
+      return;
+    }
+
+    // Find the membership record to upgrade
+    const membership = await Membership.findById(membershipId);
+
+    if (!membership) {
+      console.error('Membership not found for upgrade:', membershipId);
+      return;
+    }
+
+    // Check if already upgraded
+    if (membership.membershipType === 'annual') {
+      console.log('Membership already upgraded to annual:', email);
+      return;
+    }
+
+    // Perform the upgrade
+    console.log('Upgrading membership to annual:', email);
+    
+    // Calculate new period end (1 year from current period end)
+    const originalPeriodEnd = new Date(membership.currentPeriodEnd);
+    const newPeriodEnd = new Date(originalPeriodEnd.getTime() + 365 * 24 * 60 * 60 * 1000);
+    
+    // Update membership record
+    membership.membershipType = 'annual';
+    membership.currentPeriodEnd = newPeriodEnd;
+    membership.nextPaymentDate = newPeriodEnd;
+    membership.notes = `Upgraded from monthly to annual on ${new Date().toISOString()}. Upgrade cost: ${upgradeCost} AED`;
+    membership.source = 'upgrade-payment';
+    
+    await membership.save();
+    console.log(`Membership upgraded to annual for ${email}. New period end: ${newPeriodEnd.toISOString()}`);
+
+    // Update Google Sheets
+    try {
+      await updateMemberInSheet(membership.email, {
+        'Plan Type': 'annual',
+        'Current Period End': membership.currentPeriodEnd.toISOString().split('T')[0],
+        'Next Payment Date': membership.nextPaymentDate.toISOString().split('T')[0],
+        'Notes': membership.notes
+      });
+      console.log('Membership updated in Google Sheets');
+    } catch (error) {
+      console.error('Error updating membership in Google Sheets:', error);
+    }
+
+    // Send upgrade confirmation email
+    try {
+      await sendMembershipUpgradeEmail(
+        {
+          firstName: membership.firstName,
+          lastName: membership.lastName,
+          email: membership.email
+        },
+        {
+          upgradeCost: parseFloat(upgradeCost || 0),
+          newPeriodEnd: membership.currentPeriodEnd,
+          membershipType: 'annual'
+        }
+      );
+      console.log('Upgrade confirmation email sent to:', membership.email);
+    } catch (error) {
+      console.error('Error sending upgrade confirmation email:', error);
+      // Don't fail the process if email sending fails
+    }
+
+    console.log('Membership upgrade completed successfully:', email);
+    
+  } catch (error) {
+    console.error('Error handling membership upgrade:', error);
+  }
+}
+

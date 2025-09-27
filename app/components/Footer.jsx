@@ -285,7 +285,7 @@ export default function Footer() {
               <ul className="space-y-2 uppercase text-left">
                 <li>
                   <a 
-                  // href="/ramadanGuide.pdf" download 
+                  href="https://linktr.ee/eklektikmama?lt_utm_source=lt_share_link#457077794"  
                   className="hover:underline">
                     RAMADAN GUIDE
                   </a>
