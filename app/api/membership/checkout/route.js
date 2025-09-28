@@ -11,12 +11,12 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 const MEMBERSHIP_PRICES = {
   monthly: {
     priceId: process.env.STRIPE_MONTHLY_MEMBERSHIP_PRICE_ID,
-    amount: 3.6, // AED 3.6 per month (backend testing price)
+    amount: 49, // AED 49 per month
     interval: 'month'
   },
   annual: {
     priceId: process.env.STRIPE_ANNUAL_MEMBERSHIP_PRICE_ID,
-    amount: 3.6, // AED 3.6 per year (backend testing price)
+    amount: 490, // AED 490 per year
     interval: 'year'
   }
 };

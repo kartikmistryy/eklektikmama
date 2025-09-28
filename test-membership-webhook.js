@@ -149,7 +149,7 @@ async function testPaymentSucceeded() {
   const testInvoice = {
     id: 'in_test_' + Date.now(),
     object: 'invoice',
-    amount_paid: 360, // AED 3.6 in fils
+    amount_paid: 4900, // AED 49 in fils
     subscription: 'sub_test_' + Date.now(),
     customer: 'cus_test_' + Date.now()
   };

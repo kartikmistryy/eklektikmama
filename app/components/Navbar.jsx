@@ -18,7 +18,8 @@ export default function Navbar({ pageType = 'default' }) {
                      pathname.includes('/events/') && pathname.includes('/success') ||
                      pathname.includes('/privacy-policy') || pathname.includes('/terms-and-condition') ||
                       pathname.includes('/admin') || pathname.includes('/shop') || pathname.includes('/member-dashboard') ||
-                     pathname.includes('/ticket/') || pathname.includes('/ticket-qr/');
+                     pathname.includes('/ticket/') || pathname.includes('/ticket-qr/') ||
+                     pathname.includes('/membership-success');
 
   // Determine if we should hide mobile logo for legal pages
   const hideMobileLogo = pageType === 'legal' || 

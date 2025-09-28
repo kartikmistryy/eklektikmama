@@ -49,7 +49,7 @@ RESEND_API_KEY=...
 2. Click "Add Product"
 3. **Monthly Membership:**
    - Name: "Eklektik AF Monthly Membership"
-   - Price: AED 50.00
+   - Price: AED 49.00
    - Billing: Recurring monthly
    - Copy the Price ID (starts with `price_`)
 4. **Annual Membership:**
@@ -208,7 +208,7 @@ Your existing email service (Resend) will automatically send:
 ## 💰 **Pricing & Fees:**
 
 ### **Stripe Fees:**
-- **Monthly membership:** AED 50 × 2.9% = AED 1.45 per month
+- **Monthly membership:** AED 49 × 2.9% = AED 1.42 per month
 - **Annual membership:** AED 490 × 2.9% = AED 14.21 per year
 - **Event tickets:** Existing fees unchanged
 

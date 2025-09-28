@@ -62,7 +62,7 @@ EMAIL_FROM=hello@eklektikmama.com
 2. **Create Monthly Membership Product:**
    - Name: "Eklektik AF Monthly Membership"
    - Description: "Monthly membership with 10% event discounts"
-   - Price: AED 50 (or your preferred amount)
+   - Price: AED 49 (or your preferred amount)
    - Billing: Recurring monthly
    - Copy the Price ID to `STRIPE_MONTHLY_MEMBERSHIP_PRICE_ID`
 

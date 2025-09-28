@@ -586,7 +586,7 @@ export default function Home() {
                     <p className="text-base font-quicksand text-white font-medium">
                       Ready for early access, cheeky discounts, and WhatsApp
                       group chaos you’ll actually enjoy? Membership starts at
-                      AED 50/month.
+                      AED 49/month.
                     </p>
                     <span className="w-full h-fit mt-auto flex flex-row items-center justify-between pr-2">
                       <Link href="/eklektikmamaMembership" className="text-sm bg-white rounded-full font-medium font-poppins flex flex-row uppercase items-center justify-start gap-5 px-3 py-1.5 ">
@@ -777,7 +777,7 @@ export default function Home() {
                   <p className="text-base font-quicksand text-white font-medium">
                     Ready for early access, cheeky discounts, and WhatsApp group
                     chaos you’ll actually enjoy? Membership starts at AED
-                    50/month.
+                    49/month.
                   </p>
                   <div className="mt-auto flex flex-row items-center justify-between">
                     <Link href="/eklektikmamaMembership"  className="text-xs bg-white rounded-full font-medium font-poppins flex flex-row items-center justify-start gap-3 px-3 py-1.5">
