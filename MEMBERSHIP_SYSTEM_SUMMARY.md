@@ -150,7 +150,7 @@ npm install @stripe/stripe-js
 - **10% discount** on all event tickets
 - **Automatic renewals** - no manual work
 - **Self-service portal** for subscription management
-- **Priority support** and member-only events
+- **Member-only events** and exclusive access
 
 ---
 

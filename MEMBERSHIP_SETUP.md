@@ -16,7 +16,6 @@ This guide will help you set up the complete membership system with recurring pa
 ### 📊 Member Benefits
 - 10% discount on all event tickets
 - Exclusive access to member-only events
-- Priority booking for popular events
 - Private WhatsApp group access
 - Special perks from partner brands
 - Total savings tracking
