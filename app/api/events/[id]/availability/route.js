@@ -11,7 +11,8 @@ const LEGACY_SEGMENT_CAPACITY = {
   mamaFit: 10,
   eklektikEdit: 10,
   helloChef: 10,
-  familyDay: 10
+  familyDay: 10,
+  coffeeMeetup: 15 // Coffee meetups can accommodate more people
 };
 
 export async function GET(req, { params }) {

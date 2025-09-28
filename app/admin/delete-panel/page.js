@@ -10,6 +10,7 @@ export default function AdminDeletePanel() {
   const [message, setMessage] = useState('');
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [itemToDelete, setItemToDelete] = useState(null);
+  const [showPastEvents, setShowPastEvents] = useState(false);
 
   // Fetch events and highlights
   useEffect(() => {
@@ -153,15 +154,37 @@ export default function AdminDeletePanel() {
           Events ({events.length})
         </h2>
         
+        <div className="mb-4 flex items-center justify-between">
+          <div className="flex items-center space-x-4">
+            <label className="flex items-center space-x-2">
+              <input
+                type="checkbox"
+                checked={showPastEvents}
+                onChange={(e) => setShowPastEvents(e.target.checked)}
+                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+              />
+              <span className="text-sm text-gray-700">Show past events</span>
+            </label>
+          </div>
+        </div>
+        
         {events.length === 0 ? (
           <p className="text-gray-500 italic">No events found.</p>
         ) : (
           <div className="space-y-4">
-            {events.map((event) => (
-              <div key={event._id} className="border border-gray-200 rounded-lg p-4 hover:bg-gray-50">
+            {events
+              .filter(event => showPastEvents || new Date(event.date) >= new Date())
+              .sort((a, b) => new Date(a.date) - new Date(b.date))
+              .map((event) => {
+                const isPastEvent = new Date(event.date) < new Date();
+                return (
+              <div key={event._id} className={`border border-gray-200 rounded-lg p-4 hover:bg-gray-50 ${isPastEvent ? 'opacity-70' : ''}`}>
                 <div className="flex justify-between items-start">
                   <div className="flex-1">
-                    <h3 className="font-semibold text-lg text-gray-900">{event.title}</h3>
+                    <h3 className="font-semibold text-lg text-gray-900 flex items-center">
+                      {event.title}
+                      {isPastEvent && <span className="ml-2 text-xs bg-gray-200 text-gray-600 px-2 py-1 rounded">Past Event</span>}
+                    </h3>
                     <p className="text-gray-600 text-sm">
                       {new Date(event.date).toLocaleDateString()} • {event.segment} • {event.location}
                     </p>
@@ -182,7 +205,8 @@ export default function AdminDeletePanel() {
                   </button>
                 </div>
               </div>
-            ))}
+                );
+              })}
           </div>
         )}
       </div>

@@ -10,10 +10,12 @@ const webhookSecret = process.env.STRIPE_MEMBERSHIP_WEBHOOK_SECRET;
 
 export async function POST(req) {
   try {
+    console.log('🔔 Webhook endpoint called');
     const body = await req.text();
     const signature = req.headers.get('stripe-signature');
 
     if (!signature || !webhookSecret) {
+      console.error('❌ Webhook signature verification failed:', { signature: !!signature, webhookSecret: !!webhookSecret });
       return NextResponse.json({ error: 'Webhook signature verification failed' }, { status: 400 });
     }
 
@@ -28,6 +30,7 @@ export async function POST(req) {
     await connectDB();
 
     console.log('🔔 Webhook Event Received:', event.type);
+    console.log('🔍 Full event data:', JSON.stringify(event, null, 2));
     
     switch (event.type) {
       case 'checkout.session.completed':
@@ -92,6 +95,7 @@ async function handleCheckoutCompleted(session) {
     // Check if this is a subscription checkout
     if (session.mode === 'subscription') {
       console.log('Subscription checkout completed, waiting for subscription.created event');
+      console.log('🔍 Subscription checkout metadata:', session.metadata);
       return; // Let the subscription.created event handle the membership creation
     }
     
@@ -145,15 +149,28 @@ async function handleCheckoutCompleted(session) {
         // Update existing membership instead of creating new one
         existingMembership.membershipType = membershipType;
         existingMembership.stripePriceId = membershipType === 'monthly' ? process.env.STRIPE_MONTHLY_MEMBERSHIP_PRICE_ID : process.env.STRIPE_ANNUAL_MEMBERSHIP_PRICE_ID;
-        existingMembership.stripeSubscriptionId = session.subscription;
         
-        // Update period dates based on new membership type
+        // For subscription checkouts, session.subscription might be null initially
+        // The subscription ID will be set when customer.subscription.created webhook fires
+        if (session.subscription) {
+          existingMembership.stripeSubscriptionId = session.subscription;
+        }
+        
+        // Update period dates - for upgrades, start the new plan after the current plan ends
         if (membershipType === 'monthly') {
           existingMembership.currentPeriodEnd = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000); // 30 days
           existingMembership.nextPaymentDate = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
         } else {
-          existingMembership.currentPeriodEnd = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000); // 1 year
-          existingMembership.nextPaymentDate = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000);
+          // For annual upgrade, start the annual plan after the current monthly plan ends
+          const currentPeriodEnd = new Date(existingMembership.currentPeriodEnd);
+          existingMembership.currentPeriodEnd = new Date(currentPeriodEnd.getTime() + 365 * 24 * 60 * 60 * 1000);
+          existingMembership.nextPaymentDate = new Date(currentPeriodEnd.getTime() + 365 * 24 * 60 * 60 * 1000);
+          
+          console.log('📅 Webhook - Annual upgrade date calculation:', {
+            currentMonthlyEnd: currentPeriodEnd.toISOString(),
+            newAnnualEnd: existingMembership.currentPeriodEnd.toISOString(),
+            nextPaymentDate: existingMembership.nextPaymentDate.toISOString()
+          });
         }
         
         // Add note about the upgrade
@@ -168,9 +185,9 @@ async function handleCheckoutCompleted(session) {
         try {
           if (existingMembership.googleSheetsRowId) {
             await updateMemberInSheet(email, {
-              'Membership Type': membershipType,
-              'Current Period End': existingMembership.currentPeriodEnd,
-              'Next Payment Date': existingMembership.nextPaymentDate,
+              'Plan Type': membershipType,
+              'Current Period End': existingMembership.currentPeriodEnd.toISOString().split('T')[0],
+              'Next Payment Date': existingMembership.nextPaymentDate.toISOString().split('T')[0],
               'Notes': existingMembership.notes
             });
             console.log('Google Sheets updated for upgraded membership');
@@ -271,6 +288,13 @@ async function handleSubscriptionCreated(subscription) {
     const priceId = subscription.items.data[0].price.id;
     const membershipType = priceId === process.env.STRIPE_MONTHLY_MEMBERSHIP_PRICE_ID ? 'monthly' : 'annual';
     
+    console.log('🔍 Subscription Created - Price ID analysis:', {
+      priceId,
+      monthlyPriceId: process.env.STRIPE_MONTHLY_MEMBERSHIP_PRICE_ID,
+      annualPriceId: process.env.STRIPE_ANNUAL_MEMBERSHIP_PRICE_ID,
+      determinedMembershipType: membershipType
+    });
+    
     // Check if membership already exists
     const existingMembership = await Membership.findOne({
       stripeCustomerId: subscription.customer,
@@ -287,32 +311,48 @@ async function handleSubscriptionCreated(subscription) {
       });
       
       if (existingMembership.membershipType !== membershipType) {
-        console.log(`Processing membership upgrade via subscription: ${existingMembership.membershipType} -> ${membershipType} for ${customer.email}`);
+        const originalMembershipType = existingMembership.membershipType;
+        console.log(`Processing membership upgrade via subscription: ${originalMembershipType} -> ${membershipType} for ${customer.email}`);
         
         // Update existing membership instead of creating new one
         existingMembership.membershipType = membershipType;
         existingMembership.stripeSubscriptionId = subscription.id;
         existingMembership.stripePriceId = priceId;
-        existingMembership.currentPeriodStart = new Date(subscription.current_period_start * 1000);
-        existingMembership.currentPeriodEnd = new Date(subscription.current_period_end * 1000);
-        existingMembership.nextPaymentDate = new Date(subscription.current_period_end * 1000);
+        
+        // For upgrades, use custom date calculation to start annual plan after monthly plan ends
+        if (membershipType === 'annual' && originalMembershipType === 'monthly') {
+          const currentPeriodEnd = new Date(existingMembership.currentPeriodEnd);
+          existingMembership.currentPeriodEnd = new Date(currentPeriodEnd.getTime() + 365 * 24 * 60 * 60 * 1000);
+          existingMembership.nextPaymentDate = new Date(currentPeriodEnd.getTime() + 365 * 24 * 60 * 60 * 1000);
+          
+          console.log('📅 Subscription webhook - Annual upgrade date calculation:', {
+            currentMonthlyEnd: currentPeriodEnd.toISOString(),
+            newAnnualEnd: existingMembership.currentPeriodEnd.toISOString(),
+            nextPaymentDate: existingMembership.nextPaymentDate.toISOString()
+          });
+        } else {
+          // For new subscriptions or non-upgrade scenarios, use Stripe dates
+          existingMembership.currentPeriodStart = new Date(subscription.current_period_start * 1000);
+          existingMembership.currentPeriodEnd = new Date(subscription.current_period_end * 1000);
+          existingMembership.nextPaymentDate = new Date(subscription.current_period_end * 1000);
+        }
         
         // Add note about the upgrade
         const existingNotes = existingMembership.notes || '';
-        existingMembership.notes = `${existingNotes}\nUpgraded from ${existingMembership.membershipType} to ${membershipType} via subscription ${subscription.id} on ${new Date().toISOString()}`.trim();
+        existingMembership.notes = `${existingNotes}\nUpgraded from ${originalMembershipType} to ${membershipType} via subscription ${subscription.id} on ${new Date().toISOString()}`.trim();
         
         await existingMembership.save();
         
-        console.log(`Membership upgraded successfully via subscription: ${customer.email} from ${existingMembership.membershipType} to ${membershipType}`);
+        console.log(`Membership upgraded successfully via subscription: ${customer.email} from ${originalMembershipType} to ${membershipType}`);
         
         // Update Google Sheets if configured
         try {
           if (existingMembership.googleSheetsRowId) {
             await updateMemberInSheet(customer.email, {
-              'Membership Type': membershipType,
-              'Current Period Start': existingMembership.currentPeriodStart,
-              'Current Period End': existingMembership.currentPeriodEnd,
-              'Next Payment Date': existingMembership.nextPaymentDate,
+              'Plan Type': membershipType,
+              'Current Period Start': existingMembership.currentPeriodStart?.toISOString().split('T')[0] || '',
+              'Current Period End': existingMembership.currentPeriodEnd.toISOString().split('T')[0],
+              'Next Payment Date': existingMembership.nextPaymentDate.toISOString().split('T')[0],
               'Notes': existingMembership.notes
             });
             console.log('Google Sheets updated for upgraded membership via subscription');

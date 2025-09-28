@@ -69,12 +69,139 @@ export async function POST(req) {
       stripeCustomerId: session.customer,
       status: 'active'
     });
+    
+    console.log('🔍 Initial membership lookup result:', {
+      found: !!membership,
+      email,
+      stripeCustomerId: session.customer,
+      membershipType: membership?.membershipType
+    });
+    
+    // If not found by customer ID, try to find by email only (for upgrades)
+    if (!membership) {
+      membership = await Membership.findOne({
+        email: email,
+        status: 'active'
+      });
+      
+      console.log('🔍 Fallback lookup by email only:', {
+        found: !!membership,
+        email,
+        membershipType: membership?.membershipType,
+        existingStripeCustomerId: membership?.stripeCustomerId
+      });
+    }
+
+    // Check if this is an upgrade scenario and we have a membership
+    if (membership && isUpgrade && membership.membershipType !== membershipType) {
+      console.log('🔄 Found existing membership, processing upgrade:', {
+        existingType: membership.membershipType,
+        newType: membershipType,
+        isUpgrade
+      });
+      
+      // Update existing membership for upgrade
+      console.log('🔄 Before update:', {
+        membershipType: membership.membershipType,
+        stripeCustomerId: membership.stripeCustomerId,
+        stripeSubscriptionId: membership.stripeSubscriptionId
+      });
+      
+      membership.membershipType = membershipType;
+      membership.stripeCustomerId = session.customer;
+      membership.stripeSubscriptionId = session.subscription;
+      membership.stripePriceId = membershipType === 'monthly' ? process.env.STRIPE_MONTHLY_MEMBERSHIP_PRICE_ID : process.env.STRIPE_ANNUAL_MEMBERSHIP_PRICE_ID;
+      
+      console.log('🔄 After update (before save):', {
+        membershipType: membership.membershipType,
+        stripeCustomerId: membership.stripeCustomerId,
+        stripeSubscriptionId: membership.stripeSubscriptionId
+      });
+      
+      // Update period dates - for upgrades, start the new plan after the current plan ends
+      if (membershipType === 'monthly') {
+        membership.currentPeriodEnd = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
+        membership.nextPaymentDate = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
+      } else {
+        // For annual upgrade, start the annual plan after the current monthly plan ends
+        const currentPeriodEnd = new Date(membership.currentPeriodEnd);
+        membership.currentPeriodEnd = new Date(currentPeriodEnd.getTime() + 365 * 24 * 60 * 60 * 1000);
+        membership.nextPaymentDate = new Date(currentPeriodEnd.getTime() + 365 * 24 * 60 * 60 * 1000);
+        
+        console.log('📅 Annual upgrade date calculation:', {
+          currentMonthlyEnd: currentPeriodEnd.toISOString(),
+          newAnnualEnd: membership.currentPeriodEnd.toISOString(),
+          nextPaymentDate: membership.nextPaymentDate.toISOString()
+        });
+      }
+      
+      // Add upgrade note
+      const existingNotes = membership.notes || '';
+      membership.notes = `${existingNotes}\nUpgraded from ${membership.membershipType} to ${membershipType} via verify-payment fallback on ${new Date().toISOString()}`.trim();
+      
+      await membership.save();
+      console.log('✅ Membership upgraded via verify-payment fallback:', membership.email);
+      console.log('🔍 Updated membership details:', {
+        email: membership.email,
+        membershipType: membership.membershipType,
+        status: membership.status,
+        currentPeriodEnd: membership.currentPeriodEnd
+      });
+      
+      // Verify the save worked by re-fetching from database
+      const savedMembership = await Membership.findById(membership._id);
+      console.log('🔍 Verification - re-fetched from database:', {
+        membershipType: savedMembership.membershipType,
+        status: savedMembership.status,
+        updatedAt: savedMembership.updatedAt
+      });
+      
+      // Update Google Sheets if configured
+      try {
+        if (membership.googleSheetsRowId) {
+          await updateMemberInSheet(email, {
+            'Plan Type': membershipType,
+            'Current Period End': membership.currentPeriodEnd.toISOString().split('T')[0],
+            'Next Payment Date': membership.nextPaymentDate.toISOString().split('T')[0],
+            'Notes': membership.notes
+          });
+          console.log('✅ Google Sheets updated for upgraded membership via verify-payment');
+        }
+      } catch (sheetError) {
+        console.error('❌ Error updating Google Sheets for upgrade via verify-payment:', sheetError);
+      }
+      
+      return NextResponse.json({
+        success: true,
+        isMember: true,
+        membership: {
+          email: membership.email,
+          firstName: membership.firstName,
+          lastName: membership.lastName,
+          membershipType: membership.membershipType,
+          status: membership.status,
+          currentPeriodStart: membership.currentPeriodStart,
+          currentPeriodEnd: membership.currentPeriodEnd,
+          cancelAtPeriodEnd: membership.cancelAtPeriodEnd || false,
+          totalSavings: membership.totalSavings || 0,
+          createdAt: membership.createdAt
+        }
+      });
+    }
 
     // If no membership found, check for existing membership with same email (for upgrades)
     if (!membership && isUpgrade) {
+      console.log('🔄 No membership found, checking for upgrade scenario...');
       membership = await Membership.findOne({
         email: email,
         status: { $in: ['active', 'past_due'] }
+      });
+      
+      console.log('🔍 Fallback membership lookup result:', {
+        found: !!membership,
+        email,
+        membershipType: membership?.membershipType,
+        status: membership?.status
       });
       
       if (membership) {
@@ -84,18 +211,38 @@ export async function POST(req) {
         });
         
         // Update existing membership for upgrade
+        console.log('🔄 Before update:', {
+          membershipType: membership.membershipType,
+          stripeCustomerId: membership.stripeCustomerId,
+          stripeSubscriptionId: membership.stripeSubscriptionId
+        });
+        
         membership.membershipType = membershipType;
         membership.stripeCustomerId = session.customer;
         membership.stripeSubscriptionId = session.subscription;
         membership.stripePriceId = membershipType === 'monthly' ? process.env.STRIPE_MONTHLY_MEMBERSHIP_PRICE_ID : process.env.STRIPE_ANNUAL_MEMBERSHIP_PRICE_ID;
         
-        // Update period dates
+        console.log('🔄 After update (before save):', {
+          membershipType: membership.membershipType,
+          stripeCustomerId: membership.stripeCustomerId,
+          stripeSubscriptionId: membership.stripeSubscriptionId
+        });
+        
+        // Update period dates - for upgrades, start the new plan after the current plan ends
         if (membershipType === 'monthly') {
           membership.currentPeriodEnd = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
           membership.nextPaymentDate = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
         } else {
-          membership.currentPeriodEnd = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000);
-          membership.nextPaymentDate = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000);
+          // For annual upgrade, start the annual plan after the current monthly plan ends
+          const currentPeriodEnd = new Date(membership.currentPeriodEnd);
+          membership.currentPeriodEnd = new Date(currentPeriodEnd.getTime() + 365 * 24 * 60 * 60 * 1000);
+          membership.nextPaymentDate = new Date(currentPeriodEnd.getTime() + 365 * 24 * 60 * 60 * 1000);
+          
+          console.log('📅 Annual upgrade date calculation (fallback):', {
+            currentMonthlyEnd: currentPeriodEnd.toISOString(),
+            newAnnualEnd: membership.currentPeriodEnd.toISOString(),
+            nextPaymentDate: membership.nextPaymentDate.toISOString()
+          });
         }
         
         // Add upgrade note
@@ -104,14 +251,28 @@ export async function POST(req) {
         
         await membership.save();
         console.log('✅ Membership upgraded via verify-payment fallback:', membership.email);
+        console.log('🔍 Updated membership details:', {
+          email: membership.email,
+          membershipType: membership.membershipType,
+          status: membership.status,
+          currentPeriodEnd: membership.currentPeriodEnd
+        });
+        
+        // Verify the save worked by re-fetching from database
+        const savedMembership = await Membership.findById(membership._id);
+        console.log('🔍 Verification - re-fetched from database:', {
+          membershipType: savedMembership.membershipType,
+          status: savedMembership.status,
+          updatedAt: savedMembership.updatedAt
+        });
         
         // Update Google Sheets if configured
         try {
           if (membership.googleSheetsRowId) {
             await updateMemberInSheet(email, {
-              'Membership Type': membershipType,
-              'Current Period End': membership.currentPeriodEnd,
-              'Next Payment Date': membership.nextPaymentDate,
+              'Plan Type': membershipType,
+              'Current Period End': membership.currentPeriodEnd.toISOString().split('T')[0],
+              'Next Payment Date': membership.nextPaymentDate.toISOString().split('T')[0],
               'Notes': membership.notes
             });
             console.log('✅ Google Sheets updated for upgraded membership via verify-payment');

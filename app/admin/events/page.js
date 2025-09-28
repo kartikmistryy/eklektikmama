@@ -14,6 +14,7 @@ export default function AdminEventsPage() {
     price: "",
     location: "",
     segment: "cinemaMorning",
+    isMembersOnly: false,
     message: "",
     meetingLink: "",
     bookingDeadline: "",
@@ -208,6 +209,11 @@ export default function AdminEventsPage() {
     if (form.price) {
       eventData.price = parseFloat(form.price);
     }
+    
+    // Automatically set coffee meetup events as members-only
+    if (form.segment === 'coffeeMeetup') {
+      eventData.isMembersOnly = true;
+    }
 
     const res = await fetch("/api/events", {
       method: "POST",
@@ -278,8 +284,23 @@ export default function AdminEventsPage() {
               <option value="mamaFit">MamaFit</option>
               <option value="eklektikEdit">Eklektik Edit</option>
               <option value="familyDay">Family Day</option>
+              <option value="coffeeMeetup">Coffee Meetup (Members Only)</option>
             </select>
           </div>
+        </div>
+
+        {/* Members Only Checkbox */}
+        <div className="flex items-center">
+          <input
+            type="checkbox"
+            name="isMembersOnly"
+            checked={form.isMembersOnly}
+            onChange={(e) => setForm({ ...form, isMembersOnly: e.target.checked })}
+            className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+          />
+          <label className="ml-2 block text-sm text-gray-700">
+            Members Only Event
+          </label>
         </div>
 
         <div>

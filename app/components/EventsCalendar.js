@@ -88,6 +88,9 @@ export default function EventsCalendar({ events = [] }) {
 
     // Check if this is a day of the current month
     const isCurrentMonth = moment(value).isSame(moment(), 'month');
+    
+    // Check if this is a past event
+    const isPastEvent = event && moment(event.start).isBefore(moment(), 'day');
 
     return (
       <div
@@ -97,6 +100,7 @@ export default function EventsCalendar({ events = [] }) {
           backgroundSize: "cover",
           backgroundPosition: "center",
           backgroundColor: isCurrentMonth ? '#F6F6F6' : 'transparent',
+          opacity: isPastEvent ? 0.5 : 1,
         }}
       >
         <div className={`absolute top-1 left-1 text-xs px-1.5 py-0.5 rounded ${
@@ -177,13 +181,16 @@ export default function EventsCalendar({ events = [] }) {
 
   // List view component for mobile
   const ListView = () => {
-    const sortedEvents = [...localEvents].sort((a, b) => new Date(a.start) - new Date(b.start));
+    // Filter out past events and sort by date (latest first)
+    const now = new Date();
+    const futureEvents = localEvents.filter(event => new Date(event.start) >= now);
+    const sortedEvents = [...futureEvents].sort((a, b) => new Date(a.start) - new Date(b.start));
     
     return (
       <div className="space-y-4">
-        {localEvents.length === 0 ? (
+        {futureEvents.length === 0 ? (
           <div className="text-center py-8 text-gray-500">
-            <p>No events scheduled</p>
+            <p>No upcoming events scheduled</p>
           </div>
         ) : (
           sortedEvents.map((event) => (

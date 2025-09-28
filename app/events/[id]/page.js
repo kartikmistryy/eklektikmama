@@ -48,9 +48,17 @@ export default async function EventDetailPage({ params }) {
 
       <div className="max-w-[1400px] mx-auto px-5 py-6">
         <div className="flex items-start justify-between gap-4 lg:px-0 px-5">
-          <h1 className="text-3xl md:text-5xl font-poppins text-[#093166] uppercase">
-            {event.title}
-          </h1>
+          <div>
+            <h1 className="text-3xl md:text-5xl font-poppins text-[#093166] uppercase">
+              {event.title}
+            </h1>
+            {event.isMembersOnly && (
+              <div className="mt-2 inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-purple-100 text-purple-800">
+                <span className="mr-1">👑</span>
+                Members Only Event
+              </div>
+            )}
+          </div>
           <div className="flex flex-col items-end gap-2">
             {/* Availability Status */}
             <div className="text-right">
@@ -134,7 +142,9 @@ export default async function EventDetailPage({ params }) {
             {event.location && (
               <p className="text-sm text-gray-700">📍 {event.location}</p>
             )}
-            {event.price > 0 && (
+            {event.segment === 'coffeeMeetup' ? (
+              <p className="text-sm text-green-600 font-semibold">🎟️ FREE (Members Only)</p>
+            ) : event.price > 0 && (
               <p className="text-sm text-gray-700">🎟️ AED {event.price}</p>
             )}
             {event.bookingDeadline && (

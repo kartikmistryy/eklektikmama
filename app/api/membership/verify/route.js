@@ -15,10 +15,19 @@ export async function POST(req) {
       );
     }
 
-    // Find the membership by email
+    // Find the active membership by email
     const membership = await Membership.findOne({ 
-      email: email.toLowerCase().trim() 
+      email: email.toLowerCase().trim(),
+      status: { $in: ['active', 'past_due'] }
     }).sort({ createdAt: -1 });
+
+    console.log('🔍 Membership verify lookup:', {
+      email: email.toLowerCase().trim(),
+      found: !!membership,
+      membershipType: membership?.membershipType,
+      status: membership?.status,
+      createdAt: membership?.createdAt
+    });
 
     if (!membership) {
       return NextResponse.json({

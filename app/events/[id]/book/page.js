@@ -22,6 +22,7 @@ export default function BookingPage({ params }) {
   const [eventId, setEventId] = useState(null);
   const [isMember, setIsMember] = useState(false);
   const [membershipChecked, setMembershipChecked] = useState(false);
+  const [isMembersOnlyEvent, setIsMembersOnlyEvent] = useState(false);
 
   // Handle async params
   useEffect(() => {
@@ -50,6 +51,9 @@ export default function BookingPage({ params }) {
           // Check if booking deadline has passed
           const deadlinePassed = eventData.bookingDeadline ? moment(eventData.bookingDeadline).isBefore(moment()) : false;
           setIsBookingDeadlinePassed(deadlinePassed);
+          
+          // Check if this is a members-only event
+          setIsMembersOnlyEvent(eventData.isMembersOnly || false);
           
           // Set form configuration based on event segment
           if (eventData.segment) {
@@ -169,7 +173,7 @@ export default function BookingPage({ params }) {
         // Map parent emails to email
         email: formData.motherEmail || formData.parentEmail || formData.email || '',
         // Map parent phones to phone
-        phone: formData.motherPhone || formData.parent1Phone || formData.contact || '',
+        phone: formData.motherPhone || formData.parent1Phone || formData.phone || formData.contact || '',
         // Keep childName as is (or use first child for family day)
         childName: formData.childName || formData.child1Name || '',
         // Keep numberOfTickets as is
@@ -186,6 +190,17 @@ export default function BookingPage({ params }) {
       console.log('Choice I:', formData.choiceI);
       console.log('Choice II:', formData.choiceII);
       console.log('Choice III:', formData.choiceIII);
+      
+      // Coffee meetup specific debugging
+      if (event.segment === 'coffeeMeetup') {
+        console.log('🔍 Coffee Meetup Form Data:', {
+          name: formData.name,
+          phone: formData.phone,
+          email: formData.email,
+          childName: formData.childName,
+          childAge: formData.childAge
+        });
+      }
 
       // Proceed directly to payment - data will be saved after successful payment
       const response = await fetch('/api/checkout', {
@@ -198,11 +213,19 @@ export default function BookingPage({ params }) {
 
       const data = await response.json();
       
-      if (data.url) {
-        // Redirect to Stripe checkout
+      if (data.isFreeEvent) {
+        // Handle free event booking
+        alert(`✅ ${data.message}\n\nEvent: ${data.bookingData.eventTitle}\nDate: ${new Date(data.bookingData.eventDate).toLocaleDateString()}\nMember: ${data.bookingData.memberName}\nChild: ${data.bookingData.childName}`);
+        router.push('/events');
+      } else if (data.url) {
+        // Redirect to Stripe checkout for paid events
         window.location.href = data.url;
+      } else if (data.isMembersOnly && data.membershipRequired) {
+        // Handle members-only restriction
+        alert(`👑 ${data.error}\n\nThis event is exclusive to Eklektik AF members only. Please become a member to access this event.`);
+        router.push('/eklektikmamaMembership');
       } else {
-        alert('Error creating checkout session');
+        alert(data.error || 'Error creating checkout session');
       }
     } catch (error) {
       console.error('Error:', error);
@@ -341,14 +364,61 @@ export default function BookingPage({ params }) {
     );
   }
 
+  // Check if this is a members-only event and user is not a member
+  if (isMembersOnlyEvent && !isMember && membershipChecked) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center max-w-md mx-auto p-6">
+          <div className="bg-purple-50 border border-purple-200 rounded-lg p-6">
+            <div className="text-purple-600 text-6xl mb-4">👑</div>
+            <h1 className="text-2xl font-bold text-gray-800 mb-2">Members Only Event</h1>
+            <p className="text-gray-600 mb-4">
+              This event is exclusive to Eklektik AF members only. Please become a member to book this event.
+            </p>
+            <p className="text-sm text-gray-500 mb-6">
+              Join our community to access exclusive events, discounts, and more!
+            </p>
+            <div className="space-y-3">
+              <button 
+                onClick={() => router.push('/eklektikmamaMembership')} 
+                className="w-full px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700"
+              >
+                Become a Member
+              </button>
+              <button 
+                onClick={() => router.push('/events')} 
+                className="w-full px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300"
+              >
+                View Other Events
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gray-50 py-8" style={{ paddingTop: '10em' }}>
       <div className="max-w-4xl mx-auto px-4">
         <div className="bg-white rounded-xl shadow-lg overflow-hidden">
           {/* Header */}
           <div className="bg-[#093166] text-white p-6">
-            <h1 className="text-2xl md:text-3xl font-antonio uppercase">Book Your Tickets</h1>
-            <p className="text-blue-100 mt-2">Complete your booking for {event.title}</p>
+            <h1 className="text-2xl md:text-3xl font-antonio uppercase">
+              {event.segment === 'coffeeMeetup' ? 'Register for Free Event' : 'Book Your Tickets'}
+            </h1>
+            <p className="text-blue-100 mt-2">
+              {event.segment === 'coffeeMeetup' 
+                ? `Complete your free registration for ${event.title}` 
+                : `Complete your booking for ${event.title}`
+              }
+            </p>
+            {isMembersOnlyEvent && (
+              <div className="mt-2 inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-purple-100 text-purple-800">
+                <span className="mr-1">👑</span>
+                Members Only Event
+              </div>
+            )}
             {availability && (
               <div className="mt-3 text-sm text-blue-200">
                 {isEventPast 
@@ -416,7 +486,12 @@ export default function BookingPage({ params }) {
                     </div>
                   )}
                   
-                  {event.price > 0 && event.segment !== 'familyDay' && (
+                  {event.segment === 'coffeeMeetup' ? (
+                    <div className="flex items-center text-green-600">
+                      <span className="mr-3 text-xl">🎟️</span>
+                      <span className="text-xl font-semibold">FREE (Members Only)</span>
+                    </div>
+                  ) : event.price > 0 && event.segment !== 'familyDay' && (
                     <div className="flex items-center text-gray-700">
                       <span className="mr-3 text-xl">🎟️</span>
                       <span className="text-xl font-semibold text-[#093166]">AED {event.price} per ticket</span>

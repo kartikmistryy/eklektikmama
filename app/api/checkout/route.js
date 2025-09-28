@@ -74,8 +74,40 @@ export async function POST(req) {
       return NextResponse.json({ error: 'This event has already passed.' }, { status: 403 });
     }
 
-    // Validate event price
-    if (!event.price || event.price <= 0) {
+    // Check if this is a free event (coffee meetup)
+    const isFreeEvent = event.segment === 'coffeeMeetup';
+    
+    // Check if this is a members-only event (coffee meetup is always members-only)
+    if (event.isMembersOnly || isFreeEvent) {
+      console.log(`Event ${event.title} is members-only, checking membership status for ${email}`);
+      
+      try {
+        const membership = await Membership.findOne({
+          email: email.toLowerCase(),
+          status: { $in: ['active', 'past_due'] }
+        });
+
+        if (!membership || !membership.isActive()) {
+          return NextResponse.json({ 
+            error: 'This event is exclusive to Eklektik AF members only. Please become a member to book this event.',
+            isMembersOnly: true,
+            membershipRequired: true
+          }, { status: 403 });
+        }
+        
+        console.log(`Membership verified for ${email} - access granted to members-only event`);
+      } catch (membershipError) {
+        console.error('Error checking membership for members-only event:', membershipError);
+        return NextResponse.json({ 
+          error: 'Unable to verify membership status. Please try again or contact support.',
+          isMembersOnly: true,
+          membershipRequired: true
+        }, { status: 500 });
+      }
+    }
+    
+    // Validate event price (skip for free events)
+    if (!isFreeEvent && (!event.price || event.price <= 0)) {
       return NextResponse.json({ error: 'Event price is invalid' }, { status: 400 });
     }
 
@@ -113,6 +145,71 @@ export async function POST(req) {
     } catch (membershipError) {
       console.error('Error checking membership:', membershipError);
       // Continue without discount if membership check fails
+    }
+
+    // Handle free events (coffee meetup) - no payment required
+    if (isFreeEvent) {
+      console.log(`Processing free event booking for ${event.title}`);
+      console.log('Form data received:', otherFormData);
+      console.log('Email from URL params:', email);
+      console.log('Event segment:', event.segment);
+      
+      // Extract the actual form data (it's nested in otherFormData.otherFormData)
+      const formData = otherFormData.otherFormData || otherFormData;
+      console.log('Extracted form data:', formData);
+      
+      // Create a free booking record directly
+      const bookingData = {
+        eventId: event._id,
+        eventTitle: event.title,
+        eventDate: event.date,
+        guardianName: formData.name || '',
+        childName: formData.childName || '',
+        email: email,
+        phone: formData.phone || '',
+        numberOfTickets: 1, // Free events are typically 1 ticket per member
+        eventSegment: event.segment,
+        paymentStatus: 'free',
+        transactionId: `free_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+        // Include all form data for Google Sheets
+        name: formData.name || '',
+        phone: formData.phone || '',
+        email: email,
+        childName: formData.childName || '',
+        childAge: formData.childAge || '',
+        photographyConsent: formData.photographyConsent || 'No',
+        ...formData
+      };
+      
+      console.log('🔍 Final booking data for Google Sheets:', {
+        name: bookingData.name,
+        guardianName: bookingData.guardianName,
+        childName: bookingData.childName,
+        phone: bookingData.phone,
+        email: bookingData.email
+      });
+      
+      // Add to Google Sheets
+      try {
+        const { addBookingToEventSheet } = await import('@/lib/googleSheets');
+        await addBookingToEventSheet(bookingData, event);
+        console.log('Free event booking added to Google Sheets');
+      } catch (error) {
+        console.error('Error adding free event booking to Google Sheets:', error);
+        // Continue even if Google Sheets fails
+      }
+      
+      return NextResponse.json({
+        success: true,
+        message: 'Booking confirmed! This is a free event - no payment required.',
+        isFreeEvent: true,
+        bookingData: {
+          eventTitle: event.title,
+          eventDate: event.date,
+          memberName: otherFormData.name,
+          childName: otherFormData.childName
+        }
+      });
     }
 
     // Check Stripe configuration

@@ -14,9 +14,10 @@ const EventSchema = new mongoose.Schema({
   segment: { 
     type: String, 
     required: true,
-    enum: ['cinemaMorning', 'mamaBreakfast', 'mamaFit', 'eklektikEdit', 'familyDay'],
+    enum: ['cinemaMorning', 'mamaBreakfast', 'mamaFit', 'eklektikEdit', 'familyDay', 'coffeeMeetup'],
     default: 'cinemaMorning'
   },
+  isMembersOnly: { type: Boolean, default: false }, // Flag for member-only events
   message: String, // Custom message for eklektik edit events
   meetingLink: String, // Meeting link for eklektik edit events
   bookingDeadline: Date, // Deadline for booking (after this date, Book Now button is disabled)
