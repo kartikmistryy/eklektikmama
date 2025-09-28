@@ -116,23 +116,72 @@ export async function POST(req) {
 
     // Send cancellation confirmation email
     try {
+      // Use the same logic for email as for the response
+      let emailPeriodEnd = subscription.current_period_end ? subscription.current_period_end * 1000 : null;
+      if (!emailPeriodEnd && membership.currentPeriodEnd) {
+        emailPeriodEnd = membership.currentPeriodEnd.getTime();
+      }
+      
       await sendCancellationConfirmationEmail({
         firstName: membership.firstName,
         email: membership.email,
         membershipType: membership.membershipType,
-        currentPeriodEnd: subscription.current_period_end * 1000 // Convert to milliseconds
+        currentPeriodEnd: emailPeriodEnd
       });
     } catch (emailError) {
       console.error('Error sending cancellation confirmation email:', emailError);
       // Don't fail the process if email fails
     }
 
+    // Debug logging
+    console.log('🔍 Stripe subscription data:', {
+      current_period_end: subscription.current_period_end,
+      cancel_at_period_end: subscription.cancel_at_period_end,
+      status: subscription.status
+    });
+    console.log('🔍 Membership data:', {
+      currentPeriodEnd: membership.currentPeriodEnd,
+      membershipType: membership.membershipType
+    });
+
+    // Format the access until date properly
+    let accessUntilDate = 'the end of your current billing period';
+    
+    // Try Stripe subscription date first, then fall back to membership database date
+    let periodEndTimestamp = subscription.current_period_end;
+    if (!periodEndTimestamp && membership.currentPeriodEnd) {
+      periodEndTimestamp = Math.floor(membership.currentPeriodEnd.getTime() / 1000);
+      console.log('🔍 Using membership currentPeriodEnd as fallback:', periodEndTimestamp);
+    }
+    
+    if (periodEndTimestamp) {
+      try {
+        const date = new Date(periodEndTimestamp * 1000);
+        console.log('🔍 Converted date:', date);
+        
+        if (!isNaN(date.getTime())) {
+          accessUntilDate = date.toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+          });
+          console.log('🔍 Formatted date:', accessUntilDate);
+        } else {
+          console.log('🔍 Invalid date conversion');
+        }
+      } catch (error) {
+        console.error('🔍 Date formatting error:', error);
+      }
+    } else {
+      console.log('🔍 No period end found in subscription or membership');
+    }
+
     return NextResponse.json({
       success: true,
-      message: 'Your membership has been successfully cancelled. You will retain access until the end of your current billing period.',
+      message: `Your membership has been successfully cancelled. You will retain access until ${accessUntilDate}.`,
       cancelAtPeriodEnd: subscription.cancel_at_period_end,
       currentPeriodEnd: subscription.current_period_end,
-      accessUntil: new Date(subscription.current_period_end * 1000).toLocaleDateString()
+      accessUntil: accessUntilDate
     });
 
   } catch (error) {
