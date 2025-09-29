@@ -88,7 +88,7 @@ const GuestBlogSection = ({ guestPosts }) => {
         animate={guestBlogInView ? "visible" : "hidden"}
         variants={fadeInUp}
       >
-        GUEST BLOG
+        GUEST BLOGS
       </motion.h2>
 
       <motion.div 
@@ -123,7 +123,7 @@ const GuestBlogSection = ({ guestPosts }) => {
                   )}
                   <div className="absolute top-5 left-5">
                     <span className="w-fit h-[40px] px-4 text-base flex items-center justify-center text-white hover:text-[#093166] rounded-[20px] border-2 border-white bg-transparent hover:bg-white transition-colors duration-500 ease-in-out md:scale-100 scale-75 uppercase">
-                      Guest Blog
+                      Guest Blogs
                     </span>
                   </div>
                 </div>
