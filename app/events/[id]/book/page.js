@@ -191,6 +191,18 @@ export default function BookingPage({ params }) {
       console.log('Choice II:', formData.choiceII);
       console.log('Choice III:', formData.choiceIII);
       
+      // Debug mama breakfast specific fields
+      if (event.segment === 'mamaBreakfast') {
+        console.log('🍽️ Mama Breakfast Form Debug:', {
+          choiceI: formData.choiceI,
+          choiceII: formData.choiceII,
+          choiceIII: formData.choiceIII,
+          motherName: formData.motherName,
+          childName: formData.childName,
+          allFormKeys: Object.keys(formData)
+        });
+      }
+      
       // Coffee meetup specific debugging
       if (event.segment === 'coffeeMeetup') {
         console.log('🔍 Coffee Meetup Form Data:', {

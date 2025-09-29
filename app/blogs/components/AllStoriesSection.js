@@ -3,7 +3,7 @@ import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
 import BlogCard from "./BlogCard";
 
-const AllStoriesSection = ({ allPosts, featuredPosts }) => {
+const AllStoriesSection = ({ allPosts, featuredPosts, guestPosts = [] }) => {
   const allStoriesRef = useRef(null);
   const allStoriesInView = useInView(allStoriesRef, { once: true, amount: 0.2 });
 
@@ -27,10 +27,13 @@ const AllStoriesSection = ({ allPosts, featuredPosts }) => {
     }
   };
 
-  // Get all posts excluding featured and latest 2
+  // Get all posts excluding featured, latest 2, and guest posts
   const getRemainingPosts = () => {
     // Get featured post IDs
     const featuredPostIds = featuredPosts.map(post => post.sys.id);
+    
+    // Get guest post IDs
+    const guestPostIds = guestPosts.map(post => post.sys.id);
     
     // Get latest 2 post IDs
     const latestPostIds = [...allPosts]
@@ -38,13 +41,15 @@ const AllStoriesSection = ({ allPosts, featuredPosts }) => {
       .slice(0, 2)
       .map(post => post.sys.id);
     
-    // Filter out featured and latest posts
+    // Filter out featured, latest, and guest posts
     const remainingPosts = allPosts.filter(post => 
       !featuredPostIds.includes(post.sys.id) && 
-      !latestPostIds.includes(post.sys.id)
+      !latestPostIds.includes(post.sys.id) &&
+      !guestPostIds.includes(post.sys.id)
     );
     
     console.log('Featured post IDs:', featuredPostIds);
+    console.log('Guest post IDs:', guestPostIds);
     console.log('Latest post IDs:', latestPostIds);
     console.log('Remaining posts:', remainingPosts);
     

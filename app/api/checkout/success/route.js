@@ -133,7 +133,7 @@ export async function GET(req) {
       childDob: session.metadata.childDob || additionalData.childDob || otherFormData.childDob || '',
       
       // Allergy and dietary information
-      dietaryRequirements: session.metadata.dietaryRequirements || (additionalData.allergies ? additionalData.allergies.join(', ') : '') || (otherFormData.allergies ? otherFormData.allergies.join(', ') : '') || '',
+      dietaryRequirements: session.metadata.dietaryRequirements || (Array.isArray(additionalData.allergies) ? additionalData.allergies.join(', ') : additionalData.allergies) || (Array.isArray(otherFormData.allergies) ? otherFormData.allergies.join(', ') : otherFormData.allergies) || '',
       foodAllergies: session.metadata.foodAllergies || additionalData.foodAllergies || otherFormData.foodAllergies || '',
       allergies: session.metadata.allergies || (Array.isArray(additionalData.allergies) ? additionalData.allergies.join(',') : additionalData.allergies) || (Array.isArray(otherFormData.allergies) ? otherFormData.allergies.join(',') : otherFormData.allergies) || '',
       
@@ -236,6 +236,16 @@ export async function GET(req) {
     // Add booking to event-specific Google Sheet
     if (eventSegment && process.env.GOOGLE_SHEETS_CLIENT_EMAIL && process.env.GOOGLE_SHEETS_PRIVATE_KEY) {
       try {
+        // Debug choiceI data before creating booking data
+        console.log('🍽️ ChoiceI Debug in checkout success:', {
+          choiceI,
+          choiceII,
+          choiceIII,
+          sessionMetadataChoiceI: session.metadata.choiceI,
+          otherFormDataChoiceI: otherFormData.choiceI,
+          additionalDataChoiceI: additionalData.choiceI
+        });
+
         // Prepare comprehensive booking data for Google Sheets
         const bookingData = {
           bookingId: booking._id.toString(),
@@ -287,6 +297,9 @@ export async function GET(req) {
           cookingExperience: extractedData.cookingExperience,
           favoriteFoods: extractedData.favoriteFoods,
           mainCourseSelection: choiceI, // Map choiceI to mainCourseSelection for mamaBreakfast
+          choiceI, // Also include choiceI directly for fallback
+          choiceII,
+          choiceIII,
           isMember: session.metadata.isMember === 'true',
           memberSavings: parseFloat(session.metadata.memberSavings || '0'),
           bookingDate: new Date(),

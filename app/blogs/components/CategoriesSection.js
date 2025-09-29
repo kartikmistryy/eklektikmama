@@ -3,7 +3,7 @@ import Link from "next/link";
 import { motion, useInView } from "framer-motion";
 import { useRef, useState } from "react";
 
-const CategoriesSection = ({ allPosts }) => {
+const CategoriesSection = ({ allPosts, guestPosts = [] }) => {
   const categoriesRef = useRef(null);
   const categoriesInView = useInView(categoriesRef, { once: true, amount: 0.2 });
   const [activeTag, setActiveTag] = useState('All');
@@ -46,16 +46,17 @@ const CategoriesSection = ({ allPosts }) => {
     }
   };
 
-  // Get unique tags from posts
-  const tags = [...new Set(allPosts.map(post => post.fields.tag).filter(Boolean))];
+  // Get unique tags from posts (excluding guest posts)
+  const nonGuestPosts = allPosts.filter(post => !guestPosts.some(guestPost => guestPost.sys.id === post.sys.id));
+  const tags = [...new Set(nonGuestPosts.map(post => post.fields.tag).filter(Boolean))];
   
-  // Get the 2 latest posts filtered by active tag
+  // Get the 2 latest posts filtered by active tag (excluding guest posts)
   const getLatestPosts = () => {
-    let filteredPosts = allPosts;
+    let filteredPosts = nonGuestPosts;
     
     // Filter by active tag if not 'All'
     if (activeTag !== 'All') {
-      filteredPosts = allPosts.filter(post => post.fields.tag === activeTag);
+      filteredPosts = nonGuestPosts.filter(post => post.fields.tag === activeTag);
     }
     
     return [...filteredPosts]

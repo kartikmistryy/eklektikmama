@@ -1,8 +1,9 @@
-import { getFeaturedBlogPosts, getEklektikBlogPosts, getBlogPostsCount, getAllPostsWithoutSegment } from "../../lib/contentful";
+import { getFeaturedBlogPosts, getEklektikBlogPosts, getBlogPostsCount, getAllPostsWithoutSegment, getGuestBlogPosts } from "../../lib/contentful";
 import Marquee from "../components/Marquee";
 import BlogCard from "./components/BlogCard";
 import FeaturedSection from "./components/FeaturedSection";
 import CategoriesSection from "./components/CategoriesSection";
+import GuestBlogSection from "./components/GuestBlogSection";
 import AllStoriesSection from "./components/AllStoriesSection";
 import Pagination from "./components/Pagination";
 
@@ -51,20 +52,24 @@ async function getBlogData(searchParams) {
     const limit = 9; // Number of posts per page
     const skip = (page - 1) * limit;
 
-    // Temporarily use all posts without segment filtering for debugging
-    const [featuredPosts, allPosts, totalCount] = await Promise.all([
+    // Fetch all required data
+    const [featuredPosts, allPosts, guestPosts, totalCount] = await Promise.all([
       getFeaturedBlogPosts(),
       getAllPostsWithoutSegment(limit, skip),
+      getGuestBlogPosts(6, 0), // Get up to 6 guest posts for the carousel
       getBlogPostsCount()
     ]);
     
     console.log('Main page - featuredPosts:', featuredPosts);
     console.log('Main page - allPosts:', allPosts);
+    console.log('Main page - guestPosts:', guestPosts);
+    console.log('Main page - guestPosts length:', guestPosts?.length);
     console.log('Main page - totalCount:', totalCount);
     
     return {
       featuredPosts: featuredPosts || [],
       eklektikPosts: allPosts || [], // Using all posts temporarily
+      guestPosts: guestPosts || [],
       totalCount: totalCount || 0,
       currentPage: page,
       totalPages: Math.ceil(totalCount / limit),
@@ -75,6 +80,7 @@ async function getBlogData(searchParams) {
     return {
       featuredPosts: [],
       eklektikPosts: [],
+      guestPosts: [],
       totalCount: 0,
       currentPage: 1,
       totalPages: 1,
@@ -88,6 +94,7 @@ export default async function BlogsPage({ searchParams }) {
   const { 
     featuredPosts, 
     eklektikPosts, 
+    guestPosts,
     totalCount, 
     currentPage, 
     totalPages, 
@@ -96,6 +103,7 @@ export default async function BlogsPage({ searchParams }) {
 
   console.log('Page component - featuredPosts length:', featuredPosts.length);
   console.log('Page component - eklektikPosts length:', eklektikPosts.length);
+  console.log('Page component - guestPosts length:', guestPosts.length);
 
   return (
     <div className="w-full h-full flex flex-col">
@@ -113,10 +121,13 @@ export default async function BlogsPage({ searchParams }) {
       <FeaturedSection featuredPosts={featuredPosts} />
 
       {/* Categories Section */}
-      <CategoriesSection allPosts={eklektikPosts} />
+      <CategoriesSection allPosts={eklektikPosts} guestPosts={guestPosts} />
+
+      {/* Guest Blog Section */}
+      <GuestBlogSection guestPosts={guestPosts} />
 
       {/* All Stories Section */}
-      <AllStoriesSection allPosts={eklektikPosts} featuredPosts={featuredPosts} />
+      <AllStoriesSection allPosts={eklektikPosts} featuredPosts={featuredPosts} guestPosts={guestPosts} />
 
       {/* Pagination */}
       {totalPages > 1 && (

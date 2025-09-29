@@ -269,6 +269,17 @@ export async function POST(req) {
       memberSavings: isMember ? originalPrice - discountedPrice : 0
     });
     
+    // Debug form data for mama breakfast
+    if (event.segment === 'mamaBreakfast') {
+      console.log('🍽️ Mama Breakfast Form Data Debug:', {
+        otherFormData: otherFormData,
+        choiceI: otherFormData.choiceI,
+        choiceII: otherFormData.choiceII,
+        choiceIII: otherFormData.choiceIII,
+        allKeys: Object.keys(otherFormData)
+      });
+    }
+    
     // Create line item with discounted price (simpler approach)
     const finalPrice = Math.max(0, Math.round(discountedPrice * 100));
     
@@ -346,39 +357,39 @@ export async function POST(req) {
         originalPrice: String(originalPrice),
         finalPrice: String(discountedPrice),
         
-        // Choice fields for all events
-        choiceI: (otherFormData.choiceI || '').substring(0, 100),
-        choiceII: (otherFormData.choiceII || '').substring(0, 100),
-        choiceIII: (otherFormData.choiceIII || '').substring(0, 100),
+        // Choice fields for all events - handle nested structure
+        choiceI: ((otherFormData.otherFormData || otherFormData).choiceI || '').substring(0, 100),
+        choiceII: ((otherFormData.otherFormData || otherFormData).choiceII || '').substring(0, 100),
+        choiceIII: ((otherFormData.otherFormData || otherFormData).choiceIII || '').substring(0, 100),
         
         // Emergency contact information
         emergencyName: ((otherFormData.otherFormData || otherFormData).emergencyName || '').substring(0, 100),
         emergencyPhone: ((otherFormData.otherFormData || otherFormData).emergencyPhone || '').substring(0, 100),
         
-        // Child information
-        childDob: otherFormData.childDob || '',
-        childAge: otherFormData.childAge || '',
-        childGender: (otherFormData.childGender || '').substring(0, 50),
+        // Child information - handle nested structure
+        childDob: (otherFormData.otherFormData || otherFormData).childDob || '',
+        childAge: (otherFormData.otherFormData || otherFormData).childAge || '',
+        childGender: ((otherFormData.otherFormData || otherFormData).childGender || '').substring(0, 50),
         
-        // Allergy and dietary information
-        allergies: Array.isArray(otherFormData.allergies) ? otherFormData.allergies.join(',').substring(0, 200) : (otherFormData.allergies || ''),
-        dietaryRequirements: (otherFormData.dietaryRequirements || '').substring(0, 200),
-        foodAllergies: (otherFormData.foodAllergies || '').substring(0, 200),
+        // Allergy and dietary information - handle nested structure
+        allergies: Array.isArray((otherFormData.otherFormData || otherFormData).allergies) ? (otherFormData.otherFormData || otherFormData).allergies.join(',').substring(0, 200) : ((otherFormData.otherFormData || otherFormData).allergies || ''),
+        dietaryRequirements: ((otherFormData.otherFormData || otherFormData).dietaryRequirements || '').substring(0, 200),
+        foodAllergies: ((otherFormData.otherFormData || otherFormData).foodAllergies || '').substring(0, 200),
         
-        // Medical information
-        medicalConditions: (otherFormData.medicalConditions || '').substring(0, 200),
-        conditionDetails: (otherFormData.conditionDetails || '').substring(0, 200),
-        medicalInfo: (otherFormData.medicalInfo || '').substring(0, 200),
+        // Medical information - handle nested structure
+        medicalConditions: ((otherFormData.otherFormData || otherFormData).medicalConditions || '').substring(0, 200),
+        conditionDetails: ((otherFormData.otherFormData || otherFormData).conditionDetails || '').substring(0, 200),
+        medicalInfo: ((otherFormData.otherFormData || otherFormData).medicalInfo || '').substring(0, 200),
         
-        // MamaFit specific fields
-        pregnant: otherFormData.pregnant || '',
-        postpartum: otherFormData.postpartum || '',
-        postpartumDuration: (otherFormData.postpartumDuration || '').substring(0, 100),
-        fitnessLevel: (otherFormData.fitnessLevel || '').substring(0, 50),
+        // MamaFit specific fields - handle nested structure
+        pregnant: (otherFormData.otherFormData || otherFormData).pregnant || '',
+        postpartum: (otherFormData.otherFormData || otherFormData).postpartum || '',
+        postpartumDuration: ((otherFormData.otherFormData || otherFormData).postpartumDuration || '').substring(0, 100),
+        fitnessLevel: ((otherFormData.otherFormData || otherFormData).fitnessLevel || '').substring(0, 50),
         
-        // Hello Chef specific fields
-        cookingExperience: otherFormData.cookingExperience || '',
-        favoriteFoods: (otherFormData.favoriteFoods || '').substring(0, 200),
+        // Hello Chef specific fields - handle nested structure
+        cookingExperience: (otherFormData.otherFormData || otherFormData).cookingExperience || '',
+        favoriteFoods: ((otherFormData.otherFormData || otherFormData).favoriteFoods || '').substring(0, 200),
         
         // Family Day specific fields
         parent1Name: ((otherFormData.otherFormData || otherFormData).parent1Name || '').substring(0, 100),
@@ -396,15 +407,15 @@ export async function POST(req) {
         numberOfChildren: ((otherFormData.otherFormData || otherFormData).numberOfChildren || '').substring(0, 50),
         howDidYouHear: ((otherFormData.otherFormData || otherFormData).howDidYouHear || '').substring(0, 100),
         
-        // Special requests and preferences
-        specialRequests: (otherFormData.specialRequests || '').substring(0, 200),
-        tablePreferences: (otherFormData.tablePreferences || '').substring(0, 200),
-        additionalNotes: (otherFormData.additionalNotes || '').substring(0, 200),
-        notes: (otherFormData.notes || '').substring(0, 200),
+        // Special requests and preferences - handle nested structure
+        specialRequests: ((otherFormData.otherFormData || otherFormData).specialRequests || '').substring(0, 200),
+        tablePreferences: ((otherFormData.otherFormData || otherFormData).tablePreferences || '').substring(0, 200),
+        additionalNotes: ((otherFormData.otherFormData || otherFormData).additionalNotes || '').substring(0, 200),
+        notes: ((otherFormData.otherFormData || otherFormData).notes || '').substring(0, 200),
         
-        // Consent fields
-        photographyConsent: otherFormData.photographyConsent ? 'Yes' : 'No',
-        waiverConsent: otherFormData.waiverConsent ? 'Yes' : 'No',
+        // Consent fields - handle nested structure
+        photographyConsent: (otherFormData.otherFormData || otherFormData).photographyConsent ? 'Yes' : 'No',
+        waiverConsent: (otherFormData.otherFormData || otherFormData).waiverConsent ? 'Yes' : 'No',
         
         // Store essential additional data (optimized to fit Stripe's 500 char limit)
         additionalData: JSON.stringify({
