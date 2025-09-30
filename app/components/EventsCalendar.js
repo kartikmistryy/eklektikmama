@@ -15,19 +15,25 @@ export default function EventsCalendar({ events = [] }) {
   useEffect(() => {
     // Check if device is mobile
     const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768);
-      if (window.innerWidth < 768) {
+      const isMobileDevice = window.innerWidth < 768;
+      setIsMobile(isMobileDevice);
+      if (isMobileDevice) {
         setViewMode('list');
       }
     };
 
+    // Check on mount
     checkMobile();
+    
+    // Add resize listener
     window.addEventListener('resize', checkMobile);
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
   useEffect(() => {
     // Process events when they change
+    console.log('EventsCalendar: Processing events:', events?.length || 0);
+    
     if (events && events.length > 0) {
       const processed = events.map((event) => {
         // Use the original dates if available, otherwise parse the dates
@@ -51,6 +57,7 @@ export default function EventsCalendar({ events = [] }) {
           originalEnd: event.originalEnd
         };
       });
+      console.log('EventsCalendar: Processed events:', processed.length);
       setLocalEvents(processed);
       
       // Set current date to the first event's month if it's in the future
@@ -62,6 +69,7 @@ export default function EventsCalendar({ events = [] }) {
         }
       }
     } else {
+      console.log('EventsCalendar: No events to process');
       setLocalEvents([]);
     }
   }, [events]);
@@ -185,6 +193,10 @@ export default function EventsCalendar({ events = [] }) {
     const now = new Date();
     const futureEvents = localEvents.filter(event => new Date(event.start) >= now);
     const sortedEvents = [...futureEvents].sort((a, b) => new Date(a.start) - new Date(b.start));
+    
+    console.log('ListView: localEvents count:', localEvents.length);
+    console.log('ListView: futureEvents count:', futureEvents.length);
+    console.log('ListView: isMobile:', isMobile);
     
     return (
       <div className="space-y-4">
