@@ -18,6 +18,8 @@ const localizer = momentLocalizer(moment);
 export default function Events() {
   const [events, setEvents] = useState([]);
   const [selectedEvent, setSelectedEvent] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   // Refs for animations
   const heroRef = useRef(null);
@@ -92,6 +94,9 @@ export default function Events() {
   useEffect(() => {
     async function fetchEvents() {
       try {
+        setLoading(true);
+        setError(null);
+        
         const res = await fetch("/api/events");
         
         if (!res.ok) {
@@ -102,6 +107,7 @@ export default function Events() {
 
         if (data.length === 0) {
           setEvents([]);
+          setLoading(false);
           return;
         }
 
@@ -127,7 +133,11 @@ export default function Events() {
         });
         setEvents(mapped);
       } catch (error) {
+        console.error('Error fetching events:', error);
+        setError(error.message);
         setEvents([]);
+      } finally {
+        setLoading(false);
       }
     }
     fetchEvents();
@@ -236,12 +246,32 @@ export default function Events() {
           variants={fadeIn}
           transition={{ delay: 0.2 }}
         >
-          
-          {events.length > 0 ? (
+          {loading ? (
+            <div className="px-5 lg:px-14">
+              <div className="flex items-center justify-center py-12">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#DB4E9F]"></div>
+                <span className="ml-3 text-gray-600">Loading events...</span>
+              </div>
+            </div>
+          ) : error ? (
+            <div className="px-5 lg:px-14">
+              <div className="text-center py-12">
+                <p className="text-red-500 mb-4">Error loading events: {error}</p>
+                <button 
+                  onClick={() => window.location.reload()} 
+                  className="px-4 py-2 bg-[#DB4E9F] text-white rounded hover:bg-[#DB4E9F]/80 transition-colors"
+                >
+                  Try Again
+                </button>
+              </div>
+            </div>
+          ) : events.length > 0 ? (
             <EventsCalendar events={events} />
           ) : (
             <div className="px-5 lg:px-14">
-              <p className="text-gray-500">Loading events...</p>
+              <div className="text-center py-12">
+                <p className="text-gray-500">No events scheduled at the moment.</p>
+              </div>
             </div>
           )}
         </motion.div>
