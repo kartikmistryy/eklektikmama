@@ -8,19 +8,46 @@ import { sendBookingConfirmationEmail } from "@/lib/mailchimp";
 
 export const dynamic = "force-dynamic";
 
+// Timeout wrapper to prevent webhook from taking too long
+const withTimeout = (promise, timeoutMs = 25000) => {
+  return Promise.race([
+    promise,
+    new Promise((_, reject) => 
+      setTimeout(() => reject(new Error('Webhook timeout')), timeoutMs)
+    )
+  ]);
+};
+
 export async function POST(req) {
-  const secret = process.env.STRIPE_WEBHOOK_SECRET;
-  const payload = await req.text();
-  const sig = req.headers.get('stripe-signature');
-
-
-  let event;
   try {
-    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "");
-    event = stripe.webhooks.constructEvent(payload, sig, secret);
-  } catch (err) {
-    return new NextResponse(`Webhook Error: ${err.message}`, { status: 400 });
-  }
+    console.log('🔔 Stripe webhook endpoint called');
+    
+    // Get webhook secret - try both possible environment variable names
+    const secret = process.env.STRIPE_WEBHOOK_SECRET || process.env.STRIPE_MEMBERSHIP_WEBHOOK_SECRET;
+    const payload = await req.text();
+    const sig = req.headers.get('stripe-signature');
+
+    // Validate webhook secret exists
+    if (!secret) {
+      console.error('❌ Webhook secret not configured');
+      return NextResponse.json({ error: 'Webhook secret not configured' }, { status: 400 });
+    }
+
+    // Validate signature exists
+    if (!sig) {
+      console.error('❌ Missing Stripe signature header');
+      return NextResponse.json({ error: 'Missing Stripe signature' }, { status: 400 });
+    }
+
+    let event;
+    try {
+      const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "");
+      event = stripe.webhooks.constructEvent(payload, sig, secret);
+      console.log('✅ Webhook signature verified successfully');
+    } catch (err) {
+      console.error('❌ Webhook signature verification failed:', err.message);
+      return NextResponse.json({ error: `Webhook signature verification failed: ${err.message}` }, { status: 400 });
+    }
 
   if (event.type === 'checkout.session.completed') {
     const session = event.data.object;
@@ -38,25 +65,27 @@ export async function POST(req) {
     }
     
     try {
-      await connectDB();
-      const eventId = session.metadata?.eventId;
-      
-      let paidEvent = await Event.findById(eventId);
-      if (!paidEvent) {
-        console.log(`❌ Event not found for booking: ${eventId}`);
-        console.log('Available events:', await Event.find({}, '_id title segment').limit(5));
+      // Wrap the main processing in a timeout to prevent hanging
+      await withTimeout(async () => {
+        await connectDB();
+        const eventId = session.metadata?.eventId;
         
-        // Try to find a similar event by segment
-        const eventSegment = session.metadata?.eventSegment || 'mamaBreakfast';
-        const fallbackEvent = await Event.findOne({ segment: eventSegment }).sort({ createdAt: -1 });
-        
-        if (fallbackEvent) {
-          console.log(`✅ Using fallback event: ${fallbackEvent.title} (${fallbackEvent._id})`);
-          paidEvent = fallbackEvent;
-        } else {
-          return NextResponse.json({ received: true, error: `Event not found: ${eventId}` });
+        let paidEvent = await Event.findById(eventId);
+        if (!paidEvent) {
+          console.log(`❌ Event not found for booking: ${eventId}`);
+          console.log('Available events:', await Event.find({}, '_id title segment').limit(5));
+          
+          // Try to find a similar event by segment
+          const eventSegment = session.metadata?.eventSegment || 'mamaBreakfast';
+          const fallbackEvent = await Event.findOne({ segment: eventSegment }).sort({ createdAt: -1 });
+          
+          if (fallbackEvent) {
+            console.log(`✅ Using fallback event: ${fallbackEvent.title} (${fallbackEvent._id})`);
+            paidEvent = fallbackEvent;
+          } else {
+            throw new Error(`Event not found: ${eventId}`);
+          }
         }
-      }
 
       const transactionId = session.payment_intent || session.id;
       const guardianName = session.metadata?.guardianName || session.customer_details?.name || '';
@@ -275,14 +304,37 @@ export async function POST(req) {
         console.error('Error sending booking confirmation email:', emailError);
         // Don't fail the webhook if email fails
       }
-
+      }, 25000); // End timeout wrapper
     } catch (e) {
-      console.error('Webhook processing error:', e);
-      return NextResponse.json({ received: true, error: e.message }, { status: 200 });
+      console.error('❌ Webhook processing error:', e);
+      console.error('Error details:', {
+        message: e.message,
+        stack: e.stack,
+        name: e.name
+      });
+      // Return 200 to prevent Stripe from retrying, but log the error
+      return NextResponse.json({ 
+        received: true, 
+        error: e.message,
+        timestamp: new Date().toISOString()
+      }, { status: 200 });
     }
   }
 
-  return NextResponse.json({ received: true });
+  console.log('✅ Webhook processed successfully');
+  return NextResponse.json({ 
+    received: true, 
+    eventType: event.type,
+    timestamp: new Date().toISOString()
+  });
+  } catch (error) {
+    console.error('❌ Webhook endpoint error:', error);
+    return NextResponse.json({ 
+      error: 'Internal webhook error',
+      message: error.message,
+      timestamp: new Date().toISOString()
+    }, { status: 500 });
+  }
 }
 
 export async function GET() {
