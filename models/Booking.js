@@ -71,6 +71,13 @@ const BookingSchema = new mongoose.Schema({
   isMember: { type: Boolean, default: false },
   memberSavings: { type: Number, default: 0 },
   
+  // Friends & Family Discount fields
+  applyFriendsFamilyDiscount: { type: Boolean, default: false },
+  familyMemberNames: String, // Newline-separated list of family member names
+  familyMemberContacts: String, // Newline-separated list of family member contacts
+  familyDiscountTerms: { type: Boolean, default: false },
+  totalTickets: { type: Number, default: 1 }, // Total tickets including family members
+  
   // Choice fields for dropdowns
   choiceI: String,
   choiceII: String,

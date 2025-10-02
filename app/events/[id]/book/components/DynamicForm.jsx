@@ -79,12 +79,46 @@ const DynamicForm = ({ formConfig, onSubmit, submitting, event, onFormDataChange
       return;
     }
     
+    // Validate Friends & Family fields if discount is applied
+    if (formData.applyFriendsFamilyDiscount) {
+      const numberOfTickets = parseInt(formData.numberOfTickets) || 1;
+      
+      // Validate family member names
+      if (!formData.familyMemberNames || !Array.isArray(formData.familyMemberNames)) {
+        alert('Please enter the family member names to apply the Friends & Family discount.');
+        return;
+      }
+      
+      // Check that all required family member names are filled
+      const filledNames = formData.familyMemberNames.filter(name => name && name.trim());
+      if (filledNames.length !== numberOfTickets) {
+        alert(`Please enter exactly ${numberOfTickets} family member name(s) (one per ticket). You entered ${filledNames.length} name(s).`);
+        return;
+      }
+      
+      if (!formData.familyDiscountTerms) {
+        alert('Please acknowledge the Friends & Family discount terms.');
+        return;
+      }
+    }
+    
     onSubmit(formData);
   };
 
   const renderField = (field) => {
     const { name, label, type, required, options } = field;
     const value = formData[name] || '';
+
+    // Handle conditional Friends & Family fields
+    if (name === 'familyMemberNames' || name === 'familyMemberContacts' || name === 'familyDiscountTerms') {
+      if (!formData.applyFriendsFamilyDiscount) {
+        return null; // Don't render these fields if discount is not applied
+      }
+    }
+
+    // Make Friends & Family fields required when discount is applied
+    const isConditionallyRequired = (name === 'familyMemberNames' || name === 'familyDiscountTerms') && formData.applyFriendsFamilyDiscount;
+    const isFieldRequired = required || isConditionallyRequired;
 
     switch (type) {
       case 'text':
@@ -95,7 +129,7 @@ const DynamicForm = ({ formConfig, onSubmit, submitting, event, onFormDataChange
         return (
           <div key={name}>
             <label htmlFor={name} className="block text-sm font-medium text-gray-700 mb-1">
-              {label} {required && <span className="text-red-500">*</span>}
+              {label} {isFieldRequired && <span className="text-red-500">*</span>}
             </label>
             <input
               type={type}
@@ -103,7 +137,7 @@ const DynamicForm = ({ formConfig, onSubmit, submitting, event, onFormDataChange
               name={name}
               value={value}
               onChange={handleInputChange}
-              required={required}
+              required={isFieldRequired}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#093166] focus:border-transparent"
               placeholder={`Enter ${label.toLowerCase()}`}
             />
@@ -114,14 +148,14 @@ const DynamicForm = ({ formConfig, onSubmit, submitting, event, onFormDataChange
         return (
           <div key={name}>
             <label htmlFor={name} className="block text-sm font-medium text-gray-700 mb-1">
-              {label} {required && <span className="text-red-500">*</span>}
+              {label} {isFieldRequired && <span className="text-red-500">*</span>}
             </label>
             <textarea
               id={name}
               name={name}
               value={value}
               onChange={handleInputChange}
-              required={required}
+              required={isFieldRequired}
               rows={3}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#093166] focus:border-transparent"
               placeholder={`Enter ${label.toLowerCase()}`}
@@ -133,7 +167,7 @@ const DynamicForm = ({ formConfig, onSubmit, submitting, event, onFormDataChange
         return (
           <div key={name}>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              {label} {required && <span className="text-red-500">*</span>}
+              {label} {isFieldRequired && <span className="text-red-500">*</span>}
             </label>
             <div className="space-y-2">
               {options.map((option) => (
@@ -157,7 +191,7 @@ const DynamicForm = ({ formConfig, onSubmit, submitting, event, onFormDataChange
         return (
           <div key={name}>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              {label} {required && <span className="text-red-500">*</span>}
+              {label} {isFieldRequired && <span className="text-red-500">*</span>}
             </label>
             <div className="space-y-2">
               {options.map((option) => (
@@ -168,7 +202,7 @@ const DynamicForm = ({ formConfig, onSubmit, submitting, event, onFormDataChange
                     value={option}
                     checked={formData[name] === option}
                     onChange={handleInputChange}
-                    required={required}
+                    required={isFieldRequired}
                     className="mr-2 text-[#093166] focus:ring-[#093166] border-gray-300"
                   />
                   <span className="text-sm text-gray-700">{option}</span>
@@ -182,14 +216,14 @@ const DynamicForm = ({ formConfig, onSubmit, submitting, event, onFormDataChange
         return (
           <div key={name}>
             <label htmlFor={name} className="block text-sm font-medium text-gray-700 mb-1">
-              {label} {required && <span className="text-red-500">*</span>}
+              {label} {isFieldRequired && <span className="text-red-500">*</span>}
             </label>
             <select
               id={name}
               name={name}
               value={value}
               onChange={handleInputChange}
-              required={required}
+              required={isFieldRequired}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#093166] focus:border-transparent"
             >
               <option value="">Select {label.toLowerCase()}</option>
@@ -219,16 +253,70 @@ const DynamicForm = ({ formConfig, onSubmit, submitting, event, onFormDataChange
                 name={name}
                 checked={formData[name] || false}
                 onChange={handleInputChange}
-                required={required}
+                required={isFieldRequired}
                 className="mt-1 mr-3 text-[#093166] focus:ring-[#093166] border-gray-300 rounded"
               />
               <div>
-                <span className="text-sm font-medium text-gray-700">{label} {required && <span className="text-red-500">*</span>}</span>
+                <span className="text-sm font-medium text-gray-700">{label} {isFieldRequired && <span className="text-red-500">*</span>}</span>
                 {field.text && (
                   <p className="text-xs text-gray-600 mt-1">{field.text}</p>
                 )}
               </div>
             </label>
+          </div>
+        );
+
+      case 'dynamicInputs':
+        const numberOfTickets = parseInt(formData.numberOfTickets) || 1;
+        const inputs = [];
+        
+        for (let i = 0; i < numberOfTickets; i++) {
+          const inputName = `${name}[${i}]`;
+          const inputValue = formData[name] && formData[name][i] ? formData[name][i] : '';
+          
+          inputs.push(
+            <div key={i} className="mb-3">
+              <label htmlFor={inputName} className="block text-sm font-medium text-gray-700 mb-1">
+                {label} {i + 1} {isFieldRequired && <span className="text-red-500">*</span>}
+              </label>
+              <input
+                type="text"
+                id={inputName}
+                name={inputName}
+                value={inputValue}
+                onChange={(e) => {
+                  const newValue = e.target.value;
+                  const currentArray = formData[name] || [];
+                  const newArray = [...currentArray];
+                  newArray[i] = newValue;
+                  
+                  const newFormData = {
+                    ...formData,
+                    [name]: newArray
+                  };
+                  
+                  setFormData(newFormData);
+                  if (onFormDataChange) {
+                    onFormDataChange(newFormData);
+                  }
+                }}
+                required={isFieldRequired}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#093166] focus:border-transparent"
+                placeholder={`Enter ${label.toLowerCase()} ${i + 1}`}
+              />
+            </div>
+          );
+        }
+        
+        return (
+          <div key={name}>
+            <div className="mb-2">
+              <span className="text-sm font-medium text-gray-700">{label} {isFieldRequired && <span className="text-red-500">*</span>}</span>
+              {field.text && (
+                <p className="text-xs text-gray-600 mt-1">{field.text}</p>
+              )}
+            </div>
+            {inputs}
           </div>
         );
 
@@ -310,9 +398,34 @@ const DynamicForm = ({ formConfig, onSubmit, submitting, event, onFormDataChange
           <div className="flex justify-between items-center">
             <span className="font-medium text-gray-700">Total Amount:</span>
             <span className="text-xl font-bold text-[#093166]">
-              AED {((event.price * (formData.numberOfTickets || 1)).toFixed(2))}
+              AED {(() => {
+                const numberOfTickets = parseInt(formData.numberOfTickets) || 1;
+                let totalTickets = numberOfTickets;
+                
+                // If Friends & Family discount is applied, double the tickets (customer + family member for each)
+                if (formData.applyFriendsFamilyDiscount) {
+                  totalTickets = numberOfTickets * 2; // Customer + family member for each ticket
+                }
+                
+                const basePrice = event.price * totalTickets;
+                
+                // Apply member discount first (10% if member)
+                const memberDiscount = isMember ? 0.1 : 0;
+                let discountedPrice = basePrice * (1 - memberDiscount);
+                
+                // Then apply Friends & Family discount (10% additional)
+                const friendsFamilyDiscount = formData.applyFriendsFamilyDiscount ? 0.1 : 0;
+                discountedPrice = discountedPrice * (1 - friendsFamilyDiscount);
+                
+                return discountedPrice.toFixed(2);
+              })()}
             </span>
           </div>
+          {formData.applyFriendsFamilyDiscount && (
+            <div className="mt-2 text-sm text-green-600">
+              <span className="font-medium">Friends & Family Discount Applied:</span> 10% off total (includes {formData.numberOfTickets} customer ticket(s) + {formData.numberOfTickets} family member ticket(s))
+            </div>
+          )}
         </div>
       )}
 

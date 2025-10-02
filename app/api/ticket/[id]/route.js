@@ -7,7 +7,8 @@ export async function GET(req, { params }) {
   try {
     await connectDB();
     
-    const bookingId = params.id;
+    const { id } = await params;
+    const bookingId = id;
     
     // Try to find booking by MongoDB ObjectId first, then by transactionId
     let booking;

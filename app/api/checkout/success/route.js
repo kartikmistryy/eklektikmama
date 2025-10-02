@@ -175,12 +175,20 @@ export async function GET(req) {
       notes: session.metadata.notes || additionalData.notes || otherFormData.notes || '',
       
       // Consent fields
-      waiverConsent: session.metadata.waiverConsent || additionalData.waiverConsent || otherFormData.waiverConsent || ''
+      waiverConsent: session.metadata.waiverConsent || additionalData.waiverConsent || otherFormData.waiverConsent || '',
+      
+      // Friends & Family Discount fields
+      applyFriendsFamilyDiscount: session.metadata.applyFriendsFamilyDiscount === 'true',
+      familyMemberNames: session.metadata.familyMemberNames || additionalData.familyMemberNames || otherFormData.familyMemberNames || '',
+      familyMemberContacts: session.metadata.familyMemberContacts || additionalData.familyMemberContacts || otherFormData.familyMemberContacts || '',
+      familyDiscountTerms: session.metadata.familyDiscountTerms === 'true',
+      totalTickets: parseInt(session.metadata.totalTickets) || numberOfTickets
     };
 
-    // Generate ticket numbers for each ticket
+    // Generate ticket numbers for each ticket (including family members if applicable)
     const ticketNumbers = [];
-    for (let i = 1; i <= numberOfTickets; i++) {
+    const totalTicketsForBooking = extractedData.totalTickets || numberOfTickets;
+    for (let i = 1; i <= totalTicketsForBooking; i++) {
       ticketNumbers.push(i);
     }
 
@@ -191,7 +199,7 @@ export async function GET(req) {
       childName,
       userEmail,
       phone,
-      numberOfTickets,
+      numberOfTickets: totalTicketsForBooking,
       transactionId,
       paymentStatus: 'paid',
       photographyConsent,
@@ -207,6 +215,70 @@ export async function GET(req) {
     });
 
     console.log('✅ Booking created successfully:', booking._id);
+
+    // Create separate records for family members if Friends & Family discount is applied
+    if (extractedData.applyFriendsFamilyDiscount && extractedData.familyMemberNames) {
+      try {
+        // Handle both array and string formats for backward compatibility
+        let familyMemberNames, familyMemberContacts;
+        
+        if (Array.isArray(extractedData.familyMemberNames)) {
+          familyMemberNames = extractedData.familyMemberNames.filter(name => name && name.trim());
+        } else {
+          familyMemberNames = extractedData.familyMemberNames.trim().split('\n').filter(name => name.trim());
+        }
+        
+        if (Array.isArray(extractedData.familyMemberContacts)) {
+          familyMemberContacts = extractedData.familyMemberContacts.filter(contact => contact && contact.trim());
+        } else {
+          familyMemberContacts = extractedData.familyMemberContacts ? 
+            extractedData.familyMemberContacts.trim().split('\n').filter(contact => contact.trim()) : [];
+        }
+        
+        // Create a booking record for each family member
+        for (let i = 0; i < familyMemberNames.length; i++) {
+          const familyMemberName = familyMemberNames[i];
+          const familyMemberContact = familyMemberContacts[i] || userEmail;
+          
+          const familyMemberBooking = await Booking.create({
+            eventId,
+            guardianName: familyMemberName,
+            childName: '', // Family member doesn't have a child
+            userEmail: familyMemberContact,
+            phone: familyMemberContact,
+            numberOfTickets: 1, // Each family member gets 1 ticket
+            transactionId: `${transactionId}_family_${i + 1}`, // Unique transaction ID for each family member
+            paymentStatus: 'paid',
+            photographyConsent: 'No', // Default for family member
+            additionalData: {
+              ...additionalData,
+              isFamilyMember: true,
+              mainBookingId: booking._id.toString(),
+              familyMemberIndex: i + 1
+            },
+            eventSegment,
+            isMember: false, // Family member doesn't get member benefits
+            memberSavings: 0,
+            choiceI: '', // No choices for family member
+            choiceII: '',
+            choiceIII: '',
+            ticketNumbers: [numberOfTickets + i + 1], // Next ticket numbers
+            // Friends & Family specific fields
+            applyFriendsFamilyDiscount: true,
+            familyMemberNames: familyMemberName,
+            familyMemberContacts: familyMemberContact,
+            familyDiscountTerms: extractedData.familyDiscountTerms,
+            totalTickets: 1,
+            ...extractedData
+          });
+
+          console.log(`✅ Family member ${i + 1} booking created successfully:`, familyMemberBooking._id);
+        }
+      } catch (familyBookingError) {
+        console.error('Error creating family member bookings:', familyBookingError);
+        // Don't fail the main booking if family member booking fails
+      }
+    }
 
     // Track member savings if applicable
     const isMemberValue = session.metadata.isMember === 'true';
@@ -302,6 +374,12 @@ export async function GET(req) {
           choiceIII,
           isMember: session.metadata.isMember === 'true',
           memberSavings: parseFloat(session.metadata.memberSavings || '0'),
+          // Friends & Family Discount fields
+          applyFriendsFamilyDiscount: extractedData.applyFriendsFamilyDiscount,
+          familyMemberNames: extractedData.familyMemberNames,
+          familyMemberContacts: extractedData.familyMemberContacts,
+          familyDiscountTerms: extractedData.familyDiscountTerms,
+          totalTickets: extractedData.totalTickets,
           bookingDate: new Date(),
           lastUpdated: new Date()
         };
@@ -346,6 +424,74 @@ export async function GET(req) {
             message: sheetsError.message,
             stack: sheetsError.stack
           });
+        }
+
+        // Add family members to Google Sheets after main customer
+        if (extractedData.applyFriendsFamilyDiscount && extractedData.familyMemberNames) {
+          try {
+            // Handle both array and string formats for backward compatibility
+            let familyMemberNames, familyMemberContacts;
+            
+            if (Array.isArray(extractedData.familyMemberNames)) {
+              familyMemberNames = extractedData.familyMemberNames.filter(name => name && name.trim());
+            } else {
+              familyMemberNames = extractedData.familyMemberNames.trim().split('\n').filter(name => name.trim());
+            }
+            
+            if (Array.isArray(extractedData.familyMemberContacts)) {
+              familyMemberContacts = extractedData.familyMemberContacts.filter(contact => contact && contact.trim());
+            } else {
+              familyMemberContacts = extractedData.familyMemberContacts ? 
+                extractedData.familyMemberContacts.trim().split('\n').filter(contact => contact.trim()) : [];
+            }
+            
+            // Add each family member to Google Sheets
+            for (let i = 0; i < familyMemberNames.length; i++) {
+              const familyMemberName = familyMemberNames[i];
+              const familyMemberContact = familyMemberContacts[i] || userEmail;
+              
+              const familyMemberBookingData = {
+                bookingId: `${booking._id}_family_${i + 1}`,
+                eventTitle: event.title,
+                eventDate: event.date,
+                eventSegment: eventSegment,
+                guardianName: familyMemberName,
+                childName: '',
+                userEmail: familyMemberContact,
+                phone: familyMemberContact,
+                numberOfTickets: 1,
+                transactionId: `${transactionId}_family_${i + 1}`,
+                paymentStatus: 'paid',
+                photographyConsent: 'No', // Default for family member
+                additionalData: {
+                  ...additionalData,
+                  isFamilyMember: true,
+                  mainBookingId: booking._id.toString(),
+                  familyMemberIndex: i + 1
+                },
+                eventSegment,
+                isMember: false, // Family member doesn't get member benefits
+                memberSavings: 0,
+                choiceI: '', // No choices for family member
+                choiceII: '',
+                choiceIII: '',
+                ticketNumbers: [numberOfTickets + i + 1], // Next ticket numbers
+                // Friends & Family specific fields
+                applyFriendsFamilyDiscount: true,
+                familyMemberNames: familyMemberName,
+                familyMemberContacts: familyMemberContact,
+                familyDiscountTerms: extractedData.familyDiscountTerms,
+                totalTickets: 1,
+                ...extractedData
+              };
+
+              await addBookingToEventSheet(familyMemberBookingData, event);
+              console.log(`✅ Family member ${i + 1} booking added to Google Sheets successfully`);
+            }
+          } catch (familySheetsError) {
+            console.error('Error adding family member bookings to Google Sheets:', familySheetsError);
+            // Don't fail the process if Google Sheets fails
+          }
         }
         
         // Get ticket number from the sheet (we'll calculate it based on row position)

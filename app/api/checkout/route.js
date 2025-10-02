@@ -256,17 +256,50 @@ export async function POST(req) {
       }
     }
     
-    const discountedPrice = isMember ? originalPrice * (1 - memberDiscount / 100) : originalPrice;
+    // Check for Friends & Family discount for mamaBreakfast events
+    const formData = otherFormData.otherFormData || otherFormData;
+    const applyFriendsFamilyDiscount = formData.applyFriendsFamilyDiscount === true || 
+                                      formData.applyFriendsFamilyDiscount === 'true' ||
+                                      (Array.isArray(formData.applyFriendsFamilyDiscount) && formData.applyFriendsFamilyDiscount.length > 0);
+    const friendsFamilyDiscount = applyFriendsFamilyDiscount ? 0.1 : 0; // 10% discount
+    
+    // Debug logging for Friends & Family discount
+    console.log('🔍 Friends & Family Discount Debug:', {
+      applyFriendsFamilyDiscount: formData.applyFriendsFamilyDiscount,
+      isArray: Array.isArray(formData.applyFriendsFamilyDiscount),
+      arrayLength: Array.isArray(formData.applyFriendsFamilyDiscount) ? formData.applyFriendsFamilyDiscount.length : 'N/A',
+      detected: applyFriendsFamilyDiscount,
+      familyMemberNames: formData.familyMemberNames
+    });
+    
+    // Calculate total tickets - if Friends & Family discount is applied, double the tickets
+    let totalTickets = parseInt(numberOfTickets) || 1;
+    if (applyFriendsFamilyDiscount) {
+      totalTickets = totalTickets * 2; // Customer + family member for each ticket
+    }
+    
+    // Calculate price based on total tickets
+    const totalPrice = originalPrice * totalTickets;
+    
+    // Apply member discount first, then Friends & Family discount
+    let discountedPrice = isMember ? totalPrice * (1 - memberDiscount / 100) : totalPrice;
+    if (applyFriendsFamilyDiscount) {
+      discountedPrice = discountedPrice * (1 - friendsFamilyDiscount);
+    }
     
     // Debug logging
     console.log('Event checkout debug:', {
       eventSegment: event.segment,
       numberOfChildren: event.segment === 'familyDay' ? (otherFormData.numberOfChildren || 'not provided') : 'N/A',
       originalPrice,
+      totalTickets,
+      totalPrice,
       discountedPrice,
       isMember,
       memberDiscount,
-      memberSavings: isMember ? originalPrice - discountedPrice : 0
+      memberSavings: isMember ? totalPrice - (totalPrice * (1 - memberDiscount / 100)) : 0,
+      applyFriendsFamilyDiscount,
+      friendsFamilyDiscount: friendsFamilyDiscount * 100
     });
     
     // Debug form data for mama breakfast
@@ -280,8 +313,8 @@ export async function POST(req) {
       });
     }
     
-    // Create line item with discounted price (simpler approach)
-    const finalPrice = Math.max(0, Math.round(discountedPrice * 100));
+    // Create line item with discounted price per ticket
+    const finalPrice = Math.max(0, Math.round((discountedPrice / totalTickets) * 100));
     
     // Create product name based on event type
     let productName = event.title;
@@ -307,9 +340,16 @@ export async function POST(req) {
       productName += ` (Member Price - ${memberDiscount}% off)`;
     }
     
+    if (applyFriendsFamilyDiscount) {
+      productName += ` (Friends & Family - ${totalTickets} tickets total, 10% off)`;
+    }
+    
     console.log('Final pricing:', {
       originalPrice,
+      totalTickets,
+      totalPrice,
       discountedPrice,
+      finalPricePerTicket: finalPrice / 100,
       finalPrice,
       isMember,
       memberDiscount
@@ -325,7 +365,7 @@ export async function POST(req) {
             images: event.coverImage ? [event.coverImage] : undefined,
           },
         },
-        quantity: parseInt(numberOfTickets) || 1,
+        quantity: totalTickets,
       },
     ];
     
@@ -416,6 +456,17 @@ export async function POST(req) {
         // Consent fields - handle nested structure
         photographyConsent: (otherFormData.otherFormData || otherFormData).photographyConsent ? 'Yes' : 'No',
         waiverConsent: (otherFormData.otherFormData || otherFormData).waiverConsent ? 'Yes' : 'No',
+        
+        // Friends & Family Discount fields
+        applyFriendsFamilyDiscount: applyFriendsFamilyDiscount ? 'true' : 'false',
+        familyMemberNames: Array.isArray((otherFormData.otherFormData || otherFormData).familyMemberNames) ? 
+          (otherFormData.otherFormData || otherFormData).familyMemberNames.join('\n').substring(0, 500) : 
+          ((otherFormData.otherFormData || otherFormData).familyMemberNames || '').substring(0, 500),
+        familyMemberContacts: Array.isArray((otherFormData.otherFormData || otherFormData).familyMemberContacts) ? 
+          (otherFormData.otherFormData || otherFormData).familyMemberContacts.join('\n').substring(0, 500) : 
+          ((otherFormData.otherFormData || otherFormData).familyMemberContacts || '').substring(0, 500),
+        familyDiscountTerms: (otherFormData.otherFormData || otherFormData).familyDiscountTerms ? 'true' : 'false',
+        totalTickets: String(totalTickets),
         
         // Store essential additional data (optimized to fit Stripe's 500 char limit)
         additionalData: JSON.stringify({
