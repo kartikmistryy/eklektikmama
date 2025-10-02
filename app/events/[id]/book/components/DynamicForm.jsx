@@ -14,6 +14,8 @@ const DynamicForm = ({ formConfig, onSubmit, submitting, event, onFormDataChange
         initialData[field.name] = [];
       } else if (field.type === 'radio') {
         initialData[field.name] = '';
+      } else if (field.type === 'checkbox') {
+        initialData[field.name] = false;
       } else {
         initialData[field.name] = '';
       }
@@ -29,12 +31,20 @@ const DynamicForm = ({ formConfig, onSubmit, submitting, event, onFormDataChange
     let newFormData;
     
     if (type === 'checkbox') {
-      // Special handling for consent checkboxes
-      if (name === 'photographyConsent' || name === 'waiverConsent') {
+      // Special handling for consent checkboxes and Friends & Family discount
+      if (name === 'photographyConsent' || name === 'waiverConsent' || name === 'applyFriendsFamilyDiscount' || name === 'familyDiscountTerms') {
         newFormData = {
           ...formData,
           [name]: checked
         };
+        
+        // If unchecking Friends & Family discount, clear family member data
+        if (name === 'applyFriendsFamilyDiscount' && !checked) {
+          newFormData.familyMemberNames = [];
+          newFormData.familyMemberContacts = [];
+          newFormData.familyDiscountTerms = false;
+        }
+        
         setFormData(newFormData);
       } else {
         // Regular checkbox handling for multi-select checkboxes
