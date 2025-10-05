@@ -16,7 +16,8 @@ export async function POST(req) {
 
     if (!signature || !webhookSecret) {
       console.error('❌ Webhook signature verification failed:', { signature: !!signature, webhookSecret: !!webhookSecret });
-      return NextResponse.json({ error: 'Webhook signature verification failed' }, { status: 400 });
+      // Return 200 to Stripe to acknowledge receipt, but log the error
+      return NextResponse.json({ error: 'Webhook signature verification failed' }, { status: 200 });
     }
 
     let event;
@@ -24,65 +25,79 @@ export async function POST(req) {
       event = stripe.webhooks.constructEvent(body, signature, webhookSecret);
     } catch (err) {
       console.error('Webhook signature verification failed:', err.message);
-      return NextResponse.json({ error: 'Webhook signature verification failed' }, { status: 400 });
+      // Return 200 to Stripe to acknowledge receipt, but log the error
+      return NextResponse.json({ error: 'Webhook signature verification failed' }, { status: 200 });
     }
 
-    await connectDB();
+    try {
+      await connectDB();
+    } catch (dbError) {
+      console.error('Database connection failed:', dbError);
+      // Return 200 to Stripe even if DB connection fails
+      return NextResponse.json({ received: true, error: 'Database connection failed' }, { status: 200 });
+    }
 
     console.log('🔔 Webhook Event Received:', event.type);
     console.log('🔍 Full event data:', JSON.stringify(event, null, 2));
     
-    switch (event.type) {
-      case 'checkout.session.completed':
-        console.log('📋 Processing checkout.session.completed');
-        await handleCheckoutCompleted(event.data.object);
-        break;
-      
-      case 'customer.subscription.created':
-        console.log('📋 Processing customer.subscription.created');
-        await handleSubscriptionCreated(event.data.object);
-        break;
-      
-      case 'customer.subscription.updated':
-        await handleSubscriptionUpdated(event.data.object);
-        break;
-      
-      case 'customer.subscription.deleted':
-        await handleSubscriptionDeleted(event.data.object);
-        break;
-      
-      case 'invoice.payment_succeeded':
-        await handlePaymentSucceeded(event.data.object);
-        break;
-      
-      case 'invoice.payment_failed':
-        await handlePaymentFailed(event.data.object);
-        break;
-      
-      case 'customer.subscription.trial_will_end':
-        await handleTrialWillEnd(event.data.object);
-        break;
-      
-      case 'invoice.upcoming':
-        await handleInvoiceUpcoming(event.data.object);
-        break;
-      
-      case 'customer.subscription.paused':
-        await handleSubscriptionPaused(event.data.object);
-        break;
-      
-      case 'customer.subscription.resumed':
-        await handleSubscriptionResumed(event.data.object);
-        break;
-      
-      default:
-        console.log(`Unhandled event type: ${event.type}`);
+    try {
+      switch (event.type) {
+        case 'checkout.session.completed':
+          console.log('📋 Processing checkout.session.completed');
+          await handleCheckoutCompleted(event.data.object);
+          break;
+        
+        case 'customer.subscription.created':
+          console.log('📋 Processing customer.subscription.created');
+          await handleSubscriptionCreated(event.data.object);
+          break;
+        
+        case 'customer.subscription.updated':
+          await handleSubscriptionUpdated(event.data.object);
+          break;
+        
+        case 'customer.subscription.deleted':
+          await handleSubscriptionDeleted(event.data.object);
+          break;
+        
+        case 'invoice.payment_succeeded':
+          await handlePaymentSucceeded(event.data.object);
+          break;
+        
+        case 'invoice.payment_failed':
+          await handlePaymentFailed(event.data.object);
+          break;
+        
+        case 'customer.subscription.trial_will_end':
+          await handleTrialWillEnd(event.data.object);
+          break;
+        
+        case 'invoice.upcoming':
+          await handleInvoiceUpcoming(event.data.object);
+          break;
+        
+        case 'customer.subscription.paused':
+          await handleSubscriptionPaused(event.data.object);
+          break;
+        
+        case 'customer.subscription.resumed':
+          await handleSubscriptionResumed(event.data.object);
+          break;
+        
+        default:
+          console.log(`Unhandled event type: ${event.type}`);
+      }
+    } catch (processingError) {
+      console.error('Error processing webhook event:', processingError);
+      // Log the error but still return 200 to Stripe
     }
 
+    // Always return 200 to Stripe to acknowledge receipt
     return NextResponse.json({ received: true });
   } catch (error) {
     console.error('Webhook error:', error);
-    return NextResponse.json({ error: 'Webhook processing failed' }, { status: 500 });
+    // Always return 200 to Stripe, even on errors
+    return NextResponse.json({ received: true, error: 'Webhook processing failed' }, { status: 200 });
   }
 }
 
@@ -239,17 +254,24 @@ async function handleCheckoutCompleted(session) {
     }
 
     // Send welcome email
-    await sendMemberWelcomeEmail({
-      email: membership.email,
-      firstName: membership.firstName,
-      lastName: membership.lastName,
-      membershipType: membership.membershipType
-    });
+    try {
+      await sendMemberWelcomeEmail({
+        email: membership.email,
+        firstName: membership.firstName,
+        lastName: membership.lastName,
+        membershipType: membership.membershipType
+      });
+      console.log('Welcome email sent to:', membership.email);
+    } catch (emailError) {
+      console.error('Error sending welcome email:', emailError);
+      // Don't throw error - membership is still created
+    }
 
     console.log('Membership created and activated successfully:', membership.email);
     
   } catch (error) {
     console.error('Error handling checkout completion:', error);
+    // Don't throw error - let webhook return 200 to Stripe
   }
 }
 

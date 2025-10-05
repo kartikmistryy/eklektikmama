@@ -6,7 +6,7 @@ export default function AdminPage() {
     {
       title: "Events Management",
       description: "Create, edit, and manage events",
-      href: "/admin/events",
+      href: "/admin/events/manage",
       icon: "📅",
       color: "bg-blue-500"
     },
