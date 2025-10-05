@@ -120,6 +120,18 @@ async function handleCheckoutCompleted(session) {
       return;
     }
 
+    // Verify this is a real payment (not test data)
+    if (session.amount_total === 0) {
+      console.log('Zero amount payment detected, skipping membership creation');
+      return;
+    }
+
+    // Check if this is test mode data (in production, ignore test data)
+    if (process.env.NODE_ENV === 'production' && session.livemode === false) {
+      console.log('Test mode data detected in production, skipping membership creation');
+      return;
+    }
+
     // Check if this is an upgrade payment
     const { type } = session.metadata;
     if (type === 'membership_upgrade') {
@@ -132,7 +144,7 @@ async function handleCheckoutCompleted(session) {
     const { membershipType, email, firstName, lastName, phone } = session.metadata;
     
     if (!membershipType || !email || !firstName || !lastName) {
-      console.log('Missing required membership data in session metadata');
+      console.log('Missing required membership data in session metadata - this should not create a membership');
       return;
     }
 
@@ -284,6 +296,18 @@ async function handleSubscriptionCreated(subscription) {
       status: subscription.status,
       current_period_end: subscription.current_period_end
     });
+
+    // Verify this is a real subscription (not test data)
+    if (process.env.NODE_ENV === 'production' && subscription.livemode === false) {
+      console.log('Test mode subscription detected in production, skipping membership creation');
+      return;
+    }
+
+    // Check if subscription has valid status
+    if (subscription.status !== 'active' && subscription.status !== 'trialing') {
+      console.log('Subscription not active, skipping membership creation');
+      return;
+    }
     
     // Get customer details from Stripe (with error handling)
     let customer;
