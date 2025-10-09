@@ -248,51 +248,53 @@ const Page = () => {
           animate={partnersInView ? "visible" : "hidden"}
           variants={staggerContainer}
         >
-          <div className="w-full h-full grid lg:grid-cols-3 md:grid-cols-3 grid-cols-1 max-w-[1400px] mx-auto gap-10">
+          <div className="w-full h-full items-stretch justify-start grid lg:grid-cols-4 md:grid-cols-4 grid-cols-1 max-w-[1400px] mx-auto gap-10">
             <motion.div 
-              className="w-full h-full flex flex-col items-center justify-center lg:basis-1/4 md:basis-1/3 basis-full gap-5"
+              className="w-full h-full flex flex-col items-center justify-between lg:basis-1/4 md:basis-1/3 basis-full gap-4 p-5"
               variants={partnerCard}
             >
-              <span className="w-full h-[120px] flex justify-center items-center">
+              <span className="w-full h-[120px] max-h-[120px] flex justify-center items-center">
                 <Image
                 src="/perks/logos/1.webp"
                 width={300}
                 height={300}
-                className="w-fit h-fit  max-w-[180px]"
+                className="w-fit h-fit max-w-[160px] object-contain"
+                alt="Kiddos Toys Club logo"
               />
               </span>
 
-              <h3 className="lg:text-lg text-base font-quicksand text-white text-center">
+              <h3 className="lg:text-lg text-base h-full  pt-2 font-quicksand text-white text-center">
                 Toys and activities to keep kids happy while you unwind.
               </h3>
               <Link
               target="_blank"
                 href="https://kiddostoysclub.com/"
-                className="w-fit h-[40px] px-3 text-sm flex items-center justify-center uppercase text-white hover:text-[#093166] rounded-[20px] my-6 border-2 border-[#fff] bg-[#d756a1] hover:bg-[#fff] transition-colors duration-500 ease-in-out md:scale-100 scale-75 col-[]"
+                className="w-fit h-[40px] min-h-[40px] px-3 text-sm flex items-center justify-center uppercase text-white hover:text-[#093166] rounded-[20px] mt-6 mb-0 border-2 border-[#fff] bg-[#d756a1] hover:bg-[#fff] transition-colors duration-500 ease-in-out md:scale-100 scale-75 col-[]"
               >
                 Visit <BsArrowRight className="ml-5 text-2xl" />
               </Link>
             </motion.div>
 
             <motion.div 
-              className="w-full h-full flex flex-col items-center justify-center lg:basis-1/4 md:basis-1/3 basis-full gap-5"
+              className="w-full h-full flex flex-col items-center justify-between lg:basis-1/4 md:basis-1/3 basis-full gap-4 p-5"
               variants={partnerCard}
             >
-              <span className="w-full h-[120px] flex justify-center items-center">
+              <span className="w-full h-[120px] max-h-[120px] flex justify-center items-center">
                 <Image
                 src="/perks/logos/7.webp"
                 width={300}
                 height={300}
-                className="w-fit h-fit  max-w-[140px]"
+                className="w-fit h-fit max-w-[160px] object-contain"
+                alt="Bayti Home Healthcare logo"
               />
               </span>
-              <h3 className="lg:text-lg text-base font-quicksand text-white text-center">
+              <h3 className="lg:text-lg text-base h-full pt-2 font-quicksand text-white text-center">
               Bayti Home Healthcare: UAE’s trusted in‑home care provider since 2013.
               </h3>
               <Link
                 target="_blank"
                 href="https://baytihealth.com/"
-                className="w-fit h-[40px] px-3 text-sm flex items-center justify-center uppercase text-white hover:text-[#093166] rounded-[20px] my-6 border-2 border-[#fff] bg-[#d756a1] hover:bg-[#fff] transition-colors duration-500 ease-in-out md:scale-100 scale-75 col-[]"
+                className="w-fit h-[40px] min-h-[40px] px-3 text-sm flex items-center justify-center uppercase text-white hover:text-[#093166] rounded-[20px] mt-6 mb-0 border-2 border-[#fff] bg-[#d756a1] hover:bg-[#fff] transition-colors duration-500 ease-in-out md:scale-100 scale-75 col-[]"
               >
                 Visit <BsArrowRight className="ml-5 text-2xl" />
               </Link>
@@ -345,24 +347,50 @@ const Page = () => {
             </motion.div> */}
 
             <motion.div 
-              className="w-full h-full flex flex-col items-center justify-center lg:basis-1/4 md:basis-1/3 basis-full gap-5"
+              className="w-full h-full flex flex-col items-center justify-between lg:basis-1/4 md:basis-1/3 basis-full gap-4 p-5"
               variants={partnerCard}
             >
-              <span className="w-full h-[120px] flex justify-center items-center">
+              <span className="w-full h-[120px] max-h-[120px] flex justify-center items-center">
                 <Image
                 src="/perks/logos/4.webp"
                 width={300}
                 height={300}
-                className="w-fit h-fit  max-w-[140px]"
+                className="w-fit h-fit max-w-[140px] object-contain"
+                alt="Wolves Zone MMA logo"
               />
               </span>
-              <h3 className="lg:text-lg text-base font-quicksand text-white text-center">
+              <h3 className="lg:text-lg text-base h-full pt-2 font-quicksand text-white text-center">
                 Wolves Zone MMA: training for strength and confidence.
               </h3>
               <Link
                 target="_blank"
                 href="https://www.wolveszoneuae.com/?fbclid=PAZXh0bgNhZW0CMTEAAacVBslr4rjV5hfYp7urTrJo5ZRYHcSd9T5A7lmMJU4t5bDZlVoFgBiMU6u7Yw_aem_ThF2-qHjEx6v8A3Y8PB6dg"
-                className="w-fit h-[40px] px-3 text-sm flex items-center justify-center uppercase text-white hover:text-[#093166] rounded-[20px] my-6 border-2 border-[#fff] bg-[#d756a1] hover:bg-[#fff] transition-colors duration-500 ease-in-out md:scale-100 scale-75 col-[]"
+                className="w-fit h-[40px] min-h-[40px] px-3 text-sm flex items-center justify-center uppercase text-white hover:text-[#093166] rounded-[20px] mt-6 mb-0 border-2 border-[#fff] bg-[#d756a1] hover:bg-[#fff] transition-colors duration-500 ease-in-out md:scale-100 scale-75 col-[]"
+              >
+                Visit <BsArrowRight className="ml-5 text-2xl" />
+              </Link>
+            </motion.div>
+
+            <motion.div 
+              className="w-full h-full flex flex-col items-center justify-between lg:basis-1/4 md:basis-1/3 basis-full gap-4 p-5"
+              variants={partnerCard}
+            >
+              <span className="w-full h-[120px] max-h-[120px] flex justify-center items-center">
+                <Image
+                src="/perks/logos/8.webp"
+                width={300}
+                height={300}
+                className="w-fit h-fit max-w-[140px] object-contain"
+                alt="HOPE AMEL logo"
+              />
+              </span>
+              <h3 className="lg:text-lg text-base h-full pt-2 font-quicksand text-white text-center">
+              Mothers supporting mothers in need and and facing hard times by spreading HOPE through kindness and empathy.
+              </h3>
+              <Link
+                target="_blank"
+                href="https://www.instagram.com/hope_amel_uae_?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw%3D%3D"
+                className="w-fit h-[40px] min-h-[40px] px-3 text-sm flex items-center justify-center uppercase text-white hover:text-[#093166] rounded-[20px] mt-6 mb-0 border-2 border-[#fff] bg-[#d756a1] hover:bg-[#fff] transition-colors duration-500 ease-in-out md:scale-100 scale-75 col-[]"
               >
                 Visit <BsArrowRight className="ml-5 text-2xl" />
               </Link>
