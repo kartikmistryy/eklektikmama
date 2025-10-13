@@ -356,7 +356,7 @@ export default function Home() {
           className="w-fit absolute bottom-[-180px] right-[-100px] rotate-0 z-[1] overflow-hidden"
         />
       </section>
-{/* Here */}
+
       <section className="w-full h-full flex lg:flex-row flex-col-reverse items-center justify-start relative bg-white py-10 lg:gap-0 gap-10 z-30">
         <div className="w-full h-full flex flex-col justify-start items-start md:basis-1/2 basis-full md:pl-14 md:pr-0 px-5 text-[#093166]">
           <p className="font-quicksand font-semibold uppercase text-base">

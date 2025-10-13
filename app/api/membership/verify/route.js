@@ -4,7 +4,11 @@ import Membership from '@/models/Membership';
 
 export async function POST(req) {
   try {
+    console.log('🔄 Starting membership verification...');
+    
+    // Connect to database with timeout
     await connectDB();
+    console.log('✅ Database connected for membership verification');
     
     const { email } = await req.json();
     
@@ -15,13 +19,15 @@ export async function POST(req) {
       );
     }
 
-    // Find the active membership by email
+    console.log('🔍 Looking up membership for:', email.toLowerCase().trim());
+
+    // Find the active membership by email with timeout
     const membership = await Membership.findOne({ 
       email: email.toLowerCase().trim(),
       status: { $in: ['active', 'past_due'] }
-    }).sort({ createdAt: -1 });
+    }).sort({ createdAt: -1 }).maxTimeMS(5000); // 5 second timeout
 
-    console.log('🔍 Membership verify lookup:', {
+    console.log('🔍 Membership verify lookup result:', {
       email: email.toLowerCase().trim(),
       found: !!membership,
       membershipType: membership?.membershipType,
@@ -45,6 +51,12 @@ export async function POST(req) {
     const expiresSoon = membership.currentPeriodEnd && 
                        new Date(membership.currentPeriodEnd) <= new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
 
+    console.log('✅ Membership verification successful:', {
+      isActive,
+      membershipType: membership.membershipType,
+      expiresSoon
+    });
+
     return NextResponse.json({
       isMember: isActive,
       membership: {
@@ -63,9 +75,25 @@ export async function POST(req) {
     });
 
   } catch (error) {
-    console.error('Membership verification error:', error);
+    console.error('❌ Membership verification error:', error);
+    
+    // Provide more specific error messages
+    if (error.name === 'MongooseError' && error.message.includes('buffering timed out')) {
+      return NextResponse.json(
+        { error: 'Database connection timeout. Please try again.' },
+        { status: 503 }
+      );
+    }
+    
+    if (error.name === 'MongoNetworkError') {
+      return NextResponse.json(
+        { error: 'Database connection failed. Please check your internet connection.' },
+        { status: 503 }
+      );
+    }
+    
     return NextResponse.json(
-      { error: 'Failed to verify membership' },
+      { error: 'Failed to verify membership. Please try again.' },
       { status: 500 }
     );
   }

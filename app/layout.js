@@ -3,6 +3,7 @@ import { Anton, Antonio, Poppins, Quicksand } from "next/font/google";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import GoogleAnalytics from "../components/GoogleAnalytics";
+import { CartProvider } from "../lib/hooks/useCart";
 
 
 const anton = Anton({ subsets: ["latin"], weight: "400", variable: "--font-anton" });
@@ -62,9 +63,11 @@ export default function RootLayout({ children }) {
       </head>
       <body>
       <GoogleAnalytics />
-      <Navbar/>
+      <CartProvider>
+        <Navbar/>
         {children}
-      <Footer/>
+        <Footer/>
+      </CartProvider>
       
       {/* Image Protection Script */}
       <script

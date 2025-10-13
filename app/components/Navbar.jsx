@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useState, useEffect, useRef } from "react";
 import { FiMenu } from "react-icons/fi";
 import { usePathname } from "next/navigation";
+import CartCount from "./CartCount";
 
 export default function Navbar({ pageType = 'default' }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -17,7 +18,7 @@ export default function Navbar({ pageType = 'default' }) {
                      pathname.includes('/events/') && pathname.includes('/book') ||
                      pathname.includes('/events/') && pathname.includes('/success') ||
                      pathname.includes('/privacy-policy') || pathname.includes('/terms-and-condition') ||
-                      pathname.includes('/admin') || pathname.includes('/shop') || pathname.includes('/member-dashboard') ||
+                      pathname.includes('/admin') || pathname.includes('/member-dashboard') ||
                      pathname.includes('/ticket/') || pathname.includes('/ticket-qr/') ||
                      pathname.includes('/membership-success');
 
@@ -122,9 +123,7 @@ export default function Navbar({ pageType = 'default' }) {
         <Link href="/shop" className="hidden [@media(min-width:1060px)]:flex items-center justify-center relative">
           <ShoppingCart className={`w-6 h-6 ${useDarkNav ? '' : 'text-white'}`} style={useDarkNav ? { color: '#2e2e2e' } : {}} />
           {/* Badge */}
-          <span className="absolute -top-2 -right-2 bg-pink-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
-            0
-          </span>
+          <CartCount />
         </Link>
 
         {/* Mobile Menu Trigger (<1060px only) */}
@@ -158,9 +157,7 @@ export default function Navbar({ pageType = 'default' }) {
           <button onClick={() => handleNavigation('/shop')} className="flex items-center justify-center relative bg-transparent border-none text-white">
             <ShoppingCart className="w-6 h-6 text-white" />
             {/* Badge */}
-            <span className="absolute -top-2 -right-2 bg-pink-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
-              0
-            </span>
+            <CartCount />
           </button>
           <button onClick={() => handleNavigation('/events')} className="bg-transparent border-none text-white">EVENTS</button>
           <button onClick={() => handleNavigation('/blogs')} className="bg-transparent border-none text-white">UNFILTERED AF BLOG</button>

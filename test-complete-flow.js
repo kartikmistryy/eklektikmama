@@ -1,16 +1,16 @@
 #!/usr/bin/env node
 
 /**
- * Test Membership Flow
- * Tests the complete membership verification and discount application flow
+ * Test Complete Flow
+ * Tests the entire membership discount flow
  */
 
 const fetch = require('node-fetch');
 
 const BASE_URL = 'http://localhost:3000';
 
-async function testMembershipFlow() {
-  console.log('🧪 Testing Complete Membership Flow\n');
+async function testCompleteFlow() {
+  console.log('🧪 Testing Complete Membership Discount Flow\n');
   
   try {
     // Step 1: Test membership verification
@@ -46,27 +46,22 @@ async function testMembershipFlow() {
     }
     
     console.log('\n🎯 The Issue:');
-    console.log('The APIs are working correctly, but the frontend is not calling applyMemberDiscount().');
-    console.log('This means there\'s an issue in the MembershipDiscount component.');
+    console.log('The APIs are working correctly, but the discount is not being stored in localStorage.');
+    console.log('This means the issue is in the frontend cart application process.');
     
     console.log('\n🔧 What to Check:');
     console.log('1. Go to /shop in your app');
     console.log('2. Enter email: kaushikvnk@gmail.com');
-    console.log('3. Click "Verify"');
+    console.log('3. Click "Verify" - should show "Membership Verified!"');
     console.log('4. Open browser console (F12) and look for:');
-    console.log('   - "🔄 Starting membership verification for: kaushikvnk@gmail.com"');
-    console.log('   - "✅ Membership verification completed, isMember: true"');
     console.log('   - "🎯 Membership verified, applying discount..."');
-    console.log('   - "🔄 applyMemberDiscount called for: kaushikvnk@gmail.com"');
     console.log('   - "📊 Discount application result: {...}"');
-    console.log('   - "✅ Discount stored in localStorage"');
-    console.log('   - "🔍 Stored discount in localStorage: {...}"');
+    console.log('   - "✅ Discount applied successfully" OR "❌ Failed to apply discount"');
+    console.log('5. Check localStorage for "member-discount" key');
+    console.log('6. Add products to cart');
+    console.log('7. Click "Checkout" and check console logs');
     
-    console.log('\n🚨 If you don\'t see these logs:');
-    console.log('The issue is that the MembershipDiscount component is not calling applyMemberDiscount().');
-    console.log('Check if there are any JavaScript errors in the console.');
-    
-    console.log('\n💡 Expected localStorage after verification:');
+    console.log('\n💡 Expected localStorage:');
     console.log('localStorage.getItem("member-discount") should contain:');
     console.log('{');
     console.log('  "code": "MEMBER10",');
@@ -75,10 +70,14 @@ async function testMembershipFlow() {
     console.log('  "timestamp": 1234567890');
     console.log('}');
     
+    console.log('\n🚨 If localStorage is empty:');
+    console.log('The issue is that applyMemberDiscount() is not storing the discount.');
+    console.log('Check the browser console for errors in the applyMemberDiscount function.');
+    
   } catch (error) {
     console.error('❌ Test failed:', error.message);
   }
 }
 
 // Run the test
-testMembershipFlow();
+testCompleteFlow();
