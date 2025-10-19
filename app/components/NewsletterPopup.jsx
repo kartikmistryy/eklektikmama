@@ -92,11 +92,12 @@ export const NewsletterPopup = () => {
           />
         </span>
         <h3 className="md:text-4xl text-2xl font-bold uppercase text-[#093166] leading-[130%] text-left font-anton max-w-[90%]">
-          Signup for our weekly newsletter
+        JOIN THE LIST MUMS TALK ABOUT
+
         </h3>
         <p className="text-base text-[#093166] mt-2">
-          Get a FREE Guide - "<b>Places to visit in Abu Dhabi</b>" straight to
-          your inbox!
+        Get our ‘Things to Do in Abu Dhabi’ guide + weekly insider drops, event scoops and invites before everyone else.
+
         </p>
 
         <form onSubmit={handleNewsletterSubmit} className="mt-4">
@@ -130,7 +131,7 @@ export const NewsletterPopup = () => {
               />
             </span>
             <button type="submit" className="w-[150px] rounded-full mt-4 bg-[#dc4fa6] text-white px-4 py-1.5">
-              {isSubmitting ? "Submitting..." : "Subscribe"}
+              {isSubmitting ? "Submitting..." : "I’m In"}
             </button>
           </div>
 

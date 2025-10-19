@@ -76,6 +76,26 @@ export default function ShopPage() {
 
           <div className="py-12">
 
+            {/* SEO Content Section - Hidden but accessible to search engines */}
+            <div className="sr-only">
+              <h2>Eklektik Mama Merch - Abu Dhabi Mum Merch & UAE Mum Gifts</h2>
+              <p>
+                Discover the best funny mum t-shirts UAE, cool mum accessories, and relatable mum merch 
+                at Eklektik Mama shop. Our motherhood merch UAE collection includes gifts for mums Abu Dhabi, 
+                honest motherhood merch, and real talk motherhood gifts. Shop drops by Eklektik Mama offer 
+                self-care gifts for mums UAE, modern motherhood store UAE products, and mum-owned brand Abu Dhabi 
+                merchandise. Find chaos coordinator t-shirts, BYOBaby merch, Eklektik AF membership gear, 
+                and anti-perfect mum merch that celebrates the real journey of motherhood.
+              </p>
+              <h3>Where to Buy Funny Mum Gifts UAE</h3>
+              <p>
+                Looking for gifts for new mums UAE? Our motherhood apparel Abu Dhabi collection features 
+                mum slogan t-shirts, cool mum mugs, funny mum tote bags, and mum life water bottles. 
+                As a UAE mum community focused brand, we offer the perfect self-care gifts for mums UAE 
+                and relatable gifts that speak to the modern motherhood experience.
+              </p>
+            </div>
+
             {/* Membership Discount Section */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}

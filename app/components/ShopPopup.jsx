@@ -92,12 +92,13 @@ export const ShopPopup = () => {
           />
         </span>
         <h3 className="md:text-4xl text-2xl font-bold uppercase text-[#093166] leading-[130%] text-left font-anton max-w-[90%]">
-        Get 10% off all merch with your membership
-Sign up to join the club
+        Get 10% Off Your First Drop
+
 
         </h3>
         <p className="text-base text-[#093166] mt-2">
-          Enter your email to get 10% off your first order
+        Join the list for early access, exclusive offers and 10% off your first order — because raising hell deserves a discount.
+
         </p>
 
         <form onSubmit={handleNewsletterSubmit} className="mt-4">
@@ -131,7 +132,7 @@ Sign up to join the club
               />
             </span>
             <button type="submit" className="w-[150px] rounded-full mt-4 bg-[#dc4fa6] text-white px-4 py-1.5">
-              {isSubmitting ? "Submitting..." : "Subscribe"}
+              {isSubmitting ? "Submitting..." : "Count Me In"}
             </button>
           </div>
 
