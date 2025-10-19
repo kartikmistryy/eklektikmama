@@ -456,6 +456,7 @@ export async function POST(req) {
         // Consent fields - handle nested structure
         photographyConsent: (otherFormData.otherFormData || otherFormData).photographyConsent ? 'Yes' : 'No',
         waiverConsent: (otherFormData.otherFormData || otherFormData).waiverConsent ? 'Yes' : 'No',
+        newsletterSignup: (otherFormData.otherFormData || otherFormData).newsletterSignup ? 'Yes' : 'No',
         
         // Friends & Family Discount fields
         applyFriendsFamilyDiscount: applyFriendsFamilyDiscount ? 'true' : 'false',

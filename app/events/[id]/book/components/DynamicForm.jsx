@@ -20,8 +20,9 @@ const DynamicForm = ({ formConfig, onSubmit, submitting, event, onFormDataChange
         initialData[field.name] = '';
       }
     });
-    // Initialize photography consent as false
+    // Initialize photography consent and newsletter signup as false
     initialData.photographyConsent = false;
+    initialData.newsletterSignup = false;
     setFormData(initialData);
   }, [formConfig]);
 
@@ -32,7 +33,7 @@ const DynamicForm = ({ formConfig, onSubmit, submitting, event, onFormDataChange
     
     if (type === 'checkbox') {
       // Special handling for consent checkboxes and Friends & Family discount
-      if (name === 'photographyConsent' || name === 'waiverConsent' || name === 'applyFriendsFamilyDiscount' || name === 'familyDiscountTerms') {
+      if (name === 'photographyConsent' || name === 'waiverConsent' || name === 'applyFriendsFamilyDiscount' || name === 'familyDiscountTerms' || name === 'newsletterSignup') {
         newFormData = {
           ...formData,
           [name]: checked
@@ -466,6 +467,22 @@ const DynamicForm = ({ formConfig, onSubmit, submitting, event, onFormDataChange
           />
           <span className="text-sm text-gray-700">
             Consent to photography - I consent to being photographed during the event for promotional purposes
+          </span>
+        </label>
+      </div>
+
+      {/* Newsletter Signup */}
+      <div className="bg-pink-50 p-4 rounded-lg">
+        <label className="flex items-center">
+          <input
+            type="checkbox"
+            name="newsletterSignup"
+            checked={formData.newsletterSignup || false}
+            onChange={handleInputChange}
+            className="mr-3 text-[#093166] focus:ring-[#093166] border-gray-300 rounded"
+          />
+          <span className="text-sm text-gray-700">
+            Stay informed with our latest news and events
           </span>
         </label>
       </div>

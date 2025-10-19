@@ -9,6 +9,7 @@ import Cart from '../components/Cart';
 import MembershipDiscount from '../components/MembershipDiscount';
 import { BsCart3, BsFilter } from 'react-icons/bs';
 import Marquee from '../components/Marquee';
+import { ShopPopup } from '../components/ShopPopup';
 
 export default function ShopPage() {
   const [products, setProducts] = useState([]);
@@ -58,6 +59,7 @@ export default function ShopPage() {
 
   return (
     <MembershipProvider>
+      <ShopPopup />
         <div className="min-h-screen bg-gradient-to-br font-quicksand from-pink-50 to-purple-50">
           {/* Hero Section with Header Image */}
           <section className="w-full flex min-h-[90vh] flex-col items-center justify-end bg-[url('/shop/headerBg.webp')] bg-cover bg-center pt-20 overflow-x-hidden">

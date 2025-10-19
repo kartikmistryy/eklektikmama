@@ -166,6 +166,7 @@ export async function POST(req) {
 
         // Consent fields
         waiverConsent: session.metadata?.waiverConsent || additionalData.waiverConsent || '',
+        newsletterSignup: session.metadata?.newsletterSignup || additionalData.newsletterSignup || '',
 
         // Choice fields
         choiceI: session.metadata?.choiceI || additionalData.choiceI || '',
@@ -205,6 +206,31 @@ export async function POST(req) {
       });
 
       console.log('Booking created successfully:', booking._id);
+
+      // Handle newsletter signup if requested
+      if (extractedData.newsletterSignup === 'Yes') {
+        try {
+          const newsletterResponse = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/newsletter-signup`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              email: userEmail,
+              name: guardianName
+            }),
+          });
+
+          if (newsletterResponse.ok) {
+            console.log('Newsletter signup successful for:', userEmail);
+          } else {
+            console.error('Newsletter signup failed for:', userEmail);
+          }
+        } catch (newsletterError) {
+          console.error('Error with newsletter signup:', newsletterError);
+          // Don't fail the booking if newsletter signup fails
+        }
+      }
 
       // Add booking to Google Sheets
       try {

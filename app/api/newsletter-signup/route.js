@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 
 export async function POST(request) {
   try {
-    const { email } = await request.json();
+    const { email, name } = await request.json();
 
     // Validate email
     if (!email || !email.includes('@')) {
@@ -46,9 +46,9 @@ export async function POST(request) {
           email_address: email,
           status: 'subscribed',
           merge_fields: {
-            FNAME: email.split('@')[0], // Use part before @ as first name
+            FNAME: name || email.split('@')[0], // Use provided name or part before @ as first name
           },
-          tags: ['Newsletter Signup', 'Footer Form'],
+          tags: ['Newsletter Signup', 'Popup Form'],
         }),
       }
     );

@@ -305,7 +305,7 @@ export default function EventsManagePage() {
         <h1 className="text-2xl font-bold">Manage Events</h1>
         <div className="flex gap-3">
           <button 
-            onClick={() => router.push("/admin/events")}
+            onClick={() => router.push("/admin/events/create")}
             className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
           >
             Create New Event
@@ -323,7 +323,7 @@ export default function EventsManagePage() {
         <div className="text-center py-8">
           <p className="text-gray-600 mb-4">No events found</p>
           <button 
-            onClick={() => router.push("/admin/events")}
+            onClick={() => router.push("/admin/events/create")}
             className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
           >
             Create Your First Event
