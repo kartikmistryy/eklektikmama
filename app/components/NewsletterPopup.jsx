@@ -134,7 +134,7 @@ export const NewsletterPopup = () => {
               {isSubmitting ? "Submitting..." : "I’m In"}
             </button>
           </div> 
-
+ 
           {message && (
             <div
               className={`mt-3 text-sm font-medium ${
