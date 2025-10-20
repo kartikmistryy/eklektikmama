@@ -147,7 +147,6 @@ export const NewsletterPopup = () => {
         </form>
       </div>
       
-      {/* Image positioned below the modal */}
       <div className="w-full h-fit max-w-[400px]">
         <Image 
           src="/homepage/modalWhitePaper.webp" 
