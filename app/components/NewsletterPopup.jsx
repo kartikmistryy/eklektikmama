@@ -133,7 +133,7 @@ export const NewsletterPopup = () => {
             <button type="submit" className="w-[150px] rounded-full mt-4 bg-[#dc4fa6] text-white px-4 py-1.5">
               {isSubmitting ? "Submitting..." : "I’m In"}
             </button>
-          </div>
+          </div> 
 
           {message && (
             <div
