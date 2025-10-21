@@ -29,7 +29,7 @@ export async function PUT(req, { params }) {
     const { id } = await params;
     const updateData = await req.json();
     
-    // Find the existing event to preserve the slug
+    // Find the existing event
     const existingEvent = await Event.findById(id);
     if (!existingEvent) {
       return NextResponse.json({ error: 'Event not found' }, { status: 404 });
@@ -38,7 +38,7 @@ export async function PUT(req, { params }) {
     // Remove slug from update data to prevent it from being changed
     delete updateData.slug;
     
-    // Update the event while preserving the original slug
+    // Update the event
     const updatedEvent = await Event.findByIdAndUpdate(
       id,
       updateData,
@@ -47,6 +47,12 @@ export async function PUT(req, { params }) {
     
     if (!updatedEvent) {
       return NextResponse.json({ error: 'Event not found' }, { status: 404 });
+    }
+    
+    // If title changed, regenerate slug by calling save() to trigger pre('save') hook
+    if (updateData.title && updateData.title !== existingEvent.title) {
+      // The pre('save') hook will automatically regenerate the slug
+      await updatedEvent.save();
     }
     
     return NextResponse.json(updatedEvent);

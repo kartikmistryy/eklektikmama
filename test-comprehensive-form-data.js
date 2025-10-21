@@ -89,9 +89,7 @@ async function testComprehensiveFormData() {
         
         // MamaFit specific data
         fitnessLevel: 'Intermediate',
-        pregnant: 'No',
-        postpartum: 'Yes',
-        postpartumDuration: '6 months',
+        medicalClearance: 'Yes',
         medicalConditions: 'Yes',
         conditionDetails: 'Postpartum recovery, cleared by doctor',
         emergencyName: 'David Chen',
@@ -234,9 +232,7 @@ async function testComprehensiveFormData() {
       
       // Check MamaFit specific fields
       if (booking.fitnessLevel) console.log(`   - Fitness Level: ${booking.fitnessLevel}`);
-      if (booking.pregnant) console.log(`   - Pregnant: ${booking.pregnant}`);
-      if (booking.postpartum) console.log(`   - Postpartum: ${booking.postpartum}`);
-      if (booking.postpartumDuration) console.log(`   - Postpartum Duration: ${booking.postpartumDuration}`);
+      if (booking.medicalClearance) console.log(`   - Medical Clearance: ${booking.medicalClearance}`);
       
       // Check Hello Chef specific fields
       if (booking.cookingExperience) console.log(`   - Cooking Experience: ${booking.cookingExperience}`);

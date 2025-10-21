@@ -56,9 +56,7 @@ const BookingSchema = new mongoose.Schema({
   
   // MamaFit specific fields
   fitnessLevel: String,
-  pregnant: String,
-  postpartum: String,
-  postpartumDuration: String,
+  medicalClearance: String,
   
   // Hello Chef specific fields
   cookingExperience: String,

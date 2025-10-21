@@ -422,9 +422,7 @@ export async function POST(req) {
         medicalInfo: ((otherFormData.otherFormData || otherFormData).medicalInfo || '').substring(0, 200),
         
         // MamaFit specific fields - handle nested structure
-        pregnant: (otherFormData.otherFormData || otherFormData).pregnant || '',
-        postpartum: (otherFormData.otherFormData || otherFormData).postpartum || '',
-        postpartumDuration: ((otherFormData.otherFormData || otherFormData).postpartumDuration || '').substring(0, 100),
+        medicalClearance: (otherFormData.otherFormData || otherFormData).medicalClearance || '',
         fitnessLevel: ((otherFormData.otherFormData || otherFormData).fitnessLevel || '').substring(0, 50),
         
         // Hello Chef specific fields - handle nested structure

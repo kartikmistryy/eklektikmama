@@ -143,9 +143,7 @@ export async function GET(req) {
       medicalInfo: session.metadata.medicalInfo || additionalData.medicalInfo || otherFormData.medicalInfo || '',
       
       // MamaFit specific fields
-      pregnant: session.metadata.pregnant || additionalData.pregnant || otherFormData.pregnant || '',
-      postpartum: session.metadata.postpartum || additionalData.postpartum || otherFormData.postpartum || '',
-      postpartumDuration: session.metadata.postpartumDuration || additionalData.postpartumDuration || otherFormData.postpartumDuration || '',
+      medicalClearance: session.metadata.medicalClearance || additionalData.medicalClearance || otherFormData.medicalClearance || '',
       fitnessLevel: session.metadata.fitnessLevel || additionalData.fitnessLevel || otherFormData.fitnessLevel || '',
       
       // Hello Chef specific fields
@@ -389,9 +387,7 @@ export async function GET(req) {
           howDidYouHear: extractedData.howDidYouHear,
           waiverConsent: extractedData.waiverConsent,
           fitnessLevel: extractedData.fitnessLevel,
-          pregnant: extractedData.pregnant,
-          postpartum: extractedData.postpartum,
-          postpartumDuration: extractedData.postpartumDuration,
+          medicalClearance: extractedData.medicalClearance,
           cookingExperience: extractedData.cookingExperience,
           favoriteFoods: extractedData.favoriteFoods,
           mainCourseSelection: choiceI, // Map choiceI to mainCourseSelection for mamaBreakfast
