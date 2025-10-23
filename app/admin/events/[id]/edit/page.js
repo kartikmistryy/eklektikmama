@@ -357,6 +357,7 @@ export default function EditEventPage({ params }) {
             >
               <option value="cinemaMorning">Cinema Morning</option>
               <option value="mamaBreakfast">Mama Breakfast</option>
+              <option value="festiveMornings">Festive Mornings</option>
               <option value="mamaFit">MamaFit</option>
               <option value="eklektikEdit">Eklektik Edit</option>
               <option value="familyDay">Family Day</option>

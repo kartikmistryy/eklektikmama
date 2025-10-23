@@ -10,6 +10,7 @@ export async function GET() {
       MEMBERSHIP_SPREADSHEET: process.env.MEMBERSHIP_SPREADSHEET ? 'Set' : 'Not Set',
       CINEMA_MORNING_SPREADSHEET_ID: process.env.CINEMA_MORNING_SPREADSHEET_ID ? 'Set' : 'Not Set',
       MAMA_BREAKFAST_SPREADSHEET_ID: process.env.MAMA_BREAKFAST_SPREADSHEET_ID ? 'Set' : 'Not Set',
+      FESTIVE_MORNINGS_SPREADSHEET_ID: process.env.FESTIVE_MORNINGS_SPREADSHEET_ID ? 'Set' : 'Not Set',
       MAMAFIT_SPREADSHEET_ID: process.env.MAMAFIT_SPREADSHEET_ID ? 'Set' : 'Not Set',
       EKLEKTIK_EDIT_SPREADSHEET_ID: process.env.EKLEKTIK_EDIT_SPREADSHEET_ID ? 'Set' : 'Not Set',
       FAMILY_DAY_SPREADSHEET_ID: process.env.FAMILY_DAY_SPREADSHEET_ID ? 'Set' : 'Not Set',
@@ -19,6 +20,7 @@ export async function GET() {
     const spreadsheetIdsStatus = {
       cinemaMorning: spreadsheetIds.cinemaMorning ? 'Set' : 'Not Set',
       mamaBreakfast: spreadsheetIds.mamaBreakfast ? 'Set' : 'Not Set',
+      festiveMornings: spreadsheetIds.festiveMornings ? 'Set' : 'Not Set',
       mamaFit: spreadsheetIds.mamaFit ? 'Set' : 'Not Set',
       eklektikEdit: spreadsheetIds.eklektikEdit ? 'Set' : 'Not Set',
       familyDay: spreadsheetIds.familyDay ? 'Set' : 'Not Set',

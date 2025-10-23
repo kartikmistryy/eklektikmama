@@ -14,7 +14,7 @@ const EventSchema = new mongoose.Schema({
   segment: { 
     type: String, 
     required: true,
-    enum: ['cinemaMorning', 'mamaBreakfast', 'mamaFit', 'eklektikEdit', 'familyDay', 'coffeeMeetup'],
+    enum: ['cinemaMorning', 'mamaBreakfast', 'festiveMornings', 'mamaFit', 'eklektikEdit', 'familyDay', 'coffeeMeetup'],
     default: 'cinemaMorning'
   },
   isMembersOnly: { type: Boolean, default: false }, // Flag for member-only events

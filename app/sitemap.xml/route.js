@@ -47,6 +47,12 @@ export async function GET() {
       changeFrequency: 'weekly',
       priority: 0.8,
     },
+    {
+      url: '/shop',
+      lastModified: new Date().toISOString(),
+      changeFrequency: 'weekly',
+      priority: 0.9,
+    },
   ];
 
   // Get blog posts

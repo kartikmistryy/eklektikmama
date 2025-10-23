@@ -354,6 +354,28 @@ const Parnterwithus = () => {
         </motion.div>
       </section>
 
+      <section className="w-full h-full flex flex-col gap-5 mt-10">
+      <motion.div
+          className="w-full h-full text-[#093166] max-w-[1400px] mx-auto flex flex-col lg:px-10 px-5 pb-10"
+        >
+          <p className="font-quicksand font-semibold text-base uppercase">Brands we love</p>
+          <h2 className="md:text-[80px] text-5xl uppercase tracking-tighter font-antonio font-thin leading-[100%]">
+          who we’ve
+            <b className="tracking-tight font-bold"> worked with</b>
+          </h2>
+        </motion.div>
+        <div className="w-full h-full gap-5 bg-[#db4e9f] py-10">
+            <div className="w-full h-full flex flex-col md:flex-row justify-center items-center flex-wrap lg:justify-between max-w-[1400px] gap-5 md:gap-0 mx-auto px-10">
+            <Image src="/workLogos/1.png" alt="brand1" width={1000} height={1000} className="w-fit h-full object-contain object-center" />
+            <Image src="/workLogos/2.png" alt="brand1" width={1000} height={1000} className="w-fit h-full object-contain object-center" />
+            <Image src="/workLogos/3.png" alt="brand1" width={1000} height={1000} className="w-fit h-full object-contain object-center" />
+            <Image src="/workLogos/4.png" alt="brand1" width={1000} height={1000} className="w-fit h-full object-contain object-center" />
+            <Image src="/workLogos/5.png" alt="brand1" width={1000} height={1000} className="w-fit h-full object-contain object-center" />
+            </div>
+        </div>
+
+      </section>
+
       <section ref={pitchRef} className="w-full h-full flex flex-col gap-5 mt-10">
         <motion.div 
           className="w-full h-full text-[#093166] max-w-[1400px] mx-auto flex flex-col lg:px-10 px-5"
