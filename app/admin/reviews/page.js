@@ -264,7 +264,7 @@ export default function AdminReviewsPage() {
                             </span>
                           )}
                         </div>
-                        <p className="text-gray-700 mb-2">"{review.text}"</p>
+                        <p className="text-gray-700 mb-2">&quot;{review.text}&quot;</p>
                         <p className="text-sm text-gray-500">
                           Created: {new Date(review.createdAt).toLocaleDateString()}
                         </p>
