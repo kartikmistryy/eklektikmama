@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { BsArrowRight, BsPlus } from "react-icons/bs";
+import { BsArrowRight, BsFillStarFill, BsPlus } from "react-icons/bs";
 import {
   Carousel,
   CarouselContent,
@@ -14,13 +14,40 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect } from "react";
 import { NewsletterPopup } from "../components/NewsletterPopup";
+import { FiStar } from "react-icons/fi";
 
 export default function Home() {
   const [isVisible, setIsVisible] = useState(false);
+  const [reviews, setReviews] = useState([]);
+  const [reviewsLoading, setReviewsLoading] = useState(true);
 
   useEffect(() => {
     setIsVisible(true);
+    fetchReviews();
   }, []);
+
+  const fetchReviews = async () => {
+    try {
+      const response = await fetch('/api/reviews');
+      const data = await response.json();
+      if (data.success) {
+        setReviews(data.reviews);
+      }
+    } catch (error) {
+      console.error('Error fetching reviews:', error);
+    } finally {
+      setReviewsLoading(false);
+    }
+  };
+
+  const renderStars = (rating) => {
+    return Array.from({ length: 5 }, (_, i) => (
+      <BsFillStarFill
+        key={i}
+        className={`lg:text-xl text-lg ${i < rating ? 'text-[#093166]' : 'text-gray-300'}`}
+      />
+    ));
+  };
 
   // Glitch effect variants for cards
   const glitchVariants = {
@@ -223,7 +250,7 @@ export default function Home() {
 
   return (
     <>
-    <NewsletterPopup/>
+      <NewsletterPopup />
       <div className="w-full h-full flex flex-col bg-[#231f20] lg:pt-[120px] pt-[120px] relative overflow-hidden">
         <section className="w-full h-full flex flex-col items-center justify-start relative overflow-visible mb-[-1px]">
           <div className="w-full h-full flex flex-col relative lg:pb-[240px] md:pb-[160px] pb-[80px] overflow-visible">
@@ -548,6 +575,49 @@ export default function Home() {
               </motion.div>
             </motion.span>
           </div>
+        </section>
+
+        <section className="w-full h-full flex flex-col gap-5 bg-white">
+          <motion.div className="w-full h-full text-[#093166] max-w-[1400px] mx-auto flex flex-col lg:px-10 px-5">
+            <p className="font-quicksand font-semibold text-base uppercase">
+              Real talk
+            </p>
+            <h2 className="md:text-[80px] text-5xl uppercase font-antonio font-thin leading-[100%]">
+              Mama <b className="tracking-tight font-bold">Approved</b>
+            </h2>
+          </motion.div>
+
+          <Carousel className="w-full h-full max-w-[1400px] mx-auto flex flex-col lg:px-10 px-5 pb-10">
+            <CarouselContent className="mt-10">
+              {reviewsLoading ? (
+                <CarouselItem className="w-full h-full max-w-[350px]">
+                  <div className="flex items-center justify-center h-32">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-pink-500"></div>
+                  </div>
+                </CarouselItem>
+              ) : reviews.length === 0 ? (
+                <CarouselItem className="w-full h-full max-w-[350px]">
+                  <div className="text-center text-gray-500">
+                    <p>No reviews available yet.</p>
+                  </div>
+                </CarouselItem>
+              ) : (
+                reviews.map((review) => (
+                  <CarouselItem key={review._id} className="w-full h-full max-w-[350px]">
+                    <div className="w-full h-full flex flex-col">
+                      <span className="w-full h-full flex flex-row gap-2 items-center text-[#093166]">
+                        {renderStars(review.stars)}
+                      </span>
+
+                      <h4 className="text-lg font-quicksand font-medium text-[#093166] mt-5">
+                        &quot;{review.text}&quot;
+                      </h4>
+                    </div>
+                  </CarouselItem>
+                ))
+              )}
+            </CarouselContent>
+          </Carousel>
         </section>
 
         <section className="w-full h-full flex flex-col bg-white md:px-10 px-5">
