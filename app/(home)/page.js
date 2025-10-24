@@ -578,7 +578,7 @@ export default function Home() {
         </section>
 
         <section className="w-full h-full flex flex-col gap-5 bg-white">
-          <motion.div className="w-full h-full text-[#093166] max-w-[1400px] mx-auto flex flex-col lg:px-10 px-5">
+          <motion.div className="w-full h-full text-[#093166] flex flex-col lg:px-10 px-5">
             <p className="font-quicksand font-semibold text-base uppercase">
               Real talk
             </p>
@@ -587,7 +587,7 @@ export default function Home() {
             </h2>
           </motion.div>
 
-          <Carousel className="w-full h-full max-w-[1400px] mx-auto flex flex-col lg:px-10 px-5 pb-10">
+          <Carousel key={reviews.length} className="w-full h-full mx-auto flex flex-col lg:px-10 px-5 pb-10">
             <CarouselContent className="mt-10">
               {reviewsLoading ? (
                 <CarouselItem className="w-full h-full max-w-[350px]">
@@ -617,6 +617,12 @@ export default function Home() {
                 ))
               )}
             </CarouselContent>
+            {reviews.length > 1 && (
+              <div className="flex justify-center gap-4 mt-6">
+                <CarouselPrevious className="relative top-0 left-0 translate-x-0 translate-y-0" />
+                <CarouselNext className="relative top-0 right-0 translate-x-0 translate-y-0" />
+              </div>
+            )}
           </Carousel>
         </section>
 

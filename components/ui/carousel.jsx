@@ -192,4 +192,114 @@ function CarouselNext({
   );
 }
 
-export { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext };
+function CarouselDots({
+  className,
+  ...props
+}) {
+  const { api } = useCarousel()
+  const [selectedIndex, setSelectedIndex] = React.useState(0)
+  const [totalSlides, setTotalSlides] = React.useState(0)
+  const [windowStart, setWindowStart] = React.useState(0)
+
+  React.useEffect(() => {
+    if (!api) return
+
+    const updateSelectedIndex = () => {
+      setSelectedIndex(api.selectedScrollSnap())
+    }
+
+    const updateTotalSlides = () => {
+      setTotalSlides(api.scrollSnapList().length)
+    }
+
+    // Initial setup
+    updateSelectedIndex()
+    updateTotalSlides()
+
+    // Listen for changes
+    api.on("select", updateSelectedIndex)
+    api.on("reInit", updateTotalSlides)
+    api.on("resize", updateTotalSlides)
+
+    // Cleanup
+    return () => {
+      api.off("select", updateSelectedIndex)
+      api.off("reInit", updateTotalSlides)
+      api.off("resize", updateTotalSlides)
+    }
+  }, [api])
+
+  // Update window position based on current slide
+  React.useEffect(() => {
+    if (totalSlides <= 5) {
+      setWindowStart(0)
+      return
+    }
+
+    // Calculate window start position
+    // When we're at slide 0-2, window starts at 0
+    // When we're at slide 3+, window slides to keep current slide in middle
+    let newWindowStart = 0
+    
+    if (selectedIndex >= 3) {
+      // Start sliding window when we're past the first 3 slides
+      newWindowStart = Math.min(selectedIndex - 2, totalSlides - 5)
+    }
+    
+    setWindowStart(newWindowStart)
+  }, [selectedIndex, totalSlides])
+
+  const scrollTo = React.useCallback((dotIndex) => {
+    if (!api || totalSlides <= 1) return
+    
+    // Calculate the actual slide index based on the dot clicked and current window
+    const slideIndex = windowStart + dotIndex
+    api.scrollTo(slideIndex)
+  }, [api, windowStart])
+
+  // Don't render if there are no slides or only one slide
+  if (totalSlides <= 1) {
+    return null
+  }
+
+  // Calculate which dot should be active based on current position within the window
+  const getActiveDotIndex = () => {
+    if (totalSlides <= 5) {
+      return selectedIndex
+    }
+    return selectedIndex - windowStart
+  }
+
+  const activeDotIndex = getActiveDotIndex()
+
+  return (
+    <div className={cn("flex justify-center gap-2 mt-4", className)} {...props}>
+      {Array.from({ length: 5 }, (_, index) => {
+        const slideIndex = windowStart + index
+        const isActive = activeDotIndex === index
+        const isClickable = slideIndex < totalSlides
+        
+        return (
+          <button
+            key={`dot-${index}-${windowStart}`}
+            className={cn(
+              "w-2 h-2 rounded-full transition-all duration-200",
+              isActive
+                ? "bg-[#093166] scale-125 shadow-md"
+                : isClickable
+                ? "bg-gray-300 hover:bg-gray-400 hover:scale-110 cursor-pointer"
+                : "bg-gray-200 cursor-not-allowed opacity-50"
+            )}
+            onClick={() => isClickable && scrollTo(index)}
+            aria-label={`Go to slide ${slideIndex + 1}`}
+            role="button"
+            tabIndex={isClickable ? 0 : -1}
+            disabled={!isClickable}
+          />
+        )
+      })}
+    </div>
+  )
+}
+
+export { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext, CarouselDots };
