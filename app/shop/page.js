@@ -10,6 +10,7 @@ import MembershipDiscount from '../components/MembershipDiscount';
 import { BsCart3, BsFilter } from 'react-icons/bs';
 import Marquee from '../components/Marquee';
 import { ShopPopup } from '../components/ShopPopup';
+import CartCount from '../components/CartCount';
 
 export default function ShopPage() {
   const [products, setProducts] = useState([]);
@@ -18,6 +19,7 @@ export default function ShopPage() {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [hasMore, setHasMore] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState('all');
 
   // Fetch products on component mount
   useEffect(() => {
@@ -26,6 +28,25 @@ export default function ShopPage() {
         setLoading(true);
         const result = await getProducts(12);
         const productsData = result.edges.map(edge => edge.node);
+        
+        // Console log the product data
+        console.log('=== PRODUCT DATA ===');
+        console.log('Total products fetched:', productsData.length);
+        console.log('Raw products data:', productsData);
+        
+        // Log each product's details
+        productsData.forEach((product, index) => {
+          console.log(`\n--- Product ${index + 1} ---`);
+          console.log('Title:', product.title);
+          console.log('Product Type:', product.productType);
+          console.log('Tags:', product.tags);
+          console.log('Vendor:', product.vendor);
+          console.log('Available for Sale:', product.availableForSale);
+          console.log('Price Range:', product.priceRange);
+          console.log('Images Count:', product.images?.edges?.length || 0);
+          console.log('Variants Count:', product.variants?.edges?.length || 0);
+        });
+        
         setProducts(productsData);
         setHasMore(result.pageInfo.hasNextPage);
         setError(null);
@@ -56,6 +77,63 @@ export default function ShopPage() {
       setLoadingMore(false);
     }
   };
+
+  // Categorize products
+  const categorizeProducts = (products) => {
+    const categories = {
+      'Apparel': [],
+      'Accessories': [],
+      'Home & Living': [],
+      'Gifts': [],
+      'Other': []
+    };
+
+    products.forEach(product => {
+      const productType = product.productType?.toLowerCase() || '';
+      const tags = product.tags?.map(tag => tag.toLowerCase()) || [];
+      
+      // Categorize based on productType and tags
+      if (productType.includes('shirt') || productType.includes('t-shirt') || 
+          productType.includes('hoodie') || productType.includes('sweatshirt') ||
+          productType.includes('top') || productType.includes('dress') ||
+          tags.some(tag => tag.includes('shirt') || tag.includes('hoodie') || tag.includes('top'))) {
+        categories['Apparel'].push(product);
+      } else if (productType.includes('bag') || productType.includes('tote') ||
+                 productType.includes('mug') || productType.includes('bottle') ||
+                 productType.includes('accessory') ||
+                 tags.some(tag => tag.includes('bag') || tag.includes('mug') || tag.includes('bottle'))) {
+        categories['Accessories'].push(product);
+      } else if (productType.includes('home') || productType.includes('decor') ||
+                 productType.includes('wall') || productType.includes('art') ||
+                 tags.some(tag => tag.includes('home') || tag.includes('decor'))) {
+        categories['Home & Living'].push(product);
+      } else if (productType.includes('gift') || productType.includes('card') ||
+                 tags.some(tag => tag.includes('gift') || tag.includes('card'))) {
+        categories['Gifts'].push(product);
+      } else {
+        categories['Other'].push(product);
+      }
+    });
+
+    return categories;
+  };
+
+  const categories = categorizeProducts(products);
+  const filteredProducts = selectedCategory === 'all' ? products : categories[selectedCategory] || [];
+
+  // Console log categorization results
+  useEffect(() => {
+    if (products.length > 0) {
+      console.log('\n=== CATEGORIZATION RESULTS ===');
+      console.log('Categories:', categories);
+      Object.entries(categories).forEach(([categoryName, categoryProducts]) => {
+        console.log(`\n${categoryName}: ${categoryProducts.length} products`);
+        categoryProducts.forEach(product => {
+          console.log(`  - ${product.title} (Type: ${product.productType}, Tags: ${product.tags?.join(', ') || 'None'})`);
+        });
+      });
+    }
+  }, [products, categories]);
 
   return (
     <MembershipProvider>
@@ -106,6 +184,40 @@ export default function ShopPage() {
               <MembershipDiscount />
             </motion.div>
 
+            {/* Category Navigation */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+              className="max-w-6xl mx-auto mb-8"
+            >
+              <div className="flex flex-wrap justify-center gap-4">
+                <button
+                  onClick={() => setSelectedCategory('all')}
+                  className={`px-6 py-3 rounded-full font-semibold transition-all duration-300 ${
+                    selectedCategory === 'all'
+                      ? 'bg-[#093166] text-white shadow-lg'
+                      : 'bg-white text-[#093166] border-2 border-[#093166] hover:bg-[#093166] hover:text-white'
+                  }`}
+                >
+                  All Products
+                </button>
+                {Object.keys(categories).map(category => (
+                  <button
+                    key={category}
+                    onClick={() => setSelectedCategory(category)}
+                    className={`px-6 py-3 rounded-full font-semibold transition-all duration-300 ${
+                      selectedCategory === category
+                        ? 'bg-[#093166] text-white shadow-lg'
+                        : 'bg-white text-[#093166] border-2 border-[#093166] hover:bg-[#093166] hover:text-white'
+                    }`}
+                  >
+                    {category} ({categories[category].length})
+                  </button>
+                ))}
+              </div>
+            </motion.div>
+
           {/* Cart Button */}
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
@@ -115,10 +227,12 @@ export default function ShopPage() {
           >
             <button
               onClick={() => setIsCartOpen(true)}
-              className="bg-[#093166] text-white p-4 rounded-full hover:bg-[#072a4d] transition-colors duration-300 flex items-center gap-2"
+              className="bg-[#093166] text-white p-4 rounded-full hover:bg-[#072a4d] transition-colors duration-300 flex items-center gap-2 relative"
             >
               <BsCart3 className="text-xl" />
               <span className="hidden sm:inline">Cart</span>
+              {/* Cart Count Badge */}
+              <CartCount />
             </button>
           </motion.div>
 
@@ -160,27 +274,43 @@ export default function ShopPage() {
               <h2 className="text-2xl font-bold text-gray-900 mb-4">No products available</h2>
               <p className="text-gray-600">Check back soon for new arrivals!</p>
             </motion.div>
-          ) : (
+          ) : selectedCategory === 'all' ? (
             <>
-              {/* Products Grid - 3x3 Layout */}
-              <motion.div
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.4 }}
-                className="grid grid-cols-3 gap-6"
-              >
-                {products.map((product, index) => (
+              {/* Display all products in categorized sections */}
+              {Object.entries(categories).map(([categoryName, categoryProducts], categoryIndex) => {
+                if (categoryProducts.length === 0) return null;
+                
+                return (
                   <motion.div
-                    key={product.id}
-                    initial={{ opacity: 0, y: 20 }}
+                    key={categoryName}
+                    initial={{ opacity: 0, y: 30 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5, delay: index * 0.1 }}
-                    className="transform hover:scale-105 transition-transform duration-300"
+                    transition={{ duration: 0.8, delay: 0.4 + categoryIndex * 0.1 }}
+                    className="max-w-6xl mx-auto mb-16"
                   >
-                    <ProductCard product={product} />
+                    {/* Category Header */}
+                    <div className="text-center mb-8">
+                      <h2 className="text-3xl font-bold text-[#093166] mb-2">{categoryName}</h2>
+                      <div className="w-24 h-1 bg-[#093166] mx-auto rounded-full"></div>
+                    </div>
+                    
+                    {/* Products Grid */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                      {categoryProducts.map((product, index) => (
+                        <motion.div
+                          key={product.id}
+                          initial={{ opacity: 0, y: 20 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ duration: 0.5, delay: index * 0.1 }}
+                          className="transform hover:scale-105 transition-transform duration-300"
+                        >
+                          <ProductCard product={product} />
+                        </motion.div>
+                      ))}
+                    </div>
                   </motion.div>
-                ))}
-              </motion.div>
+                );
+              })}
 
               {/* Load More Button */}
               {hasMore && (
@@ -206,6 +336,45 @@ export default function ShopPage() {
                   </button>
                 </motion.div>
               )}
+            </>
+          ) : (
+            <>
+              {/* Display filtered products */}
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.4 }}
+                className="max-w-6xl mx-auto"
+              >
+                {/* Category Header */}
+                <div className="text-center mb-8">
+                  <h2 className="text-3xl font-bold text-[#093166] mb-2">{selectedCategory}</h2>
+                  <div className="w-24 h-1 bg-[#093166] mx-auto rounded-full"></div>
+                  <p className="text-gray-600 mt-2">{filteredProducts.length} products found</p>
+                </div>
+                
+                {filteredProducts.length === 0 ? (
+                  <div className="text-center py-20">
+                    <div className="text-6xl mb-4">🔍</div>
+                    <h3 className="text-xl font-bold text-gray-900 mb-2">No products in this category</h3>
+                    <p className="text-gray-600">Try selecting a different category or view all products.</p>
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {filteredProducts.map((product, index) => (
+                      <motion.div
+                        key={product.id}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.5, delay: index * 0.1 }}
+                        className="transform hover:scale-105 transition-transform duration-300"
+                      >
+                        <ProductCard product={product} />
+                      </motion.div>
+                    ))}
+                  </div>
+                )}
+              </motion.div>
             </>
           )}
         </div>

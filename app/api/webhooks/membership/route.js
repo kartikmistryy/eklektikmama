@@ -4,6 +4,7 @@ import { connectDB } from '../../../../lib/db';
 import Membership from '../../../../models/Membership';
 import { updateMemberInSheet, addMemberToSheet } from '../../../../lib/googleSheets';
 import { sendMemberWelcomeEmail, sendPaymentConfirmationEmail, sendRenewalReminderEmail, sendMembershipUpgradeEmail, sendMembershipExpirationReminderEmail } from '../../../../lib/memberEmails';
+import { logGoogleSheetsOperation } from '../../../../lib/googleSheetsLogger';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 const webhookSecret = process.env.STRIPE_MEMBERSHIP_WEBHOOK_SECRET;
@@ -497,10 +498,24 @@ async function handleSubscriptionUpdated(subscription) {
         }
 
         // Update membership details
+        console.log('=== UPDATING MEMBERSHIP IN DATABASE ===');
+        console.log('Member Email:', membership.email);
+        console.log('Subscription ID:', subscription.id);
+        console.log('Plan Change:', isPlanChange);
+        
+        const oldPeriodStart = membership.currentPeriodStart;
+        const oldPeriodEnd = membership.currentPeriodEnd;
+        const oldNextPayment = membership.nextPaymentDate;
+        const oldStatus = membership.status;
+        
         membership.currentPeriodStart = new Date(subscription.current_period_start * 1000);
         membership.currentPeriodEnd = new Date(subscription.current_period_end * 1000);
         membership.nextPaymentDate = new Date(subscription.current_period_end * 1000);
         membership.cancelAtPeriodEnd = subscription.cancel_at_period_end;
+        
+        console.log('Period Start:', oldPeriodStart, '→', membership.currentPeriodStart);
+        console.log('Period End:', oldPeriodEnd, '→', membership.currentPeriodEnd);
+        console.log('Next Payment:', oldNextPayment, '→', membership.nextPaymentDate);
         
         if (subscription.cancel_at_period_end && !isPlanChange) {
           membership.cancelledAt = new Date();
@@ -525,15 +540,36 @@ async function handleSubscriptionUpdated(subscription) {
         }
 
         await membership.save();
+        console.log('✅ Membership saved to database');
 
         // Update Google Sheets
-        await updateMemberInSheet(membership.email, {
+        console.log('=== UPDATING GOOGLE SHEETS FROM WEBHOOK ===');
+        const sheetsUpdateData = {
           'Status': membership.status,
-          'Membership Type': membership.membershipType,
+          'Plan Type': membership.membershipType === 'monthly' ? 'Monthly' : 'Annual',
           'Current Period Start': membership.currentPeriodStart.toISOString().split('T')[0],
           'Current Period End': membership.currentPeriodEnd.toISOString().split('T')[0],
           'Next Payment Date': membership.nextPaymentDate.toISOString().split('T')[0]
+        };
+        
+        console.log('Google Sheets update data:', JSON.stringify(sheetsUpdateData, null, 2));
+        
+        await updateMemberInSheet(membership.email, sheetsUpdateData);
+        
+        // Log the webhook operation
+        await logGoogleSheetsOperation({
+          operation: 'update',
+          sheetName: 'Members',
+          spreadsheetId: process.env.GOOGLE_SHEETS_SPREADSHEET_ID,
+          recordId: membership.googleSheetsRowId?.toString(),
+          recordEmail: membership.email,
+          newValues: sheetsUpdateData,
+          source: 'webhook',
+          sourceDetails: `Stripe webhook - subscription ${subscription.id}`
         });
+        
+        console.log('✅ Google Sheets updated successfully');
+        console.log('=== END WEBHOOK UPDATE ===\n');
       }
     }
   } catch (error) {

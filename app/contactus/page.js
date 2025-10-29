@@ -14,7 +14,8 @@ const Parnterwithus = () => {
     email: "",
     isBrand: "",
     interestedInFranchise: "",
-    note: ""
+    note: "",
+    website: "" // Honeypot field
   });
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -132,6 +133,14 @@ const Parnterwithus = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
+    // Check honeypot field - if filled, it's likely spam
+    if (formData.website) {
+      console.log("Spam detected - honeypot field filled");
+      setMessage("Spam detected. Please try again.");
+      setMessageType("error");
+      return;
+    }
+    
     if (validateForm()) {
       setIsSubmitting(true);
       setMessage("");
@@ -156,7 +165,8 @@ const Parnterwithus = () => {
             email: "",
             isBrand: "",
             interestedInFranchise: "",
-            note: ""
+            note: "",
+            website: ""
           });
         } else {
           setMessage(data.error || "Failed to submit form. Please try again.");
@@ -365,14 +375,42 @@ const Parnterwithus = () => {
             <b className="tracking-tight font-bold"> worked with</b>
           </h2>
         </motion.div>
-        <div className="w-full h-full gap-5 bg-[#db4e9f] py-10">
-            <div className="w-full h-full flex flex-col md:flex-row justify-center items-center flex-wrap lg:justify-between max-w-[1400px] gap-5 md:gap-0 mx-auto px-10">
-            <Image src="/workLogos/1.png" alt="brand1" width={1000} height={1000} className="w-fit h-full object-contain object-center" />
-            <Image src="/workLogos/2.png" alt="brand1" width={1000} height={1000} className="w-fit h-full object-contain object-center" />
-            <Image src="/workLogos/3.png" alt="brand1" width={1000} height={1000} className="w-fit h-full object-contain object-center" />
-            <Image src="/workLogos/4.png" alt="brand1" width={1000} height={1000} className="w-fit h-full object-contain object-center" />
-            <Image src="/workLogos/5.png" alt="brand1" width={1000} height={1000} className="w-fit h-full object-contain object-center" />
+        <div className="w-full h-full bg-[#db4e9f] py-20 overflow-hidden">
+            <div className="logos-marquee flex w-max">
+              {[...Array(2)].map((_, repeatIndex) => (
+                <div
+                  key={repeatIndex}
+                  className="flex flex-row gap-16 items-center flex-shrink-0 px-6"
+                >
+                  <Image src="/workLogos/1.png" alt="brand1" width={300} height={300} className="w-auto h-16 object-contain object-center flex-shrink-0" />
+                  <Image src="/workLogos/2.png" alt="brand2" width={300} height={300} className="w-auto h-16 object-contain object-center flex-shrink-0" />
+                  <Image src="/workLogos/3.png" alt="brand3" width={300} height={300} className="w-auto h-16 object-contain object-center flex-shrink-0" />
+                  <Image src="/workLogos/4.png" alt="brand4" width={300} height={300} className="w-auto h-16 object-contain object-center flex-shrink-0" />
+                  <Image src="/workLogos/5.png" alt="brand5" width={300} height={300} className="w-auto h-16 object-contain object-center flex-shrink-0" />
+                  <Image src="/workLogos/1.png" alt="brand1" width={300} height={300} className="w-auto h-16 object-contain object-center flex-shrink-0" />
+                  <Image src="/workLogos/2.png" alt="brand2" width={300} height={300} className="w-auto h-16 object-contain object-center flex-shrink-0" />
+                  <Image src="/workLogos/3.png" alt="brand3" width={300} height={300} className="w-auto h-16 object-contain object-center flex-shrink-0" />
+                  <Image src="/workLogos/4.png" alt="brand4" width={300} height={300} className="w-auto h-16 object-contain object-center flex-shrink-0" />
+                  <Image src="/workLogos/5.png" alt="brand5" width={300} height={300} className="w-auto h-16 object-contain object-center flex-shrink-0" />
+                </div>
+              ))}
             </div>
+            
+            <style jsx>{`
+              .logos-marquee {
+                display: flex;
+                animation: logosMarquee 30s linear infinite;
+              }
+
+              @keyframes logosMarquee {
+                0% {
+                  transform: translateX(0);
+                }
+                100% {
+                  transform: translateX(-50%);
+                }
+              }
+            `}</style>
         </div>
 
       </section>
@@ -402,18 +440,36 @@ const Parnterwithus = () => {
             className="w-full h-full lg:px-14 px-3 sm:px-5 lg:py-5 py-6 border-2 border-[#db4e9f] max-w-[600px] rounded-lg flex flex-col gap-5 font-poppins relative"
             variants={fadeInUp}
           >
+            {/* Honeypot field - hidden from users but visible to bots */}
+            <input
+              type="text"
+              name="website"
+              value={formData.website}
+              onChange={(e) => handleInputChange('website', e.target.value)}
+              style={{ 
+                position: 'absolute', 
+                left: '-9999px', 
+                opacity: 0, 
+                pointerEvents: 'none' 
+              }}
+              tabIndex="-1"
+              autoComplete="off"
+            />
+            
+            {/* Star decoration at bottom right of form */}
             <motion.div
               initial="hidden"
               animate={pitchInView ? "visible" : "hidden"}
               variants={fadeIn}
               transition={{ delay: 0.5 }}
+              className="absolute bottom-[-30px] right-[-20px]"
             >
               <Image
                 src="/partner/star.webp"
-                height={100}
-                width={100}
-                alt="Logo"
-                className="absolute lg:bottom-[10px] lg:right-[-70px] right-[-10px] bottom-[-20px]"
+                height={200}
+                width={200}
+                alt="Star decoration"
+                className="w-[100px] h-[100px]"
               />
             </motion.div>
             
