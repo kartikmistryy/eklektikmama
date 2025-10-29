@@ -137,7 +137,7 @@ export default function MonitoringDashboard() {
                   </div>
                 </div>
                 <div className="ml-4">
-                  <h3 className="text-sm font-medium text-gray-500">Today's Activity</h3>
+                  <h3 className="text-sm font-medium text-gray-500">Today&apos;s Activity</h3>
                   <p className="text-2xl font-bold text-gray-900">
                     {logsSummary?.todayLogs || 0}
                   </p>
