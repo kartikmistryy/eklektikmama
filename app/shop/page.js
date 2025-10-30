@@ -78,48 +78,46 @@ export default function ShopPage() {
     }
   };
 
-  // Categorize products
+  // Categorize products strictly by Product Type
   const categorizeProducts = (products) => {
-    const categories = {
-      'Apparel': [],
-      'Accessories': [],
-      'Home & Living': [],
-      'Gifts': [],
-      'Other': []
-    };
+    const categories = {};
 
-    products.forEach(product => {
-      const productType = product.productType?.toLowerCase() || '';
-      const tags = product.tags?.map(tag => tag.toLowerCase()) || [];
-      
-      // Categorize based on productType and tags
-      if (productType.includes('shirt') || productType.includes('t-shirt') || 
-          productType.includes('hoodie') || productType.includes('sweatshirt') ||
-          productType.includes('top') || productType.includes('dress') ||
-          tags.some(tag => tag.includes('shirt') || tag.includes('hoodie') || tag.includes('top'))) {
-        categories['Apparel'].push(product);
-      } else if (productType.includes('bag') || productType.includes('tote') ||
-                 productType.includes('mug') || productType.includes('bottle') ||
-                 productType.includes('accessory') ||
-                 tags.some(tag => tag.includes('bag') || tag.includes('mug') || tag.includes('bottle'))) {
-        categories['Accessories'].push(product);
-      } else if (productType.includes('home') || productType.includes('decor') ||
-                 productType.includes('wall') || productType.includes('art') ||
-                 tags.some(tag => tag.includes('home') || tag.includes('decor'))) {
-        categories['Home & Living'].push(product);
-      } else if (productType.includes('gift') || productType.includes('card') ||
-                 tags.some(tag => tag.includes('gift') || tag.includes('card'))) {
-        categories['Gifts'].push(product);
-      } else {
-        categories['Other'].push(product);
+    products.forEach((product) => {
+      const rawType = product.productType?.trim();
+      const categoryName = rawType && rawType.length > 0 ? rawType : 'Other';
+
+      if (!categories[categoryName]) {
+        categories[categoryName] = [];
       }
+      categories[categoryName].push(product);
     });
+
+    // Ensure there is always an 'Other' bucket even if empty
+    if (!categories['Other']) categories['Other'] = [];
 
     return categories;
   };
 
   const categories = categorizeProducts(products);
   const filteredProducts = selectedCategory === 'all' ? products : categories[selectedCategory] || [];
+
+  // Order categories: Digital first, then Accessories, then Graphic Tees, then Totes, then others A-Z
+  const getCategoryPriority = (name) => {
+    const n = (name || '').toLowerCase();
+    if (n.includes('digital')) return 0;
+    if (n.includes('accessor')) return 1; // accessories / accessory
+    if (n.includes('graphic') && (n.includes('tee') || n.includes('t-shirt') || n.includes('tshirt'))) return 2;
+    if (n.includes('tote')) return 3;
+    return 100;
+  };
+
+  const orderedCategoryNames = Object.keys(categories)
+    .sort((a, b) => {
+      const pa = getCategoryPriority(a);
+      const pb = getCategoryPriority(b);
+      if (pa !== pb) return pa - pb;
+      return a.localeCompare(b);
+    });
 
   // Console log categorization results
   useEffect(() => {
@@ -202,7 +200,7 @@ export default function ShopPage() {
                 >
                   All Products
                 </button>
-                {Object.keys(categories).map(category => (
+                {orderedCategoryNames.map(category => (
                   <button
                     key={category}
                     onClick={() => setSelectedCategory(category)}
@@ -277,9 +275,10 @@ export default function ShopPage() {
           ) : selectedCategory === 'all' ? (
             <>
               {/* Display all products in categorized sections */}
-              {Object.entries(categories).map(([categoryName, categoryProducts], categoryIndex) => {
+              {orderedCategoryNames.map((categoryName, categoryIndex) => {
+                const categoryProducts = categories[categoryName] || [];
                 if (categoryProducts.length === 0) return null;
-                
+
                 return (
                   <motion.div
                     key={categoryName}
