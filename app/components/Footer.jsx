@@ -240,7 +240,7 @@ export default function Footer() {
                   </a>
                 </li>
                 <li>
-                  <a href="/shop" className="hover:underline">
+                  <a target="_blank" href="https://eklektikcollective.com/" className="hover:underline">
                     Shop
                   </a>
                 </li>

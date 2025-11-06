@@ -120,7 +120,7 @@ export default function Navbar({ pageType = 'default' }) {
       {/* Right container */}
       <div className="flex-1 flex justify-end items-center gap-4 py-4">
         {/* Shopping Cart (≥1060px only) */}
-        <Link href="/shop" className="hidden [@media(min-width:1060px)]:flex items-center justify-center relative">
+        <Link target="_blank" href="https://eklektikcollective.com/" className="hidden [@media(min-width:1060px)]:flex items-center justify-center relative">
           <ShoppingCart className={`w-6 h-6 ${useDarkNav ? '' : 'text-white'}`} style={useDarkNav ? { color: '#2e2e2e' } : {}} />
           {/* Badge */}
           <CartCount />
