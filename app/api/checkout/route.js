@@ -272,14 +272,47 @@ export async function POST(req) {
       familyMemberNames: formData.familyMemberNames
     });
     
-    // Calculate total tickets - if Friends & Family discount is applied, double the tickets
-    let totalTickets = parseInt(numberOfTickets) || 1;
-    if (applyFriendsFamilyDiscount) {
-      totalTickets = totalTickets * 2; // Customer + family member for each ticket
+    // Calculate total adult guests - when Friends & Family discount is applied, it's the number of tickets
+    // (1 for user + extra guests)
+    const totalAdultGuests = parseInt(numberOfTickets) || 1;
+    
+    // Process extra guest data (always process when extra guests exist, not just when discount is applied)
+    let extraGuestNamesStr = '';
+    let extraGuestEmailsStr = '';
+    let extraGuestMainCoursesStr = '';
+    
+    // Check if there are extra guests (numberOfTickets > 1 means there are extra guests)
+    const hasExtraGuests = (parseInt(numberOfTickets) || 1) > 1;
+    
+    if (hasExtraGuests && formData.extraGuestNames && formData.extraGuestEmails) {
+      const extraGuestNames = Array.isArray(formData.extraGuestNames) 
+        ? formData.extraGuestNames.filter(name => name && name.trim())
+        : [];
+      const extraGuestEmails = Array.isArray(formData.extraGuestEmails) 
+        ? formData.extraGuestEmails.filter(email => email && email.trim())
+        : [];
+      
+      extraGuestNamesStr = extraGuestNames.join(', ');
+      extraGuestEmailsStr = extraGuestEmails.join(', ');
+      
+      // Main course selections (for all events)
+      if (formData.extraGuestMainCourses) {
+        const extraGuestMainCourses = Array.isArray(formData.extraGuestMainCourses) 
+          ? formData.extraGuestMainCourses.filter(course => course && course.trim())
+          : [];
+        extraGuestMainCoursesStr = extraGuestMainCourses.join(', ');
+      }
+      
+      console.log('📝 Extra guest data processed:', {
+        numberOfTickets,
+        extraGuestNames: extraGuestNames.length,
+        extraGuestEmails: extraGuestEmails.length,
+        extraGuestMainCourses: extraGuestMainCoursesStr ? extraGuestMainCoursesStr.split(',').length : 0
+      });
     }
     
-    // Calculate price based on total tickets
-    const totalPrice = originalPrice * totalTickets;
+    // Calculate price based on total adult guests
+    const totalPrice = originalPrice * totalAdultGuests;
     
     // Apply member discount first, then Friends & Family discount
     let discountedPrice = isMember ? totalPrice * (1 - memberDiscount / 100) : totalPrice;
@@ -292,7 +325,8 @@ export async function POST(req) {
       eventSegment: event.segment,
       numberOfChildren: event.segment === 'familyDay' ? (otherFormData.numberOfChildren || 'not provided') : 'N/A',
       originalPrice,
-      totalTickets,
+      numberOfTickets,
+      totalAdultGuests,
       totalPrice,
       discountedPrice,
       isMember,
@@ -313,8 +347,8 @@ export async function POST(req) {
       });
     }
     
-    // Create line item with discounted price per ticket
-    const finalPrice = Math.max(0, Math.round((discountedPrice / totalTickets) * 100));
+    // Create line item with discounted price per adult guest
+    const finalPrice = Math.max(0, Math.round((discountedPrice / totalAdultGuests) * 100));
     
     // Create product name based on event type
     let productName = event.title;
@@ -341,15 +375,16 @@ export async function POST(req) {
     }
     
     if (applyFriendsFamilyDiscount) {
-      productName += ` (Friends & Family - ${totalTickets} tickets total, 10% off)`;
+      productName += ` (Friends & Family - ${totalAdultGuests} adult guests, 10% off)`;
     }
     
     console.log('Final pricing:', {
       originalPrice,
-      totalTickets,
+      numberOfTickets,
+      totalAdultGuests,
       totalPrice,
       discountedPrice,
-      finalPricePerTicket: finalPrice / 100,
+      finalPricePerAdultGuest: finalPrice / 100,
       finalPrice,
       isMember,
       memberDiscount
@@ -365,7 +400,7 @@ export async function POST(req) {
             images: event.coverImage ? [event.coverImage] : undefined,
           },
         },
-        quantity: totalTickets,
+        quantity: totalAdultGuests,
       },
     ];
     
@@ -458,14 +493,15 @@ export async function POST(req) {
         
         // Friends & Family Discount fields
         applyFriendsFamilyDiscount: applyFriendsFamilyDiscount ? 'true' : 'false',
-        familyMemberNames: Array.isArray((otherFormData.otherFormData || otherFormData).familyMemberNames) ? 
-          (otherFormData.otherFormData || otherFormData).familyMemberNames.join('\n').substring(0, 500) : 
-          ((otherFormData.otherFormData || otherFormData).familyMemberNames || '').substring(0, 500),
-        familyMemberContacts: Array.isArray((otherFormData.otherFormData || otherFormData).familyMemberContacts) ? 
-          (otherFormData.otherFormData || otherFormData).familyMemberContacts.join('\n').substring(0, 500) : 
-          ((otherFormData.otherFormData || otherFormData).familyMemberContacts || '').substring(0, 500),
+        // Extra guest data (comma-separated)
+        extraGuestNames: extraGuestNamesStr.substring(0, 500),
+        extraGuestEmails: extraGuestEmailsStr.substring(0, 500),
+        extraGuestMainCourses: extraGuestMainCoursesStr.substring(0, 500),
+        // Legacy fields for backward compatibility (using comma-separated format)
+        familyMemberNames: extraGuestNamesStr.substring(0, 500),
+        familyMemberContacts: extraGuestEmailsStr.substring(0, 500),
         familyDiscountTerms: (otherFormData.otherFormData || otherFormData).familyDiscountTerms ? 'true' : 'false',
-        totalTickets: String(totalTickets),
+        totalTickets: String(totalAdultGuests),
         
         // Store essential additional data (optimized to fit Stripe's 500 char limit)
         additionalData: JSON.stringify({

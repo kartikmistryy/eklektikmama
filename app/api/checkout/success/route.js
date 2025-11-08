@@ -178,15 +178,26 @@ export async function GET(req) {
       
       // Friends & Family Discount fields
       applyFriendsFamilyDiscount: session.metadata.applyFriendsFamilyDiscount === 'true',
-      familyMemberNames: session.metadata.familyMemberNames || additionalData.familyMemberNames || otherFormData.familyMemberNames || '',
-      familyMemberContacts: session.metadata.familyMemberContacts || additionalData.familyMemberContacts || otherFormData.familyMemberContacts || '',
+      // Extra guest data (comma-separated)
+      extraGuestNames: session.metadata.extraGuestNames || additionalData.extraGuestNames || otherFormData.extraGuestNames || '',
+      extraGuestEmails: session.metadata.extraGuestEmails || additionalData.extraGuestEmails || otherFormData.extraGuestEmails || '',
+      extraGuestMainCourses: session.metadata.extraGuestMainCourses || additionalData.extraGuestMainCourses || otherFormData.extraGuestMainCourses || '',
+      // Legacy fields for backward compatibility
+      familyMemberNames: session.metadata.familyMemberNames || session.metadata.extraGuestNames || additionalData.familyMemberNames || additionalData.extraGuestNames || otherFormData.familyMemberNames || otherFormData.extraGuestNames || '',
+      familyMemberContacts: session.metadata.familyMemberContacts || session.metadata.extraGuestEmails || additionalData.familyMemberContacts || additionalData.extraGuestEmails || otherFormData.familyMemberContacts || otherFormData.extraGuestEmails || '',
       familyDiscountTerms: session.metadata.familyDiscountTerms === 'true',
       totalTickets: parseInt(session.metadata.totalTickets) || numberOfTickets
     };
 
+    // Calculate total adult guests - when Friends & Family discount is applied, it's the number of tickets
+    const totalAdultGuests = extractedData.totalTickets || numberOfTickets;
+
+    // Update extractedData with the correct total adult guests count
+    extractedData.totalTickets = totalAdultGuests;
+
     // Generate ticket numbers for each ticket (including family members if applicable)
     const ticketNumbers = [];
-    const totalTicketsForBooking = extractedData.totalTickets || numberOfTickets;
+    const totalTicketsForBooking = totalAdultGuests;
     for (let i = 1; i <= totalTicketsForBooking; i++) {
       ticketNumbers.push(i);
     }
@@ -240,68 +251,84 @@ export async function GET(req) {
       }
     }
 
-    // Create separate records for family members if Friends & Family discount is applied
-    if (extractedData.applyFriendsFamilyDiscount && extractedData.familyMemberNames) {
-      try {
-        // Handle both array and string formats for backward compatibility
-        let familyMemberNames, familyMemberContacts;
-        
-        if (Array.isArray(extractedData.familyMemberNames)) {
-          familyMemberNames = extractedData.familyMemberNames.filter(name => name && name.trim());
-        } else {
-          familyMemberNames = extractedData.familyMemberNames.trim().split('\n').filter(name => name.trim());
-        }
-        
-        if (Array.isArray(extractedData.familyMemberContacts)) {
-          familyMemberContacts = extractedData.familyMemberContacts.filter(contact => contact && contact.trim());
-        } else {
-          familyMemberContacts = extractedData.familyMemberContacts ? 
-            extractedData.familyMemberContacts.trim().split('\n').filter(contact => contact.trim()) : [];
-        }
-        
-        // Create a booking record for each family member
-        for (let i = 0; i < familyMemberNames.length; i++) {
-          const familyMemberName = familyMemberNames[i];
-          const familyMemberContact = familyMemberContacts[i] || userEmail;
-          
-          const familyMemberBooking = await Booking.create({
-            eventId,
-            guardianName: familyMemberName,
-            childName: '', // Family member doesn't have a child
-            userEmail: familyMemberContact,
-            phone: familyMemberContact,
-            numberOfTickets: 1, // Each family member gets 1 ticket
-            transactionId: `${transactionId}_family_${i + 1}`, // Unique transaction ID for each family member
-            paymentStatus: 'paid',
-            photographyConsent: 'No', // Default for family member
-            additionalData: {
-              ...additionalData,
-              isFamilyMember: true,
-              mainBookingId: booking._id.toString(),
-              familyMemberIndex: i + 1
-            },
-            eventSegment,
-            isMember: false, // Family member doesn't get member benefits
-            memberSavings: 0,
-            choiceI: '', // No choices for family member
-            choiceII: '',
-            choiceIII: '',
-            ticketNumbers: [numberOfTickets + i + 1], // Next ticket numbers
-            // Friends & Family specific fields
-            applyFriendsFamilyDiscount: true,
-            familyMemberNames: familyMemberName,
-            familyMemberContacts: familyMemberContact,
-            familyDiscountTerms: extractedData.familyDiscountTerms,
-            totalTickets: 1,
-            ...extractedData
-          });
-
-          console.log(`✅ Family member ${i + 1} booking created successfully:`, familyMemberBooking._id);
-        }
-      } catch (familyBookingError) {
-        console.error('Error creating family member bookings:', familyBookingError);
-        // Don't fail the main booking if family member booking fails
+    // Parse and save extra guest data to main booking
+    // Handle both new system (extraGuestNames/Emails/MainCourses) and old system (familyMemberNames/Contacts)
+    // Process extra guest data whenever numberOfTickets > 1, not just when discount is applied
+    let extraGuestNames = [];
+    let extraGuestEmails = [];
+    let extraGuestMainCourses = [];
+    
+    // Check if there are extra guests (numberOfTickets > 1 means there are extra guests)
+    const hasExtraGuests = (parseInt(numberOfTickets) || 1) > 1;
+    
+    // Parse extra guest data from new system
+    if (hasExtraGuests && extractedData.extraGuestNames && extractedData.extraGuestEmails) {
+      if (typeof extractedData.extraGuestNames === 'string') {
+        extraGuestNames = extractedData.extraGuestNames.split(',').map(name => name.trim()).filter(name => name);
+      } else if (Array.isArray(extractedData.extraGuestNames)) {
+        extraGuestNames = extractedData.extraGuestNames.filter(name => name && name.trim());
       }
+      
+      if (typeof extractedData.extraGuestEmails === 'string') {
+        extraGuestEmails = extractedData.extraGuestEmails.split(',').map(email => email.trim()).filter(email => email);
+      } else if (Array.isArray(extractedData.extraGuestEmails)) {
+        extraGuestEmails = extractedData.extraGuestEmails.filter(email => email && email.trim());
+      }
+      
+      if (extractedData.extraGuestMainCourses) {
+        if (typeof extractedData.extraGuestMainCourses === 'string') {
+          extraGuestMainCourses = extractedData.extraGuestMainCourses.split(',').map(course => course.trim()).filter(course => course);
+        } else if (Array.isArray(extractedData.extraGuestMainCourses)) {
+          extraGuestMainCourses = extractedData.extraGuestMainCourses.filter(course => course && course.trim());
+        }
+      }
+    }
+    // Fallback to old system (familyMemberNames/Contacts) if new system data not available
+    else if (extractedData.familyMemberNames && extractedData.familyMemberContacts) {
+      if (typeof extractedData.familyMemberNames === 'string') {
+        extraGuestNames = extractedData.familyMemberNames.split(',').map(name => name.trim()).filter(name => name);
+      } else if (Array.isArray(extractedData.familyMemberNames)) {
+        extraGuestNames = extractedData.familyMemberNames.filter(name => name && name.trim());
+      }
+      
+      if (typeof extractedData.familyMemberContacts === 'string') {
+        extraGuestEmails = extractedData.familyMemberContacts.split(',').map(email => email.trim()).filter(email => email);
+      } else if (Array.isArray(extractedData.familyMemberContacts)) {
+        extraGuestEmails = extractedData.familyMemberContacts.filter(email => email && email.trim());
+      }
+    }
+    
+    // Always initialize extra object, even if empty (for consistency)
+    booking.extra = {
+      name: extraGuestNames,
+      email: extraGuestEmails,
+      menuSelections: extraGuestMainCourses
+    };
+    
+    // Also update comma-separated strings for backward compatibility
+    booking.extraGuestNames = extraGuestNames.length > 0 ? extraGuestNames.join(', ') : '';
+    booking.extraGuestEmails = extraGuestEmails.length > 0 ? extraGuestEmails.join(', ') : '';
+    booking.extraGuestMainCourses = extraGuestMainCourses.length > 0 ? extraGuestMainCourses.join(', ') : '';
+    
+    // Save booking with extra data
+    await booking.save();
+    
+    console.log('✅ Extra guest data saved to booking:', {
+      extraGuestNames: extraGuestNames.length,
+      extraGuestEmails: extraGuestEmails.length,
+      extraGuestMainCourses: extraGuestMainCourses.length,
+      extraObject: booking.extra
+    });
+    
+    // Note: We no longer create separate booking records for extra guests
+    // All extra guest data is stored in the main booking's 'extra' object and comma-separated fields
+    // This data will be displayed in Google Sheets in the extra guest columns
+    if (extraGuestNames.length > 0 || extraGuestEmails.length > 0) {
+      console.log('✅ Extra guest data saved to main booking (no separate records created):', {
+        extraGuestNames: extraGuestNames.length,
+        extraGuestEmails: extraGuestEmails.length,
+        extraGuestMainCourses: extraGuestMainCourses.length
+      });
     }
 
     // Track member savings if applicable
@@ -343,7 +370,11 @@ export async function GET(req) {
         });
 
         // Prepare comprehensive booking data for Google Sheets
+        // Reload booking from database to ensure we have the latest data including extra object
+        const updatedBooking = await Booking.findById(booking._id);
+        
         const bookingData = {
+          ...updatedBooking.toObject(),
           bookingId: booking._id.toString(),
           eventTitle: event.title,
           eventDate: event.date,
@@ -402,6 +433,15 @@ export async function GET(req) {
           familyMemberContacts: extractedData.familyMemberContacts,
           familyDiscountTerms: extractedData.familyDiscountTerms,
           totalTickets: extractedData.totalTickets,
+          // Extra guest data - use the saved booking's extra object
+          extra: updatedBooking.extra || {
+            name: [],
+            email: [],
+            menuSelections: []
+          },
+          extraGuestNames: updatedBooking.extraGuestNames || '',
+          extraGuestEmails: updatedBooking.extraGuestEmails || '',
+          extraGuestMainCourses: updatedBooking.extraGuestMainCourses || '',
           bookingDate: new Date(),
           lastUpdated: new Date()
         };
@@ -438,6 +478,17 @@ export async function GET(req) {
         });
         
         try {
+          console.log('📊 Booking data for Google Sheets:', {
+            bookingId: bookingData._id || bookingData.bookingId,
+            numberOfTickets: bookingData.numberOfTickets,
+            hasExtra: !!bookingData.extra,
+            extraNames: bookingData.extra?.name?.length || 0,
+            extraEmails: bookingData.extra?.email?.length || 0,
+            extraMenuSelections: bookingData.extra?.menuSelections?.length || 0,
+            extraGuestNames: bookingData.extraGuestNames,
+            extraGuestEmails: bookingData.extraGuestEmails
+          });
+          
           await addBookingToEventSheet(bookingData, event);
           console.log('✅ Booking added to Google Sheets successfully');
         } catch (sheetsError) {
@@ -448,73 +499,10 @@ export async function GET(req) {
           });
         }
 
-        // Add family members to Google Sheets after main customer
-        if (extractedData.applyFriendsFamilyDiscount && extractedData.familyMemberNames) {
-          try {
-            // Handle both array and string formats for backward compatibility
-            let familyMemberNames, familyMemberContacts;
-            
-            if (Array.isArray(extractedData.familyMemberNames)) {
-              familyMemberNames = extractedData.familyMemberNames.filter(name => name && name.trim());
-            } else {
-              familyMemberNames = extractedData.familyMemberNames.trim().split('\n').filter(name => name.trim());
-            }
-            
-            if (Array.isArray(extractedData.familyMemberContacts)) {
-              familyMemberContacts = extractedData.familyMemberContacts.filter(contact => contact && contact.trim());
-            } else {
-              familyMemberContacts = extractedData.familyMemberContacts ? 
-                extractedData.familyMemberContacts.trim().split('\n').filter(contact => contact.trim()) : [];
-            }
-            
-            // Add each family member to Google Sheets
-            for (let i = 0; i < familyMemberNames.length; i++) {
-              const familyMemberName = familyMemberNames[i];
-              const familyMemberContact = familyMemberContacts[i] || userEmail;
-              
-              const familyMemberBookingData = {
-                bookingId: `${booking._id}_family_${i + 1}`,
-                eventTitle: event.title,
-                eventDate: event.date,
-                eventSegment: eventSegment,
-                guardianName: familyMemberName,
-                childName: '',
-                userEmail: familyMemberContact,
-                phone: familyMemberContact,
-                numberOfTickets: 1,
-                transactionId: `${transactionId}_family_${i + 1}`,
-                paymentStatus: 'paid',
-                photographyConsent: 'No', // Default for family member
-                additionalData: {
-                  ...additionalData,
-                  isFamilyMember: true,
-                  mainBookingId: booking._id.toString(),
-                  familyMemberIndex: i + 1
-                },
-                eventSegment,
-                isMember: false, // Family member doesn't get member benefits
-                memberSavings: 0,
-                choiceI: '', // No choices for family member
-                choiceII: '',
-                choiceIII: '',
-                ticketNumbers: [numberOfTickets + i + 1], // Next ticket numbers
-                // Friends & Family specific fields
-                applyFriendsFamilyDiscount: true,
-                familyMemberNames: familyMemberName,
-                familyMemberContacts: familyMemberContact,
-                familyDiscountTerms: extractedData.familyDiscountTerms,
-                totalTickets: 1,
-                ...extractedData
-              };
-
-              await addBookingToEventSheet(familyMemberBookingData, event);
-              console.log(`✅ Family member ${i + 1} booking added to Google Sheets successfully`);
-            }
-          } catch (familySheetsError) {
-            console.error('Error adding family member bookings to Google Sheets:', familySheetsError);
-            // Don't fail the process if Google Sheets fails
-          }
-        }
+        // Note: We no longer create separate Google Sheets entries for family members/extra guests
+        // All extra guest data is stored in the main booking's 'extra' object and will be
+        // displayed in the extra guest columns (Extra Guest Names, Extra Guest Emails, Extra Guest Menu Selections)
+        // in the main booking row in Google Sheets
         
         // Get ticket number from the sheet (we'll calculate it based on row position)
         const ticketNumber = await getEventBookingsCount(event);

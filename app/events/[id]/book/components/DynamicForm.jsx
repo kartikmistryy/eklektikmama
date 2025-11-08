@@ -26,6 +26,38 @@ const DynamicForm = ({ formConfig, onSubmit, submitting, event, onFormDataChange
     setFormData(initialData);
   }, [formConfig]);
 
+  // Sync extra guest arrays when ticket count changes (always, not just when Friends & Family discount is applied)
+  useEffect(() => {
+    const numberOfTickets = parseInt(formData.numberOfTickets) || 1;
+    const extraGuests = Math.max(0, numberOfTickets - 1); // Always numberOfTickets - 1 (1 is for customer)
+    
+    const currentNames = formData.extraGuestNames || [];
+    const currentEmails = formData.extraGuestEmails || [];
+    const currentMainCourses = formData.extraGuestMainCourses || [];
+    
+    // Check if arrays need to be resized
+    if (currentNames.length !== extraGuests || 
+        currentEmails.length !== extraGuests ||
+        currentMainCourses.length !== extraGuests) {
+      const updatedFormData = {
+        ...formData,
+        extraGuestNames: extraGuests > 0 
+          ? [...currentNames.slice(0, extraGuests), ...Array(Math.max(0, extraGuests - currentNames.length)).fill('')]
+          : [],
+        extraGuestEmails: extraGuests > 0
+          ? [...currentEmails.slice(0, extraGuests), ...Array(Math.max(0, extraGuests - currentEmails.length)).fill('')]
+          : [],
+        extraGuestMainCourses: extraGuests > 0
+          ? [...currentMainCourses.slice(0, extraGuests), ...Array(Math.max(0, extraGuests - currentMainCourses.length)).fill('')]
+          : []
+      };
+      setFormData(updatedFormData);
+      if (onFormDataChange) {
+        onFormDataChange(updatedFormData);
+      }
+    }
+  }, [formData.numberOfTickets, event?.segment]);
+
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
     
@@ -39,11 +71,24 @@ const DynamicForm = ({ formConfig, onSubmit, submitting, event, onFormDataChange
           [name]: checked
         };
         
-        // If unchecking Friends & Family discount, clear family member data
+        // If unchecking Friends & Family discount, clear extra guest data
         if (name === 'applyFriendsFamilyDiscount' && !checked) {
+          newFormData.extraGuestNames = [];
+          newFormData.extraGuestEmails = [];
+          newFormData.extraGuestMainCourses = [];
           newFormData.familyMemberNames = [];
           newFormData.familyMemberContacts = [];
           newFormData.familyDiscountTerms = false;
+        }
+        
+        // If checking Friends & Family discount, set ticket count to 2 (1 for customer + 1 extra guest)
+        if (name === 'applyFriendsFamilyDiscount' && checked) {
+          // Always set to 2 when discount is checked (1 for customer + 1 extra guest)
+          newFormData.numberOfTickets = '2';
+          const extraGuests = 1; // 2 tickets - 1 for customer = 1 extra guest
+          newFormData.extraGuestNames = Array(extraGuests).fill('');
+          newFormData.extraGuestEmails = Array(extraGuests).fill('');
+          newFormData.extraGuestMainCourses = Array(extraGuests).fill(''); // Always initialize menu selections for all events
         }
         
         setFormData(newFormData);
@@ -99,27 +144,63 @@ const DynamicForm = ({ formConfig, onSubmit, submitting, event, onFormDataChange
       }
     }
     
-    // Validate Friends & Family fields if discount is applied
-    if (formData.applyFriendsFamilyDiscount) {
-      const numberOfTickets = parseInt(formData.numberOfTickets) || 1;
-      
-      // Validate family member names
-      if (!formData.familyMemberNames || !Array.isArray(formData.familyMemberNames)) {
-        alert('Please enter the family member names to apply the Friends & Family discount.');
-        return;
-      }
-      
-      // Check that all required family member names are filled
-      const filledNames = formData.familyMemberNames.filter(name => name && name.trim());
-      if (filledNames.length !== numberOfTickets) {
-        alert(`Please enter exactly ${numberOfTickets} family member name(s) (one per ticket). You entered ${filledNames.length} name(s).`);
-        return;
-      }
-      
-      if (!formData.familyDiscountTerms) {
-        alert('Please acknowledge the Friends & Family discount terms.');
-        return;
-      }
+    // Validate extra guest information (always validate when there are extra guests, regardless of discount)
+    const numberOfTickets = parseInt(formData.numberOfTickets) || 1;
+    const extraGuests = Math.max(0, numberOfTickets - 1);
+    
+    if (extraGuests > 0) {
+      // Validate extra guest information
+        // Validate extra guest names
+        if (!formData.extraGuestNames || !Array.isArray(formData.extraGuestNames)) {
+          alert('Please enter names for all extra guests.');
+          return;
+        }
+        
+        const filledNames = formData.extraGuestNames.filter(name => name && name.trim());
+        if (filledNames.length !== extraGuests) {
+          alert(`Please enter names for all ${extraGuests} extra guest(s). You entered ${filledNames.length} name(s).`);
+          return;
+        }
+        
+        // Validate extra guest emails
+        if (!formData.extraGuestEmails || !Array.isArray(formData.extraGuestEmails)) {
+          alert('Please enter email addresses for all extra guests.');
+          return;
+        }
+        
+        const filledEmails = formData.extraGuestEmails.filter(email => email && email.trim());
+        if (filledEmails.length !== extraGuests) {
+          alert(`Please enter email addresses for all ${extraGuests} extra guest(s). You entered ${filledEmails.length} email(s).`);
+          return;
+        }
+        
+        // Validate email format
+        for (let i = 0; i < filledEmails.length; i++) {
+          const email = filledEmails[i];
+          const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+          if (!emailRegex.test(email)) {
+            alert(`Please enter a valid email address for guest ${i + 1}.`);
+            return;
+          }
+        }
+        
+        // Validate main course selection for all extra guests (all events)
+        if (!formData.extraGuestMainCourses || !Array.isArray(formData.extraGuestMainCourses)) {
+          alert('Please select main course for all extra guests.');
+          return;
+        }
+        
+        const filledMainCourses = formData.extraGuestMainCourses.filter(course => course && course.trim());
+        if (filledMainCourses.length !== extraGuests) {
+          alert(`Please select main course for all ${extraGuests} extra guest(s).`);
+          return;
+        }
+    }
+    
+    // Validate Friends & Family discount terms if discount is applied
+    if (formData.applyFriendsFamilyDiscount && !formData.familyDiscountTerms) {
+      alert('Please acknowledge the Friends & Family discount terms.');
+      return;
     }
     
     onSubmit(formData);
@@ -130,9 +211,14 @@ const DynamicForm = ({ formConfig, onSubmit, submitting, event, onFormDataChange
     const value = formData[name] || '';
 
     // Handle conditional Friends & Family fields
-    if (name === 'familyMemberNames' || name === 'familyMemberContacts' || name === 'familyDiscountTerms') {
+    // Always hide old familyMemberNames/familyMemberContacts fields (we use new Extra Guest section instead)
+    if (name === 'familyMemberNames' || name === 'familyMemberContacts') {
+      // Always hide these old fields - we use the new Extra Guest Information section instead
+      return null;
+    }
+    if (name === 'familyDiscountTerms') {
       if (!formData.applyFriendsFamilyDiscount) {
-        return null; // Don't render these fields if discount is not applied
+        return null; // Don't render discount terms if discount is not applied
       }
     }
 
@@ -288,9 +374,14 @@ const DynamicForm = ({ formConfig, onSubmit, submitting, event, onFormDataChange
 
       case 'dynamicInputs':
         const numberOfTickets = parseInt(formData.numberOfTickets) || 1;
+        // For familyMemberNames/Contacts: if discount is not checked, use numberOfTickets - 1 (1 is for customer)
+        // Otherwise, use numberOfTickets (old behavior for backward compatibility)
+        const inputCount = (name === 'familyMemberNames' || name === 'familyMemberContacts') && !formData.applyFriendsFamilyDiscount
+          ? Math.max(0, numberOfTickets - 1) // Extra guests only (exclude customer)
+          : numberOfTickets; // Old behavior for other fields
         const inputs = [];
         
-        for (let i = 0; i < numberOfTickets; i++) {
+        for (let i = 0; i < inputCount; i++) {
           const inputName = `${name}[${i}]`;
           const inputValue = formData[name] && formData[name][i] ? formData[name][i] : '';
           
@@ -402,7 +493,39 @@ const DynamicForm = ({ formConfig, onSubmit, submitting, event, onFormDataChange
           id="numberOfTickets"
           name="numberOfTickets"
           value={formData.numberOfTickets || 1}
-          onChange={handleInputChange}
+          onChange={(e) => {
+            const newValue = e.target.value;
+            const newFormData = {
+              ...formData,
+              numberOfTickets: newValue
+            };
+            
+            // Update extra guest data when ticket count changes (always, not just when Friends & Family discount is applied)
+            const numberOfTickets = parseInt(newValue) || 1;
+            const extraGuests = Math.max(0, numberOfTickets - 1);
+            // Preserve existing data, but resize arrays
+            const currentNames = formData.extraGuestNames || [];
+            const currentEmails = formData.extraGuestEmails || [];
+            const currentMainCourses = formData.extraGuestMainCourses || [];
+            
+            newFormData.extraGuestNames = [
+              ...currentNames.slice(0, extraGuests),
+              ...Array(Math.max(0, extraGuests - currentNames.length)).fill('')
+            ];
+            newFormData.extraGuestEmails = [
+              ...currentEmails.slice(0, extraGuests),
+              ...Array(Math.max(0, extraGuests - currentEmails.length)).fill('')
+            ];
+            newFormData.extraGuestMainCourses = [
+              ...currentMainCourses.slice(0, extraGuests),
+              ...Array(Math.max(0, extraGuests - currentMainCourses.length)).fill('')
+            ];
+            
+            setFormData(newFormData);
+            if (onFormDataChange) {
+              onFormDataChange(newFormData);
+            }
+          }}
           required
           className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#093166] focus:border-transparent"
         >
@@ -412,6 +535,132 @@ const DynamicForm = ({ formConfig, onSubmit, submitting, event, onFormDataChange
         </select>
       </div>
 
+      {/* Extra Guest Information (shown when there are extra guests, regardless of Friends & Family discount) */}
+      {(() => {
+        const numberOfTickets = parseInt(formData.numberOfTickets) || 1;
+        // Calculate extra guests: numberOfTickets - 1 (because 1 ticket is for the customer)
+        // Example: 2 tickets = 1 customer + 1 extra guest = 1 input
+        //          3 tickets = 1 customer + 2 extra guests = 2 inputs
+        //          4 tickets = 1 customer + 3 extra guests = 3 inputs
+        const extraGuests = Math.max(0, numberOfTickets - 1);
+        
+        console.log('🎫 Extra Guest Calculation:', {
+          numberOfTickets,
+          extraGuests,
+          calculation: `${numberOfTickets} tickets - 1 customer = ${extraGuests} extra guest(s)`
+        });
+        
+        if (extraGuests === 0) return null;
+        
+        // Get current arrays (they should already be the correct size from useEffect)
+        const extraGuestNames = formData.extraGuestNames || Array(extraGuests).fill('');
+        const extraGuestEmails = formData.extraGuestEmails || Array(extraGuests).fill('');
+        const extraGuestMainCourses = formData.extraGuestMainCourses || Array(extraGuests).fill('');
+        
+        return (
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 space-y-4">
+            <h3 className="text-lg font-semibold text-[#093166] mb-2">
+              Extra Guest Information ({extraGuests} {extraGuests === 1 ? 'guest' : 'guests'})
+            </h3>
+            <p className="text-sm text-gray-600 mb-4">
+              Please provide details for each extra guest. You will receive 1 ticket for yourself + {extraGuests} {extraGuests === 1 ? 'ticket' : 'tickets'} for {extraGuests === 1 ? 'your guest' : 'your guests'}.
+            </p>
+            
+            {Array.from({ length: extraGuests }, (_, index) => (
+              <div key={index} className="bg-white p-4 rounded-md border border-gray-200">
+                <h4 className="font-medium text-gray-800 mb-3">Guest {index + 1}</h4>
+                
+                <div className="space-y-3">
+                  {/* Guest Name */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Guest {index + 1} Name <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      value={extraGuestNames[index] || ''}
+                      onChange={(e) => {
+                        const newNames = [...extraGuestNames];
+                        newNames[index] = e.target.value;
+                        const newFormData = {
+                          ...formData,
+                          extraGuestNames: newNames
+                        };
+                        setFormData(newFormData);
+                        if (onFormDataChange) {
+                          onFormDataChange(newFormData);
+                        }
+                      }}
+                      required
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#093166] focus:border-transparent"
+                      placeholder={`Enter guest ${index + 1} name`}
+                    />
+                  </div>
+                  
+                  {/* Guest Email */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Guest {index + 1} Email <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="email"
+                      value={extraGuestEmails[index] || ''}
+                      onChange={(e) => {
+                        const newEmails = [...extraGuestEmails];
+                        newEmails[index] = e.target.value;
+                        const newFormData = {
+                          ...formData,
+                          extraGuestEmails: newEmails
+                        };
+                        setFormData(newFormData);
+                        if (onFormDataChange) {
+                          onFormDataChange(newFormData);
+                        }
+                      }}
+                      required
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#093166] focus:border-transparent"
+                      placeholder={`Enter guest ${index + 1} email`}
+                    />
+                  </div>
+                  
+                  {/* Main Course Selection (for all events) */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Guest {index + 1} Main Course Selection <span className="text-red-500">*</span>
+                    </label>
+                    <select
+                      value={extraGuestMainCourses[index] || ''}
+                      onChange={(e) => {
+                        const newMainCourses = [...extraGuestMainCourses];
+                        newMainCourses[index] = e.target.value;
+                        const newFormData = {
+                          ...formData,
+                          extraGuestMainCourses: newMainCourses
+                        };
+                        setFormData(newFormData);
+                        if (onFormDataChange) {
+                          onFormDataChange(newFormData);
+                        }
+                      }}
+                      required
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#093166] focus:border-transparent"
+                    >
+                      <option value="">Select main course</option>
+                      <option value="Egg & Truffle Toast">Egg & Truffle Toast</option>
+                      <option value="Sour Dough Tuna">Sour Dough Tuna</option>
+                      <option value="French Toast with Ice cream">French Toast with Ice cream</option>
+                      <option value="Avocado Croissant">Avocado Croissant</option>
+                      <option value="Omlette Turkey Ham and Cheese">Omlette Turkey Ham and Cheese</option>
+                      <option value="Peach and Almond Salad">Peach and Almond Salad</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        );
+      })()}
+
       {/* Total Price Display */}
       {event?.price > 0 && (
         <div className="bg-gray-50 p-4 rounded-lg">
@@ -420,14 +669,10 @@ const DynamicForm = ({ formConfig, onSubmit, submitting, event, onFormDataChange
             <span className="text-xl font-bold text-[#093166]">
               AED {(() => {
                 const numberOfTickets = parseInt(formData.numberOfTickets) || 1;
-                let totalTickets = numberOfTickets;
+                // Total adult guests = number of tickets (1 for user + extra guests)
+                const totalAdultGuests = numberOfTickets;
                 
-                // If Friends & Family discount is applied, double the tickets (customer + family member for each)
-                if (formData.applyFriendsFamilyDiscount) {
-                  totalTickets = numberOfTickets * 2; // Customer + family member for each ticket
-                }
-                
-                const basePrice = event.price * totalTickets;
+                const basePrice = event.price * totalAdultGuests;
                 
                 // Apply member discount first (10% if member)
                 const memberDiscount = isMember ? 0.1 : 0;
@@ -441,11 +686,22 @@ const DynamicForm = ({ formConfig, onSubmit, submitting, event, onFormDataChange
               })()}
             </span>
           </div>
+          <div className="mt-2 text-sm text-gray-600">
+            {(() => {
+              const numberOfTickets = parseInt(formData.numberOfTickets) || 1;
+              const totalAdultGuests = numberOfTickets;
+              const displayText = `${totalAdultGuests} ${totalAdultGuests === 1 ? 'ticket' : 'tickets'} = ${totalAdultGuests} ${totalAdultGuests === 1 ? 'adult guest' : 'adult guests'}`;
+              
+              return (
+                <>
+                  <span className="font-medium">Total Adult Guests:</span> {displayText}
           {formData.applyFriendsFamilyDiscount && (
-            <div className="mt-2 text-sm text-green-600">
-              <span className="font-medium">Friends & Family Discount Applied:</span> 10% off total (includes {formData.numberOfTickets} customer ticket(s) + {formData.numberOfTickets} family member ticket(s))
+                    <span className="ml-2 text-green-600 font-medium">(Friends & Family Discount Applied: 10% off)</span>
+                  )}
+                </>
+              );
+            })()}
             </div>
-          )}
         </div>
       )}
 

@@ -71,10 +71,20 @@ const BookingSchema = new mongoose.Schema({
   
   // Friends & Family Discount fields
   applyFriendsFamilyDiscount: { type: Boolean, default: false },
-  familyMemberNames: String, // Newline-separated list of family member names
-  familyMemberContacts: String, // Newline-separated list of family member contacts
+  // Extra guest data - structured object with arrays
+  extra: {
+    name: [{ type: String }], // Array of extra guest names
+    email: [{ type: String }], // Array of extra guest emails
+    menuSelections: [{ type: String }] // Array of extra guest menu selections (for mamaBreakfast)
+  },
+  // Legacy fields for backward compatibility (comma-separated strings)
+  extraGuestNames: String, // Comma-separated list of extra guest names
+  extraGuestEmails: String, // Comma-separated list of extra guest emails
+  extraGuestMainCourses: String, // Comma-separated list of extra guest main course selections (for mamaBreakfast)
+  familyMemberNames: String, // Comma-separated list of family member names
+  familyMemberContacts: String, // Comma-separated list of family member contacts
   familyDiscountTerms: { type: Boolean, default: false },
-  totalTickets: { type: Number, default: 1 }, // Total tickets including family members
+  totalTickets: { type: Number, default: 1 }, // Total tickets including extra guests
   
   // Choice fields for dropdowns
   choiceI: String,
