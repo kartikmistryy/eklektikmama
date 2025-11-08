@@ -92,22 +92,53 @@ export default function Events() {
   };
 
   useEffect(() => {
-    async function fetchEvents() {
+    let isMounted = true;
+
+    async function fetchEvents(silent = false) {
       try {
-        setLoading(true);
+        if (!silent) {
+          setLoading(true);
+        }
         setError(null);
         
-        const res = await fetch("/api/events");
+        console.log('🔄 Fetching events from /api/events...');
+        
+        const res = await fetch("/api/events", {
+          cache: 'no-store',
+          headers: {
+            'Cache-Control': 'no-cache',
+            'Content-Type': 'application/json'
+          }
+        });
+        
+        console.log('📡 Response status:', res.status, res.statusText);
         
         if (!res.ok) {
-          throw new Error(`HTTP error! status: ${res.status}`);
+          let errorText = '';
+          try {
+            const errorData = await res.json();
+            errorText = errorData.error || errorData.message || JSON.stringify(errorData);
+          } catch {
+            errorText = await res.text() || res.statusText;
+          }
+          console.error('❌ API Error Response:', errorText);
+          throw new Error(`HTTP error! status: ${res.status} - ${errorText}`);
         }
         
         const data = await res.json();
+        console.log('✅ Events fetched:', data?.length || 0, 'events');
 
-        if (data.length === 0) {
+        if (!isMounted) {
+          console.log('⚠️ Component unmounted, skipping state update');
+          return;
+        }
+
+        if (!data || data.length === 0) {
+          console.log('ℹ️ No events found');
           setEvents([]);
-          setLoading(false);
+          if (!silent) {
+            setLoading(false);
+          }
           return;
         }
 
@@ -116,6 +147,9 @@ export default function Events() {
           const startDate = new Date(event.date);
           const endDate = event.endDate ? new Date(event.endDate) : new Date(event.date);
           
+          if (isNaN(startDate.getTime())) {
+            console.warn('⚠️ Invalid date for event:', event.title, event.date);
+          }
           
           return {
             id: event._id,
@@ -126,22 +160,50 @@ export default function Events() {
             description: event.description,
             location: event.location,
             price: event.price,
+            segment: event.segment,
+            slug: event.slug,
             // Store original date strings for proper timezone handling
             originalStart: event.date,
             originalEnd: event.endDate
           };
         });
+        
+        console.log('✅ Mapped events:', mapped.length);
         setEvents(mapped);
       } catch (error) {
-        console.error('Error fetching events:', error);
-        setError(error.message);
+        if (!isMounted) {
+          console.log('⚠️ Component unmounted, skipping error handling');
+          return;
+        }
+        console.error('❌ Error fetching events:', error);
+        console.error('Error details:', {
+          message: error.message,
+          stack: error.stack,
+          name: error.name
+        });
+        setError(error.message || 'Failed to load events. Please check your connection and try again.');
         setEvents([]);
       } finally {
-        setLoading(false);
+        if (!silent) {
+          setLoading(false);
+        }
       }
     }
+
+    // Initial fetch
     fetchEvents();
-  }, []); // Empty dependency array ensures this only runs once on mount
+
+    // Set up polling to refresh events every 30 seconds
+    const interval = setInterval(() => {
+      fetchEvents(true); // Silent refresh - don't show loading spinner
+    }, 30000); // 30 seconds
+
+    // Cleanup function
+    return () => {
+      isMounted = false;
+      clearInterval(interval);
+    };
+  }, []); // Empty dependency array - component mounts once
 
   return (
     <div className="w-full h-full flex flex-col overflow-x-hidden">
@@ -256,13 +318,83 @@ export default function Events() {
           ) : error ? (
             <div className="px-5 lg:px-14">
               <div className="text-center py-12">
-                <p className="text-red-500 mb-4">Error loading events: {error}</p>
-                <button 
-                  onClick={() => window.location.reload()} 
-                  className="px-4 py-2 bg-[#DB4E9F] text-white rounded hover:bg-[#DB4E9F]/80 transition-colors"
-                >
-                  Try Again
-                </button>
+                <p className="text-red-500 mb-2 font-semibold">Error loading events:</p>
+                <p className="text-red-400 mb-4 text-sm">{error}</p>
+                {error.includes('MongoDB Atlas') && (
+                  <div className="mt-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-left max-w-2xl mx-auto">
+                    <p className="text-yellow-800 font-semibold mb-2">🔧 Connection Issue Detected</p>
+                    <p className="text-yellow-700 text-sm mb-2">Your local IP might not be whitelisted in MongoDB Atlas.</p>
+                    <p className="text-yellow-700 text-sm mb-2"><strong>To fix:</strong></p>
+                    <ol className="text-yellow-700 text-sm list-decimal list-inside space-y-1">
+                      <li>Go to MongoDB Atlas → Network Access</li>
+                      <li>Click "Add IP Address"</li>
+                      <li>Add your IP: <code className="bg-yellow-100 px-1 rounded">1.39.198.17</code> or click "Add Current IP Address"</li>
+                      <li>Click "Confirm"</li>
+                      <li>Restart your development server</li>
+                    </ol>
+                  </div>
+                )}
+                <div className="flex gap-2 justify-center">
+                  <button 
+                    onClick={async () => {
+                      setError(null);
+                      setLoading(true);
+                      try {
+                        const res = await fetch("/api/events", {
+                          cache: 'no-store',
+                          headers: { 'Cache-Control': 'no-cache' }
+                        });
+                        
+                        if (!res.ok) {
+                          const errorData = await res.json().catch(() => ({ error: res.statusText }));
+                          throw new Error(errorData.error || `HTTP ${res.status}`);
+                        }
+                        
+                        const data = await res.json();
+                        
+                        if (data.error) {
+                          setError(data.error);
+                          setEvents([]);
+                        } else if (Array.isArray(data)) {
+                          const mapped = data.map((event) => ({
+                            id: event._id,
+                            title: event.title,
+                            start: new Date(event.date),
+                            end: event.endDate ? new Date(event.endDate) : new Date(event.date),
+                            coverImage: event.coverImage,
+                            description: event.description,
+                            location: event.location,
+                            price: event.price,
+                            segment: event.segment,
+                            slug: event.slug,
+                            originalStart: event.date,
+                            originalEnd: event.endDate
+                          }));
+                          setEvents(mapped);
+                          setError(null);
+                        } else {
+                          setEvents([]);
+                          setError('Invalid response format');
+                        }
+                      } catch (err) {
+                        setError(err.message || 'Failed to load events');
+                        setEvents([]);
+                      } finally {
+                        setLoading(false);
+                      }
+                    }} 
+                    className="px-4 py-2 bg-[#DB4E9F] text-white rounded hover:bg-[#DB4E9F]/80 transition-colors"
+                  >
+                    Retry
+                  </button>
+                  <button 
+                    onClick={() => window.location.reload()} 
+                    className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 transition-colors"
+                  >
+                    Reload Page
+                  </button>
+                </div>
+                <p className="text-xs text-gray-400 mt-4">Check browser console for detailed error logs</p>
               </div>
             </div>
           ) : events.length > 0 ? (

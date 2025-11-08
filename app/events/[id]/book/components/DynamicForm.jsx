@@ -90,6 +90,15 @@ const DynamicForm = ({ formConfig, onSubmit, submitting, event, onFormDataChange
       return;
     }
     
+    // Validate main course selection for mamaBreakfast events
+    if (event?.segment === 'mamaBreakfast') {
+      const mainCourseSelection = formData.choiceI;
+      if (!mainCourseSelection || mainCourseSelection.trim() === '') {
+        alert('Please select a main course option. You cannot proceed without selecting a main course.');
+        return;
+      }
+    }
+    
     // Validate Friends & Family fields if discount is applied
     if (formData.applyFriendsFamilyDiscount) {
       const numberOfTickets = parseInt(formData.numberOfTickets) || 1;
