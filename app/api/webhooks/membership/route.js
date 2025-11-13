@@ -331,12 +331,34 @@ async function handleSubscriptionCreated(subscription) {
       console.log('Using fallback customer data for subscription:', subscription.id);
     }
     
-    // Determine membership type from price ID
+    // Determine membership type from subscription billing interval (more reliable than price ID)
     const priceId = subscription.items.data[0].price.id;
-    const membershipType = priceId === process.env.STRIPE_MONTHLY_MEMBERSHIP_PRICE_ID ? 'monthly' : 'annual';
+    const billingInterval = subscription.items.data[0].price.recurring?.interval; // 'month' or 'year'
     
-    console.log('🔍 Subscription Created - Price ID analysis:', {
+    // Determine membership type from billing interval (primary method)
+    let membershipType;
+    if (billingInterval === 'month') {
+      membershipType = 'monthly';
+    } else if (billingInterval === 'year') {
+      membershipType = 'annual';
+    } else {
+      // Fallback to price ID comparison if interval is not available
+      // Explicitly check both price IDs to avoid defaulting incorrectly
+      if (priceId === process.env.STRIPE_MONTHLY_MEMBERSHIP_PRICE_ID) {
+        membershipType = 'monthly';
+      } else if (priceId === process.env.STRIPE_ANNUAL_MEMBERSHIP_PRICE_ID) {
+        membershipType = 'annual';
+      } else {
+        // Last resort: only default to annual if we truly can't determine (shouldn't happen in normal cases)
+        console.error('⚠️ Could not determine membership type from billing interval or price ID - defaulting to annual. Price ID:', priceId);
+        membershipType = 'annual';
+      }
+      console.warn('⚠️ Could not determine membership type from billing interval, using price ID fallback');
+    }
+    
+    console.log('🔍 Subscription Created - Membership Type analysis:', {
       priceId,
+      billingInterval,
       monthlyPriceId: process.env.STRIPE_MONTHLY_MEMBERSHIP_PRICE_ID,
       annualPriceId: process.env.STRIPE_ANNUAL_MEMBERSHIP_PRICE_ID,
       determinedMembershipType: membershipType
