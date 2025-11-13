@@ -62,6 +62,7 @@ export default function EventsManagePage() {
       meetingLink: event.meetingLink || "",
       bookingDeadline: bookingDeadline ? bookingDeadline.toISOString().slice(0, 16) : "",
       seats: event.seats || "",
+      hasMenuSelection: event.hasMenuSelection || false,
     });
   };
 
@@ -419,6 +420,22 @@ export default function EventsManagePage() {
                             />
                           </div>
                         </>
+                      )}
+
+                      {/* Festive Mornings specific fields */}
+                      {form.segment === "festiveMornings" && (
+                        <div className="flex items-center">
+                          <input
+                            type="checkbox"
+                            name="hasMenuSelection"
+                            checked={form.hasMenuSelection}
+                            onChange={(e) => setForm({ ...form, hasMenuSelection: e.target.checked })}
+                            className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                          />
+                          <label className="ml-2 block text-sm text-gray-700">
+                            Include Menu Selection in Booking Form
+                          </label>
+                        </div>
                       )}
 
                       <div className="grid grid-cols-2 gap-4">

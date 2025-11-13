@@ -57,7 +57,7 @@ export default function BookingPage({ params }) {
           
           // Set form configuration based on event segment
           if (eventData.segment) {
-            const config = getFormBySegment(eventData.segment);
+            const config = getFormBySegment(eventData.segment, eventData);
             setFormConfig(config);
           }
         }

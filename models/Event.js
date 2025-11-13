@@ -22,6 +22,7 @@ const EventSchema = new mongoose.Schema({
   meetingLink: String, // Meeting link for eklektik edit events
   bookingDeadline: Date, // Deadline for booking (after this date, Book Now button is disabled)
   seats: { type: Number, required: true, min: 1 }, // Number of available seats for this event
+  hasMenuSelection: { type: Boolean, default: false }, // For festiveMornings: determines if form should have menu selection
   createdAt: { type: Date, default: Date.now },
 });
 

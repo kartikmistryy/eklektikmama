@@ -135,8 +135,8 @@ const DynamicForm = ({ formConfig, onSubmit, submitting, event, onFormDataChange
       return;
     }
     
-    // Validate main course selection for mamaBreakfast events
-    if (event?.segment === 'mamaBreakfast') {
+    // Validate main course selection for mamaBreakfast events and festiveMornings with menu selection
+    if (event?.segment === 'mamaBreakfast' || (event?.segment === 'festiveMornings' && event?.hasMenuSelection)) {
       const mainCourseSelection = formData.choiceI;
       if (!mainCourseSelection || mainCourseSelection.trim() === '') {
         alert('Please select a main course option. You cannot proceed without selecting a main course.');
