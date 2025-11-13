@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import mongoose from 'mongoose';
 import { connectDB } from '../../../../lib/db';
 import Event from '../../../../models/Event';
 
@@ -8,7 +9,16 @@ export async function GET(req, { params }) {
     await connectDB();
     
     const { id } = await params;
-    const event = await Event.findById(id);
+    let event = null;
+
+    if (mongoose.Types.ObjectId.isValid(id)) {
+      event = await Event.findById(id);
+    }
+
+    // Fallback: treat id as slug when not a valid ObjectId or no event found
+    if (!event) {
+      event = await Event.findOne({ slug: id });
+    }
     
     if (!event) {
       return NextResponse.json({ error: 'Event not found' }, { status: 404 });
