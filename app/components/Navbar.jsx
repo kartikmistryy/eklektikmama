@@ -120,10 +120,12 @@ export default function Navbar({ pageType = 'default' }) {
       {/* Right container */}
       <div className="flex-1 flex justify-end items-center gap-4 py-4">
         {/* Shopping Cart (≥1060px only) */}
-        <Link target="_blank" href="https://eklektikcollective.com/" className="hidden [@media(min-width:1060px)]:flex items-center justify-center relative">
+        {/* <Link target="_blank" href="https://eklektikcollective.com/" className="hidden [@media(min-width:1060px)]:flex items-center justify-center relative">
           <ShoppingCart className={`w-6 h-6 ${useDarkNav ? '' : 'text-white'}`} style={useDarkNav ? { color: '#2e2e2e' } : {}} />
-          {/* Badge */}
           <CartCount />
+        </Link> */}
+        <Link target="_blank" href="https://eklektikcollective.com" className="hidden [@media(min-width:1060px)]:flex items-center px-2 md:px-4 py-2 text-[8px] md:text-sm gradient-animate text-white font-semibold rounded-full border-2 border-pink-500">
+          SHOP
         </Link>
 
         {/* Mobile Menu Trigger (<1060px only) */}
@@ -154,11 +156,9 @@ export default function Navbar({ pageType = 'default' }) {
 
         {/* Links */}
         <div className="flex flex-col items-end gap-6 px-5 py-10 w-full">
-          <button onClick={() => handleNavigation('/shop')} className="flex items-center justify-center relative bg-transparent border-none text-white">
-            <ShoppingCart className="w-6 h-6 text-white" />
-            {/* Badge */}
-            <CartCount />
-          </button>
+          <Link target="_blank" href="https://eklektikcollective.com" className="flex items-center justify-center relative bg-transparent border-none text-white">
+            Shop
+          </Link>
           <button onClick={() => handleNavigation('/events')} className="bg-transparent border-none text-white">EVENTS</button>
           <button onClick={() => handleNavigation('/blogs')} className="bg-transparent border-none text-white">UNFILTERED AF BLOG</button>
           <button onClick={() => handleNavigation('/contactus')} className="bg-transparent border-none text-white">WORK WITH US</button>
