@@ -3,14 +3,14 @@
 import { useState, useEffect } from 'react';
 import { BsShare, BsInstagram, BsFacebook, BsLink45Deg } from 'react-icons/bs';
 
-// Custom X (Twitter) icon component
-const XIcon = ({ className }) => (
+// Custom Threads icon component
+const ThreadsIcon = ({ className }) => (
   <svg 
     viewBox="0 0 24 24" 
     className={className}
     fill="currentColor"
   >
-    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+    <path d="M12.001.007C5.326.007.007 5.326.007 12S5.326 23.995 12.001 23.995 23.995 18.675 23.995 12 18.675.007 12.001.007zm3.202 13.539c-.337 1.621-1.613 3.102-3.317 3.102-1.783 0-3.24-1.657-3.24-3.688 0-2.032 1.457-3.688 3.24-3.688.95 0 1.829.352 2.475.943l-.793.793c-.449-.449-1.056-.695-1.682-.695-1.305 0-2.366 1.177-2.366 2.647 0 1.47 1.061 2.647 2.366 2.647.89 0 1.658-.503 2.047-1.228h-2.047v-1.068h3.318c.033.18.05.361.05.554 0 1.661-1.127 3.063-2.624 3.392zm.11-2.83h-1.179l-.007.039h1.186v-.039z"/>
   </svg>
 );
 
@@ -44,7 +44,7 @@ const SocialShare = ({ title, url, description, showFloating = true }) => {
   const shareUrls = {
     facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`,
     instagram: `https://www.instagram.com/`, // Instagram doesn't support direct URL sharing
-    twitter: `https://x.com/intent/tweet?text=${encodeURIComponent(title)}&url=${encodeURIComponent(url)}`,
+    threads: `https://www.threads.net/intent/post?text=${encodeURIComponent(title + ' ' + url)}`,
   };
 
   const handleSocialShare = (platform) => {
@@ -82,13 +82,13 @@ const SocialShare = ({ title, url, description, showFloating = true }) => {
         Instagram
       </button>
 
-      {/* X (Twitter) Share */}
+      {/* Threads Share */}
       <button
-        onClick={() => handleSocialShare('twitter')}
+        onClick={() => handleSocialShare('threads')}
         className="flex items-center px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors duration-200"
       >
-        <XIcon className="mr-2 w-4 h-4" />
-        X
+        <ThreadsIcon className="mr-2 w-4 h-4" />
+        Threads
       </button>
 
       {/* Copy Link */}
@@ -123,17 +123,6 @@ const SocialShare = ({ title, url, description, showFloating = true }) => {
             Link copied to clipboard!
           </p>
         )}
-
-        <div className="mt-4 p-3 bg-gradient-to-r from-pink-50 to-purple-50 border border-pink-200 rounded-lg">
-          <p className="text-sm text-gray-700">
-            <strong>📱 Share on Instagram:</strong> Click the Instagram button to copy the link, then:
-          </p>
-          <ul className="text-xs text-gray-600 mt-2 ml-4 list-disc">
-            <li>Add as a link sticker in your story</li>
-            <li>Paste in your post caption</li>
-            <li>Screenshot and share as an image</li>
-          </ul>
-        </div>
       </div>
 
       {/* Floating Share Button */}
@@ -172,17 +161,6 @@ const SocialShare = ({ title, url, description, showFloating = true }) => {
                 Link copied to clipboard!
               </p>
             )}
-
-            <div className="mt-4 p-3 bg-gradient-to-r from-pink-50 to-purple-50 border border-pink-200 rounded-lg">
-              <p className="text-sm text-gray-700">
-                <strong>📱 Share on Instagram:</strong> Click the Instagram button to copy the link, then:
-              </p>
-              <ul className="text-xs text-gray-600 mt-2 ml-4 list-disc">
-                <li>Add as a link sticker in your story</li>
-                <li>Paste in your post caption</li>
-                <li>Screenshot and share as an image</li>
-              </ul>
-            </div>
           </div>
         </div>
       )}
