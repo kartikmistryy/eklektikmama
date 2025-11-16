@@ -289,8 +289,7 @@ export default function Footer() {
                   className="hover:underline">
                     RAMADAN GUIDE
                   </a>
-                </li> 
-                
+                </li>  
                 <li>
                   <a 
                   // href="/visitUae.pdf" 
@@ -300,6 +299,11 @@ export default function Footer() {
                     PLACES TO VISIT IN ABU DHABI, UAE
                   </a>
                 </li> 
+                <li>
+                  <a href="/hospitalGuide.pdf" download className="hover:underline">
+                    HOSPITAL GUIDE
+                  </a>
+                </li>
                 {/* <li>
                   <a href="/partnerGuide.pdf" download className="hover:underline">
                     PARTNER GUIDE 

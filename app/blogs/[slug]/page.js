@@ -1,4 +1,4 @@
-import { getBlogPostBySlug, getEklektikBlogPosts } from '../../../lib/contentful';
+import { getBlogPostBySlug, getEklektikBlogPosts, getAllBlogPosts } from '../../../lib/contentful';
 import { documentToReactComponents } from '@contentful/rich-text-react-renderer';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -137,9 +137,12 @@ const renderContentFallback = (content) => {
   });
 };
 
+// Enable ISR - revalidate every 60 seconds, or on-demand via webhook
+export const revalidate = 60;
+
 // Generate static params for all blog posts
 export async function generateStaticParams() {
-  const posts = await getEklektikBlogPosts(100, 0); // Get up to 100 posts for static generation
+  const posts = await getAllBlogPosts(100, 0); // Get up to 100 posts for static generation
   
   return posts.map((post) => ({
     slug: post.fields.slug,

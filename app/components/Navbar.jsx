@@ -157,7 +157,7 @@ export default function Navbar({ pageType = 'default' }) {
         {/* Links */}
         <div className="flex flex-col items-end gap-6 px-5 py-10 w-full">
           <Link target="_blank" href="https://eklektikcollective.com" className="flex items-center justify-center relative bg-transparent border-none text-white">
-            Shop
+            SHOP
           </Link>
           <button onClick={() => handleNavigation('/events')} className="bg-transparent border-none text-white">EVENTS</button>
           <button onClick={() => handleNavigation('/blogs')} className="bg-transparent border-none text-white">UNFILTERED AF BLOG</button>

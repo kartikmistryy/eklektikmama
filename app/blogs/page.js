@@ -7,6 +7,9 @@ import GuestBlogSection from "./components/GuestBlogSection";
 import AllStoriesSection from "./components/AllStoriesSection";
 import Pagination from "./components/Pagination";
 
+// Enable ISR - revalidate every 60 seconds, or on-demand via webhook
+export const revalidate = 60;
+
 export const metadata = {
   title: "Honest Motherhood Blog | Unfiltered AF",
   description:
