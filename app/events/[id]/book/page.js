@@ -57,7 +57,16 @@ export default function BookingPage({ params }) {
           
           // Set form configuration based on event segment
           if (eventData.segment) {
+            console.log('📋 Event Data for Form Config:', {
+              segment: eventData.segment,
+              menuSelections: eventData.menuSelections,
+              hasMenuSelection: eventData.hasMenuSelection
+            });
             const config = getFormBySegment(eventData.segment, eventData);
+            console.log('📋 Generated Form Config:', {
+              fields: config.fields.map(f => ({ name: f.name, label: f.label, type: f.type })),
+              menuSelectionFields: config.fields.filter(f => f.name === 'choiceI' || f.name === 'choiceII' || f.name === 'choiceIII')
+            });
             setFormConfig(config);
           }
         }

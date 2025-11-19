@@ -32,10 +32,13 @@ export async function POST(req) {
       price: body.price,
       location: body.location,
       segment: body.segment,
+      isMembersOnly: body.isMembersOnly || false,
       message: body.message,
       meetingLink: body.meetingLink,
       bookingDeadline: body.bookingDeadline,
       seats: body.seats,
+      hasMenuSelection: body.hasMenuSelection || false,
+      menuSelections: body.menuSelections || [],
     });
 
     console.log('Event created successfully:', newEvent._id);

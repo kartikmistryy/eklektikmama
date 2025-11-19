@@ -23,6 +23,12 @@ const EventSchema = new mongoose.Schema({
   bookingDeadline: Date, // Deadline for booking (after this date, Book Now button is disabled)
   seats: { type: Number, required: true, min: 1 }, // Number of available seats for this event
   hasMenuSelection: { type: Boolean, default: false }, // For festiveMornings: determines if form should have menu selection
+  // Dynamic menu selections for mamaBreakfast and festiveMornings
+  // Array of 3 menu selections, each with a label and options
+  menuSelections: [{
+    label: { type: String, default: '' }, // e.g., "Main Course Selection", "Beverage Selection", etc.
+    options: [{ type: String }] // Array of option strings
+  }],
   createdAt: { type: Date, default: Date.now },
 });
 

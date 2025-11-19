@@ -22,6 +22,11 @@ export default function EditEventPage({ params }) {
     meetingLink: "",
     bookingDeadline: "",
     seats: "",
+    menuSelections: [
+      { label: "", options: [] },
+      { label: "", options: [] },
+      { label: "", options: [] }
+    ],
   });
 
   const [imageFile, setImageFile] = useState(null);
@@ -46,6 +51,14 @@ export default function EditEventPage({ params }) {
           const endDate = eventData.endDate ? new Date(eventData.endDate) : null;
           const bookingDeadline = eventData.bookingDeadline ? new Date(eventData.bookingDeadline) : null;
           
+          // Initialize menu selections - ensure we have 3, fill with empty if needed
+          const existingMenuSelections = eventData.menuSelections || [];
+          const menuSelections = [
+            existingMenuSelections[0] || { label: "", options: [] },
+            existingMenuSelections[1] || { label: "", options: [] },
+            existingMenuSelections[2] || { label: "", options: [] }
+          ];
+          
           setForm({
             title: eventData.title || "",
             description: eventData.description || "",
@@ -62,6 +75,7 @@ export default function EditEventPage({ params }) {
             meetingLink: eventData.meetingLink || "",
             bookingDeadline: bookingDeadline ? bookingDeadline.toISOString().slice(0, 16) : "",
             seats: eventData.seats || "",
+            menuSelections: menuSelections,
           });
         } else {
           alert("Failed to load event");
@@ -83,6 +97,31 @@ export default function EditEventPage({ params }) {
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  // Handle menu selection changes
+  const handleMenuSelectionLabelChange = (index, value) => {
+    const newMenuSelections = [...form.menuSelections];
+    newMenuSelections[index] = { ...newMenuSelections[index], label: value };
+    setForm({ ...form, menuSelections: newMenuSelections });
+  };
+
+  const handleMenuOptionAdd = (menuIndex) => {
+    const newMenuSelections = [...form.menuSelections];
+    newMenuSelections[menuIndex].options.push("");
+    setForm({ ...form, menuSelections: newMenuSelections });
+  };
+
+  const handleMenuOptionChange = (menuIndex, optionIndex, value) => {
+    const newMenuSelections = [...form.menuSelections];
+    newMenuSelections[menuIndex].options[optionIndex] = value;
+    setForm({ ...form, menuSelections: newMenuSelections });
+  };
+
+  const handleMenuOptionRemove = (menuIndex, optionIndex) => {
+    const newMenuSelections = [...form.menuSelections];
+    newMenuSelections[menuIndex].options.splice(optionIndex, 1);
+    setForm({ ...form, menuSelections: newMenuSelections });
   };
 
   const handleFileSelect = (e) => {
@@ -270,6 +309,27 @@ export default function EditEventPage({ params }) {
       eventData.isMembersOnly = true;
     }
 
+    // Filter out empty menu selections - only keep menus with both label and at least one option
+    if (form.segment === 'mamaBreakfast' || form.segment === 'festiveMornings') {
+      eventData.menuSelections = form.menuSelections
+        .map(menu => ({
+          label: (menu.label || '').trim(),
+          options: (menu.options || []).filter(opt => opt && opt.trim() !== '')
+        }))
+        .filter(menu => menu.label !== '' && menu.options.length > 0);
+      
+      // If menu selections are configured, automatically enable hasMenuSelection for festiveMornings
+      if (form.segment === 'festiveMornings' && eventData.menuSelections.length > 0) {
+        eventData.hasMenuSelection = true;
+      }
+      
+      console.log('💾 Saving menu selections:', {
+        segment: form.segment,
+        menuSelectionsCount: eventData.menuSelections.length,
+        menuSelections: eventData.menuSelections
+      });
+    }
+
     try {
       const res = await fetch(`/api/events/${params.id}`, {
         method: "PUT",
@@ -418,6 +478,64 @@ export default function EditEventPage({ params }) {
               />
             </div>
           </>
+        )}
+
+        {/* Menu Selection for mamaBreakfast and festiveMornings */}
+        {(form.segment === "mamaBreakfast" || form.segment === "festiveMornings") && (
+          <div className="border border-gray-300 rounded-lg p-4 bg-gray-50">
+            <h3 className="text-lg font-semibold text-gray-800 mb-4">Menu Selections</h3>
+            <p className="text-sm text-gray-600 mb-4">
+              Configure 3 menu selections for customers to choose from. Each selection can have multiple options.
+            </p>
+            
+            {form.menuSelections.map((menuSelection, menuIndex) => (
+              <div key={menuIndex} className="mb-6 p-4 bg-white rounded-md border border-gray-200">
+                <div className="mb-3">
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Menu Selection {menuIndex + 1} Label
+                  </label>
+                  <input
+                    type="text"
+                    value={menuSelection.label}
+                    onChange={(e) => handleMenuSelectionLabelChange(menuIndex, e.target.value)}
+                    className="w-full border border-gray-300 rounded-md p-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    placeholder={`e.g., Main Course Selection, Beverage Selection, etc.`}
+                  />
+                </div>
+                
+                <div className="mb-2">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Options
+                  </label>
+                  {menuSelection.options.map((option, optionIndex) => (
+                    <div key={optionIndex} className="flex gap-2 mb-2">
+                      <input
+                        type="text"
+                        value={option}
+                        onChange={(e) => handleMenuOptionChange(menuIndex, optionIndex, e.target.value)}
+                        className="flex-1 border border-gray-300 rounded-md p-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        placeholder={`Option ${optionIndex + 1}`}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => handleMenuOptionRemove(menuIndex, optionIndex)}
+                        className="px-3 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 text-sm"
+                      >
+                        Remove
+                      </button>
+                    </div>
+                  ))}
+                  <button
+                    type="button"
+                    onClick={() => handleMenuOptionAdd(menuIndex)}
+                    className="mt-2 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 text-sm"
+                  >
+                    + Add Option
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
         )}
 
         {/* Image Upload Section */}

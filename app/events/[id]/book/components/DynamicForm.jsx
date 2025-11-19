@@ -135,12 +135,29 @@ const DynamicForm = ({ formConfig, onSubmit, submitting, event, onFormDataChange
       return;
     }
     
-    // Validate main course selection for mamaBreakfast events and festiveMornings with menu selection
+    // Validate menu selections for mamaBreakfast and festiveMornings events with dynamic menu selections
     if (event?.segment === 'mamaBreakfast' || (event?.segment === 'festiveMornings' && event?.hasMenuSelection)) {
-      const mainCourseSelection = formData.choiceI;
-      if (!mainCourseSelection || mainCourseSelection.trim() === '') {
-        alert('Please select a main course option. You cannot proceed without selecting a main course.');
-        return;
+      // Check if event has dynamic menu selections
+      if (event?.menuSelections && Array.isArray(event.menuSelections) && event.menuSelections.length > 0) {
+        // Validate each menu selection
+        for (let index = 0; index < event.menuSelections.length; index++) {
+          const menuSelection = event.menuSelections[index];
+          if (menuSelection.label && menuSelection.options && menuSelection.options.length > 0) {
+            const fieldName = index === 0 ? 'choiceI' : index === 1 ? 'choiceII' : 'choiceIII';
+            const selection = formData[fieldName];
+            if (!selection || selection.trim() === '') {
+              alert(`Please select an option for "${menuSelection.label}". You cannot proceed without making a selection.`);
+              return;
+            }
+          }
+        }
+      } else {
+        // Legacy validation for static menu selection
+        const mainCourseSelection = formData.choiceI;
+        if (!mainCourseSelection || mainCourseSelection.trim() === '') {
+          alert('Please select a main course option. You cannot proceed without selecting a main course.');
+          return;
+        }
       }
     }
     
@@ -623,37 +640,52 @@ const DynamicForm = ({ formConfig, onSubmit, submitting, event, onFormDataChange
                     />
                   </div>
                   
-                  {/* Main Course Selection (for all events) */}
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Guest {index + 1} Main Course Selection <span className="text-red-500">*</span>
-                    </label>
-                    <select
-                      value={extraGuestMainCourses[index] || ''}
-                      onChange={(e) => {
-                        const newMainCourses = [...extraGuestMainCourses];
-                        newMainCourses[index] = e.target.value;
-                        const newFormData = {
-                          ...formData,
-                          extraGuestMainCourses: newMainCourses
-                        };
-                        setFormData(newFormData);
-                        if (onFormDataChange) {
-                          onFormDataChange(newFormData);
-                        }
-                      }}
-                      required
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#093166] focus:border-transparent"
-                    >
-                      <option value="">Select main course</option>
-                      <option value="Egg & Truffle Toast">Egg & Truffle Toast</option>
-                      <option value="Sour Dough Tuna">Sour Dough Tuna</option>
-                      <option value="French Toast with Ice cream">French Toast with Ice cream</option>
-                      <option value="Avocado Croissant">Avocado Croissant</option>
-                      <option value="Omlette Turkey Ham and Cheese">Omlette Turkey Ham and Cheese</option>
-                      <option value="Peach and Almond Salad">Peach and Almond Salad</option>
-                    </select>
-                  </div>
+                  {/* Main Course Selection (for all events) - Use first dynamic menu selection if available */}
+                  {(() => {
+                    // Get the first menu selection from event if available, otherwise use static options
+                    const firstMenuSelection = event?.menuSelections?.[0];
+                    const menuOptions = firstMenuSelection?.options && firstMenuSelection.options.length > 0
+                      ? firstMenuSelection.options
+                      : [
+                          "Egg & Truffle Toast",
+                          "Sour Dough Tuna",
+                          "French Toast with Ice cream",
+                          "Avocado Croissant",
+                          "Omlette Turkey Ham and Cheese",
+                          "Peach and Almond Salad"
+                        ];
+                    const menuLabel = firstMenuSelection?.label || "Main Course Selection";
+                    
+                    return (
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          Guest {index + 1} {menuLabel} <span className="text-red-500">*</span>
+                        </label>
+                        <select
+                          value={extraGuestMainCourses[index] || ''}
+                          onChange={(e) => {
+                            const newMainCourses = [...extraGuestMainCourses];
+                            newMainCourses[index] = e.target.value;
+                            const newFormData = {
+                              ...formData,
+                              extraGuestMainCourses: newMainCourses
+                            };
+                            setFormData(newFormData);
+                            if (onFormDataChange) {
+                              onFormDataChange(newFormData);
+                            }
+                          }}
+                          required
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#093166] focus:border-transparent"
+                        >
+                          <option value="">Select {menuLabel.toLowerCase()}</option>
+                          {menuOptions.map((option) => (
+                            <option key={option} value={option}>{option}</option>
+                          ))}
+                        </select>
+                      </div>
+                    );
+                  })()}
                 </div>
               </div>
             ))}
