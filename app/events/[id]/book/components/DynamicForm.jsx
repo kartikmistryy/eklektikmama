@@ -2,9 +2,71 @@
 
 import { useState, useEffect } from 'react';
 
+const DEFAULT_MENU_OPTIONS = [
+  'Egg & Truffle Toast',
+  'Sour Dough Tuna',
+  'French Toast with Ice cream',
+  'Avocado Croissant',
+  'Omlette Turkey Ham and Cheese',
+  'Peach and Almond Salad'
+];
+
+const CHOICE_FIELD_NAMES = ['choiceI', 'choiceII', 'choiceIII'];
+
+const getMenuFieldConfigs = (event) => {
+  const isBreakfastOrFestive =
+    event?.segment === 'mamaBreakfast' || event?.segment === 'festiveMornings';
+  const hasDynamicSelections =
+    isBreakfastOrFestive &&
+    event?.menuSelections &&
+    Array.isArray(event.menuSelections) &&
+    event.menuSelections.length > 0;
+
+  if (hasDynamicSelections) {
+    return event.menuSelections.slice(0, 3).map((menuSelection, index) => ({
+      fieldName: CHOICE_FIELD_NAMES[index] || `choice${index + 1}`,
+      label: menuSelection.label,
+      options: menuSelection.options || []
+    }));
+  }
+
+  return [
+    {
+      fieldName: 'choiceI',
+      label: 'Main Course Selection',
+      options: DEFAULT_MENU_OPTIONS
+    }
+  ];
+};
+
+const padMenuSelectionArray = (currentSelections = [], desiredLength) => {
+  const result = currentSelections.slice(0, desiredLength).map((entry) => entry || {});
+  while (result.length < desiredLength) {
+    result.push({});
+  }
+  return result;
+};
+
+const formatGuestMenuSummary = (guestSelections = {}, guestIndex, menuFields) => {
+  const parts = menuFields
+    .map((field) => {
+      const value = guestSelections[field.fieldName];
+      return value ? `${field.label}: ${value}` : null;
+    })
+    .filter(Boolean);
+
+  if (parts.length === 0) {
+    return '';
+  }
+
+  return `Guest ${guestIndex + 1} - ${parts.join(' | ')}`;
+};
+
 const DynamicForm = ({ formConfig, onSubmit, submitting, event, onFormDataChange, isBookingDeadlinePassed, isEventPast, isMember, membershipChecked }) => {
   const [formData, setFormData] = useState({});
   const [waiverAccepted, setWaiverAccepted] = useState(false);
+
+  const menuFieldConfigs = getMenuFieldConfigs(event);
 
   // Initialize form data with empty values
   useEffect(() => {
@@ -34,6 +96,7 @@ const DynamicForm = ({ formConfig, onSubmit, submitting, event, onFormDataChange
     const currentNames = formData.extraGuestNames || [];
     const currentEmails = formData.extraGuestEmails || [];
     const currentMainCourses = formData.extraGuestMainCourses || [];
+    const currentMenuSelections = formData.extraGuestMenuSelections || [];
     
     // Check if arrays need to be resized
     if (currentNames.length !== extraGuests || 
@@ -49,6 +112,9 @@ const DynamicForm = ({ formConfig, onSubmit, submitting, event, onFormDataChange
           : [],
         extraGuestMainCourses: extraGuests > 0
           ? [...currentMainCourses.slice(0, extraGuests), ...Array(Math.max(0, extraGuests - currentMainCourses.length)).fill('')]
+          : [],
+        extraGuestMenuSelections: extraGuests > 0
+          ? padMenuSelectionArray(currentMenuSelections, extraGuests)
           : []
       };
       setFormData(updatedFormData);
@@ -76,6 +142,7 @@ const DynamicForm = ({ formConfig, onSubmit, submitting, event, onFormDataChange
           newFormData.extraGuestNames = [];
           newFormData.extraGuestEmails = [];
           newFormData.extraGuestMainCourses = [];
+          newFormData.extraGuestMenuSelections = [];
           newFormData.familyMemberNames = [];
           newFormData.familyMemberContacts = [];
           newFormData.familyDiscountTerms = false;
@@ -89,6 +156,7 @@ const DynamicForm = ({ formConfig, onSubmit, submitting, event, onFormDataChange
           newFormData.extraGuestNames = Array(extraGuests).fill('');
           newFormData.extraGuestEmails = Array(extraGuests).fill('');
           newFormData.extraGuestMainCourses = Array(extraGuests).fill(''); // Always initialize menu selections for all events
+          newFormData.extraGuestMenuSelections = padMenuSelectionArray([], extraGuests);
         }
         
         setFormData(newFormData);
@@ -212,6 +280,19 @@ const DynamicForm = ({ formConfig, onSubmit, submitting, event, onFormDataChange
           alert(`Please select main course for all ${extraGuests} extra guest(s).`);
           return;
         }
+
+        // Validate individual menu fields (especially for breakfast/festive events)
+        const extraGuestMenuSelections = formData.extraGuestMenuSelections || [];
+        for (let guestIndex = 0; guestIndex < extraGuests; guestIndex++) {
+          const selections = extraGuestMenuSelections[guestIndex] || {};
+          for (const menuField of menuFieldConfigs) {
+            const value = selections[menuField.fieldName];
+            if (!value || value.trim() === '') {
+              alert(`Please select ${menuField.label.toLowerCase()} for guest ${guestIndex + 1}.`);
+              return;
+            }
+          }
+        }
     }
     
     // Validate Friends & Family discount terms if discount is applied
@@ -220,7 +301,29 @@ const DynamicForm = ({ formConfig, onSubmit, submitting, event, onFormDataChange
       return;
     }
     
-    onSubmit(formData);
+    let submissionData = formData;
+    if (extraGuests > 0) {
+      const syncedMainCourses = Array.from({ length: extraGuests }, (_, index) =>
+        formatGuestMenuSummary(
+          (formData.extraGuestMenuSelections && formData.extraGuestMenuSelections[index]) || {},
+          index,
+          menuFieldConfigs
+        )
+      );
+
+      if (JSON.stringify(syncedMainCourses) !== JSON.stringify(formData.extraGuestMainCourses || [])) {
+        submissionData = {
+          ...formData,
+          extraGuestMainCourses: syncedMainCourses
+        };
+        setFormData(submissionData);
+        if (onFormDataChange) {
+          onFormDataChange(submissionData);
+        }
+      }
+    }
+
+    onSubmit(submissionData);
   };
 
   const renderField = (field) => {
@@ -524,6 +627,7 @@ const DynamicForm = ({ formConfig, onSubmit, submitting, event, onFormDataChange
             const currentNames = formData.extraGuestNames || [];
             const currentEmails = formData.extraGuestEmails || [];
             const currentMainCourses = formData.extraGuestMainCourses || [];
+            const currentMenuSelections = formData.extraGuestMenuSelections || [];
             
             newFormData.extraGuestNames = [
               ...currentNames.slice(0, extraGuests),
@@ -537,6 +641,9 @@ const DynamicForm = ({ formConfig, onSubmit, submitting, event, onFormDataChange
               ...currentMainCourses.slice(0, extraGuests),
               ...Array(Math.max(0, extraGuests - currentMainCourses.length)).fill('')
             ];
+            newFormData.extraGuestMenuSelections = extraGuests > 0
+              ? padMenuSelectionArray(currentMenuSelections, extraGuests)
+              : [];
             
             setFormData(newFormData);
             if (onFormDataChange) {
@@ -573,6 +680,7 @@ const DynamicForm = ({ formConfig, onSubmit, submitting, event, onFormDataChange
         const extraGuestNames = formData.extraGuestNames || Array(extraGuests).fill('');
         const extraGuestEmails = formData.extraGuestEmails || Array(extraGuests).fill('');
         const extraGuestMainCourses = formData.extraGuestMainCourses || Array(extraGuests).fill('');
+        const extraGuestMenuSelections = formData.extraGuestMenuSelections || Array.from({ length: extraGuests }, () => ({}));
         
         return (
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 space-y-4">
@@ -640,34 +748,33 @@ const DynamicForm = ({ formConfig, onSubmit, submitting, event, onFormDataChange
                     />
                   </div>
                   
-                  {/* Main Course Selection (for all events) - Use first dynamic menu selection if available */}
-                  {(() => {
-                    // Get the first menu selection from event if available, otherwise use static options
-                    const firstMenuSelection = event?.menuSelections?.[0];
-                    const menuOptions = firstMenuSelection?.options && firstMenuSelection.options.length > 0
-                      ? firstMenuSelection.options
-                      : [
-                          "Egg & Truffle Toast",
-                          "Sour Dough Tuna",
-                          "French Toast with Ice cream",
-                          "Avocado Croissant",
-                          "Omlette Turkey Ham and Cheese",
-                          "Peach and Almond Salad"
-                        ];
-                    const menuLabel = firstMenuSelection?.label || "Main Course Selection";
-                    
+                  {/* Menu selections per guest */}
+                  {menuFieldConfigs.map((menuField) => {
+                    const guestSelections = extraGuestMenuSelections[index] || {};
+                    const currentValue = guestSelections[menuField.fieldName] || '';
                     return (
-                      <div>
+                      <div key={`${menuField.fieldName}-${index}`}>
                         <label className="block text-sm font-medium text-gray-700 mb-1">
-                          Guest {index + 1} {menuLabel} <span className="text-red-500">*</span>
+                          Guest {index + 1} {menuField.label} <span className="text-red-500">*</span>
                         </label>
                         <select
-                          value={extraGuestMainCourses[index] || ''}
+                          value={currentValue}
                           onChange={(e) => {
+                            const newMenuSelections = [...extraGuestMenuSelections];
+                            const guestMenuSelection = { ...(newMenuSelections[index] || {}) };
+                            guestMenuSelection[menuField.fieldName] = e.target.value;
+                            newMenuSelections[index] = guestMenuSelection;
+                            
                             const newMainCourses = [...extraGuestMainCourses];
-                            newMainCourses[index] = e.target.value;
+                            newMainCourses[index] = formatGuestMenuSummary(
+                              guestMenuSelection,
+                              index,
+                              menuFieldConfigs
+                            );
+
                             const newFormData = {
                               ...formData,
+                              extraGuestMenuSelections: newMenuSelections,
                               extraGuestMainCourses: newMainCourses
                             };
                             setFormData(newFormData);
@@ -678,14 +785,14 @@ const DynamicForm = ({ formConfig, onSubmit, submitting, event, onFormDataChange
                           required
                           className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#093166] focus:border-transparent"
                         >
-                          <option value="">Select {menuLabel.toLowerCase()}</option>
-                          {menuOptions.map((option) => (
+                          <option value="">Select {menuField.label.toLowerCase()}</option>
+                          {menuField.options.map((option) => (
                             <option key={option} value={option}>{option}</option>
                           ))}
                         </select>
                       </div>
                     );
-                  })()}
+                  })}
                 </div>
               </div>
             ))}
