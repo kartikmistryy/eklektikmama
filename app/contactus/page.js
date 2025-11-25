@@ -226,7 +226,7 @@ const Parnterwithus = () => {
             story.
           </p>
           <Link
-            href="https://drive.google.com/file/d/1fRpW3xTkmZuuMMlaaIw_ULQGouvUEySf/view?usp=drivesdk"
+            href="https://drive.google.com/file/d/1nnBBRaD4-vWwIlNVxikzX0PTFroc3CgO/view?usp=sharing"
             target="_blank"
             className="w-fit lg:h-[45px] h-[35px] lg:text-sm lg:px-12 px-8 text-xs flex items-center justify-center uppercase text-[#093166] hover:text-white rounded-[20px] my-6 border-2 border-[#bf378b] bg-transparent hover:bg-[#bf378b] transition-colors duration-500 ease-in-out scale-100"
           >
