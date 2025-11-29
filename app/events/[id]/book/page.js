@@ -100,6 +100,18 @@ export default function BookingPage({ params }) {
     return null;
   };
 
+  // Calculate price based on ticket type for MamaFit events
+  const calculateMamaFitPrice = (ticketType) => {
+    if (event?.segment !== 'mamaFit') return null;
+    
+    if (ticketType?.includes('Solo mum')) {
+      return 115;
+    } else if (ticketType?.includes('Mum + Baby')) {
+      return 155;
+    }
+    return null;
+  };
+
   // Check membership status when email is entered
   const checkMembershipStatus = async (email) => {
     if (!email || !email.includes('@')) return;
@@ -145,6 +157,12 @@ export default function BookingPage({ params }) {
     // Update price for Family Day events
     if (event?.segment === 'familyDay' && newFormData.numberOfChildren) {
       const price = calculateFamilyDayPrice(newFormData.numberOfChildren);
+      setSelectedPrice(price);
+    }
+    
+    // Update price for MamaFit events based on ticket type
+    if (event?.segment === 'mamaFit' && newFormData.ticketType) {
+      const price = calculateMamaFitPrice(newFormData.ticketType);
       setSelectedPrice(price);
     }
   };
@@ -512,6 +530,13 @@ export default function BookingPage({ params }) {
                       <span className="mr-3 text-xl">🎟️</span>
                       <span className="text-xl font-semibold">FREE (Members Only)</span>
                     </div>
+                  ) : event.segment === 'mamaFit' ? (
+                    <div className="flex items-center text-gray-700">
+                      <span className="mr-3 text-xl">🎟️</span>
+                      <span className="text-xl font-semibold text-[#093166]">
+                        {selectedPrice ? `AED ${selectedPrice} per ticket` : 'Select ticket type to see price'}
+                      </span>
+                    </div>
                   ) : event.price > 0 && event.segment !== 'familyDay' && (
                     <div className="flex items-center text-gray-700">
                       <span className="mr-3 text-xl">🎟️</span>
@@ -567,6 +592,25 @@ export default function BookingPage({ params }) {
                     <div className="text-right">
                       <div className="text-2xl font-bold text-green-800">AED {selectedPrice}</div>
                       <div className="text-sm text-green-600">Total Amount</div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Dynamic Pricing Display for MamaFit */}
+              {event?.segment === 'mamaFit' && selectedPrice && (
+                <div className="mt-6 p-4 bg-green-50 border border-green-200 rounded-md">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h3 className="text-lg font-semibold text-green-800">Selected Ticket Type</h3>
+                      <p className="text-sm text-green-600">
+                        {formData.ticketType?.includes('Solo mum') && 'Solo mum (no sitter)'}
+                        {formData.ticketType?.includes('Mum + Baby') && 'Mum + Baby (with sitters)'}
+                      </p>
+                    </div>
+                    <div className="text-right">
+                      <div className="text-2xl font-bold text-green-800">AED {selectedPrice}</div>
+                      <div className="text-sm text-green-600">Per Ticket</div>
                     </div>
                   </div>
                 </div>

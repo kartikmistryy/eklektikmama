@@ -55,6 +55,7 @@ const BookingSchema = new mongoose.Schema({
   waiverConsent: String,
   
   // MamaFit specific fields
+  ticketType: String,
   fitnessLevel: String,
   medicalClearance: String,
   

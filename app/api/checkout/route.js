@@ -256,8 +256,24 @@ export async function POST(req) {
       }
     }
     
-    // Check for Friends & Family discount for mamaBreakfast events
+    // Get form data for use in pricing and discount calculations
     const formData = otherFormData.otherFormData || otherFormData;
+    
+    // Special pricing for MamaFit events based on ticket type
+    if (event.segment === 'mamaFit') {
+      const ticketType = formData.ticketType || '';
+      
+      if (ticketType.includes('Solo mum')) {
+        originalPrice = 115; // Solo mum (no sitter)
+      } else if (ticketType.includes('Mum + Baby')) {
+        originalPrice = 155; // Mum + Baby (with sitters)
+      } else {
+        // Default to Solo mum pricing if ticket type not selected
+        originalPrice = 115;
+      }
+    }
+    
+    // Check for Friends & Family discount for mamaBreakfast events
     const applyFriendsFamilyDiscount = formData.applyFriendsFamilyDiscount === true || 
                                       formData.applyFriendsFamilyDiscount === 'true' ||
                                       (Array.isArray(formData.applyFriendsFamilyDiscount) && formData.applyFriendsFamilyDiscount.length > 0);
@@ -457,6 +473,7 @@ export async function POST(req) {
         medicalInfo: ((otherFormData.otherFormData || otherFormData).medicalInfo || '').substring(0, 200),
         
         // MamaFit specific fields - handle nested structure
+        ticketType: ((otherFormData.otherFormData || otherFormData).ticketType || '').substring(0, 100),
         medicalClearance: (otherFormData.otherFormData || otherFormData).medicalClearance || '',
         fitnessLevel: ((otherFormData.otherFormData || otherFormData).fitnessLevel || '').substring(0, 50),
         

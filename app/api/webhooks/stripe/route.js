@@ -133,6 +133,7 @@ export async function POST(req) {
         medicalInfo: session.metadata?.medicalInfo || additionalData.medicalInfo || '',
 
         // MamaFit specific fields
+        ticketType: session.metadata?.ticketType || additionalData.ticketType || '',
         medicalClearance: session.metadata?.medicalClearance || additionalData.medicalClearance || '',
         fitnessLevel: session.metadata?.fitnessLevel || additionalData.fitnessLevel || '',
 

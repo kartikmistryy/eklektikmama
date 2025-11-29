@@ -143,6 +143,7 @@ export async function GET(req) {
       medicalInfo: session.metadata.medicalInfo || additionalData.medicalInfo || otherFormData.medicalInfo || '',
       
       // MamaFit specific fields
+      ticketType: session.metadata.ticketType || additionalData.ticketType || otherFormData.ticketType || '',
       medicalClearance: session.metadata.medicalClearance || additionalData.medicalClearance || otherFormData.medicalClearance || '',
       fitnessLevel: session.metadata.fitnessLevel || additionalData.fitnessLevel || otherFormData.fitnessLevel || '',
       
@@ -417,6 +418,7 @@ export async function GET(req) {
           numberOfChildren: extractedData.numberOfChildren,
           howDidYouHear: extractedData.howDidYouHear,
           waiverConsent: extractedData.waiverConsent,
+          ticketType: extractedData.ticketType,
           fitnessLevel: extractedData.fitnessLevel,
           medicalClearance: extractedData.medicalClearance,
           cookingExperience: extractedData.cookingExperience,

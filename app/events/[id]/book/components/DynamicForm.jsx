@@ -203,6 +203,24 @@ const DynamicForm = ({ formConfig, onSubmit, submitting, event, onFormDataChange
       return;
     }
     
+    // Validate ticket type for mamaFit events
+    if (event?.segment === 'mamaFit' && !formData.ticketType) {
+      alert('Please select a ticket type to continue.');
+      return;
+    }
+    
+    // Validate child fields for mamaFit events when Mum + Baby ticket type is selected
+    if (event?.segment === 'mamaFit' && formData.ticketType && formData.ticketType.includes('Mum + Baby')) {
+      if (!formData.childName || formData.childName.trim() === '') {
+        alert('Please enter your child\'s name. This is required for Mum + Baby ticket type.');
+        return;
+      }
+      if (!formData.childDob || formData.childDob.trim() === '') {
+        alert('Please enter your child\'s date of birth. This is required for Mum + Baby ticket type.');
+        return;
+      }
+    }
+    
     // Validate menu selections for mamaBreakfast and festiveMornings events with dynamic menu selections
     if (event?.segment === 'mamaBreakfast' || (event?.segment === 'festiveMornings' && event?.hasMenuSelection)) {
       // Check if event has dynamic menu selections
@@ -342,9 +360,23 @@ const DynamicForm = ({ formConfig, onSubmit, submitting, event, onFormDataChange
       }
     }
 
+    // Hide child fields for mamaFit when Solo mum ticket type is selected
+    if (event?.segment === 'mamaFit' && formData.ticketType) {
+      if (formData.ticketType.includes('Solo mum')) {
+        if (name === 'childName' || name === 'childDob' || name === 'childAge') {
+          return null; // Don't render child fields for Solo mum ticket type
+        }
+      }
+    }
+
     // Make Friends & Family fields required when discount is applied
     const isConditionallyRequired = (name === 'familyMemberNames' || name === 'familyDiscountTerms') && formData.applyFriendsFamilyDiscount;
-    const isFieldRequired = required || isConditionallyRequired;
+    // Make child fields required for mamaFit only when Mum + Baby ticket type is selected
+    const isChildFieldConditionallyRequired = event?.segment === 'mamaFit' && 
+      formData.ticketType && 
+      formData.ticketType.includes('Mum + Baby') && 
+      (name === 'childName' || name === 'childDob');
+    const isFieldRequired = required || isConditionallyRequired || isChildFieldConditionallyRequired;
 
     switch (type) {
       case 'text':
@@ -811,7 +843,14 @@ const DynamicForm = ({ formConfig, onSubmit, submitting, event, onFormDataChange
                 // Total adult guests = number of tickets (1 for user + extra guests)
                 const totalAdultGuests = numberOfTickets;
                 
-                const basePrice = event.price * totalAdultGuests;
+                // For mamaFit events, use ticket type price
+                let basePrice;
+                if (event.segment === 'mamaFit' && formData.ticketType) {
+                  const ticketPrice = formData.ticketType.includes('Solo mum') ? 115 : 155;
+                  basePrice = ticketPrice * totalAdultGuests;
+                } else {
+                  basePrice = event.price * totalAdultGuests;
+                }
                 
                 // Apply member discount first (10% if member)
                 const memberDiscount = isMember ? 0.1 : 0;
