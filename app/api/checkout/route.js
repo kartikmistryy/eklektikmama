@@ -77,6 +77,9 @@ export async function POST(req) {
     // Check if this is a free event (coffee meetup)
     const isFreeEvent = event.segment === 'coffeeMeetup';
     
+    // Check if this event uses dynamic pricing (mamaFit, familyDay)
+    const usesDynamicPricing = event.segment === 'mamaFit' || event.segment === 'familyDay';
+    
     // Check if this is a members-only event (coffee meetup is always members-only)
     if (event.isMembersOnly || isFreeEvent) {
       console.log(`Event ${event.title} is members-only, checking membership status for ${email}`);
@@ -106,8 +109,8 @@ export async function POST(req) {
       }
     }
     
-    // Validate event price (skip for free events)
-    if (!isFreeEvent && (!event.price || event.price <= 0)) {
+    // Validate event price (skip for free events and events with dynamic pricing)
+    if (!isFreeEvent && !usesDynamicPricing && (!event.price || event.price <= 0)) {
       return NextResponse.json({ error: 'Event price is invalid' }, { status: 400 });
     }
 

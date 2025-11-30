@@ -65,6 +65,7 @@ const formatGuestMenuSummary = (guestSelections = {}, guestIndex, menuFields) =>
 const DynamicForm = ({ formConfig, onSubmit, submitting, event, onFormDataChange, isBookingDeadlinePassed, isEventPast, isMember, membershipChecked }) => {
   const [formData, setFormData] = useState({});
   const [waiverAccepted, setWaiverAccepted] = useState(false);
+  const [hasInitializedDefault, setHasInitializedDefault] = useState(false);
 
   const menuFieldConfigs = getMenuFieldConfigs(event);
 
@@ -75,7 +76,12 @@ const DynamicForm = ({ formConfig, onSubmit, submitting, event, onFormDataChange
       if (field.type === 'checkboxGroup') {
         initialData[field.name] = [];
       } else if (field.type === 'radio') {
-        initialData[field.name] = '';
+        // Set default value for mamaFit ticket type
+        if (event?.segment === 'mamaFit' && field.name === 'ticketType') {
+          initialData[field.name] = 'Mum + Baby (with sitters) - 155 AED';
+        } else {
+          initialData[field.name] = '';
+        }
       } else if (field.type === 'checkbox') {
         initialData[field.name] = false;
       } else {
@@ -86,7 +92,20 @@ const DynamicForm = ({ formConfig, onSubmit, submitting, event, onFormDataChange
     initialData.photographyConsent = false;
     initialData.newsletterSignup = false;
     setFormData(initialData);
+    // Reset initialization flag when form config changes
+    setHasInitializedDefault(false);
   }, [formConfig]);
+
+  // Trigger price calculation when default ticket type is set for mamaFit (only once on initial load)
+  useEffect(() => {
+    if (event?.segment === 'mamaFit' && 
+        formData.ticketType === 'Mum + Baby (with sitters) - 155 AED' && 
+        onFormDataChange && 
+        !hasInitializedDefault) {
+      setHasInitializedDefault(true);
+      onFormDataChange(formData);
+    }
+  }, [formData.ticketType, event?.segment, hasInitializedDefault]);
 
   // Sync extra guest arrays when ticket count changes (always, not just when Friends & Family discount is applied)
   useEffect(() => {
