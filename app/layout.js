@@ -60,6 +60,87 @@ export default function RootLayout({ children }) {
         <meta name="robots" content="index, follow" />
         <meta name="referrer" content="no-referrer" />
         <meta httpEquiv="X-Content-Type-Options" content="nosniff" />
+        
+        {/* Organization Schema Markup */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Organization",
+              "name": "Eklektik Mama",
+              "legalName": "Eklektik Mama Event Management – L.L.C. – S.P.C.",
+              "url": "https://eklektikmama.com",
+              "logo": "https://eklektikmama.com/desktopLogo.png",
+              "image": "https://eklektikmama.com/desktopLogo.png",
+              "description": "Eklektik Mama is Abu Dhabi's boldest mum community, offering events, merchandise, and support for modern mothers in the UAE.",
+              "email": "hello@eklektikmama.com",
+              "address": {
+                "@type": "PostalAddress",
+                "streetAddress": "Office 1530, Darussalam Tower, Al Danah E5",
+                "addressLocality": "Abu Dhabi",
+                "addressRegion": "Abu Dhabi",
+                "addressCountry": "AE"
+              },
+              "sameAs": [
+                "https://www.instagram.com/eklektikmama",
+                "https://www.facebook.com/eklektikmama"
+              ],
+              "contactPoint": {
+                "@type": "ContactPoint",
+                "contactType": "Customer Service",
+                "email": "hello@eklektikmama.com"
+              }
+            })
+          }}
+        />
+        
+        {/* LocalBusiness Schema Markup */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "LocalBusiness",
+              "name": "Eklektik Mama",
+              "image": "https://eklektikmama.com/desktopLogo.png",
+              "description": "Abu Dhabi's boldest mum community offering events, merchandise, and support for modern mothers in the UAE.",
+              "url": "https://eklektikmama.com",
+              "address": {
+                "@type": "PostalAddress",
+                "streetAddress": "Office 1530, Darussalam Tower, Al Danah E5",
+                "addressLocality": "Abu Dhabi",
+                "addressRegion": "Abu Dhabi",
+                "postalCode": "",
+                "addressCountry": "AE"
+              },
+              "geo": {
+                "@type": "GeoCoordinates",
+                "latitude": "24.4539",
+                "longitude": "54.3773"
+              },
+              "openingHoursSpecification": {
+                "@type": "OpeningHoursSpecification",
+                "dayOfWeek": [
+                  "Monday",
+                  "Tuesday",
+                  "Wednesday",
+                  "Thursday",
+                  "Friday",
+                  "Saturday",
+                  "Sunday"
+                ],
+                "opens": "09:00",
+                "closes": "18:00"
+              },
+              "priceRange": "$$",
+              "sameAs": [
+                "https://www.instagram.com/eklektikmama",
+                "https://www.facebook.com/eklektikmama"
+              ]
+            })
+          }}
+        />
       </head>
       <body>
       <GoogleAnalytics />

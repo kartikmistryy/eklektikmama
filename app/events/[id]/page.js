@@ -37,9 +37,101 @@ export default async function EventDetailPage({ params }) {
   // Check if booking deadline has passed
   const isBookingDeadlinePassed = event.bookingDeadline ? moment(event.bookingDeadline).isBefore(moment()) : false;
 
+  // Build event URL
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://eklektikmama.com';
+  const eventUrl = `${baseUrl}/events/${event._id}`;
+
+  // Format dates for schema
+  const eventStartDate = event.date ? moment(event.date).toISOString() : null;
+  const eventEndDate = event.endDate ? moment(event.endDate).toISOString() : eventStartDate;
+  
+  // Build start datetime with time if available
+  let startDate = eventStartDate;
+  if (event.startTime && eventStartDate) {
+    const timeParts = event.startTime.split(':');
+    if (timeParts.length === 2) {
+      startDate = moment(event.date).set({ hour: parseInt(timeParts[0]), minute: parseInt(timeParts[1]) }).toISOString();
+    }
+  }
+  
+  // Build end datetime with time if available
+  let endDate = eventEndDate;
+  if (event.endTime && eventEndDate) {
+    const timeParts = event.endTime.split(':');
+    if (timeParts.length === 2) {
+      endDate = moment(event.endDate || event.date).set({ hour: parseInt(timeParts[0]), minute: parseInt(timeParts[1]) }).toISOString();
+    }
+  }
+
+  // Determine event status
+  let eventStatus = "https://schema.org/EventScheduled";
+  if (isEventPast) {
+    eventStatus = "https://schema.org/EventPostponed";
+  } else if (!availability.available) {
+    eventStatus = "https://schema.org/EventCancelled";
+  }
 
   return (
     <div className="w-full h-full">
+      {/* Event Schema Markup */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Event",
+            "name": event.title,
+            "description": event.description || `${event.title} by Eklektik Mama`,
+            "image": event.coverImage ? `${baseUrl}${event.coverImage}` : `${baseUrl}/desktopLogo.png`,
+            "startDate": startDate,
+            "endDate": endDate || startDate,
+            "eventStatus": eventStatus,
+            "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
+            "location": event.location ? {
+              "@type": "Place",
+              "name": event.location,
+              "address": {
+                "@type": "PostalAddress",
+                "addressLocality": "Abu Dhabi",
+                "addressRegion": "Abu Dhabi",
+                "addressCountry": "AE",
+                "streetAddress": event.location
+              }
+            } : {
+              "@type": "Place",
+              "name": "Abu Dhabi, UAE",
+              "address": {
+                "@type": "PostalAddress",
+                "addressLocality": "Abu Dhabi",
+                "addressRegion": "Abu Dhabi",
+                "addressCountry": "AE"
+              }
+            },
+            "organizer": {
+              "@type": "Organization",
+              "name": "Eklektik Mama",
+              "url": "https://eklektikmama.com",
+              "email": "hello@eklektikmama.com",
+              "sameAs": [
+                "https://www.instagram.com/eklektikmama",
+                "https://www.facebook.com/eklektikmama"
+              ]
+            },
+            ...(event.segment === 'coffeeMeetup' || event.price >= 0 ? {
+              "offers": {
+                "@type": "Offer",
+                "price": event.segment === 'coffeeMeetup' ? "0" : (event.price || 0).toString(),
+                "priceCurrency": "AED",
+                "availability": availability.available ? "https://schema.org/InStock" : "https://schema.org/SoldOut",
+                "url": eventUrl,
+                "validFrom": event.bookingDeadline ? moment(event.bookingDeadline).toISOString() : moment().toISOString()
+              }
+            } : {}),
+            "url": eventUrl,
+            "isAccessibleForFree": event.segment === 'coffeeMeetup' || event.price === 0
+          })
+        }}
+      />
       {event.coverImage && (
         <div className="w-full h-[600px] relative">
           <Image src={event.coverImage} alt={event.title} fill className="object-cover" />
