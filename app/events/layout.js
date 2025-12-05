@@ -1,7 +1,7 @@
 export const metadata = {
-  title: "Abu Dhabi Mum Events | BYOBaby™ Gatherings",
+  title: "Abu Dhabi Mum Events | BYOBabyⓇ Gatherings",
   description:
-    "Find and book mum-friendly (mom-friendly) events in Abu Dhabi. BYOBaby™ gatherings, coffee mornings, and fun socials for mums.",
+    "Find and book mum-friendly (mom-friendly) events in Abu Dhabi. BYOBabyⓇ gatherings, coffee mornings, and fun socials for mums.",
   keywords: [
     "abu dhabi mum events", "abu dhabi mom events", "baby friendly events abu dhabi",
     "mummy coffee mornings abu dhabi", "mom coffee mornings abu dhabi", "playdate events uae",
@@ -11,9 +11,9 @@ export const metadata = {
     canonical: "https://eklektikmama.com/events"
   },
   openGraph: {
-    title: "Abu Dhabi Mum Events | BYOBaby™ Gatherings",
+    title: "Abu Dhabi Mum Events | BYOBabyⓇ Gatherings",
     description:
-      "Find and book mum-friendly (mom-friendly) events in Abu Dhabi. BYOBaby™ gatherings, coffee mornings, and fun socials for mums.",
+      "Find and book mum-friendly (mom-friendly) events in Abu Dhabi. BYOBabyⓇ gatherings, coffee mornings, and fun socials for mums.",
     url: "https://eklektikmama.com/events",
     siteName: "Eklektik Mama",
     images: [
@@ -29,9 +29,9 @@ export const metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Abu Dhabi Mum Events | BYOBaby™ Gatherings",
+    title: "Abu Dhabi Mum Events | BYOBabyⓇ Gatherings",
     description:
-      "Find and book mum-friendly (mom-friendly) events in Abu Dhabi. BYOBaby™ gatherings, coffee mornings, and fun socials for mums.",
+      "Find and book mum-friendly (mom-friendly) events in Abu Dhabi. BYOBabyⓇ gatherings, coffee mornings, and fun socials for mums.",
     images: ["/og/events.jpg"],
   },
 };

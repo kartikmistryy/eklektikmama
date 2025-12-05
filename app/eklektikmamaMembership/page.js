@@ -299,7 +299,7 @@ function MembershipContent() {
               alt="Discounts icon"
             />
             <h4 className="font-antonio md:text-2xl text-lg uppercase font-thin">
-              10% off every BYOBaby™ ticket – from breakfasts to cinema mornings
+              10% off every BYOBabyⓇ ticket – from breakfasts to cinema mornings
             </h4>
           </motion.span>
           <motion.span

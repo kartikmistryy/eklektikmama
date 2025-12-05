@@ -316,7 +316,7 @@ export default function MemberDashboard() {
                   </div>
                   <div className="flex items-center">
                     <span className="text-green-600 mr-2">✓</span>
-                    <span>10% off every BYOBaby™ ticket – from breakfasts to cinema</span>
+                    <span>10% off every BYOBabyⓇ ticket – from breakfasts to cinema</span>
                   </div>
                   <div className="flex items-center">
                     <span className="text-green-600 mr-2">✓</span>

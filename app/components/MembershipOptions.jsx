@@ -26,7 +26,7 @@ export default function MembershipOptions() {
         },
         {
           icon: "/membership/whiteIcons/2.webp",
-          text: "10% off every BYOBaby™ ticket – from breakfasts to cinema ",
+          text: "10% off every BYOBabyⓇ ticket – from breakfasts to cinema ",
         },
         {
           icon: "/membership/whiteIcons/3.webp",
@@ -202,7 +202,7 @@ export default function MembershipOptions() {
                   <h3 className="font-semibold text-lg mb-3 text-white">Every membership gives you:</h3>
                   <ul className="list-disc ml-6 space-y-2">
                     <li>Early access to event drops</li>
-                    <li>10% off BYOBaby™ events and merch</li>
+                    <li>10% off BYOBabyⓇ events and merch</li>
                     <li>Free members-only Coffee Catch Ups</li>
                     <li>Mama Milestones Cards — a printable set to mark every messy, hilarious stage of motherhood</li>
                     <li>Access to our private WhatsApp group for updates and connection</li>
@@ -269,7 +269,7 @@ export default function MembershipOptions() {
 
                 <div className="bg-white/10 rounded-lg p-4">
                   <h3 className="font-semibold text-lg mb-3 text-white">Collecting your tote (annual only)</h3>
-                  <p className="text-sm">Pick up your tote at any BYOBaby™ event — just show your membership confirmation at check-in.</p>
+                  <p className="text-sm">Pick up your tote at any BYOBabyⓇ event — just show your membership confirmation at check-in.</p>
                 </div>
 
               </div>
