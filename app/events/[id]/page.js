@@ -37,9 +37,11 @@ export default async function EventDetailPage({ params }) {
   // Check if booking deadline has passed
   const isBookingDeadlinePassed = event.bookingDeadline ? moment(event.bookingDeadline).isBefore(moment()) : false;
 
-  // Build event URL
+  // Build event URL and ID
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://eklektikmama.com';
+  const eventSlug = event.slug || event._id.toString();
   const eventUrl = `${baseUrl}/events/${event._id}`;
+  const eventId = `${baseUrl}/events/${eventSlug}`;
 
   // Format dates for schema
   const eventStartDate = event.date ? moment(event.date).toISOString() : null;
@@ -80,6 +82,7 @@ export default async function EventDetailPage({ params }) {
           __html: JSON.stringify({
             "@context": "https://schema.org",
             "@type": "Event",
+            "@id": eventId,
             "name": event.title,
             "description": event.description || `${event.title} by Eklektik Mama`,
             "image": event.coverImage ? `${baseUrl}${event.coverImage}` : `${baseUrl}/desktopLogo.png`,
@@ -87,6 +90,7 @@ export default async function EventDetailPage({ params }) {
             "endDate": endDate || startDate,
             "eventStatus": eventStatus,
             "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
+            "inLanguage": "en",
             "location": event.location ? {
               "@type": "Place",
               "name": event.location,
@@ -108,25 +112,58 @@ export default async function EventDetailPage({ params }) {
               }
             },
             "organizer": {
-              "@type": "Organization",
-              "name": "Eklektik Mama",
-              "url": "https://eklektikmama.com",
-              "email": "hello@eklektikmama.com",
-              "sameAs": [
-                "https://www.instagram.com/eklektikmama",
-                "https://www.facebook.com/eklektikmama"
-              ]
+              "@id": "https://eklektikmama.com/#organization"
             },
-            ...(event.segment === 'coffeeMeetup' || event.price >= 0 ? {
-              "offers": {
-                "@type": "Offer",
-                "price": event.segment === 'coffeeMeetup' ? "0" : (event.price || 0).toString(),
-                "priceCurrency": "AED",
-                "availability": availability.available ? "https://schema.org/InStock" : "https://schema.org/SoldOut",
-                "url": eventUrl,
-                "validFrom": event.bookingDeadline ? moment(event.bookingDeadline).toISOString() : moment().toISOString()
+            ...(() => {
+              // Handle multiple ticket types for mamaFit events
+              if (event.segment === 'mamaFit') {
+                return {
+                  "offers": [
+                    {
+                      "@type": "Offer",
+                      "url": eventUrl,
+                      "price": "115",
+                      "priceCurrency": "AED",
+                      "availability": availability.available ? "https://schema.org/InStock" : "https://schema.org/SoldOut",
+                      "name": "Solo mum (no sitter) - 115 AED"
+                    },
+                    {
+                      "@type": "Offer",
+                      "url": eventUrl,
+                      "price": "155",
+                      "priceCurrency": "AED",
+                      "availability": availability.available ? "https://schema.org/InStock" : "https://schema.org/SoldOut",
+                      "name": "Mum + Baby (with sitters) - 155 AED"
+                    }
+                  ]
+                };
               }
-            } : {}),
+              // Handle free events
+              if (event.segment === 'coffeeMeetup') {
+                return {
+                  "offers": {
+                    "@type": "Offer",
+                    "url": eventUrl,
+                    "price": "0",
+                    "priceCurrency": "AED",
+                    "availability": availability.available ? "https://schema.org/InStock" : "https://schema.org/SoldOut"
+                  }
+                };
+              }
+              // Handle regular priced events
+              if (event.price > 0) {
+                return {
+                  "offers": {
+                    "@type": "Offer",
+                    "url": eventUrl,
+                    "price": event.price.toString(),
+                    "priceCurrency": "AED",
+                    "availability": availability.available ? "https://schema.org/InStock" : "https://schema.org/SoldOut"
+                  }
+                };
+              }
+              return {};
+            })(),
             "url": eventUrl,
             "isAccessibleForFree": event.segment === 'coffeeMeetup' || event.price === 0
           })
