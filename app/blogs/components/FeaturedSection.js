@@ -4,7 +4,7 @@ import { BsArrowRight } from "react-icons/bs";
 import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
 
-const FeaturedSection = ({ featuredPosts }) => {
+const FeaturedSection = ({ featuredPosts, latestPosts }) => {
   const featuredRef = useRef(null);
   const featuredInView = useInView(featuredRef, { once: true, amount: 0.3 });
 
@@ -25,7 +25,9 @@ const FeaturedSection = ({ featuredPosts }) => {
     }
   };
 
-  const featuredPost = featuredPosts[0];
+  // Use latest posts if available, otherwise fall back to featured posts
+  const postsToDisplay = latestPosts && latestPosts.length > 0 ? latestPosts.slice(0, 3) : (featuredPosts && featuredPosts.length > 0 ? featuredPosts.slice(0, 3) : []);
+  const featuredPost = postsToDisplay[0];
 
 
   // Try different possible image field names
@@ -78,8 +80,8 @@ const FeaturedSection = ({ featuredPosts }) => {
           Unfiltered Blogs
         </p>
         <h2 className="md:text-[80px] font-thin text-5xl uppercase font-anton leading-[100%]">
-          FEATURED
-          <b className="font-antonio font-normal tracking-tight ml-3">POST</b>
+          LATEST
+          <b className="font-antonio font-normal tracking-tight ml-3">POSTS</b>
         </h2>
 
         {featuredPost ? (
@@ -101,7 +103,7 @@ const FeaturedSection = ({ featuredPosts }) => {
           </>
         ) : (
           <p className="font-antonio font-normal tracking-tight lg:text-5xl md:text-3xl text-xl uppercase w-[75%] mt-5">
-            No Featured Posts Available
+            No Posts Available
           </p>
         )}
       </motion.div>

@@ -120,8 +120,8 @@ export default async function BlogsPage({ searchParams }) {
         <Marquee/>
       </section>
 
-      {/* Featured Section */}
-      <FeaturedSection featuredPosts={featuredPosts} />
+      {/* Featured Section - Display Latest Posts */}
+      <FeaturedSection featuredPosts={featuredPosts} latestPosts={eklektikPosts} />
 
       {/* Categories Section */}
       <CategoriesSection allPosts={eklektikPosts} guestPosts={guestPosts} />
