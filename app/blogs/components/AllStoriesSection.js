@@ -27,36 +27,40 @@ const AllStoriesSection = ({ allPosts, featuredPosts, guestPosts = [] }) => {
     }
   };
 
-  // Get all posts excluding featured, latest 2, and guest posts
-  const getRemainingPosts = () => {
-    // Get featured post IDs
-    const featuredPostIds = featuredPosts.map(post => post.sys.id);
+  // Get all posts from all sections and sort by latest updated
+  const getAllPostsSorted = () => {
+    // Combine all posts from different sections
+    const allPostsCombined = [
+      ...(allPosts || []),
+      ...(featuredPosts || []),
+      ...(guestPosts || [])
+    ];
     
-    // Get guest post IDs
-    const guestPostIds = guestPosts.map(post => post.sys.id);
+    // Remove duplicates by post ID
+    const uniquePosts = [];
+    const seenIds = new Set();
     
-    // Get latest 2 post IDs
-    const latestPostIds = [...allPosts]
-      .sort((a, b) => new Date(b.sys.createdAt) - new Date(a.sys.createdAt))
-      .slice(0, 2)
-      .map(post => post.sys.id);
+    allPostsCombined.forEach(post => {
+      if (!seenIds.has(post.sys.id)) {
+        seenIds.add(post.sys.id);
+        uniquePosts.push(post);
+      }
+    });
     
-    // Filter out featured, latest, and guest posts
-    const remainingPosts = allPosts.filter(post => 
-      !featuredPostIds.includes(post.sys.id) && 
-      !latestPostIds.includes(post.sys.id) &&
-      !guestPostIds.includes(post.sys.id)
-    );
+    // Sort by updatedAt (latest updated first), fallback to createdAt if updatedAt is not available
+    const sortedPosts = uniquePosts.sort((a, b) => {
+      const dateA = a.sys.updatedAt || a.sys.createdAt;
+      const dateB = b.sys.updatedAt || b.sys.createdAt;
+      return new Date(dateB) - new Date(dateA);
+    });
     
-    console.log('Featured post IDs:', featuredPostIds);
-    console.log('Guest post IDs:', guestPostIds);
-    console.log('Latest post IDs:', latestPostIds);
-    console.log('Remaining posts:', remainingPosts);
+    console.log('All posts combined:', sortedPosts.length);
+    console.log('Sorted by latest updated to oldest');
     
-    return remainingPosts;
+    return sortedPosts;
   };
 
-  const remainingPosts = getRemainingPosts();
+  const allPostsSorted = getAllPostsSorted();
 
   return (
     <section ref={allStoriesRef} className="w-full h-full flex flex-col lg:px-10 px-5 py-10 text-[#093166]">
@@ -76,14 +80,14 @@ const AllStoriesSection = ({ allPosts, featuredPosts, guestPosts = [] }) => {
         variants={staggerContainer}
         transition={{ delay: 0.2 }}
       >
-        {remainingPosts.map((post, index) => (
+        {allPostsSorted.map((post, index) => (
           <BlogCard key={post.sys.id} post={post} index={index} />
         ))}
       </motion.div>
 
-      {remainingPosts.length === 0 && (
+      {allPostsSorted.length === 0 && (
         <div className="text-center py-20">
-          <p className="text-xl text-gray-500">No additional blog posts available.</p>
+          <p className="text-xl text-gray-500">No blog posts available.</p>
         </div>
       )}
     </section>
