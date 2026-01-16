@@ -7,7 +7,6 @@ const TermsAndConditions = () => {
     <div className="max-w-4xl mx-auto px-4 py-8 mt-[10em]">
       <Navbar pageType="legal" />
       <h1 className="text-3xl font-bold mb-6">TERMS AND CONDITIONS</h1>
-      <p className="text-gray-600 mb-8">Last Updated: August 30, 2025</p>
 
       <section className="mb-8">
         <h2 className="text-2xl font-semibold mb-4">1. Parties and Corporate Information</h2>

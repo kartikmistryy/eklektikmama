@@ -296,7 +296,7 @@ export default function Events() {
           animate={calendarInView ? "visible" : "hidden"}
           variants={fadeInUp}
         >
-          <p className="font-quicksand font-semibold">2025</p>
+          <p className="font-quicksand font-semibold">2026</p>
           <h2 className="text-5xl md:text-[80px] uppercase font-antonio font-bold leading-[100%]">
             Calendar view <b className="font-light">/List view</b>
           </h2>

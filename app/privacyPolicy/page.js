@@ -7,7 +7,6 @@ export default function PrivacyPolicy() {
       <Navbar pageType="legal" />
       <h1 className="text-3xl font-bold mb-6">PRIVACY POLICY</h1>
       
-      <p className="text-sm text-gray-600 mb-8">Last Updated: August 30, 2025</p>
 
       <section className="mb-8">
         <h2 className="text-2xl font-semibold mb-4">1. Introduction</h2>
