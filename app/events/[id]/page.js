@@ -2,17 +2,46 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import { headers } from "next/headers";
 import moment from "moment";
+import { connectDB } from "@/lib/db";
+import Event from "@/models/Event";
+import mongoose from "mongoose";
 
 export const dynamic = "force-dynamic";
 
 async function fetchEvent(id) {
-  const hdrs = headers();
-  const base = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
-  const res = await fetch(`${base}/api/events/${id}`, {
-    cache: 'no-store'
-  });
-  if (!res.ok) return null;
-  return res.json();
+  try {
+    await connectDB();
+    console.log('🔍 Fetching event with ID:', id);
+    
+    let event = null;
+    
+    // Try to find by ObjectId first
+    if (mongoose.Types.ObjectId.isValid(id)) {
+      console.log('✅ Valid ObjectId format, searching by _id');
+      event = await Event.findById(id);
+      console.log('📋 Event found by _id:', event ? 'Yes' : 'No');
+    }
+    
+    // Fallback: try to find by slug
+    if (!event) {
+      console.log('🔄 Trying to find event by slug:', id);
+      event = await Event.findOne({ slug: id });
+      console.log('📋 Event found by slug:', event ? 'Yes' : 'No');
+    }
+    
+    if (!event) {
+      console.log('❌ Event not found for ID:', id);
+      return null;
+    }
+    
+    // Convert Mongoose document to plain object
+    const eventData = event.toObject ? event.toObject() : event;
+    console.log('✅ Event found:', eventData.title || 'Untitled');
+    return eventData;
+  } catch (error) {
+    console.error('❌ Error fetching event:', error);
+    return null;
+  }
 }
 
 async function fetchAvailability(id) {

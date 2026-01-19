@@ -8,6 +8,10 @@ import { google } from "googleapis";
 import { sendBookingConfirmationEmail } from "@/lib/mailchimp";
 import { updateMemberSavings, addBookingToEventSheet, getEventBookingsCount } from "@/lib/googleSheets";
 
+// Route segment config
+export const dynamic = 'force-dynamic';
+export const runtime = 'nodejs';
+
 /**
  * Google Sheets Column Structure:
  * 
@@ -28,10 +32,18 @@ import { updateMemberSavings, addBookingToEventSheet, getEventBookingsCount } fr
 export async function GET(req) {
   try {
     console.log('🎯 CHECKOUT SUCCESS ROUTE CALLED');
+    
+    // Check if Stripe is configured
+    if (!process.env.STRIPE_SECRET_KEY) {
+      console.error('❌ STRIPE_SECRET_KEY is not configured');
+      return NextResponse.redirect(new URL('/events?error=stripe_not_configured', req.url));
+    }
+    
     const { searchParams } = new URL(req.url);
     const sessionId = searchParams.get('session_id');
     
     console.log('📝 Session ID:', sessionId);
+    console.log('📝 Request URL:', req.url);
     
     if (!sessionId) {
       console.log('❌ No session ID provided');
@@ -41,8 +53,19 @@ export async function GET(req) {
     const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
     
     console.log('🔄 Retrieving session from Stripe...');
-    const session = await stripe.checkout.sessions.retrieve(sessionId);
-    console.log('✅ Session retrieved successfully');
+    let session;
+    try {
+      session = await stripe.checkout.sessions.retrieve(sessionId);
+      console.log('✅ Session retrieved successfully');
+    } catch (stripeError) {
+      console.error('❌ Error retrieving Stripe session:', stripeError);
+      console.error('Stripe error details:', {
+        message: stripeError.message,
+        type: stripeError.type,
+        code: stripeError.code
+      });
+      return NextResponse.redirect(new URL('/events?error=stripe_session_error', req.url));
+    }
     
     console.log('💳 Session payment status:', session.payment_status);
     console.log('📋 Session metadata:', session.metadata);
@@ -70,13 +93,28 @@ export async function GET(req) {
     }
 
     // Connect to database
-    await connectDB();
+    try {
+      await connectDB();
+      console.log('✅ Database connected');
+    } catch (dbError) {
+      console.error('❌ Database connection error:', dbError);
+      return NextResponse.redirect(new URL('/events?error=database_error', req.url));
+    }
     
-    const eventId = session.metadata.eventId;
+    const eventId = session.metadata?.eventId;
+    if (!eventId) {
+      console.error('❌ No eventId in session metadata');
+      console.log('Session metadata:', session.metadata);
+      return NextResponse.redirect(new URL('/events?error=no_event_id', req.url));
+    }
+    
+    console.log('📋 Event ID from metadata:', eventId);
     const event = await Event.findById(eventId);
     if (!event) {
+      console.error('❌ Event not found for ID:', eventId);
       return NextResponse.redirect(new URL('/events?error=event_not_found', req.url));
     }
+    console.log('✅ Event found:', event.title);
 
     // Enforce booking cutoff here as well in case payment completes after deadline
     const now = new Date();
@@ -520,7 +558,7 @@ export async function GET(req) {
         
         // Send booking confirmation email after successful Google Sheets update
         try {
-          console.log('📧 Sending confirmation email...');
+          console.log('📧 Sending confirmation email to main user...');
           const emailResult = await sendBookingConfirmationEmail(
             {
               userEmail,
@@ -543,9 +581,63 @@ export async function GET(req) {
           );
           
           if (emailResult.success) {
-            console.log('✅ Confirmation email sent successfully');
+            console.log('✅ Confirmation email sent successfully to main user');
           } else {
             console.log('❌ Email sending failed:', emailResult.error);
+          }
+          
+          // Send emails to extra guests if they exist
+          if (extraGuestEmails && extraGuestEmails.length > 0 && extraGuestNames && extraGuestNames.length > 0) {
+            console.log(`📧 Sending confirmation emails to ${extraGuestEmails.length} extra guest(s)...`);
+            
+            for (let i = 0; i < extraGuestEmails.length; i++) {
+              const guestEmail = extraGuestEmails[i];
+              const guestName = extraGuestNames[i] || 'Valued Guest';
+              
+              // Skip if email is invalid
+              if (!guestEmail || !guestEmail.trim()) {
+                console.log(`⚠️ Skipping invalid email for guest ${i + 1}`);
+                continue;
+              }
+              
+              try {
+                // Generate email content for the extra guest
+                const { generateBookingEmailContent } = await import('@/lib/emailTemplates');
+                const guestEmailContent = await generateBookingEmailContent(
+                  {
+                    userEmail: guestEmail,
+                    guardianName: guestName,
+                    childName: '',
+                    numberOfTickets: 1, // Each guest gets 1 ticket
+                    transactionId,
+                    ticketNumbers: ticketNumbers.length > i + 1 ? [ticketNumbers[i + 1]] : []
+                  },
+                  {
+                    title: event.title,
+                    date: event.date,
+                    location: event.location,
+                    description: event.description,
+                    price: event.price,
+                    segment: event.segment,
+                    message: event.message,
+                    meetingLink: event.meetingLink
+                  }
+                );
+                
+                // Send email to extra guest using the same service as main user
+                const { sendEmailViaService } = await import('@/lib/mailchimp');
+                const guestEmailResult = await sendEmailViaService(guestEmailContent.to_email, guestEmailContent);
+                
+                if (guestEmailResult.success) {
+                  console.log(`✅ Confirmation email sent successfully to extra guest ${i + 1}: ${guestEmail}`);
+                } else {
+                  console.log(`❌ Failed to send email to extra guest ${i + 1} (${guestEmail}):`, guestEmailResult.error);
+                }
+              } catch (guestEmailError) {
+                console.error(`❌ Error sending email to extra guest ${i + 1} (${guestEmail}):`, guestEmailError);
+                // Continue with other guests even if one fails
+              }
+            }
           }
           
         } catch (emailError) {

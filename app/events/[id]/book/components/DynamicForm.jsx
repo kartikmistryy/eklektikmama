@@ -306,27 +306,29 @@ const DynamicForm = ({ formConfig, onSubmit, submitting, event, onFormDataChange
           }
         }
         
-        // Validate main course selection for all extra guests (all events)
-        if (!formData.extraGuestMainCourses || !Array.isArray(formData.extraGuestMainCourses)) {
-          alert('Please select main course for all extra guests.');
-          return;
-        }
-        
-        const filledMainCourses = formData.extraGuestMainCourses.filter(course => course && course.trim());
-        if (filledMainCourses.length !== extraGuests) {
-          alert(`Please select main course for all ${extraGuests} extra guest(s).`);
-          return;
-        }
+        // Validate main course selection for all extra guests (all events except mamafit)
+        if (event?.segment !== 'mamaFit') {
+          if (!formData.extraGuestMainCourses || !Array.isArray(formData.extraGuestMainCourses)) {
+            alert('Please select main course for all extra guests.');
+            return;
+          }
+          
+          const filledMainCourses = formData.extraGuestMainCourses.filter(course => course && course.trim());
+          if (filledMainCourses.length !== extraGuests) {
+            alert(`Please select main course for all ${extraGuests} extra guest(s).`);
+            return;
+          }
 
-        // Validate individual menu fields (especially for breakfast/festive events)
-        const extraGuestMenuSelections = formData.extraGuestMenuSelections || [];
-        for (let guestIndex = 0; guestIndex < extraGuests; guestIndex++) {
-          const selections = extraGuestMenuSelections[guestIndex] || {};
-          for (const menuField of menuFieldConfigs) {
-            const value = selections[menuField.fieldName];
-            if (!value || value.trim() === '') {
-              alert(`Please select ${menuField.label.toLowerCase()} for guest ${guestIndex + 1}.`);
-              return;
+          // Validate individual menu fields (especially for breakfast/festive events)
+          const extraGuestMenuSelections = formData.extraGuestMenuSelections || [];
+          for (let guestIndex = 0; guestIndex < extraGuests; guestIndex++) {
+            const selections = extraGuestMenuSelections[guestIndex] || {};
+            for (const menuField of menuFieldConfigs) {
+              const value = selections[menuField.fieldName];
+              if (!value || value.trim() === '') {
+                alert(`Please select ${menuField.label.toLowerCase()} for guest ${guestIndex + 1}.`);
+                return;
+              }
             }
           }
         }
@@ -799,8 +801,8 @@ const DynamicForm = ({ formConfig, onSubmit, submitting, event, onFormDataChange
                     />
                   </div>
                   
-                  {/* Menu selections per guest */}
-                  {menuFieldConfigs.map((menuField) => {
+                  {/* Menu selections per guest - hidden for mamafit events */}
+                  {event?.segment !== 'mamaFit' && menuFieldConfigs.map((menuField) => {
                     const guestSelections = extraGuestMenuSelections[index] || {};
                     const currentValue = guestSelections[menuField.fieldName] || '';
                     return (
@@ -862,11 +864,13 @@ const DynamicForm = ({ formConfig, onSubmit, submitting, event, onFormDataChange
                 // Total adult guests = number of tickets (1 for user + extra guests)
                 const totalAdultGuests = numberOfTickets;
                 
-                // For mamaFit events, use ticket type price
+                // For mamaFit events, use ticket type price with special pricing for extra guests
                 let basePrice;
                 if (event.segment === 'mamaFit' && formData.ticketType) {
-                  const ticketPrice = formData.ticketType.includes('Solo mum') ? 115 : 155;
-                  basePrice = ticketPrice * totalAdultGuests;
+                  const baseTicketPrice = formData.ticketType.includes('Solo mum') ? 115 : 155;
+                  const extraGuests = Math.max(0, numberOfTickets - 1); // Number of extra guests
+                  const extraGuestPrice = 115; // Each extra guest costs 115 AED
+                  basePrice = baseTicketPrice + (extraGuests * extraGuestPrice);
                 } else {
                   basePrice = event.price * totalAdultGuests;
                 }

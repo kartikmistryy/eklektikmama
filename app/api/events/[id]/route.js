@@ -9,24 +9,36 @@ export async function GET(req, { params }) {
     await connectDB();
     
     const { id } = await params;
+    console.log('🔍 Fetching event with ID:', id);
     let event = null;
 
     if (mongoose.Types.ObjectId.isValid(id)) {
+      console.log('✅ Valid ObjectId format, searching by _id');
       event = await Event.findById(id);
+      console.log('📋 Event found by _id:', event ? 'Yes' : 'No');
+    } else {
+      console.log('⚠️ Not a valid ObjectId format');
     }
 
     // Fallback: treat id as slug when not a valid ObjectId or no event found
     if (!event) {
+      console.log('🔄 Trying to find event by slug:', id);
       event = await Event.findOne({ slug: id });
+      console.log('📋 Event found by slug:', event ? 'Yes' : 'No');
     }
     
     if (!event) {
+      console.log('❌ Event not found for ID:', id);
       return NextResponse.json({ error: 'Event not found' }, { status: 404 });
     }
     
-    return NextResponse.json(event);
+    // Convert Mongoose document to plain object for JSON serialization
+    const eventData = event.toObject ? event.toObject() : event;
+    console.log('✅ Event found, returning data');
+    return NextResponse.json(eventData);
   } catch (error) {
-    console.error('Error fetching event:', error);
+    console.error('❌ Error fetching event:', error);
+    console.error('Error stack:', error.stack);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

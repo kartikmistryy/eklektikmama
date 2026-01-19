@@ -262,18 +262,28 @@ export async function POST(req) {
     // Get form data for use in pricing and discount calculations
     const formData = otherFormData.otherFormData || otherFormData;
     
+    // Calculate total adult guests - when Friends & Family discount is applied, it's the number of tickets
+    // (1 for user + extra guests)
+    const totalAdultGuests = parseInt(numberOfTickets) || 1;
+    const extraGuests = Math.max(0, totalAdultGuests - 1); // Number of extra guests
+    
     // Special pricing for MamaFit events based on ticket type
     if (event.segment === 'mamaFit') {
       const ticketType = formData.ticketType || '';
+      let baseTicketPrice;
       
       if (ticketType.includes('Solo mum')) {
-        originalPrice = 115; // Solo mum (no sitter)
+        baseTicketPrice = 115; // Solo mum (no sitter)
       } else if (ticketType.includes('Mum + Baby')) {
-        originalPrice = 155; // Mum + Baby (with sitters)
+        baseTicketPrice = 155; // Mum + Baby (with sitters)
       } else {
         // Default to Solo mum pricing if ticket type not selected
-        originalPrice = 115;
+        baseTicketPrice = 115;
       }
+      
+      // For mamafit: base ticket price + (extra guests * 115)
+      const extraGuestPrice = 115; // Each extra guest costs 115 AED
+      originalPrice = baseTicketPrice + (extraGuests * extraGuestPrice);
     }
     
     // Check for Friends & Family discount for mamaBreakfast events
@@ -290,10 +300,6 @@ export async function POST(req) {
       detected: applyFriendsFamilyDiscount,
       familyMemberNames: formData.familyMemberNames
     });
-    
-    // Calculate total adult guests - when Friends & Family discount is applied, it's the number of tickets
-    // (1 for user + extra guests)
-    const totalAdultGuests = parseInt(numberOfTickets) || 1;
     
     // Process extra guest data (always process when extra guests exist, not just when discount is applied)
     let extraGuestNamesStr = '';
@@ -331,7 +337,9 @@ export async function POST(req) {
     }
     
     // Calculate price based on total adult guests
-    const totalPrice = originalPrice * totalAdultGuests;
+    // For mamafit, originalPrice already includes the total (base + extra guests)
+    // For other events, multiply by total adult guests
+    const totalPrice = event.segment === 'mamaFit' ? originalPrice : (originalPrice * totalAdultGuests);
     
     // Apply member discount first, then Friends & Family discount
     let discountedPrice = isMember ? totalPrice * (1 - memberDiscount / 100) : totalPrice;
