@@ -85,12 +85,45 @@ export async function POST(req) {
       console.log(`Event ${event.title} is members-only, checking membership status for ${email}`);
       
       try {
+        // Normalize email the same way as the verify endpoint (lowercase and trim)
+        const normalizedEmail = email.toLowerCase().trim();
+        console.log(`🔍 Looking up membership for normalized email: ${normalizedEmail}`);
+        
         const membership = await Membership.findOne({
-          email: email.toLowerCase(),
+          email: normalizedEmail,
           status: { $in: ['active', 'past_due'] }
         });
 
-        if (!membership || !membership.isActive()) {
+        console.log(`📋 Membership lookup result:`, {
+          found: !!membership,
+          email: normalizedEmail,
+          status: membership?.status,
+          currentPeriodEnd: membership?.currentPeriodEnd,
+          isActive: membership ? membership.isActive() : false
+        });
+
+        // Check if membership exists and is active
+        if (!membership) {
+          console.log(`❌ No membership found for ${normalizedEmail}`);
+          return NextResponse.json({ 
+            error: 'This event is exclusive to Eklektik AF members only. Please become a member to book this event.',
+            isMembersOnly: true,
+            membershipRequired: true
+          }, { status: 403 });
+        }
+
+        // Check if membership is active using the same logic as verify endpoint
+        // This matches the logic in /api/membership/verify
+        const now = new Date();
+        const isActive = membership.status === 'active' && 
+                        (!membership.currentPeriodEnd || new Date(membership.currentPeriodEnd) > now);
+
+        if (!isActive) {
+          console.log(`❌ Membership not active for ${normalizedEmail}:`, {
+            status: membership.status,
+            currentPeriodEnd: membership.currentPeriodEnd,
+            isExpired: membership.currentPeriodEnd ? new Date(membership.currentPeriodEnd) <= now : 'no end date'
+          });
           return NextResponse.json({ 
             error: 'This event is exclusive to Eklektik AF members only. Please become a member to book this event.',
             isMembersOnly: true,
@@ -98,9 +131,10 @@ export async function POST(req) {
           }, { status: 403 });
         }
         
-        console.log(`Membership verified for ${email} - access granted to members-only event`);
+        console.log(`✅ Membership verified for ${normalizedEmail} - access granted to members-only event`);
       } catch (membershipError) {
-        console.error('Error checking membership for members-only event:', membershipError);
+        console.error('❌ Error checking membership for members-only event:', membershipError);
+        console.error('Error stack:', membershipError.stack);
         return NextResponse.json({ 
           error: 'Unable to verify membership status. Please try again or contact support.',
           isMembersOnly: true,

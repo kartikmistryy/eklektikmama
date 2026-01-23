@@ -112,9 +112,25 @@ export default function BookingPage({ params }) {
     return null;
   };
 
-  // Check membership status when email is entered
+  // Check membership status - called before form submission
   const checkMembershipStatus = async (email) => {
-    if (!email || !email.includes('@')) return;
+    if (!email || !email.includes('@')) {
+      return { isMember: false, error: 'Invalid email address' };
+    }
+    
+    // Basic email validation - check if it looks like a complete email
+    // Must have @ and at least one dot after the @
+    const emailParts = email.split('@');
+    if (emailParts.length !== 2) {
+      return { isMember: false, error: 'Invalid email format' };
+    }
+    const domain = emailParts[1];
+    if (!domain || !domain.includes('.')) {
+      return { isMember: false, error: 'Invalid email domain' };
+    }
+    
+    // Log the email before sending to help debug truncation issues
+    console.log('📧 Checking membership for email:', email.trim());
     
     try {
       const response = await fetch('/api/membership/verify', {
@@ -122,37 +138,21 @@ export default function BookingPage({ params }) {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ email }),
+        body: JSON.stringify({ email: email.trim() }), // Ensure we trim before sending
       });
       
       const data = await response.json();
-      setIsMember(data.isMember || false);
-      setMembershipChecked(true);
+      console.log('📧 Membership check response:', data);
+      return { isMember: data.isMember || false, error: null };
     } catch (error) {
       console.error('Error checking membership:', error);
-      setIsMember(false);
-      setMembershipChecked(true);
+      return { isMember: false, error: 'Failed to verify membership. Please try again.' };
     }
   };
 
   // Handle form data changes and update price
   const handleFormDataChange = (newFormData) => {
     setFormData(newFormData);
-    
-    // Check membership status when email changes - check multiple possible email field names
-    const emailFields = ['email', 'motherEmail', 'guardianEmail', 'userEmail'];
-    let emailToCheck = null;
-    
-    for (const field of emailFields) {
-      if (newFormData[field] && newFormData[field] !== formData[field]) {
-        emailToCheck = newFormData[field];
-        break;
-      }
-    }
-    
-    if (emailToCheck) {
-      checkMembershipStatus(emailToCheck);
-    }
     
     // Update price for Family Day events
     if (event?.segment === 'familyDay' && newFormData.numberOfChildren) {
@@ -190,6 +190,39 @@ export default function BookingPage({ params }) {
         alert('Sorry, this event is now fully booked. Please try another event.');
         setSubmitting(false);
         return;
+      }
+      
+      // Check membership status for members-only events BEFORE proceeding to payment
+      if (isMembersOnlyEvent) {
+        // Get email from form data - check multiple possible field names
+        const emailFields = ['email', 'motherEmail', 'guardianEmail', 'userEmail'];
+        let emailToCheck = null;
+        
+        for (const field of emailFields) {
+          if (formData[field]) {
+            emailToCheck = String(formData[field]).trim();
+            break;
+          }
+        }
+        
+        if (!emailToCheck) {
+          alert('Please enter your email address to continue.');
+          setSubmitting(false);
+          return;
+        }
+        
+        // Check membership status
+        console.log('🔍 Validating membership for members-only event...');
+        const membershipResult = await checkMembershipStatus(emailToCheck);
+        
+        if (!membershipResult.isMember) {
+          alert('👑 This event is exclusive to Eklektik AF members only. Please become a member to book this event.\n\nYou will be redirected to the membership page.');
+          setSubmitting(false);
+          router.push('/eklektikmamaMembership');
+          return;
+        }
+        
+        console.log('✅ Membership verified - proceeding to payment');
       }
       // Map form field names to API expected field names
       const mappedData = {
@@ -254,7 +287,9 @@ export default function BookingPage({ params }) {
       
       if (data.isFreeEvent) {
         // Handle free event booking
-        alert(`✅ ${data.message}\n\nEvent: ${data.bookingData.eventTitle}\nDate: ${new Date(data.bookingData.eventDate).toLocaleDateString()}\nMember: ${data.bookingData.memberName}\nChild: ${data.bookingData.childName}`);
+        const memberName = data.bookingData?.memberName || data.bookingData?.guardianName || 'N/A';
+        const childName = data.bookingData?.childName || 'N/A';
+        alert(`✅ ${data.message}\n\nEvent: ${data.bookingData.eventTitle}\nDate: ${new Date(data.bookingData.eventDate).toLocaleDateString()}\nMember: ${memberName}\nChild: ${childName}`);
         router.push('/events');
       } else if (data.url) {
         // Redirect to Stripe checkout for paid events
@@ -403,39 +438,8 @@ export default function BookingPage({ params }) {
     );
   }
 
-  // Check if this is a members-only event and user is not a member
-  if (isMembersOnlyEvent && !isMember && membershipChecked) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center max-w-md mx-auto p-6">
-          <div className="bg-purple-50 border border-purple-200 rounded-lg p-6">
-            <div className="text-purple-600 text-6xl mb-4">👑</div>
-            <h1 className="text-2xl font-bold text-gray-800 mb-2">Members Only Event</h1>
-            <p className="text-gray-600 mb-4">
-              This event is exclusive to Eklektik AF members only. Please become a member to book this event.
-            </p>
-            <p className="text-sm text-gray-500 mb-6">
-              Join our community to access exclusive events, discounts, and more!
-            </p>
-            <div className="space-y-3">
-              <button 
-                onClick={() => router.push('/eklektikmamaMembership')} 
-                className="w-full px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700"
-              >
-                Become a Member
-              </button>
-              <button 
-                onClick={() => router.push('/events')} 
-                className="w-full px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300"
-              >
-                View Other Events
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
+  // Note: Membership validation now happens on form submission, not during typing
+  // This allows users to fill out the form without premature validation
 
   return (
     <div className="min-h-screen bg-gray-50 py-8" style={{ paddingTop: '10em' }}>

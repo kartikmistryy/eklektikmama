@@ -101,13 +101,27 @@ export default function BookingSuccessPage({ params }) {
             
             <div className="flex justify-between">
               <span className="font-semibold text-gray-600">Guardian/Parent Name:</span>
-              <span className="text-gray-800">{booking.guardianName || 'Not provided'}</span>
+              <span className="text-gray-800">{booking.guardianName || booking.memberName || 'Not provided'}</span>
             </div>
+            
+            {booking.childName && (
+              <div className="flex justify-between">
+                <span className="font-semibold text-gray-600">Child Name:</span>
+                <span className="text-gray-800">{booking.childName}</span>
+              </div>
+            )}
             
             <div className="flex justify-between">
               <span className="font-semibold text-gray-600">Tickets:</span>
               <span className="text-gray-800">{booking.numberOfTickets}</span>
             </div>
+            
+            {booking.isMember && (
+              <div className="flex justify-between">
+                <span className="font-semibold text-gray-600">Member Savings:</span>
+                <span className="text-green-600 font-semibold">AED {booking.memberSavings || 0}</span>
+              </div>
+            )}
             
             <div className="flex justify-between">
               <span className="font-semibold text-gray-600">Transaction ID:</span>

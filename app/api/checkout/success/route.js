@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import Stripe from "stripe";
+import mongoose from "mongoose";
 import { connectDB } from "@/lib/db";
 import Event from "@/models/Event";
 import Booking from "@/models/Booking";
@@ -109,9 +110,19 @@ export async function GET(req) {
     }
     
     console.log('📋 Event ID from metadata:', eventId);
-    const event = await Event.findById(eventId);
+    console.log('📋 Event ID type:', typeof eventId);
+    console.log('📋 Event ID is valid ObjectId:', mongoose.Types.ObjectId.isValid(eventId));
+    
+    // Ensure eventId is a valid ObjectId
+    let validEventId = eventId;
+    if (!mongoose.Types.ObjectId.isValid(eventId)) {
+      console.error('❌ Invalid eventId format:', eventId);
+      return NextResponse.redirect(new URL('/events?error=invalid_event_id', req.url));
+    }
+    
+    const event = await Event.findById(validEventId);
     if (!event) {
-      console.error('❌ Event not found for ID:', eventId);
+      console.error('❌ Event not found for ID:', validEventId);
       return NextResponse.redirect(new URL('/events?error=event_not_found', req.url));
     }
     console.log('✅ Event found:', event.title);
@@ -242,28 +253,85 @@ export async function GET(req) {
     }
 
     // Save to database with all additional data
-    const booking = await Booking.create({
-      eventId,
-      guardianName,
-      childName,
-      userEmail,
-      phone,
-      numberOfTickets: totalTicketsForBooking,
-      transactionId,
-      paymentStatus: 'paid',
-      photographyConsent,
-      additionalData,
-      eventSegment,
-      isMember: session.metadata.isMember === 'true',
-      memberSavings: parseFloat(session.metadata.memberSavings || '0'),
-      choiceI,
-      choiceII,
-      choiceIII,
-      ticketNumbers,
-      ...extractedData
-    });
+    let booking;
+    try {
+      console.log('💾 Creating booking in MongoDB...', {
+        eventId: validEventId,
+        transactionId,
+        guardianName,
+        userEmail,
+        numberOfTickets: totalTicketsForBooking
+      });
+      
+      const bookingData = {
+        eventId: validEventId, // Use validated eventId
+        guardianName,
+        childName,
+        userEmail,
+        phone,
+        numberOfTickets: totalTicketsForBooking,
+        transactionId,
+        paymentStatus: 'paid',
+        photographyConsent,
+        additionalData,
+        eventSegment,
+        isMember: session.metadata.isMember === 'true',
+        memberSavings: parseFloat(session.metadata.memberSavings || '0'),
+        choiceI,
+        choiceII,
+        choiceIII,
+        ticketNumbers,
+        ...extractedData
+      };
+      
+      console.log('📋 Booking data to save:', {
+        eventId: bookingData.eventId,
+        transactionId: bookingData.transactionId,
+        numberOfTickets: bookingData.numberOfTickets,
+        hasEventId: !!bookingData.eventId,
+        eventIdType: typeof bookingData.eventId,
+        eventIdIsValid: mongoose.Types.ObjectId.isValid(bookingData.eventId)
+      });
+      
+      booking = await Booking.create(bookingData);
 
-    console.log('✅ Booking created successfully:', booking._id);
+      console.log('✅ Booking created successfully in MongoDB:', booking._id);
+      console.log('📋 Booking details:', {
+        _id: booking._id,
+        transactionId: booking.transactionId,
+        eventId: booking.eventId,
+        numberOfTickets: booking.numberOfTickets,
+        createdAt: booking.createdAt
+      });
+      
+      // Immediately verify the booking was saved
+      const verifyBooking = await Booking.findById(booking._id);
+      if (!verifyBooking) {
+        console.error('❌ CRITICAL: Booking was created but not found in database!');
+        throw new Error('Booking creation verification failed - booking not found after creation');
+      }
+      console.log('✅ Booking verified in database immediately after creation');
+      
+    } catch (bookingError) {
+      console.error('❌ Error creating booking in MongoDB:', bookingError);
+      console.error('❌ Booking error details:', {
+        message: bookingError.message,
+        name: bookingError.name,
+        code: bookingError.code,
+        errors: bookingError.errors,
+        stack: bookingError.stack,
+        eventId: validEventId,
+        transactionId
+      });
+      
+      // Check if it's a validation error
+      if (bookingError.name === 'ValidationError') {
+        console.error('❌ Validation errors:', bookingError.errors);
+      }
+      
+      // Don't proceed if booking creation fails
+      return NextResponse.redirect(new URL(`/events/${validEventId}?error=booking_failed`, req.url));
+    }
 
     // Handle newsletter signup if requested
     if (extractedData.newsletterSignup === 'Yes') {
@@ -350,14 +418,25 @@ export async function GET(req) {
     booking.extraGuestMainCourses = extraGuestMainCourses.length > 0 ? extraGuestMainCourses.join(', ') : '';
     
     // Save booking with extra data
-    await booking.save();
-    
-    console.log('✅ Extra guest data saved to booking:', {
-      extraGuestNames: extraGuestNames.length,
-      extraGuestEmails: extraGuestEmails.length,
-      extraGuestMainCourses: extraGuestMainCourses.length,
-      extraObject: booking.extra
-    });
+    try {
+      console.log('💾 Saving booking with extra guest data...');
+      await booking.save();
+      console.log('✅ Extra guest data saved to booking:', {
+        bookingId: booking._id,
+        extraGuestNames: extraGuestNames.length,
+        extraGuestEmails: extraGuestEmails.length,
+        extraGuestMainCourses: extraGuestMainCourses.length,
+        extraObject: booking.extra
+      });
+    } catch (saveError) {
+      console.error('❌ Error saving booking with extra data:', saveError);
+      console.error('❌ Save error details:', {
+        message: saveError.message,
+        name: saveError.name,
+        bookingId: booking._id
+      });
+      // Continue anyway - the booking was created, just extra data failed to save
+    }
     
     // Note: We no longer create separate booking records for extra guests
     // All extra guest data is stored in the main booking's 'extra' object and comma-separated fields
@@ -392,6 +471,25 @@ export async function GET(req) {
       }
     }
 
+    // Verify booking was created successfully before proceeding
+    if (!booking || !booking._id) {
+      console.error('❌ Booking was not created successfully, cannot proceed to Google Sheets');
+      return NextResponse.redirect(new URL(`/events/${eventId}?error=booking_creation_failed`, req.url));
+    }
+    
+    // Verify booking exists in database
+    try {
+      const verifyBooking = await Booking.findById(booking._id);
+      if (!verifyBooking) {
+        console.error('❌ Booking not found in database after creation:', booking._id);
+        return NextResponse.redirect(new URL(`/events/${eventId}?error=booking_not_saved`, req.url));
+      }
+      console.log('✅ Verified booking exists in database:', verifyBooking._id);
+    } catch (verifyError) {
+      console.error('❌ Error verifying booking in database:', verifyError);
+      return NextResponse.redirect(new URL(`/events/${eventId}?error=booking_verification_failed`, req.url));
+    }
+    
     // Save to Google Sheets based on event segment
     let sheetsResult = { success: false, error: 'Not configured' };
     
@@ -410,7 +508,20 @@ export async function GET(req) {
 
         // Prepare comprehensive booking data for Google Sheets
         // Reload booking from database to ensure we have the latest data including extra object
-        const updatedBooking = await Booking.findById(booking._id);
+        let updatedBooking;
+        try {
+          updatedBooking = await Booking.findById(booking._id);
+          if (!updatedBooking) {
+            console.error('❌ Booking not found when reloading:', booking._id);
+            throw new Error(`Booking ${booking._id} not found in database`);
+          }
+          console.log('✅ Booking reloaded from database:', updatedBooking._id);
+        } catch (reloadError) {
+          console.error('❌ Error reloading booking from database:', reloadError);
+          // Use the booking object we already have
+          updatedBooking = booking;
+          console.log('⚠️ Using existing booking object instead of reloaded version');
+        }
         
         const bookingData = {
           ...updatedBooking.toObject(),
@@ -548,9 +659,30 @@ export async function GET(req) {
         const ticketNumber = await getEventBookingsCount(event);
         
         // Update booking with ticket number
-        await Booking.findByIdAndUpdate(booking._id, {
-          ticketNumber
-        });
+        try {
+          console.log('💾 Updating booking with ticket number:', ticketNumber);
+          const updatedBooking = await Booking.findByIdAndUpdate(
+            booking._id,
+            { ticketNumber },
+            { new: true } // Return updated document
+          );
+          
+          if (!updatedBooking) {
+            console.error('❌ Failed to update booking with ticket number - booking not found:', booking._id);
+          } else {
+            console.log('✅ Booking updated with ticket number:', {
+              bookingId: updatedBooking._id,
+              ticketNumber: updatedBooking.ticketNumber
+            });
+          }
+        } catch (updateError) {
+          console.error('❌ Error updating booking with ticket number:', updateError);
+          console.error('❌ Update error details:', {
+            message: updateError.message,
+            bookingId: booking._id,
+            ticketNumber
+          });
+        }
         
         sheetsResult = { success: true, ticketNumber };
         console.log('🎫 Ticket number assigned:', ticketNumber);
@@ -654,14 +786,43 @@ export async function GET(req) {
       sheetsResult = { success: false, error: 'Event-specific sheet not configured' };
     }
 
+    // Final verification: Check if booking still exists in MongoDB
+    try {
+      const finalCheck = await Booking.findById(booking._id);
+      if (!finalCheck) {
+        console.error('❌ CRITICAL: Booking not found in final verification!', booking._id);
+        console.error('❌ This means the booking was created but then lost from the database');
+        return NextResponse.redirect(new URL(`/events/${validEventId}?error=booking_lost`, req.url));
+      }
+      console.log('✅ Final verification: Booking confirmed in MongoDB:', {
+        bookingId: finalCheck._id,
+        transactionId: finalCheck.transactionId,
+        eventId: finalCheck.eventId,
+        numberOfTickets: finalCheck.numberOfTickets,
+        paymentStatus: finalCheck.paymentStatus
+      });
+      
+      // Also verify booking count for this event
+      const eventBookingCount = await Booking.countDocuments({ 
+        eventId: validEventId,
+        paymentStatus: 'paid'
+      });
+      console.log(`📊 Total paid bookings for this event in MongoDB: ${eventBookingCount}`);
+      
+    } catch (finalCheckError) {
+      console.error('❌ Error in final booking verification:', finalCheckError);
+      // Continue anyway - we'll log the error but still redirect
+    }
+    
     // Redirect to success page with booking details
     console.log('🎉 BOOKING PROCESS COMPLETED SUCCESSFULLY!');
     console.log(`📋 Booking ID: ${booking._id}`);
+    console.log(`📋 Transaction ID: ${transactionId}`);
     console.log(`📊 Google Sheets: ${sheetsResult.success ? 'SUCCESS' : 'FAILED'}`);
     console.log(`📧 Email: SENT`);
     console.log(`🎫 Ticket Numbers: ${ticketNumbers.join(', ')}`);
     
-    const successUrl = new URL(`/events/${eventId}/success?booking_id=${booking._id}`, req.url);
+    const successUrl = new URL(`/events/${validEventId}/success?booking_id=${booking._id}`, req.url);
     return NextResponse.redirect(successUrl);
 
   } catch (error) {

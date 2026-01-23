@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { google } from "googleapis";
 import { connectDB } from "@/lib/db";
 import Event from "@/models/Event";
+import Booking from "@/models/Booking";
 import { getEventBookingsCount } from "@/lib/googleSheets";
 
 // Legacy segment capacity limits (fallback for events without seat limits)
@@ -65,17 +66,35 @@ export async function GET(req, { params }) {
       });
     }
     
-    // Use the new getEventBookingsCount function to get accurate booking count
+    // Get booking count from MongoDB first (most reliable)
     let existingBookings = 0;
+    let mongoBookingsCount = 0;
+    let sheetsBookingsCount = 0;
     
     try {
-      existingBookings = await getEventBookingsCount(event);
-      console.log(`Found ${existingBookings} existing bookings for event: ${event.title}`);
-    } catch (bookingError) {
-      console.error('Error getting booking count:', bookingError);
-      // If we can't get booking count, assume no bookings for safety
-      existingBookings = 0;
+      // Count bookings from MongoDB
+      mongoBookingsCount = await Booking.countDocuments({ 
+        eventId: event._id,
+        paymentStatus: 'paid'
+      });
+      console.log(`📊 MongoDB bookings count for event "${event.title}": ${mongoBookingsCount}`);
+    } catch (mongoError) {
+      console.error('❌ Error counting bookings from MongoDB:', mongoError);
     }
+    
+    // Also get count from Google Sheets (for comparison)
+    try {
+      sheetsBookingsCount = await getEventBookingsCount(event);
+      console.log(`📊 Google Sheets bookings count for event "${event.title}": ${sheetsBookingsCount}`);
+    } catch (sheetsError) {
+      console.error('❌ Error getting booking count from Google Sheets:', sheetsError);
+    }
+    
+    // Use MongoDB count as primary source (most reliable)
+    // Fall back to Google Sheets if MongoDB count is 0 but Sheets has data
+    existingBookings = mongoBookingsCount > 0 ? mongoBookingsCount : sheetsBookingsCount;
+    
+    console.log(`📊 Final booking count for "${event.title}": ${existingBookings} (MongoDB: ${mongoBookingsCount}, Sheets: ${sheetsBookingsCount})`);
     
     // Calculate remaining capacity
     const remaining = Math.max(0, totalCapacity - existingBookings);
@@ -87,11 +106,18 @@ export async function GET(req, { params }) {
       total: totalCapacity,
       actualTotal: totalCapacity,
       existing: existingBookings,
+      mongoBookingsCount,
+      sheetsBookingsCount,
       segment: eventSegment,
       isUsingLegacyLimit,
       message: available 
         ? `${remaining} tickets remaining` 
-        : 'Event is fully booked'
+        : 'Event is fully booked',
+      debug: {
+        source: mongoBookingsCount > 0 ? 'MongoDB' : 'Google Sheets',
+        mongoCount: mongoBookingsCount,
+        sheetsCount: sheetsBookingsCount
+      }
     });
     
   } catch (error) {

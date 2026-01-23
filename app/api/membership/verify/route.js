@@ -19,20 +19,53 @@ export async function POST(req) {
       );
     }
 
-    console.log('🔍 Looking up membership for:', email.toLowerCase().trim());
+    // Log the raw email before any processing
+    console.log('📧 Raw email received:', email);
+    console.log('📧 Email type:', typeof email);
+    console.log('📧 Email length:', email?.length);
+    console.log('📧 Email after toLowerCase():', email?.toLowerCase());
+    console.log('📧 Email after trim():', email?.toLowerCase()?.trim());
+    
+    const normalizedEmail = email.toLowerCase().trim();
+    console.log('🔍 Looking up membership for normalized email:', normalizedEmail);
+    console.log('🔍 Normalized email length:', normalizedEmail.length);
 
     // Find the active membership by email with timeout
-    const membership = await Membership.findOne({ 
-      email: email.toLowerCase().trim(),
+    // Try exact match first
+    let membership = await Membership.findOne({ 
+      email: normalizedEmail,
       status: { $in: ['active', 'past_due'] }
-    }).sort({ createdAt: -1 }).maxTimeMS(5000); // 5 second timeout
+    }).sort({ createdAt: -1 }).maxTimeMS(5000);
+    
+    // If not found, try a case-insensitive regex search in case of any email variations
+    if (!membership) {
+      console.log('⚠️ Exact match not found, trying regex search...');
+      const emailRegex = new RegExp(`^${normalizedEmail.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`, 'i');
+      membership = await Membership.findOne({ 
+        email: emailRegex,
+        status: { $in: ['active', 'past_due'] }
+      }).sort({ createdAt: -1 }).maxTimeMS(5000);
+    }
+    
+    // If still not found and email looks truncated (ends with .co.), try searching for .co.uk variants
+    if (!membership && normalizedEmail.endsWith('.co.')) {
+      console.log('⚠️ Email appears truncated (ends with .co.), trying .co.uk variant...');
+      const emailWithUK = normalizedEmail.replace(/\.co\.$/, '.co.uk');
+      console.log('🔍 Trying email variant:', emailWithUK);
+      membership = await Membership.findOne({ 
+        email: emailWithUK,
+        status: { $in: ['active', 'past_due'] }
+      }).sort({ createdAt: -1 }).maxTimeMS(5000);
+    }
 
     console.log('🔍 Membership verify lookup result:', {
-      email: email.toLowerCase().trim(),
+      searchedEmail: normalizedEmail,
+      foundEmail: membership?.email,
       found: !!membership,
       membershipType: membership?.membershipType,
       status: membership?.status,
-      createdAt: membership?.createdAt
+      createdAt: membership?.createdAt,
+      emailMatch: membership ? (membership.email === normalizedEmail ? 'exact' : 'variant') : 'none'
     });
 
     if (!membership) {
