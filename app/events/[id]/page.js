@@ -6,7 +6,9 @@ import { connectDB } from "@/lib/db";
 import Event from "@/models/Event";
 import mongoose from "mongoose";
 
+// Allow caching with 30 second revalidation
 export const dynamic = "force-dynamic";
+export const revalidate = 30;
 
 async function fetchEvent(id) {
   try {

@@ -104,9 +104,8 @@ export default function Events() {
         console.log('🔄 Fetching events from /api/events...');
         
         const res = await fetch("/api/events", {
-          cache: 'no-store',
+          next: { revalidate: 30 }, // Use Next.js caching with 30s revalidation
           headers: {
-            'Cache-Control': 'no-cache',
             'Content-Type': 'application/json'
           }
         });
@@ -193,10 +192,10 @@ export default function Events() {
     // Initial fetch
     fetchEvents();
 
-    // Set up polling to refresh events every 30 seconds
+    // Set up polling to refresh events every 60 seconds (reduced frequency for better performance)
     const interval = setInterval(() => {
       fetchEvents(true); // Silent refresh - don't show loading spinner
-    }, 30000); // 30 seconds
+    }, 60000); // 60 seconds
 
     // Cleanup function
     return () => {

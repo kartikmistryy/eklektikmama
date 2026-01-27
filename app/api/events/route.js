@@ -4,9 +4,9 @@ import Event from "@/models/Event";
 import { createEventSheet } from "@/lib/googleSheets";
 import mongoose from "mongoose";
 
-// Force dynamic rendering - disable caching
+// Allow caching with 30 second revalidation for better performance
 export const dynamic = 'force-dynamic';
-export const revalidate = 0;
+export const revalidate = 30; // Revalidate every 30 seconds
 
 // CREATE new event
 export async function POST(req) {
@@ -67,85 +67,18 @@ export async function POST(req) {
 // GET all events
 export async function GET() {
   try {
-    console.log('📥 GET /api/events - Starting request');
-    
-    console.log('🔄 Connecting to database...');
     await connectDB();
-    console.log('✅ Database connected');
     
-    console.log('📊 Fetching events from database...');
-    console.log('📊 Connection state:', mongoose.connection.readyState);
-    console.log('📊 Database name:', mongoose.connection.db?.databaseName || 'NOT CONNECTED');
-    console.log('📊 Connection URI:', process.env.MONGODB_URI ? process.env.MONGODB_URI.replace(/\/\/[^:]+:[^@]+@/, '//***:***@') : 'NOT SET');
-    console.log('📊 Collection name: events');
-    
-    // Check what database we're actually connected to
-    if (mongoose.connection.db) {
-      const dbName = mongoose.connection.db.databaseName;
-      const collections = await mongoose.connection.db.listCollections().toArray();
-      console.log('📊 Available collections:', collections.map(c => c.name));
-      
-      // Check events collection directly
-      const eventsCollection = mongoose.connection.db.collection('events');
-      const directCount = await eventsCollection.countDocuments();
-      console.log(`📊 Direct collection count: ${directCount} events in 'events' collection`);
-      
-      // Try to get a sample of events directly
-      const sampleEvents = await eventsCollection.find({}).limit(5).toArray();
-      console.log(`📊 Sample events from direct query: ${sampleEvents.length}`);
-      sampleEvents.forEach((e, idx) => {
-        console.log(`  Direct ${idx + 1}. "${e.title || 'NO TITLE'}" - ID: ${e._id}`);
-      });
-    }
-    
-    // First, get the raw count using the model
-    const totalCount = await Event.countDocuments();
-    console.log(`📊 Model countDocuments: ${totalCount} events`);
-    
-    // Then fetch all events
+    // Fetch all events sorted by date
     const events = await Event.find().sort({ date: 1 }).lean();
-    console.log(`✅ Found ${events.length} events after query`);
     
-    if (totalCount !== events.length) {
-      console.warn(`⚠️ WARNING: Count mismatch! Total count: ${totalCount}, Query result: ${events.length}`);
+    if (process.env.NODE_ENV === 'development') {
+      console.log(`✅ Found ${events.length} events`);
     }
     
-    if (events.length > 0) {
-      console.log('📅 All events in database:');
-      events.forEach((e, idx) => {
-        console.log(`  ${idx + 1}. "${e.title}" - ${e.date ? new Date(e.date).toISOString() : 'NO DATE'} (ID: ${e._id})`);
-      });
-    } else {
-      console.log('⚠️ No events found in database. The events collection is empty.');
-    }
-    
-    // Check for any events that might fail serialization
-    const validEvents = [];
-    const invalidEvents = [];
-    
-    events.forEach((event, idx) => {
-      try {
-        // Try to serialize the event
-        JSON.stringify(event);
-        validEvents.push(event);
-      } catch (err) {
-        console.error(`❌ Event ${idx + 1} failed serialization:`, err.message);
-        console.error('Event data:', event);
-        invalidEvents.push({ event, error: err.message });
-      }
-    });
-    
-    if (invalidEvents.length > 0) {
-      console.warn(`⚠️ ${invalidEvents.length} events failed serialization and will be excluded`);
-    }
-    
-    console.log(`📤 Returning ${validEvents.length} valid events`);
-    
-    return NextResponse.json(validEvents, {
+    return NextResponse.json(events, {
       headers: {
-        'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
-        'Pragma': 'no-cache',
-        'Expires': '0'
+        'Cache-Control': 'public, s-maxage=30, stale-while-revalidate=60'
       }
     });
   } catch (err) {
