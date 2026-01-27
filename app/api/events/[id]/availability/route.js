@@ -72,27 +72,40 @@ export async function GET(req, { params }) {
     let sheetsBookingsCount = 0;
     
     try {
-      // Count bookings from MongoDB
-      mongoBookingsCount = await Booking.countDocuments({ 
+      // Sum total tickets from MongoDB bookings (not just count documents)
+      // Include both 'paid' and 'free' bookings since both consume seats
+      const bookings = await Booking.find({ 
         eventId: event._id,
-        paymentStatus: 'paid'
+        paymentStatus: { $in: ['paid', 'free'] }
       });
-      console.log(`📊 MongoDB bookings count for event "${event.title}": ${mongoBookingsCount}`);
+      mongoBookingsCount = bookings.reduce((total, booking) => {
+        return total + (booking.numberOfTickets || 1);
+      }, 0);
+      console.log(`📊 MongoDB tickets count for event "${event.title}": ${mongoBookingsCount} (from ${bookings.length} bookings)`);
+      if (bookings.length > 0) {
+        console.log(`📋 Booking details:`, bookings.map(b => ({
+          id: b._id,
+          tickets: b.numberOfTickets || 1,
+          status: b.paymentStatus,
+          email: b.userEmail || b.email
+        })));
+      }
     } catch (mongoError) {
       console.error('❌ Error counting bookings from MongoDB:', mongoError);
     }
     
-    // Also get count from Google Sheets (for comparison)
+    // Get count from Google Sheets (exclusive source - no fallback)
     try {
       sheetsBookingsCount = await getEventBookingsCount(event);
       console.log(`📊 Google Sheets bookings count for event "${event.title}": ${sheetsBookingsCount}`);
     } catch (sheetsError) {
       console.error('❌ Error getting booking count from Google Sheets:', sheetsError);
+      // If Sheets fails, default to 0 (don't use MongoDB)
+      sheetsBookingsCount = 0;
     }
     
-    // Use MongoDB count as primary source (most reliable)
-    // Fall back to Google Sheets if MongoDB count is 0 but Sheets has data
-    existingBookings = mongoBookingsCount > 0 ? mongoBookingsCount : sheetsBookingsCount;
+    // Use Google Sheets exclusively - never fall back to MongoDB
+    existingBookings = sheetsBookingsCount;
     
     console.log(`📊 Final booking count for "${event.title}": ${existingBookings} (MongoDB: ${mongoBookingsCount}, Sheets: ${sheetsBookingsCount})`);
     
@@ -114,7 +127,7 @@ export async function GET(req, { params }) {
         ? `${remaining} tickets remaining` 
         : 'Event is fully booked',
       debug: {
-        source: mongoBookingsCount > 0 ? 'MongoDB' : 'Google Sheets',
+        source: 'Google Sheets (exclusive)',
         mongoCount: mongoBookingsCount,
         sheetsCount: sheetsBookingsCount
       }
