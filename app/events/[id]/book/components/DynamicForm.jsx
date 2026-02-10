@@ -306,8 +306,8 @@ const DynamicForm = ({ formConfig, onSubmit, submitting, event, onFormDataChange
           }
         }
         
-        // Validate main course selection for all extra guests (all events except mamafit)
-        if (event?.segment !== 'mamaFit') {
+        // Validate main course selection for all extra guests (all events except mamafit and cinemaMorning)
+        if (event?.segment !== 'mamaFit' && event?.segment !== 'cinemaMorning') {
           if (!formData.extraGuestMainCourses || !Array.isArray(formData.extraGuestMainCourses)) {
             alert('Please select main course for all extra guests.');
             return;
@@ -801,8 +801,8 @@ const DynamicForm = ({ formConfig, onSubmit, submitting, event, onFormDataChange
                     />
                   </div>
                   
-                  {/* Menu selections per guest - hidden for mamafit events */}
-                  {event?.segment !== 'mamaFit' && menuFieldConfigs.map((menuField) => {
+                  {/* Menu selections per guest - hidden for mamafit and cinemaMorning events */}
+                  {event?.segment !== 'mamaFit' && event?.segment !== 'cinemaMorning' && menuFieldConfigs.map((menuField) => {
                     const guestSelections = extraGuestMenuSelections[index] || {};
                     const currentValue = guestSelections[menuField.fieldName] || '';
                     return (
