@@ -261,92 +261,20 @@ export default function EventsCalendar({ events = [] }) {
 
   // List view component for mobile
   const ListView = () => {
-    // Show all events (past and future) for now, sorted by date
-    // Users can see what events exist, even if they're in the past
-    const now = moment().startOf('day'); // Use start of day for comparison
-    
-    console.log('📋 ListView: Starting filter - Now:', now.format('YYYY-MM-DD HH:mm:ss'), now.toISOString());
-    console.log('📋 ListView: localEvents count:', localEvents.length);
-    
-    // Show all events, but mark them as past/future
-    const allEvents = localEvents.filter(event => {
-      if (!event || !event.start) {
-        console.warn('⚠️ ListView: Event missing start date:', event);
-        return false;
-      }
-      return true;
-    });
-    
-    // Separate future and past events
-    const futureEvents = allEvents.filter(event => {
-      const eventStart = moment(event.start).startOf('day');
-      const isFuture = eventStart.isSameOrAfter(now, 'day');
-      console.log(`📋 ListView: Event "${event.title}" - Start: ${eventStart.format('YYYY-MM-DD')}, Now: ${now.format('YYYY-MM-DD')}, IsFuture: ${isFuture}`);
-      return isFuture;
-    });
-    
-    // If no future events, show past events (most recent first)
-    // Otherwise show future events (earliest first)
-    const eventsToShow = futureEvents.length > 0 ? futureEvents : allEvents;
-    
-    // Sort events: if showing future, earliest first; if showing past, most recent first
-    const sortedEvents = [...eventsToShow].sort((a, b) => {
-      const dateA = moment(a.start).valueOf();
-      const dateB = moment(b.start).valueOf();
-      if (futureEvents.length > 0) {
-        return dateA - dateB; // Future events: earliest first
-      } else {
-        return dateB - dateA; // Past events: most recent first
-      }
-    });
-    
-    console.log('📋 ListView: After filtering - futureEvents count:', futureEvents.length);
-    console.log('📋 ListView: sortedEvents count:', sortedEvents.length);
-    console.log('📋 ListView: isMobile:', isMobile);
-    console.log('📋 ListView: viewMode:', viewMode);
-    
-    if (sortedEvents.length > 0) {
-      console.log('📋 ListView: First event:', sortedEvents[0].title, sortedEvents[0].start);
-      sortedEvents.forEach((ev, idx) => {
-        console.log(`📋 ListView: Event ${idx + 1}:`, ev.title, moment(ev.start).format('YYYY-MM-DD'));
-      });
-    } else {
-      console.log('📋 ListView: No future events found. All events:');
-      localEvents.forEach((ev, idx) => {
-        const evDate = moment(ev.start).startOf('day');
-        const isPast = evDate.isBefore(now, 'day');
-        console.log(`📋 ListView: Event ${idx + 1}:`, ev.title, evDate.format('YYYY-MM-DD'), isPast ? '(PAST)' : '(FUTURE)');
-      });
-    }
-    
-    // Debug: Show all events regardless of date for troubleshooting
-    const showAllEvents = localEvents.length > 0 && sortedEvents.length === 0;
-    
+    const now = moment().startOf('day');
+
+    const sortedEvents = localEvents
+      .filter(event => event && event.start && moment(event.start).startOf('day').isSameOrAfter(now, 'day'))
+      .sort((a, b) => moment(a.start).valueOf() - moment(b.start).valueOf());
+
     return (
       <div className="space-y-4">
         {sortedEvents.length === 0 ? (
           <div className="text-center py-8 text-gray-500">
             <p>No upcoming events scheduled</p>
-            <p className="text-xs mt-2">Total events in database: {localEvents.length}</p>
-            {showAllEvents && (
-              <div className="mt-4 text-left">
-                <p className="text-sm font-semibold mb-2">All events (for debugging):</p>
-                {localEvents.map((event, idx) => {
-                  const evDate = moment(event.start).startOf('day');
-                  const isPast = evDate.isBefore(now, 'day');
-                  return (
-                    <div key={event.id || idx} className="text-xs mb-1 p-2 bg-gray-100 rounded">
-                      <strong>{event.title}</strong> - {evDate.format('YYYY-MM-DD')} {isPast ? '(PAST)' : '(FUTURE)'}
-                    </div>
-                  );
-                })}
-              </div>
-            )}
           </div>
         ) : (
-          sortedEvents.map((event) => {
-            console.log('📋 Rendering event in list:', event.title);
-            return (
+          sortedEvents.map((event) => (
             <div
               key={event.id}
               className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow"
@@ -394,8 +322,7 @@ export default function EventsCalendar({ events = [] }) {
                 </div>
               </div>
             </div>
-          );
-          })
+          ))
         )}
       </div>
     );
