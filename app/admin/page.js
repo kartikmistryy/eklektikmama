@@ -18,6 +18,13 @@ export default function AdminPage() {
       color: "bg-yellow-500"
     },
     {
+      title: "The Local Edit",
+      description: "Manage local categories and business listings",
+      href: "/admin/local-edit",
+      icon: "🏷️",
+      color: "bg-pink-500"
+    },
+    {
       title: "Bookings",
       description: "View and manage event bookings",
       href: "/admin/bookings",

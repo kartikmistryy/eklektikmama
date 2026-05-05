@@ -21,7 +21,7 @@ export const NewsletterPopup = () => {
       const documentHeight = document.documentElement.scrollHeight - window.innerHeight;
       const scrollPercentage = (scrollTop / documentHeight) * 100;
       
-      if (scrollPercentage >= 40) {
+      if (scrollPercentage >= 20) {
         setIsVisible(true);
         setHasShown(true);
       }
