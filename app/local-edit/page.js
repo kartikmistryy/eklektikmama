@@ -68,7 +68,7 @@ export default function LocalEditPage() {
           <h1 className="w-fit md:text-[85px] text-[45px] font-bold uppercase text-[#f6f6f6] leading-[130%] text-center font-anton">
             THE LOCAL
             <br />
-            <b className="md:text-[100px] text-[60px]">EDIT.</b>
+            <b className="md:text-[100px] text-[60px]">EDIT</b>
           </h1>
         </motion.div>
         <Marquee />

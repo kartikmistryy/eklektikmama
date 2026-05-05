@@ -342,6 +342,8 @@ export default function Footer() {
             © {new Date().getFullYear()} Eklektik MamaⓇ and BYOBabyⓇ are registered
             trademarks of Eklektik Mama Event Management L.L.C. – S.P.C., Abu Dhabi, United Arab Emirates. <br />
           </div>
+
+          <p className="text-sm text-white mt-4">Made by <a target="_blank" className="underline" href="https://404creative.co.in/">404Creatives</a></p>
         </footer>
       </div>
     </section>
