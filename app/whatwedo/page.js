@@ -280,12 +280,12 @@ const Page = () => {
           transition={{ delay: 0.2 }}
         >
           {[
-            { text: "BYOBabyⓇ Mama Breakfast", active: false },
-            { text: "BYOBabyⓇ Cinema Morning", active: false },
+            { text: "BYOBaby® Mama Breakfast", active: false },
+            { text: "BYOBaby® Cinema Morning", active: false },
             { text: "Community Events", active: false },
-            { text: "BYOBabyⓇ MaMA Fit", active: false },
+            { text: "BYOBaby® MaMA Fit", active: false },
             { text: "Eklektik Edit", active: false },
-            { text: "Do Not BYOBabyⓇ Mama Nights", active: false },
+            { text: "Do Not BYOBaby® Mama Nights", active: false },
             { text: "View All", active: true }
           ].map((tag, index) => (
             <motion.span

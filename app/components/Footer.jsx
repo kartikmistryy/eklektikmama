@@ -76,9 +76,9 @@ export default function Footer() {
             <b className="font-bold">In Your Inbox.</b>
           </h2>
           <p className="md:max-w-[60%] w-full font-quicksand mt-5 text-left lg:text-lg md:text-sm text-sm">
-            Welcome to <b className="font-semibold">Eklektik MamaⓇ</b>, where
+            Welcome to <b className="font-semibold">Eklektik Mama®</b>, where
             motherhood meets rebellion. A home for bold mums,{" "}
-            <b className="font-semibold">BYOBabyⓇ</b> events, unapologetic
+            <b className="font-semibold">BYOBaby®</b> events, unapologetic
             blogs, and gear you didn't know you needed. <br />Plus, get our free Places to Visit in Abu Dhabi, UAE guide straight to your email.
           </p>
           
@@ -339,7 +339,7 @@ export default function Footer() {
           <div className=" text-center text-xs opacity-80 font-quicksand pt-10 text-white">
           <p className="my-1"><a href="/termsAndCondition" className="hover:underline">Terms and Conditions</a> | <a href="/privacyPolicy" className="hover:underline">Privacy Policy</a></p>
 
-            © {new Date().getFullYear()} Eklektik MamaⓇ and BYOBabyⓇ are registered
+            © {new Date().getFullYear()} Eklektik Mama® and BYOBaby® are registered
             trademarks of Eklektik Mama Event Management L.L.C. – S.P.C., Abu Dhabi, United Arab Emirates. <br />
           </div>
 

@@ -349,7 +349,7 @@ export default function Home() {
               transition={{ type: "keyframes", duration: 0.6 }}
               className="max-w-[750px] mx-auto font-quicksand lg:mt-14 md:mt-24 mt-5 px-4 text-center text-white lg:text-lg md:text-base text-sm"
             >
-              Call it rebellion, call it culture — we call it Eklektik MamaⓇ. A
+              Call it rebellion, call it culture — we call it Eklektik Mama®. A
               platform where modern mums connect through events, stories and
               spaces that challenge clichés and celebrate chaos. We’re raising
               hell and humans — and doing it loud AF.
@@ -417,7 +417,7 @@ export default function Home() {
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.3 }}
               >
-                Eklektik MamaⓇ isn’t a playdate. It’s a platform. Born from the
+                Eklektik Mama® isn’t a playdate. It’s a platform. Born from the
                 sleepless hours and the side-eye at sugar-coated advice, we
                 exist to disrupt the clichés of motherhood and build something
                 bolder. We create spaces that feel more like culture than coffee
@@ -439,7 +439,7 @@ export default function Home() {
                 className="overflow-hidden"
               >
                 <p className="pt-4">
-                  Through BYOBabyⓇ events, unapologetic blog posts, and gear you
+                  Through BYOBaby® events, unapologetic blog posts, and gear you
                   didn&apos;t know you needed, we&apos;re building something
                   that feels like solidarity (not sanitised sisterhood). This
                   isn&apos;t a parenting platform. It&apos;s a movement. And if
@@ -704,7 +704,7 @@ export default function Home() {
                         What’s On
                       </h4>
                       <p className="text-base font-quicksand text-[#093166] font-semibold">
-                        BYOBabyⓇ Events: Breakfasts, cinema mornings, and IRL
+                        BYOBaby® Events: Breakfasts, cinema mornings, and IRL
                         convos. View this month’s line-up or miss out.
                       </p>
                       <span className="w-full h-fit mt-auto flex flex-row items-center justify-between pr-2">
@@ -911,7 +911,7 @@ export default function Home() {
                       What’s On
                     </h4>
                     <p className="text-base font-quicksand text-[#093166] font-semibold">
-                      BYOBabyⓇ Events: Breakfasts, cinema mornings, and IRL
+                      BYOBaby® Events: Breakfasts, cinema mornings, and IRL
                       convos. View this month’s line-up or miss out.
                     </p>
                     <div className="mt-auto flex flex-row items-center justify-between">

@@ -239,7 +239,7 @@ export default function Events() {
             </b>
           </h2>
           <p className="mt-6 font-quicksand font-medium lg:text-base">
-            Every IRL event falls under BYOBabyⓇ. Bring your baby (or
+            Every IRL event falls under BYOBaby®. Bring your baby (or
             don&apos;t)—just bring your whole self...
           </p>
           {/* Tag Buttons */}
@@ -248,11 +248,11 @@ export default function Events() {
             variants={staggerContainer}
           >
             {[
-              "BYOBabyⓇ Mama Breakfast",
-              "BYOBabyⓇ Cinema Morning",
-              "BYOBabyⓇ Mama Fit",
+              "BYOBaby® Mama Breakfast",
+              "BYOBaby® Cinema Morning",
+              "BYOBaby® Mama Fit",
               "Eklektik Edit",
-              "Do Not BYOBabyⓇ Mama Nights",
+              "Do Not BYOBaby® Mama Nights",
             ].map((tag, i) => (
               <motion.button
                 key={i}
