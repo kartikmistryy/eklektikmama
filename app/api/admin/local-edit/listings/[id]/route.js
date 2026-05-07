@@ -27,7 +27,7 @@ export async function PUT(request, { params }) {
     await connectDB();
 
     const body = await request.json();
-    const { category, title, description, image, link, order, isActive } = body;
+    const { category, title, description, image, imageAlt, link, order, isActive } = body;
 
     const existing = await LocalEditListing.findById(id);
     if (!existing) {
@@ -48,6 +48,7 @@ export async function PUT(request, { params }) {
     if (title !== undefined) existing.title = title;
     if (description !== undefined) existing.description = description;
     if (image !== undefined) existing.image = image;
+    if (imageAlt !== undefined) existing.imageAlt = imageAlt;
     if (link !== undefined) existing.link = link;
     if (order !== undefined) existing.order = order;
     if (isActive !== undefined) existing.isActive = isActive;

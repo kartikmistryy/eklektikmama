@@ -1,4 +1,6 @@
 import { getAllBlogPosts } from '../../lib/contentful';
+import { connectDB } from '../../lib/db';
+import LocalEditCategory from '../../models/LocalEditCategory';
 
 export async function GET() {
   const baseUrl = 'https://eklektikmama.com';
@@ -53,7 +55,30 @@ export async function GET() {
       changeFrequency: 'weekly',
       priority: 0.9,
     },
+    {
+      url: '/the-local-edit',
+      lastModified: new Date().toISOString(),
+      changeFrequency: 'weekly',
+      priority: 0.9,
+    },
   ];
+
+  // Get The Local Edit category pages
+  let localEditPages = [];
+  try {
+    await connectDB();
+    const categories = await LocalEditCategory.find({ isActive: true })
+      .select('slug updatedAt')
+      .lean();
+    localEditPages = categories.map((cat) => ({
+      url: `/the-local-edit/${cat.slug}`,
+      lastModified: new Date(cat.updatedAt || Date.now()).toISOString(),
+      changeFrequency: 'weekly',
+      priority: 0.8,
+    }));
+  } catch (error) {
+    console.error('Error fetching local edit categories for sitemap:', error);
+  }
 
   // Get blog posts
   let blogPosts = [];
@@ -70,7 +95,7 @@ export async function GET() {
   }
 
   // Combine all pages
-  const allPages = [...staticPages, ...blogPosts];
+  const allPages = [...staticPages, ...localEditPages, ...blogPosts];
 
   // Generate XML sitemap
   const sitemap = `<?xml version="1.0" encoding="UTF-8"?>

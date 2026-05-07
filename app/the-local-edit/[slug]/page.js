@@ -35,12 +35,14 @@ async function getCategoryWithListings(slug) {
       slug: category.slug,
       description: category.description || "",
       image: category.image,
+      imageAlt: category.imageAlt || "",
     },
     listings: listings.map((l) => ({
       _id: l._id.toString(),
       title: l.title,
       description: l.description || "",
       image: l.image,
+      imageAlt: l.imageAlt || "",
       link: l.link,
     })),
   };
@@ -65,12 +67,12 @@ export async function generateMetadata({ params }) {
     title: `${category.title} | The Local Edit | Eklektik Mama`,
     description,
     alternates: {
-      canonical: `https://eklektikmama.com/local-edit/${category.slug}`,
+      canonical: `https://eklektikmama.com/the-local-edit/${category.slug}`,
     },
     openGraph: {
       title: `${category.title} | The Local Edit`,
       description,
-      url: `https://eklektikmama.com/local-edit/${category.slug}`,
+      url: `https://eklektikmama.com/the-local-edit/${category.slug}`,
       siteName: "Eklektik Mama",
       images: category.image
         ? [
@@ -78,7 +80,7 @@ export async function generateMetadata({ params }) {
               url: category.image,
               width: 1200,
               height: 630,
-              alt: category.title,
+              alt: category.imageAlt || category.title,
             },
           ]
         : [],

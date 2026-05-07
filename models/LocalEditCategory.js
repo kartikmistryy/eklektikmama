@@ -5,6 +5,7 @@ const LocalEditCategorySchema = new mongoose.Schema({
   slug: { type: String, required: true, unique: true, lowercase: true, trim: true },
   description: { type: String, default: "" },
   image: { type: String, required: true },
+  imageAlt: { type: String, default: "" },
   order: { type: Number, default: 0 },
   isActive: { type: Boolean, default: true },
   createdAt: { type: Date, default: Date.now },

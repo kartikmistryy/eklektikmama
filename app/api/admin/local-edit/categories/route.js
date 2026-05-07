@@ -18,7 +18,7 @@ export async function POST(request) {
   try {
     await connectDB();
     const body = await request.json();
-    const { title, description = "", image, slug, order = 0, isActive = true } = body;
+    const { title, description = "", image, imageAlt = "", slug, order = 0, isActive = true } = body;
 
     if (!title || !image) {
       return NextResponse.json(
@@ -42,6 +42,7 @@ export async function POST(request) {
       title,
       description,
       image,
+      imageAlt,
       slug: candidate,
       order,
       isActive,

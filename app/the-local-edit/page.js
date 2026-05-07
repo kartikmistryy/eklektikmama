@@ -5,11 +5,12 @@ import LocalEditClient from "./LocalEditClient";
 export const revalidate = 60;
 
 export const metadata = {
-  title: "The Local Edit | Mum-Tested Local Loves in Abu Dhabi & UAE",
+  title: "The Local Edit | Trusted Local Services | Eklektik Mama Abu Dhabi",
   description:
-    "The Local Edit is our curated little black book of mum-approved spots, services and small businesses across Abu Dhabi & the UAE — cafes, sitters, photographers, after-school activities and more.",
+    "Discover trusted local services loved by Abu Dhabi mamas. The Local Edit is Eklektik Mama's curated guide to the best local businesses for families.",
   keywords: [
     "local edit abu dhabi",
+    "trusted local services abu dhabi",
     "mum recommendations uae",
     "family friendly abu dhabi",
     "kids activities abu dhabi",
@@ -17,13 +18,13 @@ export const metadata = {
     "abu dhabi family directory",
   ],
   alternates: {
-    canonical: "https://eklektikmama.com/local-edit",
+    canonical: "https://eklektikmama.com/the-local-edit",
   },
   openGraph: {
-    title: "The Local Edit | Mum-Tested Local Loves in Abu Dhabi & UAE",
+    title: "The Local Edit | Trusted Local Services | Eklektik Mama Abu Dhabi",
     description:
-      "Curated by mums, for mums. Discover the cafes, sitters, photographers and small businesses we actually rate.",
-    url: "https://eklektikmama.com/local-edit",
+      "Discover trusted local services loved by Abu Dhabi mamas. The Local Edit is Eklektik Mama's curated guide to the best local businesses for families.",
+    url: "https://eklektikmama.com/the-local-edit",
     siteName: "Eklektik Mama",
     images: [
       {
@@ -50,6 +51,7 @@ async function getCategories() {
     slug: c.slug,
     description: c.description || "",
     image: c.image,
+    imageAlt: c.imageAlt || "",
   }));
 }
 

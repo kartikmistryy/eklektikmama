@@ -35,7 +35,7 @@ export default function LocalEditCategoryClient({ category, listings }) {
       <section className="w-full flex min-h-[70vh] h-full flex-col items-center justify-end pt-20 overflow-x-hidden relative">
         <Image
           src={category.image}
-          alt={category.title}
+          alt={category.imageAlt || category.title}
           fill
           sizes="100vw"
           priority
@@ -67,7 +67,7 @@ export default function LocalEditCategoryClient({ category, listings }) {
       {/* Breadcrumb / back */}
       <div className="w-full lg:px-10 px-5 pt-8 text-[#093166]">
         <Link
-          href="/local-edit"
+          href="/the-local-edit"
           className="font-quicksand text-sm uppercase tracking-wide hover:text-[#bf378b] transition-colors"
         >
           ← Back to The Local Edit
@@ -112,7 +112,7 @@ export default function LocalEditCategoryClient({ category, listings }) {
                 <div className="relative w-full h-[220px] rounded-md overflow-hidden">
                   <Image
                     src={listing.image}
-                    alt={listing.title}
+                    alt={listing.imageAlt || listing.title}
                     fill
                     sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                     className="object-cover"

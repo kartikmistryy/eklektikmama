@@ -30,6 +30,7 @@ export default function AdminCategoryListingsPage() {
     title: "",
     description: "",
     image: "",
+    imageAlt: "",
     link: "",
     order: 0,
     isActive: true,
@@ -79,6 +80,7 @@ export default function AdminCategoryListingsPage() {
       title: listing.title || "",
       description: listing.description || "",
       image: listing.image || "",
+      imageAlt: listing.imageAlt || "",
       link: listing.link || "",
       order: listing.order ?? 0,
       isActive: listing.isActive !== false,
@@ -134,6 +136,7 @@ export default function AdminCategoryListingsPage() {
         title: form.title,
         description: form.description,
         image: form.image,
+        imageAlt: form.imageAlt,
         link: form.link,
         order: Number(form.order) || 0,
         isActive: form.isActive,
@@ -198,7 +201,7 @@ export default function AdminCategoryListingsPage() {
           </p>
           {category && (
             <p className="text-xs text-gray-500 font-mono mt-1">
-              /local-edit/{category.slug}
+              /the-local-edit/{category.slug}
             </p>
           )}
         </div>
@@ -211,7 +214,7 @@ export default function AdminCategoryListingsPage() {
           </Link>
           {category && (
             <Link
-              href={`/local-edit/${category.slug}`}
+              href={`/the-local-edit/${category.slug}`}
               target="_blank"
               className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700"
             >
@@ -319,6 +322,23 @@ export default function AdminCategoryListingsPage() {
               />
             </div>
           )}
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Image Alt Text (SEO)
+          </label>
+          <input
+            type="text"
+            value={form.imageAlt}
+            onChange={(e) => setForm({ ...form, imageAlt: e.target.value })}
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            placeholder={`e.g. "${form.title ? form.title.toLowerCase() : "business name"} Abu Dhabi"`}
+          />
+          <p className="text-xs text-gray-500 mt-1">
+            Descriptive alt text for the listing image. Include location keywords like
+            &quot;Abu Dhabi&quot; here for SEO. Leave blank to fall back to the title.
+          </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">

@@ -40,9 +40,9 @@ export default function LocalEditClient({ categories }) {
           variants={fadeInUp}
         >
           <h1 className="w-fit md:text-[85px] text-[45px] font-bold uppercase text-[#f6f6f6] leading-[130%] text-center font-anton">
-            THE LOCAL
+            The Local
             <br />
-            <b className="md:text-[100px] text-[60px]">EDIT</b>
+            <b className="md:text-[100px] text-[60px]">Edit</b>
           </h1>
         </motion.div>
         <Marquee />
@@ -118,13 +118,13 @@ export default function LocalEditClient({ categories }) {
             {categories.map((category) => (
               <motion.div key={category._id} variants={cardVariant}>
                 <Link
-                  href={`/local-edit/${category.slug}`}
+                  href={`/the-local-edit/${category.slug}`}
                   className="group block w-full h-full"
                 >
                   <div className="relative w-full aspect-[4/5] overflow-hidden rounded-lg border-2 border-[#093166]">
                     <Image
                       src={category.image}
-                      alt={category.title}
+                      alt={category.imageAlt || category.title}
                       fill
                       sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                       className="object-cover transition-transform duration-500 ease-in-out group-hover:scale-105"

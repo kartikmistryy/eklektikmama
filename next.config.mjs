@@ -19,6 +19,20 @@ const nextConfig = {
                 ]
             }
         ];
+    },
+    async redirects() {
+        return [
+            {
+                source: '/local-edit',
+                destination: '/the-local-edit',
+                permanent: true
+            },
+            {
+                source: '/local-edit/:slug',
+                destination: '/the-local-edit/:slug',
+                permanent: true
+            }
+        ];
     }
 };
 

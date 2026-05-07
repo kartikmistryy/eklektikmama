@@ -84,7 +84,7 @@ export default function Navbar({ pageType = 'default' }) {
       {/* Center container (desktop links, only ≥1060px) */}
       <div className={`hidden [@media(min-width:1060px)]:flex items-start justify-center gap-12 font-medium text-sm py-6 ${useDarkNav ? '' : 'text-white'}`} style={useDarkNav ? { color: '#2e2e2e' } : {}}>
         <Link href="/events" className={useDarkNav ? '' : 'text-white'} style={useDarkNav ? { color: '#2e2e2e' } : {}}>EVENTS</Link>
-        <Link href="/local-edit" className={useDarkNav ? '' : 'text-white'} style={useDarkNav ? { color: '#2e2e2e' } : {}}>THE LOCAL EDIT</Link>
+        <Link href="/the-local-edit" className={useDarkNav ? '' : 'text-white'} style={useDarkNav ? { color: '#2e2e2e' } : {}}>THE LOCAL EDIT</Link>
         <Link href="/blogs" className={useDarkNav ? '' : 'text-white'} style={useDarkNav ? { color: '#2e2e2e' } : {}}>UNFILTERED AF BLOG</Link>
 
         {/* Logo in center */}
@@ -161,7 +161,7 @@ export default function Navbar({ pageType = 'default' }) {
             SHOP
           </Link>
           <button onClick={() => handleNavigation('/events')} className="bg-transparent border-none text-white">EVENTS</button>
-          <button onClick={() => handleNavigation('/local-edit')} className="bg-transparent border-none text-white">THE LOCAL EDIT</button>
+          <button onClick={() => handleNavigation('/the-local-edit')} className="bg-transparent border-none text-white">THE LOCAL EDIT</button>
           <button onClick={() => handleNavigation('/blogs')} className="bg-transparent border-none text-white">UNFILTERED AF BLOG</button>
           <button onClick={() => handleNavigation('/contactus')} className="bg-transparent border-none text-white">WORK WITH US</button>
           <button onClick={() => handleNavigation('/whatwedo')}  className="bg-transparent border-none text-white">HIGHLIGHTS</button>
