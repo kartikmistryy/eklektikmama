@@ -831,7 +831,7 @@ export default function Home() {
                       </p>
                       <span className="w-full h-fit mt-auto flex flex-row items-center justify-between pr-2">
                         <Link
-                          href="/contactus"
+                          href="/partnershipprogram"
                           className="text-sm bg-white rounded-full font-medium font-poppins flex flex-row uppercase items-center justify-start gap-5 px-3 py-1.5 "
                         >
                           explore our partners
@@ -1023,7 +1023,7 @@ export default function Home() {
                     </p>
                     <div className="mt-auto flex flex-row items-center justify-between">
                       <Link
-                        href="/contactus"
+                        href="/partnershipprogram"
                         className="text-xs bg-white rounded-full font-medium font-poppins flex flex-row uppercase items-center gap-3 px-3 py-1.5"
                       >
                         explore our partners{" "}

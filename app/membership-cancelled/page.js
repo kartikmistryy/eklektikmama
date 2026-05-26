@@ -69,7 +69,7 @@ function MembershipCancelledContent() {
                   Browse Events
                 </button>
                 <button
-                  onClick={() => router.push('/contactus')}
+                  onClick={() => router.push('/partnershipprogram#form')}
                   className="px-6 py-3 bg-gray-600 text-white rounded-md hover:bg-gray-700 transition-colors"
                 >
                   Contact Support
@@ -112,7 +112,7 @@ function MembershipCancelledContent() {
                   Try Again
                 </button>
                 <button
-                  onClick={() => router.push('/contactus')}
+                  onClick={() => router.push('/partnershipprogram#form')}
                   className="px-6 py-3 bg-gray-600 text-white rounded-md hover:bg-gray-700 transition-colors"
                 >
                   Contact Support

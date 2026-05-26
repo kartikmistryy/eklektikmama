@@ -258,7 +258,7 @@ export default function Footer() {
                   </a>
                 </li>
                 <li>
-                  <a href="/contactus#contact" className="hover:underline">
+                  <a href="/partnershipprogram#form" className="hover:underline">
                     Contact Us
                   </a>
                 </li>
@@ -275,12 +275,12 @@ export default function Footer() {
                   </a>
                 </li>
                 <li>
-                  <a href="/contactus" className="hover:underline">
+                  <a href="/partnershipprogram#form" className="hover:underline">
                     Pitch Us Something Wild
                   </a>
                 </li>
                 <li>
-                  <a href="/contactus#franchise" className="hover:underline">
+                  <a href="/partnershipprogram#franchise" className="hover:underline">
                     Start Eklektik Mama In Your City
                   </a>
                 </li>

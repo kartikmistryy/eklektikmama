@@ -32,7 +32,7 @@ export async function GET() {
       priority: 0.9,
     },
     {
-      url: '/contactus',
+      url: '/partnershipprogram',
       lastModified: new Date().toISOString(),
       changeFrequency: 'monthly',
       priority: 0.7,

@@ -131,7 +131,7 @@ const Page = () => {
       {/* ── HERO ── */}
       <section
         ref={heroRef}
-        className="w-full flex min-h-[90vh] h-full flex-col items-center justify-end bg-[url('/headerBg/partner.webp')] bg-cover bg-center pt-20 overflow-x-hidden"
+        className="w-full flex min-h-[90vh] h-full flex-col items-center justify-end bg-[url('/headerBg/loves.webp')] bg-cover bg-center pt-20 overflow-x-hidden"
       >
         <motion.div
           className="w-full h-full grow min-h-full flex flex-col items-center justify-center"
