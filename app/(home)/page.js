@@ -251,7 +251,7 @@ export default function Home() {
   return (
     <>
       <NewsletterPopup />
-      <div className="w-full h-full flex flex-col bg-[#231f20] lg:pt-[120px] pt-[120px] relative overflow-hidden">
+      <div className="w-full h-full flex flex-col bg-[#231f20] lg:pt-[180px] pt-[120px] relative overflow-hidden">
         <section className="w-full h-full flex flex-col items-center justify-start relative overflow-visible mb-[-1px]">
           <div className="w-full h-full flex flex-col relative lg:pb-[240px] md:pb-[160px] pb-[80px] overflow-visible">
             <main className="w-full h-full flex items-center justify-start lg:pt-[30px] md:pt-[120px] pt-[80px] relative px-5 overflow-visible">

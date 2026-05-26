@@ -12,12 +12,20 @@ import {
 import Marquee from "./Marquee";
 import Link from "next/link";
 import { useState } from "react";
+import FreebieModal from "./FreebieModal";
+
+const FREEBIES = [
+  { id: "ramadanGuide", title: "Ramadan Guide", label: "RAMADAN GUIDE" },
+  { id: "visitUae", title: "Places to Visit in Abu Dhabi, UAE", label: "PLACES TO VISIT IN ABU DHABI, UAE" },
+  { id: "hospitalGuide", title: "Hospital Guide", label: "HOSPITAL GUIDE" },
+];
 
 export default function Footer() {
   const [email, setEmail] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [message, setMessage] = useState("");
   const [messageType, setMessageType] = useState(""); // "success" or "error"
+  const [activeFreebie, setActiveFreebie] = useState(null);
 
   const handleNewsletterSubmit = async (e) => {
     e.preventDefault();
@@ -283,53 +291,17 @@ export default function Footer() {
             <div className="flex flex-col items-start text-white">
               <h3 className="font-bold mb-6">EKLEKTIK FREEBIES</h3>
               <ul className="space-y-2 uppercase text-left">
-                <li>
-                  <a 
-                  href="https://linktr.ee/eklektikmama?lt_utm_source=lt_share_link#457077794"  
-                  className="hover:underline">
-                    RAMADAN GUIDE
-                  </a>
-                </li>  
-                <li>
-                  <a 
-                  // href="/visitUae.pdf" 
-                  target="_blank"
-                  href="https://linktr.ee/eklektikmama" 
-                  className="hover:underline">
-                    PLACES TO VISIT IN ABU DHABI, UAE
-                  </a>
-                </li> 
-                <li>
-                  <a href="/hospitalGuide.pdf" download className="hover:underline">
-                    HOSPITAL GUIDE
-                  </a>
-                </li>
-                {/* <li>
-                  <a href="/partnerGuide.pdf" download className="hover:underline">
-                    PARTNER GUIDE 
-                  </a>
-                </li> 
-                <li>
-                  <a href="/partnerGuide.pdf" download className="hover:underline">
-                    HOSPITAL GUIDE
-                  </a>
-                </li> */}
-                {/* <li>
-                  <a href="#" className="hover:underline">
-                    Eklektik AF Welcome Pack
-                  </a>
-                </li> */}
-                {/* <li>
-                  <a href="#" className="hover:underline">
-                    UAE Mum Survival Guide(coming soon)
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:underline">
-                    The Useless Partner Guide(coming soon)
-                  </a>
-                </li> */}
-
+                {FREEBIES.map((f) => (
+                  <li key={f.id}>
+                    <button
+                      type="button"
+                      onClick={() => setActiveFreebie(f)}
+                      className="hover:underline uppercase text-left"
+                    >
+                      {f.label}
+                    </button>
+                  </li>
+                ))}
               </ul>
             </div>
           </div>
@@ -346,6 +318,13 @@ export default function Footer() {
           <p className="text-sm text-white mt-4">Made by <a target="_blank" className="underline" href="https://404creative.co.in/">404Creatives</a></p>
         </footer>
       </div>
+
+      {activeFreebie && (
+        <FreebieModal
+          freebie={activeFreebie}
+          onClose={() => setActiveFreebie(null)}
+        />
+      )}
     </section>
   );
 }
