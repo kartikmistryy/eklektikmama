@@ -272,6 +272,8 @@ export async function GET(req) {
         numberOfTickets: totalTicketsForBooking,
         transactionId,
         paymentStatus: 'paid',
+        totalAmount: typeof session.amount_total === 'number' ? session.amount_total / 100 : 0,
+        currency: (session.currency || 'aed').toUpperCase(),
         photographyConsent,
         additionalData,
         eventSegment,

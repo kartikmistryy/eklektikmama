@@ -286,6 +286,28 @@ export default function BookingPage({ params }) {
       const data = await response.json();
       
       if (data.isFreeEvent) {
+        // Push registration event to GTM dataLayer for Meta Pixel (CompleteRegistration).
+        // Dedup keyed on transactionId so a re-submit doesn't re-fire.
+        if (typeof window !== 'undefined' && data.bookingData?.transactionId) {
+          const dedupKey = `registration_tracked_${data.bookingData.transactionId}`;
+          if (!sessionStorage.getItem(dedupKey)) {
+            window.dataLayer = window.dataLayer || [];
+            window.dataLayer.push({
+              event: 'registration',
+              registration_type: 'free_event',
+              transaction_id: data.bookingData.transactionId,
+              value: 0,
+              currency: 'AED',
+              event_id: data.bookingData.eventId,
+              event_name: data.bookingData.eventTitle,
+              event_segment: data.bookingData.eventSegment,
+              num_tickets: data.bookingData.numberOfTickets || 1,
+              email: data.bookingData.email,
+            });
+            sessionStorage.setItem(dedupKey, '1');
+          }
+        }
+
         // Handle free event booking
         const memberName = data.bookingData?.memberName || data.bookingData?.guardianName || 'N/A';
         const childName = data.bookingData?.childName || 'N/A';

@@ -24,6 +24,7 @@ export default function BookingSuccessPage({ params }) {
       if (response.ok) {
         const data = await response.json();
         setBooking(data);
+        trackPurchase(data);
       } else {
         setError('Booking not found');
       }
@@ -32,6 +33,29 @@ export default function BookingSuccessPage({ params }) {
     } finally {
       setLoading(false);
     }
+  };
+
+  // Push purchase event to GTM dataLayer; GTM forwards to Meta Pixel.
+  // Refresh-dedup keyed on booking._id so reloading this page doesn't re-fire.
+  const trackPurchase = (data) => {
+    if (typeof window === 'undefined' || !data?._id) return;
+    const dedupKey = `purchase_tracked_${data._id}`;
+    if (sessionStorage.getItem(dedupKey)) return;
+
+    window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push({
+      event: 'purchase',
+      booking_id: data._id,
+      transaction_id: data.transactionId,
+      value: data.totalAmount ?? 0,
+      currency: data.currency || 'AED',
+      event_id: data.eventId,
+      event_name: data.eventTitle,
+      num_tickets: data.numberOfTickets,
+      email: data.userEmail,
+    });
+
+    sessionStorage.setItem(dedupKey, '1');
   };
 
   if (loading) {

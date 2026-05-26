@@ -33,6 +33,8 @@ export async function GET(req, { params }) {
       phone: booking.phone || '',
       numberOfTickets: booking.numberOfTickets || 1,
       paymentStatus: booking.paymentStatus || 'pending',
+      totalAmount: booking.totalAmount || 0,
+      currency: booking.currency || 'AED',
       isMember: booking.isMember || false,
       memberSavings: booking.memberSavings || 0,
       ticketNumbers: booking.ticketNumbers || [],

@@ -11,6 +11,8 @@ const BookingSchema = new mongoose.Schema({
   ticketNumber: { type: Number, default: null }, // Ticket number based on Google Sheets row position
   ticketNumbers: [{ type: Number }], // Array of ticket numbers for multiple tickets
   paymentStatus: { type: String, enum: ["pending", "paid"], default: "pending" },
+  totalAmount: { type: Number, default: 0 },
+  currency: { type: String, default: "AED" },
   photographyConsent: { type: String, enum: ["Yes", "No"], default: "No" },
   
   // Additional form data fields

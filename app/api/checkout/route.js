@@ -241,10 +241,15 @@ export async function POST(req) {
         message: 'Booking confirmed! This is a free event - no payment required.',
         isFreeEvent: true,
         bookingData: {
+          eventId: String(event._id),
+          transactionId: bookingData.transactionId,
           eventTitle: event.title,
           eventDate: event.date,
+          eventSegment: event.segment,
           memberName: otherFormData.name,
-          childName: otherFormData.childName
+          childName: otherFormData.childName,
+          email: email,
+          numberOfTickets: 1,
         }
       });
     }
