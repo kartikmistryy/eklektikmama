@@ -2,6 +2,7 @@
 
 import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { MEMBERSHIPS_ENABLED } from '../config/membership';
 
 function MembershipSuccessContent() {
   const [loading, setLoading] = useState(true);
@@ -73,10 +74,10 @@ function MembershipSuccessContent() {
           <h1 className="text-2xl font-bold text-[#093166] mb-4 font-antonio">Payment Verification Failed</h1>
           <p className="text-[#093166] font-quicksand mb-6">{error}</p>
           <button
-            onClick={() => router.push('/eklektikmamaMembership')}
+            onClick={() => router.push(MEMBERSHIPS_ENABLED ? '/eklektikmamaMembership' : '/')}
             className="bg-[#db4e9f] text-white px-6 py-3 rounded-lg font-bold hover:bg-[#bf378b] transition-colors duration-300 font-antonio"
           >
-            Try Again
+            {MEMBERSHIPS_ENABLED ? 'Try Again' : 'Back to Home'}
           </button>
         </div>
       </div>

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { MEMBERSHIPS_ENABLED } from '../../../../config/membership';
 
 const DEFAULT_MENU_OPTIONS = [
   'Egg & Truffle Toast',
@@ -906,8 +907,8 @@ const DynamicForm = ({ formConfig, onSubmit, submitting, event, onFormDataChange
         </div>
       )}
 
-      {/* Membership Discount Message */}
-      {event?.price > 0 && (
+      {/* Membership Discount Message — hide the "join to save" prompt for non-members while sales are paused */}
+      {event?.price > 0 && (isMember || MEMBERSHIPS_ENABLED) && (
         <div className="bg-gradient-to-r from-pink-50 to-purple-50 border border-pink-200 rounded-lg p-4">
           {isMember ? (
             <p className="text-sm text-pink-800 font-medium">

@@ -16,6 +16,7 @@ import {
 import MembershipOptions from "../components/MembershipOptions";
 import Marquee from "../components/Marquee";
 import { BsArrowRight } from "react-icons/bs";
+import { MEMBERSHIPS_ENABLED } from "../config/membership";
 
 function MembershipContent() {
   // URL params and state
@@ -750,8 +751,46 @@ function MembershipLoading() {
   );
 }
 
+// Shown while membership sales are paused (see app/config/membership.js)
+function MembershipClosed() {
+  return (
+    <div className="w-full min-h-[90vh] flex flex-col items-center justify-center bg-[url('/headerBg/wentdown.webp')] bg-cover bg-center px-6 py-24 text-center">
+      <div className="bg-white/90 backdrop-blur-sm rounded-2xl max-w-xl w-full px-8 py-12">
+        <h1 className="md:text-6xl text-4xl font-bold uppercase text-[#093166] font-anton leading-[110%]">
+          Memberships Are
+          <br /> Currently Closed
+        </h1>
+        <p className="text-[#093166] font-quicksand mt-6 md:text-lg text-base">
+          We&apos;ve paused new Eklektik AF memberships for now. We&apos;d love
+          to have you when we&apos;re back — in the meantime, come hang out at
+          our events.
+        </p>
+        <div className="flex flex-col sm:flex-row gap-4 justify-center mt-8">
+          <Link
+            href="/events"
+            className="flex items-center justify-center gap-2 uppercase text-white rounded-full px-8 py-3 bg-[#bf378b] hover:bg-[#db4e9f] transition-colors duration-300 font-antonio"
+          >
+            Browse Events <BsArrowRight />
+          </Link>
+          <Link
+            href="/"
+            className="flex items-center justify-center uppercase text-[#bf378b] rounded-full px-8 py-3 border-2 border-[#bf378b] hover:bg-[#bf378b] hover:text-white transition-colors duration-300 font-antonio"
+          >
+            Back to Home
+          </Link>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // Main export with Suspense wrapper
 export default function MembershipPage() {
+  // Membership sales are paused — don't render the signup flow at all.
+  if (!MEMBERSHIPS_ENABLED) {
+    return <MembershipClosed />;
+  }
+
   return (
     <Suspense fallback={<MembershipLoading />}>
       <MembershipContent />

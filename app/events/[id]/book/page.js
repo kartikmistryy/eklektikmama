@@ -7,6 +7,7 @@ import moment from 'moment';
 import { getFormBySegment } from '@/lib/eventForms';
 // import { getFormBySegment } from '../../../lib/eventForms';
 import DynamicForm from './components/DynamicForm';
+import { MEMBERSHIPS_ENABLED } from '../../../config/membership';
 
 export default function BookingPage({ params }) {
   const router = useRouter();
@@ -216,9 +217,14 @@ export default function BookingPage({ params }) {
         const membershipResult = await checkMembershipStatus(emailToCheck);
         
         if (!membershipResult.isMember) {
-          alert('👑 This event is exclusive to Eklektik AF members only. Please become a member to book this event.\n\nYou will be redirected to the membership page.');
-          setSubmitting(false);
-          router.push('/eklektikmamaMembership');
+          if (MEMBERSHIPS_ENABLED) {
+            alert('👑 This event is exclusive to Eklektik AF members only. Please become a member to book this event.\n\nYou will be redirected to the membership page.');
+            setSubmitting(false);
+            router.push('/eklektikmamaMembership');
+          } else {
+            alert('👑 This event is exclusive to Eklektik AF members only. Memberships are currently closed, so this event isn\'t available for booking right now.');
+            setSubmitting(false);
+          }
           return;
         }
         
@@ -318,8 +324,12 @@ export default function BookingPage({ params }) {
         window.location.href = data.url;
       } else if (data.isMembersOnly && data.membershipRequired) {
         // Handle members-only restriction
-        alert(`👑 ${data.error}\n\nThis event is exclusive to Eklektik AF members only. Please become a member to access this event.`);
-        router.push('/eklektikmamaMembership');
+        if (MEMBERSHIPS_ENABLED) {
+          alert(`👑 ${data.error}\n\nThis event is exclusive to Eklektik AF members only. Please become a member to access this event.`);
+          router.push('/eklektikmamaMembership');
+        } else {
+          alert(`👑 ${data.error}\n\nThis event is exclusive to Eklektik AF members only. Memberships are currently closed, so this event isn't available for booking right now.`);
+        }
       } else {
         alert(data.error || 'Error creating checkout session');
       }

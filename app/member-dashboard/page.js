@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { MEMBERSHIPS_ENABLED } from '../config/membership';
 
 export default function MemberDashboard() {
   const [email, setEmail] = useState('');
@@ -360,8 +361,8 @@ export default function MemberDashboard() {
               </p>
             </div>
 
-            {/* Upgrade Section for Monthly Members */}
-            {membership.membershipType === 'monthly' && membership.status === 'active' && !membership.cancelAtPeriodEnd && (
+            {/* Upgrade Section for Monthly Members — hidden while membership sales are paused */}
+            {MEMBERSHIPS_ENABLED && membership.membershipType === 'monthly' && membership.status === 'active' && !membership.cancelAtPeriodEnd && (
               <div className="bg-gradient-to-r from-purple-50 to-pink-50 border border-purple-200 rounded-lg p-6 mb-6">
                 <div className="flex items-center justify-between">
                   <div className="flex-1">
@@ -511,8 +512,8 @@ export default function MemberDashboard() {
           </div>
         )}
 
-        {/* Join Membership CTA */}
-        {!membership && !loading && (
+        {/* Join Membership CTA — hidden while membership sales are paused */}
+        {MEMBERSHIPS_ENABLED && !membership && !loading && (
           <div className="bg-white rounded-lg shadow-md p-6 text-center">
             <h2 className="text-2xl font-bold text-gray-900 mb-4">
               Not a Member Yet?

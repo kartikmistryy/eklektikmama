@@ -15,6 +15,7 @@ import Link from "next/link";
 import { useEffect } from "react";
 import { NewsletterPopup } from "../components/NewsletterPopup";
 import { FiStar } from "react-icons/fi";
+import { MEMBERSHIPS_ENABLED } from "../config/membership";
 
 export default function Home() {
   const [isVisible, setIsVisible] = useState(false);
@@ -678,13 +679,15 @@ export default function Home() {
                         AED 49/month.
                       </p>
                       <span className="w-full h-fit mt-auto flex flex-row items-center justify-between pr-2">
-                        <Link
-                          href="/eklektikmamaMembership"
-                          className="text-sm bg-white rounded-full font-medium font-poppins flex flex-row uppercase items-center justify-start gap-5 px-3 py-1.5 "
-                        >
-                          JOIN THE MEMBERSHIP{" "}
-                          <BsArrowRight className="text-lg font-bold" />
-                        </Link>
+                        {MEMBERSHIPS_ENABLED && (
+                          <Link
+                            href="/eklektikmamaMembership"
+                            className="text-sm bg-white rounded-full font-medium font-poppins flex flex-row uppercase items-center justify-start gap-5 px-3 py-1.5 "
+                          >
+                            JOIN THE MEMBERSHIP{" "}
+                            <BsArrowRight className="text-lg font-bold" />
+                          </Link>
+                        )}
                         <button className="bg-white rounded-full p-1 text-2xl font-bold">
                           <BsPlus />
                         </button>
@@ -881,13 +884,15 @@ export default function Home() {
                       AED 49/month.
                     </p>
                     <div className="mt-auto flex flex-row items-center justify-between">
-                      <Link
-                        href="/eklektikmamaMembership"
-                        className="text-xs bg-white rounded-full font-medium font-poppins flex flex-row items-center justify-start gap-3 px-3 py-1.5"
-                      >
-                        JOIN THE MEMBERSHIP{" "}
-                        <BsArrowRight className="text-lg font-bold" />
-                      </Link>
+                      {MEMBERSHIPS_ENABLED && (
+                        <Link
+                          href="/eklektikmamaMembership"
+                          className="text-xs bg-white rounded-full font-medium font-poppins flex flex-row items-center justify-start gap-3 px-3 py-1.5"
+                        >
+                          JOIN THE MEMBERSHIP{" "}
+                          <BsArrowRight className="text-lg font-bold" />
+                        </Link>
+                      )}
                       <button className="bg-white rounded-full p-1 text-2xl font-bold">
                         <BsPlus />
                       </button>

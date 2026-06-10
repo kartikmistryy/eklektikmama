@@ -6,9 +6,13 @@ import Link from "next/link";
 import { useState, useEffect, useRef } from "react";
 import { FiMenu } from "react-icons/fi";
 import { usePathname } from "next/navigation";
+import { MEMBERSHIPS_ENABLED } from "../config/membership";
 
 const NAV_LINKS = [
-  { label: "MEMBERSHIP", href: "/eklektikmamaMembership" },
+  // Membership sales are paused — only show this link when memberships are enabled.
+  ...(MEMBERSHIPS_ENABLED
+    ? [{ label: "MEMBERSHIP", href: "/eklektikmamaMembership" }]
+    : []),
   { label: "EVENTS", href: "/events" },
   { label: "SHOP", href: "https://eklektikcollective.com", external: true },
   { label: "BLOG", href: "/blogs" },
